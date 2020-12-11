@@ -1,0 +1,81 @@
+#Example ScuffedWall File Format
+
+#comments start with #
+
+#import adds map objects into this map from other maps
+0: Import
+  path: darkside.dat
+  frombeat: 15
+  tobeat: 130
+  type: 1
+#type 0 is everything, type 1 is walls only, 2 is notes only, 3 is lights only
+
+#you can import as many times as you want
+0: Import
+  path: differentdarkside.dat
+  frombeat: 35
+  tobeat: 50
+
+40: AppendToAllWallsBetween
+  tobeat: 50
+  track: FurryTrack
+  appendTechnique: 1
+#append technique determines how the existing custom data on each wall will be treated
+#0 is combine but no overwrite, adds on assigned custom data only if there is no existing custom data under the same name
+#1 is combine but overwrite, replaces existing custom data with assigned custom data
+#2 is completely overwrite, removes all existing custom data from wall then adds assigned custom data
+
+#makes a custom event
+40: AnimateTrack
+  track: FurryTrack
+  duration: 10
+  AnimateRotation: [0,0,0,0],[90,0,0,0.5,"easeInOutSine"],[0,0,0,1,"easeInOutSine"]
+
+#makes a note with a random position
+55: Note
+  position: [random(-30,50),random(-30,50)]
+
+#makes a model with an animation
+60: ModelToWall
+  path: pog.dae
+  hasAnimation: true
+  color: [1,1,1,1]
+  
+#throws an error
+70: SomethingThatIsntAFunction
+#also throws an error
+70 Wall
+
+  #Duration: float
+  #AnimateDefinitePosition:[x,y,z,t,e],[x,y,z,t,e]...
+  #AnimatePosition:[x,y,z,t,e],[x,y,z,t,e]...
+  #Scale: [x,y,z]
+  #Track: fucktrack
+  #Color: [r,g,b,a,t]
+  #NJSOffset: float
+  #NJS: float
+  #AnimateDissolve:[d,t],[,d,t]..
+  #AnimateColor: [r,g,b,a,t],[r,g,b,a,t]...
+ # AnimateRotation:[x,y,z,t,e],[x,y,z,t,e]...
+ # AnimateLocalRotation:[x,y,z,t,e],[x,y,z,t,e]...
+ # AnimateScale: [x,y,z,t,e],[x,y,z,t,e]...
+  #isInteractable: bool
+ # Fake: bool
+#  Position:[x,y,z]
+#  CutDirection:float
+#  NoSpawnEffect: bool
+
+#makes text using a low res image
+90: ImageToWall
+  path: Fall into the darkside.png
+  Size: 0.5
+  AnimateDefinitePosition: 
+  Thicc: 2,2,2
+
+#makes a randomnoise effect
+75: Note
+  repeat: 2000
+  repeataddtime: 0.02
+  position: [random(-30,50),random(-30,50)]
+
+  
