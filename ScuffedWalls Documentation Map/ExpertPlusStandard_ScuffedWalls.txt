@@ -2,6 +2,9 @@
 
 #comments start with #
 
+#starting at scuffedwalls 0.2.0, workspaces must be defined using
+Workspace
+
 #import adds map objects into this map from other maps
 0: Import
   path: darkside.dat
@@ -46,6 +49,7 @@
 #also throws an error
 70 Wall
 
+#Most of the noodle customdata parameters
   #Duration: float
   #AnimateDefinitePosition:[x,y,z,t,e],[x,y,z,t,e]...
   #AnimatePosition:[x,y,z,t,e],[x,y,z,t,e]...
@@ -69,13 +73,50 @@
 90: ImageToWall
   path: Fall into the darkside.png
   Size: 0.5
-  AnimateDefinitePosition: 
+  AnimateDefinitePosition: [0,20,0,0],[5,10,-50,1]
   Thicc: 2,2,2
 
 #makes a randomnoise effect
-75: Note
-  repeat: 2000
-  repeataddtime: 0.02
-  position: [random(-30,50),random(-30,50)]
+
+  
+#Creates a second workspace
+Workspace
+0: Wall
+  repeat: 200
+  duration: 50
+  AnimateDefinitePosition: [random(-30,50),random(-30,50),random(0,100)]
+  color:[0,0,1,1]
+
+#applys to only the walls in this workspace
+0:AppendToAllWallsBetween
+ toBeat: 50
+ color:[1,1,1,1]
+ AppendTechnique: 1
+ 
+
+ #Another Workspace
+ 
+ #will append zero walls
+ Workspace
+0:AppendToAllWallsBetween
+ toBeat: 50
+ color:[1,1,1,1]
+ AppendTechnique: 1
+ 
+#will add all walls from workspace 0
+10:CloneFromWorkspaceByIndex
+  toBeat: 50
+  Type: 1
+  index: 0
+  
+ 
+ 
+ 
+ 
+ 
+  
+  
+  
+  
 
   
