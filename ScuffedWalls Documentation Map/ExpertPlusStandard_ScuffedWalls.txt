@@ -76,7 +76,6 @@ Workspace
   AnimateDefinitePosition: [0,20,0,0],[5,10,-50,1]
   Thicc: 2,2,2
 
-#makes a randomnoise effect
 
   
 #Creates a second workspace
@@ -95,9 +94,9 @@ Workspace
  
 
  #Another Workspace
- 
+  Workspace
+  
  #will append zero walls
- Workspace
 0:AppendToAllWallsBetween
  toBeat: 50
  color:[1,1,1,1]
