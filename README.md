@@ -16,7 +16,7 @@ Features:
 
 3d modeling for wall conversion
 
-Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling for done for wall conversion must be made up of cuboids with a global transformation type. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. *At the time of writing this scuffedwalls does not have color animation support.*
+Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling done for wall conversion must be made up of cuboids with a global transformation type. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. *At the time of writing this scuffedwalls does not have color animation support.*
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/ScuffedWalls%20Documentation%20Map/text%20examlpe.gif)
 
