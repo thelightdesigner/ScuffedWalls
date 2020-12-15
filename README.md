@@ -33,3 +33,5 @@ Only changes to transformation and color values will affect the converted walls.
 ScuffedWalls support for decomposed transformation types in collada has been dropped so to ensure proper parsing check that 'Matrix' is the selected transformation type.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/animation.jpg)
+
+Sampling rate can be adjusted if the map file size becomes an issue.
