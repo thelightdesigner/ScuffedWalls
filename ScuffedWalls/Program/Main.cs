@@ -11,7 +11,9 @@ namespace ScuffedWalls
     {
         static void Main(string[] args)
         {
-            ConsoleLogger.Log("ScuffedWalls 0.2.0-alpha");
+            args = new string[] { @"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test" };
+            const string ver = "v0.3.3-alpha";
+            ConsoleLogger.Log($"ScuffedWalls {ver}");
             string ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
 
             if (args.Length != 0 || !File.Exists(ConfigFileName))
@@ -43,7 +45,7 @@ namespace ScuffedWalls
             {
                 using (StreamWriter file = new StreamWriter(ScuffedConfig.SWFilePath))
                 {
-                    file.WriteLine("#ScuffedWalls v0.2.0-alpha");
+                    file.WriteLine($"#ScuffedWalls {ver}");
                     file.WriteLine("#New SWFile Created");
                     file.WriteLine("#DM @thelightdesigner#1337 for help?");
                     file.WriteLine("");
@@ -72,7 +74,7 @@ namespace ScuffedWalls
                     scuffedFile.Refresh(); ov = false;
                     ConsoleLogger.ScuffedFileParser.Log("ScuffedWall File Parsed");
                     lastModifiedTime = File.GetLastWriteTime(ScuffedConfig.SWFilePath);
-                    List<NoodleFunctions> workspaces = new List<NoodleFunctions>();
+                    List<Workspace> workspaces = new List<Workspace>();
                     
                     for(int i = 0; i < scuffedFile.SWFileLines.Length; i++)
                     {
@@ -81,7 +83,7 @@ namespace ScuffedWalls
                             try
                             {
                                 Console.ForegroundColor = ConsoleColor.White; ConsoleLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}"); Console.ResetColor();
-                                workspaces.Add(NoodleFunctions.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), ScuffedConfig.MapFolderPath, workspaces));
+                                workspaces.Add(NoodleFunctions.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), ScuffedConfig.MapFolderPath, workspaces.ToArray()).toWorkspace());
                             }
                             catch(Exception e)
                             {
@@ -134,7 +136,7 @@ namespace ScuffedWalls
                 if (answer == 'y') AutoImportMap = true;
 
                 //path of the sw file by difficulty name
-                string SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.txt";
+                string SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
 
                 string OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_OldMap.dat";
 

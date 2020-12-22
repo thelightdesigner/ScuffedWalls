@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
@@ -24,197 +23,159 @@ namespace ModChart
                 _customData = CustomData
             };
         }
+        public static BeatMap.Obstacle WallConstructor(float Time, float Duration)
+        {
+            return new BeatMap.Obstacle()
+            {
+                _time = Time,
+                _lineIndex = 0,
+                _width = 0,
+                _type = 0,
+                _duration = Duration
+            };
+        }
         // read all walls into array
         public static BeatMap.Obstacle[] ReadAllWalls(string MapPull)
         {
             return JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(MapPull))._obstacles;
         }
 
-        public static float GetTime(BeatMap.Obstacle Wall)
+        public static float GetTime(this BeatMap.Obstacle Wall)
         {
             return Convert.ToSingle(Wall._time.ToString());
         }
-
-
-        //Converts an image to walls. supports: scale, position animation, time, duration, isblackempty, and custom noodle data, returns complete wall objects
-        public static BeatMap.Obstacle[] ImageToWall(string ImagePath, float Time, float Duration, bool isBlackEmpty, float scale, string[] IndividualCustomData)
+        
+        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
         {
             Bitmap WallImageBitMap = new Bitmap(ImagePath, true);
-            List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle> { };
+            List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
+            customData._animation ??= new BeatMap.CustomData.Animation();
 
-            //scale, distance calculation
-            List<string> PointDefList = new List<string> { };
-            string[] _customObjectSplit;
-            List<string> PointDefs = new List<string>();
-            string Easing = "";
-            List<float> ScaleMods = new List<float> { };
-            int f = 0;
-            bool centered = false;
-            float X = 0;
-            string color = "";
-
-
-
-            for (int i = 0; i < WallImageBitMap.Height; i++)
+            for (int y = 0; y < WallImageBitMap.Height; y++)
             {
-
-                for (int j = 0; j < WallImageBitMap.Width; j++)
+                for (int x = 0; x < WallImageBitMap.Width; x++)
                 {
-                    if (((WallImageBitMap.GetPixel(j, i).B) + (WallImageBitMap.GetPixel(j, i).R) + (WallImageBitMap.GetPixel(j, i).G) > 0 && isBlackEmpty) || isBlackEmpty == false)
+                    if (!isBlackEmpty || ((WallImageBitMap.GetPixel(x, y).R + WallImageBitMap.GetPixel(x, y).G + WallImageBitMap.GetPixel(x, y).B > 10 )&& isBlackEmpty))
                     {
-                        List<string> Noodles = new List<string> { };
+                        //position
+                        object[][] defPos = null;
+                        object[] pos = null;
 
-                        foreach (var _customObject in IndividualCustomData)
+                        if (!track)
                         {
-
-                            _customObjectSplit = _customObject.Split(':');
-
-                            if (_customObjectSplit[0] == "AnimateDefinitePosition")
+                            customData._animation._definitePosition ??= new object[][] { new object[] { 0, 0, 0, 0 }, new object[] { 0, 0, 0, 1 } };
+                            List<object[]> DefPos = new List<object[]>();
+                            foreach (var defposset in customData._animation._definitePosition)
                             {
-                                PointDefs = new List<string>(_customObjectSplit[1].TrimStart('[').Split('['));
-                                //(PointDefs[2].TrimEnd(new char[] { ']', ',' }));
+                                object X = (x * scale) + Convert.ToSingle(defposset[0].ToString());
+                                if (centered) X = (((scale * x) - ((scale * WallImageBitMap.Width) / 2)) + 2);
 
+                                List<object> points = new List<object>();
+                                points.AddRange(new object[] {
+                                X,
+                                (scale * (WallImageBitMap.Height - y)) + Convert.ToSingle(defposset[1].ToString()),
+                                Convert.ToSingle(defposset[2].ToString()),
+                                Convert.ToSingle(defposset[3].ToString())
+                                });
+                                if (defposset.Length > 4) points.Add(defposset[4]);
+
+                                DefPos.Add(points.ToArray());
                             }
-                            else if (_customObjectSplit[0] == "thicc")
+                            defPos = DefPos.ToArray();
+                        }
+                        else
+                        {
+                            customData._position ??= new object[] { 0, 0 };
+                            object X;
+                            if (!centered) X = (x * scale) + Convert.ToSingle(customData._position[0].ToString());
+                            else X = (((scale * x) - ((scale * WallImageBitMap.Width) / 2)));
+
+                            pos = new object[] {
+                                X,
+                                (scale * (WallImageBitMap.Height - y)) + Convert.ToSingle(customData._position[1].ToString())
+                            };
+                        }
+
+                        object[] color = { Convert.ToSingle(WallImageBitMap.GetPixel(x, y).R) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).G) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).B) / 255f, 1 };
+                        if (customData._color != null) color = customData._color;
+
+                        Walls.Add(WallAppend(new BeatMap.Obstacle()
+                        {
+                            _time = baseWall._time,
+                            _duration = baseWall._duration,
+                            _lineIndex = baseWall._lineIndex,
+                            _type = baseWall._type,
+                            _width = baseWall._width,
+                            _customData = new BeatMap.CustomData()
                             {
-                                string[] ScaleMod = _customObjectSplit[1].Split(',');
-                                foreach (var scalemod in ScaleMod)
+                                _color = color,
+                                _position = pos,
+                                _scale = new object[] { scale / thicc, scale / thicc, scale / thicc },
+                                _animation = new BeatMap.CustomData.Animation()
                                 {
-                                    ScaleMods.Add((float)Convert.ToDouble(scalemod));
+                                    _definitePosition = defPos,
+                                    _scale = new object[][] { new object[] { thicc, thicc, thicc, 0 }, new object[] { thicc, thicc, thicc, 1 } }
                                 }
-                                Noodles.Add("AnimateScale:[" + ScaleMods[0] + "," + ScaleMods[1] + "," + ScaleMods[2] + ",0],[" + ScaleMods[0] + "," + ScaleMods[1] + "," + ScaleMods[2] + ",1]");
                             }
-                            else if (_customObjectSplit[0] == "centered")
-                            {
-                                centered = true;
-                            }
-                            else if (_customObjectSplit[0] == "color")
-                            {
-                                color = _customObject;
-                            }
-                            else if (_customObjectSplit[0] == "addcolor")
-                            {
-                                color = "color:[" + (Convert.ToDouble(WallImageBitMap.GetPixel(j, i).R) / 255) + "," + (Convert.ToDouble(WallImageBitMap.GetPixel(j, i).G) / 255) + "," + (Convert.ToDouble(WallImageBitMap.GetPixel(j, i).B / 255)) + "]";
-                            }
-                            else
-                            {
-                                Noodles.Add(_customObject);
-                            }
-
-                        }
-                        foreach (var Set in PointDefs)
-                        {
-
-                            List<string> Points = new List<string>(Set.TrimEnd(new char[] { ']', ',' }).Split(','));
-
-                            if (Points.Count == 5)
-                            {
-                                Easing = ",\"" + Points[4] + "\""; //easing support
-                            }
-                            else if (Points.Count == 4)
-                            {
-                                Easing = "";
-                            }
-
-                            if (centered)
-                            {
-                                X = (float)(((scale * j) - ((scale * WallImageBitMap.Width) / 2)) + 2);
-                            }
-                            else
-                            {
-                                X = (float)((scale * j) + (Convert.ToDouble(Points[0])));
-                            }
-
-
-                            PointDefList.Add("[" + X + "," + ((scale * (WallImageBitMap.Height - i)) + (Convert.ToDouble(Points[1]))) + "," + (Convert.ToDouble(Points[2])) + "," + (Convert.ToDouble(Points[3])) + Easing + "]");
-
-                        }
-                        Noodles.Add(color);
-
-                        Walls.Add(WallConstructor(Time,
-                            Duration,
-                            Map.CustomDataParse(Map.ParamsAndStringToArray(Noodles.ToArray(),
-                            "AnimateDefinitePosition:" + string.Join(',', PointDefList),
-                            //"scale:[" + scale + "," + scale + "," + scale + "]"))));
-                            "scale:[" + scale / ScaleMods[0] + "," + scale / ScaleMods[0] + "," + scale / ScaleMods[0] + "]"
-                            ))));
-
-
-                        //return WallConstructor(Time,Duration, CustomDataParse(ParamsAndStringToArray(Noodles.ToArray(), "AnimateDefinitePosition:" + string.Join(',', PointDefList), "scale:[" + scale + "," + scale + "," + scale + "]")));
-                        PointDefList.Clear();
-                        PointDefs.Clear();
-
+                        }, customData, 0)); //no overwrites
                     }
                 }
             }
             return Walls.ToArray();
         }
-        /*
-        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, float Time, float Duration, bool isBlackEmpty, float scale, bool track, string[] IndividualCustomData)
-        {
-            Bitmap WallImageBitMap = new Bitmap(ImagePath, true);
-            List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
-            List<string> Noodles = new List<string>();
-            for(int h = 0; h < WallImageBitMap.Height; h++)
-            {
-                for(int w = 0; w < WallImageBitMap.Width; h++)
-                {
-                    if (isBlackEmpty || (WallImageBitMap.GetPixel(w, h).R == 0 && WallImageBitMap.GetPixel(w, h).G == 0 && WallImageBitMap.GetPixel(w, h).B == 0 &&)) 
-                    {
-                        Walls.Add(WallConstructor(Time, Duration, Map.CustomDataParse(Noodles.ToArray()));
-                    }
-                }
-            }
-        }
-        */
-        public static BeatMap.Obstacle[] Model2Wall(string ModelPath, float Time, float spread, float Duration, bool HasAnimation, string[] IndividualCustomData)
+
+        public static BeatMap.Obstacle[] Model2Wall(string ModelPath, float spread, bool HasAnimation, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
         {
             Model model = new Model(ModelPath, HasAnimation);
             Random rnd = new Random();
             List<BeatMap.Obstacle> walls = new List<BeatMap.Obstacle>();
             foreach (var cube in model.cubes)
             {
-                List<string> positions = new List<string>();
-                List<string> rotations = new List<string>();
-                List<string> scales = new List<string>();
-                List<string> noodles = new List<string>();
+                List<object[]> positionN = new List<object[]>();
+
                 for (int i = 0; i < cube.Position.Length; i++)
                 {
-                    positions.Add("[" + ((cube.Position[i].X*-1) + 2 - cube.Scale[i].X) + "," + cube.Position[i].Y + "," + cube.Position[i].Z+ "," + (Convert.ToDouble(i) / Convert.ToDouble(cube.Position.Length)) + "]");
+                    positionN.Add(new object[] { ((cube.Position[i].X * -1) + 2 - cube.Scale[i].X), cube.Position[i].Y, cube.Position[i].Z, (Convert.ToSingle(i) / Convert.ToSingle(cube.Position.Length)) });
                 }
+                List<object[]> rotationN = new List<object[]>();
                 for (int i = 0; i < cube.Rotation.Length; i++)
                 {
-                    rotations.Add("[" + cube.Rotation[i].X + "," + cube.Rotation[i].Y * -1 + "," + cube.Rotation[i].Z * -1 + "," + (Convert.ToDouble(i) / Convert.ToDouble(cube.Rotation.Length)) + "]");
+                    rotationN.Add(new object[] { cube.Rotation[i].X, cube.Rotation[i].Y * -1, cube.Rotation[i].Z * -1, (Convert.ToSingle(i) / Convert.ToSingle(cube.Rotation.Length)) });
                 }
+                List<object[]> scaleN = new List<object[]>();
                 for (int i = 0; i < cube.Scale.Length; i++)
                 {
-                    scales.Add("[" + cube.Scale[i].X / cube.Scale[0].X + "," + cube.Scale[i].Y / cube.Scale[0].Y + "," + cube.Scale[i].Z / cube.Scale[0].Z + "," + (Convert.ToDouble(i) / Convert.ToDouble(cube.Scale.Length)) + "]");
+                    scaleN.Add(new object[] { cube.Scale[i].X / cube.Scale[0].X, cube.Scale[i].Y / cube.Scale[0].Y, cube.Scale[i].Z / cube.Scale[0].Z, (Convert.ToSingle(i) / Convert.ToSingle(cube.Scale.Length)) });
                 }
                 if (cube.Position.Length == 1)
                 {
-                    positions.Add("[" + ((cube.Position[0].X*-1) + 2 - cube.Scale[0].X) + "," + cube.Position[0].Y + "," + cube.Position[0].Z + ",1]");
-                    rotations.Add("[" + cube.Rotation[0].X + "," + cube.Rotation[0].Y * -1 + "," + cube.Rotation[0].Z * -1 + ",1]");
-                    scales.Add("[" + cube.Scale[0].X / cube.Scale[0].X + "," + cube.Scale[0].Y / cube.Scale[0].Y + "," + cube.Scale[0].Z / cube.Scale[0].Z + ",1]");
+                    positionN.Add(new object[] { ((cube.Position[0].X * -1) + 2 - cube.Scale[0].X), cube.Position[0].Y, cube.Position[0].Z, 1 });
+                    rotationN.Add(new object[] { cube.Rotation[0].X, cube.Rotation[0].Y * -1, cube.Rotation[0].Z * -1, 1 });
+                    scaleN.Add(new object[] { cube.Scale[0].X / cube.Scale[0].X, cube.Scale[0].Y / cube.Scale[0].Y, cube.Scale[0].Z / cube.Scale[0].Z, 1 });
                 }
+                object[] color = null;
+                if (cube.Color != null) color = new object[] { cube.Color.R,cube.Color.G,cube.Color.B,cube.Color.A };
+                if (customData._color != null) color = customData._color;
 
-                bool customColorOverride = false;
-                foreach (var arg in IndividualCustomData)
+                walls.Add(WallAppend(new BeatMap.Obstacle()
                 {
-                    if (arg.Split(':')[1] == "AnimateDefinitePosition" || arg == "AnimateRotation" || arg == "AnimateScale" || arg == "scale") { }
-                    else if (arg.Split(':')[1] == "color")
+                    _time = baseWall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * spread,
+                    _duration = baseWall._duration,
+                    _lineIndex = 0,
+                    _type = 0,
+                    _width = 0,
+                    _customData = new BeatMap.CustomData()
                     {
-                        noodles.Add(arg); 
-                        customColorOverride = true;
+                        _color = color,
+                        _scale = new object[] { cube.Scale[0].X * 2, cube.Scale[0].Y * 2, cube.Scale[0].Z * 2 },
+                        _animation = new BeatMap.CustomData.Animation()
+                        {
+                            _definitePosition = positionN.ToArray(),
+                            _localRotation = rotationN.ToArray(),
+                            _scale = scaleN.ToArray()
+                        }
                     }
-                    else noodles.Add(arg);
-                }
-
-                noodles.Add("AnimateDefinitePosition:" + string.Join(',', positions));
-                noodles.Add("AnimateLocalRotation:" + string.Join(',', rotations));
-                noodles.Add("AnimateScale:" + string.Join(',', scales));
-                noodles.Add("scale:[" + cube.Scale[0].X * 2 + "," + cube.Scale[0].Y * 2 + "," + cube.Scale[0].Z * 2 + "]");
-                if (cube.Color != null && !customColorOverride) noodles.Add("color:[" + cube.Color.R + "," + cube.Color.G + "," + cube.Color.B + "," + cube.Color.A + "]");
-                walls.Add(WallConstructor(Time + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * spread, Duration, Map.CustomDataParse(noodles.ToArray())));
+                }, customData, 0)); //no overwrite
             }
             return walls.ToArray();
         }

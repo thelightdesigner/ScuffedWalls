@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ModChart
 {
+    [Serializable]
     class BeatMap
     {
         public string _version { get; set; }
@@ -13,6 +14,7 @@ namespace ModChart
         public Note[] _notes { get; set; }
         public Obstacle[] _obstacles { get; set; }
 
+        [Serializable]
         public class Event
         {
             public object _time { get; set; }
@@ -20,6 +22,7 @@ namespace ModChart
             public object _value { get; set; }
             public CustomData _customData { get; set; }
         }
+        [Serializable]
         public class Note
         {
             public object _time { get; set; }
@@ -29,6 +32,7 @@ namespace ModChart
             public object _cutDirection { get; set; }
             public CustomData _customData { get; set; }
         }
+        [Serializable]
         public class Obstacle
         {
             public object _time { get; set; }
@@ -38,6 +42,7 @@ namespace ModChart
             public object _width { get; set; }
             public CustomData _customData { get; set; }
         }
+        [Serializable]
         public class CustomData
         {
             //noodle
@@ -56,6 +61,7 @@ namespace ModChart
             public object _fake { get; set; } //bool
             public Animation _animation { get; set; }
 
+            [Serializable]
             public class Animation
             {
                 public object[][] _position { get; set; }
@@ -94,6 +100,8 @@ namespace ModChart
 
             //extra custom data
             public BPMChanges[] _BPMChanges { get; set; }
+
+            [Serializable]
             public class BPMChanges
             {
                 public object _time { get; set; }
@@ -102,11 +110,15 @@ namespace ModChart
                 public object _metronomeOffset { get; set; }
             }
             public CustomEvents[] _customEvents { get; set; }
+
+            [Serializable]
             public class CustomEvents
             {
                 public object _time { get; set; } //float
                 public object _type { get; set; } //string
                 public Data _data { get; set; }
+
+                [Serializable]
                 public class Data
                 {
                     public object _track { get; set; } //string
@@ -129,6 +141,7 @@ namespace ModChart
             }
             public Bookmark[] _bookmarks { get; set; }
 
+            [Serializable]
             public class Bookmark
             {
                 public object _time { get; set; } //float
