@@ -11,7 +11,7 @@ namespace ScuffedWalls
     {
         static void Main(string[] args)
         {
-            args = new string[] { @"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test" };
+            //args = new string[] { @"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test" };
             const string ver = "v0.3.3-alpha";
             ConsoleLogger.Log($"ScuffedWalls {ver}");
             string ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
