@@ -14,7 +14,7 @@ Features:
   - Input the number of the map file to generate to (Will overwrite anything in this map file)
   - Type in the generated SW file, saving refreshes the program automatically. Or hitting R in the console window.
   
-More info on scuffed functions can be found [https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md](here)
+More info on scuffed functions can be found [`https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md`](here)
 
 3d modeling for wall conversion
 
