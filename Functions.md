@@ -1,19 +1,19 @@
 # ScuffedWalls
 ## Functions
 
-- [`ModelToWall`](#AppendToAllWallsBetween)
-- [`CloneFromWorkspaceByIndex`](#AppendToAllWallsBetween)
-- [`Blackout`](#AppendToAllWallsBetween)
-- [`ImageToWall`](#AppendToAllWallsBetween)
-- [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
-- [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
-- [`Import`](#Import)
-- [`Wall`](#Wall)
-- [`Note`](#Note)
-- [`AnimateTrack`](#AnimateTrack)
-- [`AssignPathAnimation`](#AssignPathAnimation)
-- [`AssignPlayerToTrack`](#AppendToAllWallsBetween)
-- [`ParentTrack`](#AppendToAllWallsBetween)
+- [`ModelToWall`](##ModelToWall)
+- [`CloneFromWorkspaceByIndex`](## CloneFromWorkspaceByIndex)
+- [`Blackout`](##Blackout)
+- [`ImageToWall`](##ImageToWall)
+- [`AppendToAllWallsBetween`](##AppendToAllWallsBetween)
+- [`AppendToAllNotesBetween`](##AppendToAllNotesBetween)
+- [`Import`](##Import)
+- [`Wall`](##Wall)
+- [`Note`](##Note)
+- [`AnimateTrack`](##AnimateTrack)
+- [`AssignPathAnimation`](##AssignPathAnimation)
+- [`AssignPlayerToTrack`](##AssignPlayerToTrack)
+- [`ParentTrack`](##ParentTrack)
 
 ## CustomData
 
