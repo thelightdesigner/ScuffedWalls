@@ -101,6 +101,7 @@ adds on custom noodle data to walls between the function time and endtime
 adds on custom noodle data to notes between the function time and endtime
 
  - toBeat: float
+ - NoteColor: red, blue, bomb
  - appendTechnique: int(0-2)
  - generic custom data
  
