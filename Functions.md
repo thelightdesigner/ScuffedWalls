@@ -39,7 +39,7 @@ generic customdata that can be parsed on most functions
 
 # ModelToWall
 constructs a definite model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
-## parameters
+parameters
  - path: string
  - fullpath string
  - hasAnimation: bool, tells the model parser to read animation
@@ -48,7 +48,7 @@ constructs a definite model out of walls. see [README.md](https://github.com/the
 
 # ImageToWall
 constructs an image out of walls as pixels
-## parameters
+parameters
  - path: string
  - fullpath string
  - isBlackEmpty: bool, doesn't add pixel if the pixel color is black
