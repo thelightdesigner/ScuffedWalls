@@ -1,62 +1,51 @@
-**ModelToWall**
+## ScuffedWalls
+# Functions
 
-**ImageToWall**
+- [`ModelToWall`](#AppendToAllWallsBetween)
+- [`CloneFromWorkspaceByIndex`](#AppendToAllWallsBetween)
+- [`Blackout`](#AppendToAllWallsBetween)
+- [`ImageToWall`](#AppendToAllWallsBetween)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
-AppendOnlyToAllNotesBetween
-AppendToAllWallsBetween
-AppendOnlyToAllWallsBetween
-AddAllEventsBetween
-AddAllNotesBetween
-AddAllWallsBetween
-ImportMap
-Wall
-Note
-AnimateTrack
-AssignPathAnimation
-AssignPlayerToTrack
-ParentTrack
+- [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
+- [`Import`](#Import)
+- [`Wall`](#Wall)
+- [`Note`](#Note)
+- [`AnimateTrack`](#AnimateTrack)
+- [`AssignPathAnimation`](#AssignPathAnimation)
+- [`AssignPlayerToTrack`](#AppendToAllWallsBetween)
+- [`ParentTrack`](#AppendToAllWallsBetween)
+
+# CustomData
 
 
+## Functions
 
+# ModelToWall
 
+# ImageToWall
 
+# CloneFromWorkspaceByIndex
 
+# Blackout
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ImageToWall
 
 # AppendToAllWallsBetween
+
+# AppendToAllNotesBetween
+
+# Import
+
+# Wall
+
+# Note
+
+# AnimateTrack
+
+# AssignPathAnimation
+
+# AssignPlayerToTrack
+
+# ParentTrack
+
+
