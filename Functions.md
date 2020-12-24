@@ -37,6 +37,21 @@ generic customdata that can be parsed on most functions
 - CutDirection: float
 - NoSpawnEffect: bool
 
+## CustomEvent Data
+generic customdata for customevents
+"" = put in quotes, ? = optional
+- AnimateDefinitePosition: \[x,y,z,t,"e"?]
+- AnimatePosition: \[x,y,z,t,"e"?]
+- Track: string
+- AnimateDissolve: \[d,t,"e"?]
+- AnimateColor: \[r,g,b,t,"e"?]
+- AnimateRotation: \[x,y,z,t,"e"?]
+- AnimateLocalRotation: \[x,y,z,t,"e"?]
+- AnimateScale: \[x,y,z,t,"e"?]
+- childTracks:\["str","str"...]
+- parentTrack: string
+- easing: string
+
 # ModelToWall
 constructs a definite model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
 
@@ -138,7 +153,7 @@ makes a custom event
 
 # PointDefinition
 defines a set of points
-- name
-- points
+- name: string
+- points: \[],\[],\[]
 
 
