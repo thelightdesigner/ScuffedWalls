@@ -1,5 +1,5 @@
-## ScuffedWalls
-# Functions
+# ScuffedWalls
+## Functions
 
 - [`ModelToWall`](#AppendToAllWallsBetween)
 - [`CloneFromWorkspaceByIndex`](#AppendToAllWallsBetween)
@@ -15,37 +15,37 @@
 - [`AssignPlayerToTrack`](#AppendToAllWallsBetween)
 - [`ParentTrack`](#AppendToAllWallsBetween)
 
-# CustomData
+## CustomData
 
 
-## Functions
+# Functions
 
-# ModelToWall
+## ModelToWall
 
-# ImageToWall
+## ImageToWall
 
-# CloneFromWorkspaceByIndex
+## CloneFromWorkspaceByIndex
 
-# Blackout
+## Blackout
 
-# ImageToWall
+## ImageToWall
 
-# AppendToAllWallsBetween
+## AppendToAllWallsBetween
 
-# AppendToAllNotesBetween
+## AppendToAllNotesBetween
 
-# Import
+## Import
 
-# Wall
+## Wall
 
-# Note
+## Note
 
-# AnimateTrack
+## AnimateTrack
 
-# AssignPathAnimation
+## AssignPathAnimation
 
-# AssignPlayerToTrack
+## AssignPlayerToTrack
 
-# ParentTrack
+## ParentTrack
 
 
