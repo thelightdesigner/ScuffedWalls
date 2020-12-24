@@ -39,16 +39,17 @@ generic customdata that can be parsed on most functions
 
 # ModelToWall
 constructs a definite model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
-parameters
+
  - path: string
  - fullpath string
  - hasAnimation: bool, tells the model parser to read animation
  - duration: float
  - spreadspawntime: float
+ - generic custom data
 
 # ImageToWall
 constructs an image out of walls as pixels
-parameters
+
  - path: string
  - fullpath string
  - isBlackEmpty: bool, doesn't add pixel if the pixel color is black
@@ -60,31 +61,84 @@ parameters
  - spreadspawntime: float
  - AnimateDefinitePosition => moves each pixel by this amount, defaults to \[0,0,0,0],\[0,0,0,1] (only if normal = false)
  - Position => moves each pixel by this amount, defaults to \[0,0] (only if normal = true)
+ - generic custom data
  
 # CloneFromWorkspaceByIndex
+clones mapobjects from a different workspace by the index
+
+- Type: int(0-3), what to clone
+- Index: int
+- fromBeat: float
+- toBeat: float
+
 
 # Blackout
-
-# ImageToWall
+adds a single light off event
 
 # AppendToAllWallsBetween
+adds on custom noodle data to walls between the function time and endtime
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - generic custom data
 
 # AppendToAllNotesBetween
+adds on custom noodle data to notes between the function time and endtime
 
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - generic custom data
+ 
 # Import
+adds in map objects from other map.dat files
+
+ - path: string
+ - fullpath string
+ - type:int(0-3)
+ - fromBeat: float
+ - toBeat: float
 
 # Wall
+makes a wall
+
+- duration: float
+- repeat: int, amount of times to repeat
+- repeatAddTime: float
+- generic custom data
 
 # Note
+makes a note
+
+- duration: float
+- repeat: int, amount of times to repeat
+- repeatAddTime: float
+- generic custom data
 
 # AnimateTrack
+makes a custom event
+
+ - customevent data
+ - repeat: int, amount of times to repeat
+ - repeatAddTime: float
 
 # AssignPathAnimation
+makes a custom event
+
+ - customevent data
+ - repeat: int, amount of times to repeat
+ - repeatAddTime: float
 
 # AssignPlayerToTrack
+makes a custom event
+ - customevent data
 
 # ParentTrack
+makes a custom event
+ - customevent data
 
 # PointDefinition
+defines a set of points
+- name
+- points
 
 
