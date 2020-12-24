@@ -6,39 +6,25 @@ using System.Text.Json;
 
 namespace ScuffedWalls
 {
-    class NoodleFunctions
+    partial class FunctionParser
     {
-        public NoodleFunctions(string mapfolderpath, Workspace[] workspaces)
+        public FunctionParser(string mapfolderpath, Workspace[] workspaces)
         {
             MapFolderPath = mapfolderpath;
             Workspaces = workspaces;
         }
         private Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
+        public List<BeatMap.CustomData.PointDefinition> PointDefinitions = new List<BeatMap.CustomData.PointDefinition>();
         public List<BeatMap.Event> Lights = new List<BeatMap.Event>();
         public List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
         public List<BeatMap.CustomData.CustomEvents> CustomEvents = new List<BeatMap.CustomData.CustomEvents>();
         private string MapFolderPath;
-        static public void ConsoleOut(string Type, int Amount, float Beat)
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            ConsoleLogger.ScuffedWorkspace.FunctionParser.Log($"Added {Amount} {Type}'s at beat {Beat}");
-            Console.ResetColor();
-        }
-        public Workspace toWorkspace()
-        {
-            return new Workspace()
-            {
-                Notes = Notes.ToArray(),
-                Walls = Walls.ToArray(),
-                CustomEvents = CustomEvents.ToArray(),
-                Lights = Lights.ToArray()
-            };
-        }
+        
 
-        public static NoodleFunctions parseWorkspace(string[] args, string ThisMapFolder, Workspace[] workspaces)
+        public static FunctionParser parseWorkspace(string[] args, string ThisMapFolder, Workspace[] workspaces)
         {
-            NoodleFunctions Workspace = new NoodleFunctions(ThisMapFolder, workspaces);
+            FunctionParser Workspace = new FunctionParser(ThisMapFolder, workspaces);
             for (int i = 0; i < args.Length; i++)
             {
 
@@ -46,11 +32,11 @@ namespace ScuffedWalls
                 {
                     string functionName = args[i].Split(':')[1].Trim(' ').ToLower();
                     float time = Convert.ToSingle(args[i].Split(':')[0].Trim(' '));
-                    if (functionName.MethodExists<NoodleFunctions>())
+                    if (functionName.MethodExists<FunctionParser>())
                     {
                         try
                         {
-                            typeof(NoodleFunctions).GetMethod(functionName).Invoke(Workspace, new object[] { ScuffedFile.getLinesUntilNextFunction(i, args), time });
+                            typeof(FunctionParser).GetMethod(functionName).Invoke(Workspace, new object[] { ScuffedFile.getLinesUntilNextFunction(i, args), time });
                         }
                         catch
                         {
@@ -63,38 +49,31 @@ namespace ScuffedWalls
             }
             return Workspace;
         }
-        public static BeatMap toBeatMap(Workspace[] workspaces)
+        
+        public void pointdefinition(string[] args, float time)
         {
-            List<BeatMap.Obstacle> obstacles = new List<BeatMap.Obstacle>();
-            List<BeatMap.Note> notes = new List<BeatMap.Note>();
-            List<BeatMap.Event> events = new List<BeatMap.Event>();
-            List<BeatMap.CustomData.CustomEvents> customEvents = new List<BeatMap.CustomData.CustomEvents>();
-            foreach (var workspace in workspaces)
+            string name = null;
+            object[][] points = null;
+            foreach (var p in args.GetParameters())
             {
-                customEvents.AddRange(workspace.CustomEvents);
-                notes.AddRange(workspace.Notes);
-                obstacles.AddRange(workspace.Walls);
-                events.AddRange(workspace.Lights);
+                switch (p.parameter)
+                {
+                    case "name":
+                        name = p.argument;
+                        break;
+                    case "points":
+                        points = JsonSerializer.Deserialize<object[][]>($"[{p.argument}]");
+                        break;
+                }
             }
-            return new BeatMap()
+
+            PointDefinitions.Add(new BeatMap.CustomData.PointDefinition()
             {
-                _version = "2.0.0",
-                _notes = notes.ToArray(),
-                _obstacles = obstacles.ToArray(),
-                _events = events.ToArray(),
-                _customData = new BeatMap.CustomData() { _customEvents = customEvents.ToArray() }
-            };
-        }
-        public static BeatMap toBeatMap(Workspace workspace)
-        {
-            return new BeatMap()
-            {
-                _version = "2.0.0",
-                _notes = workspace.Notes,
-                _obstacles = workspace.Walls,
-                _events = workspace.Lights,
-                _customData = new BeatMap.CustomData() { _customEvents = workspace.CustomEvents }
-            };
+                _name = name,
+                _points = points
+            });
+
+            ConsoleOut("PointDefinition",1,time);
         }
         public void clonefromworkspacebyindex(string[] args, float time)
         {
@@ -265,11 +244,24 @@ namespace ScuffedWalls
 
             foreach (var p in args.GetParameters())
             {
-                if (p.parameter == "path") Path = MapFolderPath + @"\" + p.argument;
-                else if (p.parameter == "fullpath") Path = p.argument;
-                else if (p.parameter == "type") Type = Convert.ToInt32(p.argument);
-                else if (p.parameter == "frombeat") startbeat = Convert.ToSingle(p.argument);
-                else if (p.parameter == "tobeat") endbeat = Convert.ToSingle(p.argument);
+                switch (p.parameter)
+                {
+                    case "path":
+                        Path = MapFolderPath + @"\" + p.argument;
+                        break;
+                    case "fullpath":
+                        Path = p.argument;
+                        break;
+                    case "type":
+                        Type = Convert.ToInt32(p.argument);
+                        break;
+                    case "frombeat":
+                        startbeat = Convert.ToSingle(p.argument);
+                        break;
+                    case "tobeat":
+                        endbeat = Convert.ToSingle(p.argument);
+                        break;
+                }
             }
 
             BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path));
@@ -344,6 +336,7 @@ namespace ScuffedWalls
             float size = 1;
             float thicc = 1;
             bool track = false;
+            float spreadspawntime = 0;
             foreach (var p in args.GetParameters())
             {
                 switch (p.parameter)
@@ -374,7 +367,7 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            BeatMap.Obstacle[] image = NoodleWall.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, args.GetParameters().toUsableCustomData().CustomDataParse(), NoodleWall.WallConstructor(time, duration));
+            BeatMap.Obstacle[] image = NoodleWall.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime, args.GetParameters().toUsableCustomData().CustomDataParse(), NoodleWall.WallConstructor(time, duration));
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time);
         }
@@ -410,7 +403,7 @@ namespace ScuffedWalls
             }
             Walls = new List<BeatMap.Obstacle>();
             Walls.AddRange(ApendedWalls.ToArray());
-            ConsoleLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} walls from beats {starttime} to {endtime}");
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} walls from beats {starttime} to {endtime}");
         }
         public void appendtoallnotesbetween(string[] args, float time)
         {
@@ -457,15 +450,8 @@ namespace ScuffedWalls
             }
             Notes = new List<BeatMap.Note>();
             Notes.AddRange(ApendedNotes.ToArray());
-            ConsoleLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} notes from beats {starttime} to {endtime}");
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} notes from beats {starttime} to {endtime}");
         }
     }
 
-    class Workspace
-    {
-        public BeatMap.Note[] Notes { get; set; }
-        public BeatMap.Event[] Lights { get; set; }
-        public BeatMap.Obstacle[] Walls { get; set; }
-        public BeatMap.CustomData.CustomEvents[] CustomEvents { get; set; }
-    }
 }

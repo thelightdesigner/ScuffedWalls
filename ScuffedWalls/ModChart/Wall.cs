@@ -45,10 +45,11 @@ namespace ModChart
             return Convert.ToSingle(Wall._time.ToString());
         }
         
-        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
+        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered,float spread, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
         {
             Bitmap WallImageBitMap = new Bitmap(ImagePath, true);
             List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
+            Random rnd = new Random();
             customData._animation ??= new BeatMap.CustomData.Animation();
 
             for (int y = 0; y < WallImageBitMap.Height; y++)
@@ -101,7 +102,7 @@ namespace ModChart
 
                         Walls.Add(WallAppend(new BeatMap.Obstacle()
                         {
-                            _time = baseWall._time,
+                            _time = baseWall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * spread,
                             _duration = baseWall._duration,
                             _lineIndex = baseWall._lineIndex,
                             _type = baseWall._type,

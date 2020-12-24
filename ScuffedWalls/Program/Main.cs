@@ -9,11 +9,15 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
+        public static string ver = "v0.4.0";
         static void Main(string[] args)
         {
-            //args = new string[] { @"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test" };
-            const string ver = "v0.3.3-alpha";
-            ConsoleLogger.Log($"ScuffedWalls {ver}");
+            
+            Console.Title = $"ScuffedWalls {ver}";
+            ScuffedLogger.Log($"ScuffedWalls {ver}");
+            Rainbow rnb = new Rainbow();
+            Random rnd = new Random();
+            RPC rpc = new RPC();
             string ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
 
             if (args.Length != 0 || !File.Exists(ConfigFileName))
@@ -38,7 +42,7 @@ namespace ScuffedWalls
                 {
                     file.Write(File.ReadAllText(ScuffedConfig.MapFilePath));
                 }
-                ConsoleLogger.Log("Created New Old Map File");
+                ScuffedLogger.Log("Created New Old Map File");
             }
             //check for old sw file
             if (!File.Exists(ScuffedConfig.SWFilePath))
@@ -59,8 +63,7 @@ namespace ScuffedWalls
                 }
                 Console.Write("[ConsoleLoggerDefault] Main: "); Console.ForegroundColor = ConsoleColor.Red; Console.Write("N"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("w"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("S"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("W"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("F"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("i"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("l"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("C"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("r"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("a"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("t"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("d"); Console.ForegroundColor = ConsoleColor.Blue; Console.WriteLine("!"); Console.ResetColor();
             }
-            
-            
+
 
             bool ov = true;
             ScuffedFile scuffedFile = new ScuffedFile(ScuffedConfig.SWFilePath);
@@ -72,28 +75,37 @@ namespace ScuffedWalls
                 if (File.GetLastWriteTime(ScuffedConfig.SWFilePath) > lastModifiedTime || ov)
                 {
                     scuffedFile.Refresh(); ov = false;
-                    ConsoleLogger.ScuffedFileParser.Log("ScuffedWall File Parsed");
+                    ScuffedLogger.ScuffedFileParser.Log("ScuffedWall File Parsed");
                     lastModifiedTime = File.GetLastWriteTime(ScuffedConfig.SWFilePath);
                     List<Workspace> workspaces = new List<Workspace>();
-                    
-                    for(int i = 0; i < scuffedFile.SWFileLines.Length; i++)
+
+                    for (int i = 0; i < scuffedFile.SWFileLines.Length; i++)
                     {
                         if (scuffedFile.SWFileLines[i].ToLower().StartsWith("workspace"))
                         {
                             try
                             {
-                                Console.ForegroundColor = ConsoleColor.White; ConsoleLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}"); Console.ResetColor();
-                                workspaces.Add(NoodleFunctions.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), ScuffedConfig.MapFolderPath, workspaces.ToArray()).toWorkspace());
+                                rnb.Next(); ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}"); Console.ResetColor();
+                                workspaces.Add(FunctionParser.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), ScuffedConfig.MapFolderPath, workspaces.ToArray()).toWorkspace());
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 ConsoleErrorLogger.Log(e.InnerException.Message);
                             }
                         }
                     }
-                    
+
                     //write to json file
-                    Map.GenerateToJson(ScuffedConfig.MapFilePath, NoodleFunctions.toBeatMap(workspaces.ToArray()));
+                    BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
+                    Map.GenerateToJson(ScuffedConfig.MapFilePath, generate);
+
+                    rpc.currentMap = new MapObj() 
+                    { 
+                        Walls = generate._obstacles.Length, 
+                        Notes = generate._notes.Length,
+                        CustomEvents = generate._customData._customEvents.Length,
+                        MapName = new FileInfo(ScuffedConfig.MapFolderPath).Name
+                    };
 
                     //collect the trash
                     GC.Collect();
@@ -111,7 +123,6 @@ namespace ScuffedWalls
                     Console.ReadLine();
                     Environment.Exit(1);
                 }
-
 
                 // get beatmap option
                 DirectoryInfo mapFolder = new DirectoryInfo(args[0]);
@@ -142,9 +153,9 @@ namespace ScuffedWalls
 
                 return new Config() { SWFilePath = SWFilePath, MapFilePath = mapDataFiles[option].FullName, MapFolderPath = args[0], OldMapPath = OldMapPath, AutoImport = AutoImportMap };
             }
-            
+
         }
-        
+
 
     }
 
@@ -194,16 +205,6 @@ namespace ScuffedWalls
             }
             return lines.ToArray();
         }
-        
-    }
 
-    [Serializable]
-    public partial class Config
-    {
-        public string MapFolderPath { get; set; }
-        public string SWFilePath { get; set; }
-        public string MapFilePath { get; set; }
-        public string OldMapPath { get; set; }
-        public bool AutoImport { get; set; }
     }
 }
