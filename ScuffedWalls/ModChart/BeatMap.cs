@@ -110,7 +110,6 @@ namespace ModChart
                 public object _type { get; set; } //string
                 public Data _data { get; set; }
 
-                [Serializable]
                 public class Data
                 {
                     public object _track { get; set; } //string

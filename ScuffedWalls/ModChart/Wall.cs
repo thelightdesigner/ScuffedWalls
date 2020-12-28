@@ -9,7 +9,6 @@ namespace ModChart
 {
     static class NoodleWall
     {
-
         //creates a wall object
         public static BeatMap.Obstacle WallConstructor(float Time, float Duration, BeatMap.CustomData CustomData)
         {
@@ -44,8 +43,8 @@ namespace ModChart
         {
             return Convert.ToSingle(Wall._time.ToString());
         }
-        
-        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered,float spread, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
+
+        public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered, float spread, float alfa, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
         {
             Bitmap WallImageBitMap = new Bitmap(ImagePath, true);
             List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
@@ -56,7 +55,7 @@ namespace ModChart
             {
                 for (int x = 0; x < WallImageBitMap.Width; x++)
                 {
-                    if (!isBlackEmpty || ((WallImageBitMap.GetPixel(x, y).R + WallImageBitMap.GetPixel(x, y).G + WallImageBitMap.GetPixel(x, y).B > 10 )&& isBlackEmpty))
+                    if (!isBlackEmpty || (((WallImageBitMap.GetPixel(x, y).R + WallImageBitMap.GetPixel(x, y).G + WallImageBitMap.GetPixel(x, y).B > 10) && isBlackEmpty) && WallImageBitMap.GetPixel(x, y).A > 10))
                     {
                         //position
                         object[][] defPos = null;
@@ -97,7 +96,7 @@ namespace ModChart
                             };
                         }
 
-                        object[] color = { Convert.ToSingle(WallImageBitMap.GetPixel(x, y).R) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).G) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).B) / 255f, 1 };
+                        object[] color = { Convert.ToSingle(WallImageBitMap.GetPixel(x, y).R) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).G) / 255f, Convert.ToSingle(WallImageBitMap.GetPixel(x, y).B) / 255f, alfa };
                         if (customData._color != null) color = customData._color;
 
                         Walls.Add(WallAppend(new BeatMap.Obstacle()
@@ -155,7 +154,7 @@ namespace ModChart
                     scaleN.Add(new object[] { cube.Scale[0].X / cube.Scale[0].X, cube.Scale[0].Y / cube.Scale[0].Y, cube.Scale[0].Z / cube.Scale[0].Z, 1 });
                 }
                 object[] color = null;
-                if (cube.Color != null) color = new object[] { cube.Color.R,cube.Color.G,cube.Color.B,cube.Color.A };
+                if (cube.Color != null) color = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, cube.Color.A };
                 if (customData._color != null) color = customData._color;
 
                 walls.Add(WallAppend(new BeatMap.Obstacle()

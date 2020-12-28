@@ -40,10 +40,10 @@ namespace ScuffedWalls
                         }
                         catch
                         {
-                            ConsoleErrorLogger.ScuffedWorkspace.FunctionParser.Log($"Error parsing function \"{functionName}\" at beat {time}");
+                            throw new ScuffedException($"Error parsing function \"{functionName}\" at beat {time}");
                         }
                     }
-                    else ConsoleErrorLogger.ScuffedWorkspace.FunctionParser.Log($"Function \"{functionName}\" does not exist, Skipping");
+                    else throw new ScuffedException($"Function \"{functionName}\" does not exist, Skipping");
                 }
 
             }
@@ -54,7 +54,7 @@ namespace ScuffedWalls
         {
             string name = null;
             object[][] points = null;
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -82,7 +82,7 @@ namespace ScuffedWalls
             float startbeat = 0;
             float endbeat = 1000000;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -135,14 +135,14 @@ namespace ScuffedWalls
         {
             int repeatcount = 1;
             float repeatTime = 0;
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 if (p.parameter == "repeat") repeatcount = Convert.ToInt32(p.argument);
                 else if (p.parameter == "repeataddtime") repeatTime = Convert.ToSingle(p.argument);
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AnimateTrack", args.GetParameters().toUsableCustomData().CustomEventsDataParse()));
+                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AnimateTrack", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
             }
             ConsoleOut("AnimateTrack", repeatcount, time);
         }
@@ -151,27 +151,27 @@ namespace ScuffedWalls
         {
             int repeatcount = 1;
             float repeatTime = 0;
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 if (p.parameter == "repeat") repeatcount = Convert.ToInt32(p.argument);
                 else if (p.parameter == "repeataddtime") repeatTime = Convert.ToSingle(p.argument);
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AssignPathAnimation", args.GetParameters().toUsableCustomData().CustomEventsDataParse()));
+                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AssignPathAnimation", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
             }
             ConsoleOut("AssignPathAnimation", repeatcount, time);
         }
 
         public void assignplayertotrack(string[] args, float time)
         {
-            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignPlayerToTrack", args.GetParameters().toUsableCustomData().CustomEventsDataParse()));
+            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignPlayerToTrack", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
             ConsoleOut("AssignPlayerToTrack", 1, time);
         }
 
         public void parenttrack(string[] args, float time)
         {
-            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignTrackParent", args.GetParameters().toUsableCustomData().CustomEventsDataParse()));
+            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignTrackParent", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
             ConsoleOut("AssignTrackParent", 1, time);
         }
 
@@ -183,7 +183,7 @@ namespace ScuffedWalls
             int type = 1;
             int cutdirection = 1;
             //parse special parameters
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -203,7 +203,7 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                Notes.Add(NoodleNote.NoteConstructor(time + (i * repeatTime), type, cutdirection, args.GetParameters().toUsableCustomData().CustomDataParse()));
+                Notes.Add(NoodleNote.NoteConstructor(time + (i * repeatTime), type, cutdirection, args.TryGetParameters().toUsableCustomData().CustomDataParse()));
             }
             ConsoleOut("Note", repeatcount, time);
         }
@@ -213,7 +213,7 @@ namespace ScuffedWalls
             int repeatcount = 1;
             float repeatTime = 0;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -230,7 +230,7 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                Walls.Add(NoodleWall.WallConstructor(time + (i * repeatTime), duration, args.GetParameters().toUsableCustomData().CustomDataParse()));
+                Walls.Add(NoodleWall.WallConstructor(time + (i * repeatTime), duration, args.TryGetParameters().toUsableCustomData().CustomDataParse()));
             }
 
             ConsoleOut("Wall", repeatcount, time);
@@ -242,7 +242,7 @@ namespace ScuffedWalls
             float startbeat = 0;
             float endbeat = 1000000;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -300,7 +300,7 @@ namespace ScuffedWalls
             float duration = 1;
             float smooth = 0;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -322,7 +322,7 @@ namespace ScuffedWalls
                 }
             }
 
-            BeatMap.Obstacle[] model = NoodleWall.Model2Wall(Path, smooth, hasanimation, args.GetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration });
+            BeatMap.Obstacle[] model = NoodleWall.Model2Wall(Path, smooth, hasanimation, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration });
             Walls.AddRange(model);
             ConsoleOut("Wall", model.Length, time);
         }
@@ -334,10 +334,11 @@ namespace ScuffedWalls
             bool isBlackEmpty = false;
             bool centered = false;
             float size = 1;
+            float alpha = 1;
             float thicc = 1;
             bool track = false;
             float spreadspawntime = 0;
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -356,6 +357,9 @@ namespace ScuffedWalls
                     case "size":
                         size = Convert.ToSingle(p.argument);
                         break;
+                    case "alpha":
+                        alpha = Convert.ToSingle(p.argument);
+                        break;
                     case "thicc":
                         thicc = Convert.ToSingle(p.argument);
                         break;
@@ -367,7 +371,7 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            BeatMap.Obstacle[] image = NoodleWall.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime, args.GetParameters().toUsableCustomData().CustomDataParse(), NoodleWall.WallConstructor(time, duration));
+            BeatMap.Obstacle[] image = NoodleWall.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime,alpha, args.TryGetParameters().toUsableCustomData().CustomDataParse(), NoodleWall.WallConstructor(time, duration));
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time);
         }
@@ -380,12 +384,12 @@ namespace ScuffedWalls
             float starttime = time;
             float endtime = time + 30;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 if (p.parameter == "appendtechnique") type = Convert.ToInt32(p.argument);
                 else if (p.parameter == "tobeat") endtime = Convert.ToSingle(p.argument); b = true;
             }
-            if (!b) ConsoleErrorLogger.ScuffedWorkspace.FunctionParser.Log($"missing \"ToBeat\" parameter -> AppendToAllWallsBetween at beat {time}");
+            if (!b) throw new ScuffedException($"missing \"ToBeat\" parameter -> AppendToAllWallsBetween at beat {time}");
 
             int i = 0;
             List<BeatMap.Obstacle> ApendedWalls = new List<BeatMap.Obstacle>();
@@ -393,7 +397,7 @@ namespace ScuffedWalls
             {
                 if (Convert.ToSingle(wall._time.ToString()) >= starttime && Convert.ToSingle(wall._time.ToString()) <= endtime)
                 {
-                    ApendedWalls.Add(NoodleWall.WallAppend(wall, args.GetParameters().toUsableCustomData().CustomDataParse(), type));
+                    ApendedWalls.Add(NoodleWall.WallAppend(wall, args.TryGetParameters().toUsableCustomData().CustomDataParse(), type));
                     i++;
                 }
                 else
@@ -415,7 +419,7 @@ namespace ScuffedWalls
             float endtime = time + 30;
             int notecolor = 3;
 
-            foreach (var p in args.GetParameters())
+            foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
@@ -432,7 +436,7 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            if (!b) ConsoleErrorLogger.ScuffedWorkspace.FunctionParser.Log($"missing \"ToBeat\" parameter -> AppendToAllNotesBetween at beat {time}");
+            if (!b) throw new ScuffedException($"missing \"ToBeat\" parameter -> AppendToAllNotesBetween at beat {time}");
 
             List<BeatMap.Note> ApendedNotes = new List<BeatMap.Note>();
             int i = 0;
@@ -440,7 +444,7 @@ namespace ScuffedWalls
             {
                 if ((Convert.ToSingle(note._time.ToString()) >= starttime && Convert.ToSingle(note._time.ToString()) <= endtime) && (notecolor == 3 || Convert.ToInt32(note._type.ToString()) == notecolor))
                 {
-                    ApendedNotes.Add(NoodleNote.NoteAppend(note, args.GetParameters().toUsableCustomData().CustomDataParse(), type));
+                    ApendedNotes.Add(NoodleNote.NoteAppend(note, args.TryGetParameters().toUsableCustomData().CustomDataParse(), type));
                     i++;
                 }
                 else

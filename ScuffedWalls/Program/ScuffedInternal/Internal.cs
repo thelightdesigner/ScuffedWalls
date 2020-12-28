@@ -32,22 +32,31 @@ namespace ScuffedWalls
             }
             return false;
         }
-        static public Parameter[] GetParameters(this string[] args)
+        static public Parameter[] TryGetParameters(this string[] args)
         {
             List<Parameter> parameters = new List<Parameter>();
             foreach (var line in args)
             {
-                if (line.Split(':', 2).Length < 2) ConsoleErrorLogger.ScuffedWorkspace.FunctionParser.Log("Missing Colon");
-                string parameter = line.Split(':', 2)[0].ToLower();
-                string argument = line.Split(':', 2)[1];
-                while (argument.Contains("Random("))
+                try
                 {
-                    Random rnd = new Random();
-                    string[] asplit = argument.Split("Random(", 2);
-                    string[] randomparam = asplit[1].Split(',');
-                    argument = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0])*100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0])*100f) + 1) ))/100f) + asplit[1].Split(')', 2)[1];
+                    string parameter = line.Split(':', 2)[0].ToLower();
+                    string argument = line.Split(':', 2)[1];
+                    while (argument.Contains("Random("))
+                    {
+                        Random rnd = new Random();
+                        string[] asplit = argument.Split("Random(", 2);
+                        string[] randomparam = asplit[1].Split(',');
+                        argument = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0]) * 100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0]) * 100f) + 1))) / 100f) + asplit[1].Split(')', 2)[1];
+                        
+                    }
+                    parameters.Add(new Parameter { parameter = parameter, argument = argument });
                 }
-                parameters.Add(new Parameter { parameter = parameter, argument = argument });
+                catch(Exception e)
+                {
+                    if (e is IndexOutOfRangeException) throw new ScuffedException($"Error parsing \"{line}\", Missing Colon?");
+                    else throw new ScuffedException($"Error parsing line\"{line}\"");
+                }
+                
             }
 
             return parameters.ToArray();
