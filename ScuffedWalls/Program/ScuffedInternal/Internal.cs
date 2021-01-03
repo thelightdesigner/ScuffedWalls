@@ -1,9 +1,8 @@
 ﻿using ModChart;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 using System.Text.Json;
 
 namespace ScuffedWalls
@@ -23,6 +22,14 @@ namespace ScuffedWalls
         public static T[] GetAllBetween<T>(this T[] mapObjects, float starttime, float endtime)
         {
             return mapObjects.Where(obj => (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) >= starttime) && (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) <= endtime)).ToArray();
+        }
+        static public bool MethodExists<t>(this string methodname, Type attribute)
+        {
+            foreach (var methods in typeof(t).GetMethods().Where(m => m.GetCustomAttributes(attribute).Count() > 0))
+            {
+                if (methods.Name == methodname) return true;
+            }
+            return false;
         }
         static public bool MethodExists<t>(this string methodname)
         {
@@ -47,21 +54,32 @@ namespace ScuffedWalls
                         string[] asplit = argument.Split("Random(", 2);
                         string[] randomparam = asplit[1].Split(',');
                         argument = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0]) * 100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0]) * 100f) + 1))) / 100f) + asplit[1].Split(')', 2)[1];
-                        
+
                     }
                     parameters.Add(new Parameter { parameter = parameter, argument = argument });
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     if (e is IndexOutOfRangeException) throw new ScuffedException($"Error parsing \"{line}\", Missing Colon?");
                     else throw new ScuffedException($"Error parsing line\"{line}\"");
                 }
-                
+
             }
 
             return parameters.ToArray();
         }
-
+        public static int getCountByID(this int type)
+        {
+            if (type == 0 || type == 2 || type == 3) return 5;
+            else if (type == 1) return 15;
+            else if (type == 4) return 9;
+            return 0;
+        }
+        public static int getValueFromOld(this int value)
+        {
+            if (value == 0) return 0;
+            return 1;
+        }
         public static T DeepClone<T>(this T a)
         {
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(a));
@@ -123,8 +141,37 @@ namespace ScuffedWalls
 
                 else if (_customObjectSplit[0] == "NoSpawnEffect".ToLower()) CustomData._disableSpawnEffect = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
+                else if (_customObjectSplit[0] == "PropID".ToLower()) CustomData._propID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                CustomData._animation = Animation;
+                else if (_customObjectSplit[0] == "LightID".ToLower()) CustomData._lightID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "duration".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._duration = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+
+                else if (_customObjectSplit[0] == "StartColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._startColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+
+                else if (_customObjectSplit[0] == "EndColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._endColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+
+                else if (_customObjectSplit[0] == "easing".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._easing = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\""); }
+
+                else if (_customObjectSplit[0] == "LockPosition".ToLower()) CustomData._lockPosition = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "PreciseSpeed".ToLower()) CustomData._preciseSpeed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "direction".ToLower()) CustomData._direction = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "NameFilter".ToLower()) CustomData._nameFilter = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\"");
+
+                else if (_customObjectSplit[0] == "reset".ToLower()) CustomData._reset = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "step".ToLower()) CustomData._step = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "prop".ToLower()) CustomData._prop = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "speed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                else if (_customObjectSplit[0] == "CounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+
+                if (typeof(BeatMap.CustomData.Animation).GetProperties().Any(p => p.GetValue(Animation) != null)) CustomData._animation = Animation;
 
             }
 

@@ -183,4 +183,10 @@ namespace ModChart
             File.WriteAllText(MapOutputFileLocation, JsonSerializer.Serialize(beatMap, jso));
         }
     }
+    public enum AppendTechnique
+    {
+        NoOverwrites,
+        Overwrites,
+        ReWrites
+    }
 }

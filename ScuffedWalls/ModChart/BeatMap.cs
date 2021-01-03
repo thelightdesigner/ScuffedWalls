@@ -43,7 +43,6 @@ namespace ModChart
             //noodle
             public object _time { get; set; } //float
             public object _track { get; set; } //string
-            public object _disableSpawnEffect { get; set; } //bool
             public object _cutDirection { get; set; } //int
             public object _noteJumpStartBeatOffset { get; set; } //float
             public object _noteJumpMovementSpeed { get; set; } //float
@@ -74,9 +73,6 @@ namespace ModChart
             public object _propID { get; set; } // int
             public object _lightID { get; set; } // int
             public object _duration { get; set; } //float
-            public object _easing { get; set; } //float
-            public object[] _startColor { get; set; } //float
-            public object[] _endColor { get; set; } //float
             public object[] _color { get; set; }
             public object _lockPosition { get; set; } //bool
             public object _preciseSpeed { get; set; } //float
@@ -86,10 +82,19 @@ namespace ModChart
             public object _step { get; set; } //float
             public object _prop { get; set; } //float
             public object _speed { get; set; } //float
+            public object _disableSpawnEffect { get; set; } //bool
             public object _counterSpin { get; set; } //bool
             public object _stepMult { get; set; } //float
             public object _propMult { get; set; } //float
             public object _speedMult { get; set; } //float
+            public LightGradient _lightGradient { get; set; }
+            public class LightGradient
+            {
+                public object _duration { get; set; }
+                public object _startColor { get; set; }
+                public object _endColor { get; set; }
+                public object _easing { get; set; }
+            }
 
 
             //extra custom data

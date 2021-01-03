@@ -17,6 +17,7 @@ namespace ScuffedWalls
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             this.args = args;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
+            Console.WriteLine($"{AppDomain.CurrentDomain.BaseDirectory} ScuffedWalls.json");
             ScuffedConfig = GetConfig();
         }
 

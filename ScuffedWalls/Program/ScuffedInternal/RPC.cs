@@ -30,12 +30,12 @@ namespace ScuffedWalls
         }
         async Task autoUpdateRPC()
         {
-            while (this.currentMap == null) await Task.Delay(20);
+            while (currentMap == null) await Task.Delay(20);
             while(true)
             {
                 for(int i = 0; i < 3; i++)
                 {
-                    this.refresh(currentMap.MapName, currentMap,(MapObj.MapObjs)i);
+                    refresh(currentMap.MapName, currentMap,(MapObj.MapObjs)i);
                     await Task.Delay(5000);
                 }
             }

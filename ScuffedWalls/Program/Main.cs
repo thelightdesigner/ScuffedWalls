@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v0.4.1";
+        public static string ver = "v0.5.0-beta";
         static void Main(string[] args)
         {
 
@@ -23,6 +24,7 @@ namespace ScuffedWalls
             startup.VerifySW();
 
             ScuffedFile scuffedFile = new ScuffedFile(ScuffedConfig.SWFilePath);
+
 
             ScuffedLogger.Log(ScuffedConfig.MapFolderPath);
             //loop through 

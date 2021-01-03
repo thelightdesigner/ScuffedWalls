@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Xml;
 using System.Xml.Serialization;
@@ -108,6 +109,10 @@ namespace ModChart
         }
 
     }
+    public class MeshPoint
+    {
+        public Vector3 Pos;
+    }
     public class Cube
     {
         public Vector3[] Position;
@@ -184,7 +189,7 @@ namespace ModChart
     {
         public static float[] toFloatArray(this string values)
         {
-            return Array.ConvertAll(values.Split(' '), item => Convert.ToSingle(item));
+            return values.Split(' ').Select(item => { return Convert.ToSingle(item); }).ToArray();
         }
         public static List<float> toListWithSize(this float floatA, int count)
         {
