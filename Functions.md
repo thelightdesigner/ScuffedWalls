@@ -6,6 +6,7 @@
 - [`ImageToWall`](#ImageToWall)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
 - [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
+- [`AppendToAllEventsBetween`](#AppendToAllEventsBetween))
 - [`Import`](#Import)
 - [`Wall`](#Wall)
 - [`Note`](#Note)
@@ -52,6 +53,24 @@ generic customdata for customevents
 - parentTrack: string
 - easing: string
 
+## Chroma CustomData : CustomData
+ - PropID: int
+ - LightID: int
+ - duration: float
+ - StartColor: [r,g,b,a?]
+ - EndColor: [r,g,b,a?]
+ - easing: string
+ - LockPosition: bool
+ - PreciseSpeed: float
+ - direction: int
+ - NameFilter: string
+ - reset: bool
+ - step: float
+ - prop: float
+ - speed: float
+ - CounterSpin: bool
+ - Color: [r,g,b,a?]
+
 # ModelToWall
 constructs a definite model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
 
@@ -90,6 +109,19 @@ clones mapobjects from a different workspace by the index
 # Blackout
 adds a single light off event
 
+# AppendToAllEventsBetween
+adds on custom chroma data to events/lights between the function time and endtime
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - chroma customdata
+  lighttype: 0, 1, 2, 3; the type of the light
+ ~special things~
+ - converttoprops
+ - propfactor
+ - converttorainbow
+ - rainbowfactor
+
 # AppendToAllWallsBetween
 adds on custom noodle data to walls between the function time and endtime
 
@@ -101,7 +133,7 @@ adds on custom noodle data to walls between the function time and endtime
 adds on custom noodle data to notes between the function time and endtime
 
  - toBeat: float
- - NoteColor: red, blue, bomb
+ - NoteColor: red, blue, bomb, 1, 2, 3, 4; the type of the note
  - appendTechnique: int(0-2)
  - generic custom data
  
