@@ -37,15 +37,15 @@ namespace ModChart
             }
 
         }
-        public static float getTime(this BeatMap.Event Event)
+        public static float GetTime(this BeatMap.Event Event)
         {
             return Convert.ToSingle(Event._time.ToString());
         }
-        public static int getType(this BeatMap.Event Event)
+        public static int GetType(this BeatMap.Event Event)
         {
             return Convert.ToInt32(Event._type.ToString());
         }
-        public static int getValue(this BeatMap.Event Event)
+        public static int GetValue(this BeatMap.Event Event)
         {
             return Convert.ToInt32(Event._value.ToString());
         }

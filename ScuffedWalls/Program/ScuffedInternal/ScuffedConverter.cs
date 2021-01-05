@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ModChart;
 using System.Text;
+using System.Linq;
 
 namespace ScuffedWalls
 {
@@ -42,10 +43,10 @@ namespace ScuffedWalls
             return new BeatMap()
             {
                 _version = "2.0.0",
-                _notes = notes.ToArray(),
-                _obstacles = obstacles.ToArray(),
-                _events = events.ToArray(),
-                _customData = new BeatMap.CustomData() { _customEvents = customEvents.ToArray(), _pointDefinitions = pointDefinitions.ToArray() }
+                _notes = notes.ToArray().OrderBy(o =>  o.GetTime()).ToArray(),
+                _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToArray(),
+                _events = events.ToArray().OrderBy(o => o.GetTime()).ToArray(),
+                _customData = new BeatMap.CustomData() { _customEvents = customEvents.ToArray().OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = pointDefinitions.ToArray() }
             };
         }
         public static BeatMap toBeatMap(Workspace workspace)
@@ -53,10 +54,10 @@ namespace ScuffedWalls
             return new BeatMap()
             {
                 _version = "2.0.0",
-                _notes = workspace.Notes,
-                _obstacles = workspace.Walls,
-                _events = workspace.Lights,
-                _customData = new BeatMap.CustomData() { _customEvents = workspace.CustomEvents, _pointDefinitions = workspace.PointDefinitions}
+                _notes = workspace.Notes.OrderBy(o => o.GetTime()).ToArray(),
+                _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToArray(),
+                _events = workspace.Lights.OrderBy(o => o.GetTime()).ToArray(),
+                _customData = new BeatMap.CustomData() { _customEvents = workspace.CustomEvents.OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = workspace.PointDefinitions}
             };
         }
     }

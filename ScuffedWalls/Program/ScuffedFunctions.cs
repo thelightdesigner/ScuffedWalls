@@ -33,7 +33,7 @@ namespace ScuffedWalls
                 {
                     string functionName = args[i].Split(':')[1].Trim(' ').ToLower();
                     float time = Convert.ToSingle(args[i].Split(':')[0].Trim(' '));
-                    if (functionName.MethodExists<FunctionParser>(typeof(SFunction)))
+                    if (functionName.MethodExists<FunctionParser>())
                     {
                         try
                         {
@@ -83,15 +83,15 @@ namespace ScuffedWalls
                 int i = 0;
                 foreach (var light in Lights)
                 {
-                    if (light.getTime() >= starttime && light.getTime() <= endtime && lightypes.Any(t => t == light.getType()))
+                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == Event.GetType(light)))
                     {
                         ApendedEvents.Add(light.EventAppend(new BeatMap.CustomData()
                         {
                             _color = new object[]
                             {
-                            0.5f * Math.Sin(Math.PI * Rfactor * light.getTime()) + 0.5f,
-                            0.5f * Math.Sin((Math.PI * Rfactor * light.getTime()) - (Math.PI * (2f / 3f))) + 0.5f,
-                            0.5f * Math.Sin((Math.PI * Rfactor * light.getTime()) - (Math.PI * (4f / 3f))) + 0.5f,
+                            0.5f * Math.Sin(Math.PI * Rfactor * light.GetTime()) + 0.5f,
+                            0.5f * Math.Sin((Math.PI * Rfactor * light.GetTime()) - (Math.PI * (2f / 3f))) + 0.5f,
+                            0.5f * Math.Sin((Math.PI * Rfactor * light.GetTime()) - (Math.PI * (4f / 3f))) + 0.5f,
                             1
                             }
                         }, AppendTechnique.Overwrites));
@@ -113,16 +113,16 @@ namespace ScuffedWalls
                 int c = 0;
                 foreach (var light in Lights)
                 {
-                    if (light.getTime() >= starttime && light.getTime() <= endtime && lightypes.Any(t => t == light.getType()))
+                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == Event.GetType(light)))
                     {
                         int count = (Convert.ToInt32(light._type.ToString())).getCountByID();
                         for (int i = 0; i < count; i++)
                         {
                             newEvents.Add(new BeatMap.Event()
                             {
-                                _time = light.getTime() + Pfactor - (Convert.ToSingle(i) / (Pfactor * Convert.ToSingle(count))),
-                                _type = light.getType(),
-                                _value = light.getValue().getValueFromOld(),
+                                _time = light.GetTime() + Pfactor - (Convert.ToSingle(i) / (Pfactor * Convert.ToSingle(count))),
+                                _type = Event.GetType(light),
+                                _value = light.GetValue().getValueFromOld(),
                                 _customData = new BeatMap.CustomData()
                                 {
                                     _propID = i
@@ -146,7 +146,7 @@ namespace ScuffedWalls
                 int i = 0;
                 foreach (var light in Lights)
                 {
-                    if (Convert.ToSingle(light._time.ToString()) >= starttime && Convert.ToSingle(light._time.ToString()) <= endtime && lightypes.Any(t => t == light.getType()))
+                    if (Convert.ToSingle(light._time.ToString()) >= starttime && Convert.ToSingle(light._time.ToString()) <= endtime && lightypes.Any(t => t == Event.GetType(light)))
                     {
                         ApendedEvents.Add(light.EventAppend(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
                         i++;

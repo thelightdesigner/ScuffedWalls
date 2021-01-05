@@ -31,7 +31,7 @@ namespace ModChart
             return jsonFile._notes;
         }
 
-        public static float GetTime(BeatMap.Note Note)
+        public static float GetTime(this BeatMap.Note Note)
         {
             return Convert.ToSingle(Note._time.ToString());
         }

@@ -12,7 +12,7 @@ namespace ScuffedWalls
         public static string ver = "v0.5.0-beta";
         static void Main(string[] args)
         {
-
+            //args = new string[] { @"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\High Blocks Test Modchart" };
             ScuffedLogger.Log($"ScuffedWalls {ver}");
             Rainbow rnb = new Rainbow();
             RPC rpc = new RPC();
@@ -50,23 +50,22 @@ namespace ScuffedWalls
                             ConsoleErrorLogger.Log(e.Message);
                         }
                     }
-
-
-                    //write to json file
-                    BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
-                    Map.GenerateToJson(ScuffedConfig.MapFilePath, generate);
-
-                    rpc.currentMap = new MapObj()
-                    {
-                        Walls = generate._obstacles.Length,
-                        Notes = generate._notes.Length,
-                        CustomEvents = generate._customData._customEvents.Length,
-                        MapName = new FileInfo(ScuffedConfig.MapFolderPath).Name
-                    };
-
-                    //collect the trash
-                    GC.Collect();
                 }
+
+                //write to json file
+                BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
+                Map.GenerateToJson(ScuffedConfig.MapFilePath, generate);
+
+                rpc.currentMap = new MapObj()
+                {
+                    Walls = generate._obstacles.Length,
+                    Notes = generate._notes.Length,
+                    CustomEvents = generate._customData._customEvents.Length,
+                    MapName = new FileInfo(ScuffedConfig.MapFolderPath).Name
+                };
+
+                //collect the trash
+                GC.Collect();
 
             }
 

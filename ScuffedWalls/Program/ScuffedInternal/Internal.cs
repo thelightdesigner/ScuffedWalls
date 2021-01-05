@@ -78,7 +78,7 @@ namespace ScuffedWalls
         public static int getValueFromOld(this int value)
         {
             if (value == 0) return 0;
-            return 1;
+            return 5;
         }
         public static T DeepClone<T>(this T a)
         {
@@ -141,33 +141,33 @@ namespace ScuffedWalls
 
                 else if (_customObjectSplit[0] == "NoSpawnEffect".ToLower()) CustomData._disableSpawnEffect = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "PropID".ToLower()) CustomData._propID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "CPropID".ToLower()) CustomData._propID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "LightID".ToLower()) CustomData._lightID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "CLightID".ToLower()) CustomData._lightID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "duration".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._duration = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (_customObjectSplit[0] == "CgradientDuration".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._duration = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
 
-                else if (_customObjectSplit[0] == "StartColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._startColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (_customObjectSplit[0] == "CgradientStartColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._startColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
 
-                else if (_customObjectSplit[0] == "EndColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._endColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (_customObjectSplit[0] == "CgradientEndColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._endColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
 
-                else if (_customObjectSplit[0] == "easing".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._easing = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\""); }
+                else if (_customObjectSplit[0] == "CgradientEasing".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._easing = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\""); }
 
-                else if (_customObjectSplit[0] == "LockPosition".ToLower()) CustomData._lockPosition = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "CLockPosition".ToLower()) CustomData._lockPosition = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "PreciseSpeed".ToLower()) CustomData._preciseSpeed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "CPreciseSpeed".ToLower()) CustomData._preciseSpeed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "direction".ToLower()) CustomData._direction = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "Cdirection".ToLower()) CustomData._direction = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "NameFilter".ToLower()) CustomData._nameFilter = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\"");
+                else if (_customObjectSplit[0] == "CNameFilter".ToLower()) CustomData._nameFilter = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\"");
 
-                else if (_customObjectSplit[0] == "reset".ToLower()) CustomData._reset = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "Creset".ToLower()) CustomData._reset = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "step".ToLower()) CustomData._step = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "Cstep".ToLower()) CustomData._step = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "prop".ToLower()) CustomData._prop = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "Cprop".ToLower()) CustomData._prop = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "speed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "Cspeed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
                 else if (_customObjectSplit[0] == "CounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
