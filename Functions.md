@@ -6,7 +6,7 @@
 - [`ImageToWall`](#ImageToWall)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
 - [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
-- [`AppendToAllEventsBetween`](#AppendToAllEventsBetween))
+- [`AppendToAllEventsBetween`](#AppendToAllEventsBetween)
 - [`Import`](#Import)
 - [`Wall`](#Wall)
 - [`Note`](#Note)
