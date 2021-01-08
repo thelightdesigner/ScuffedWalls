@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
-namespace ModChart
+namespace ModChart.Note
 {
-    static class NoodleNote
+    static class Helper
     {
         //returns a note
         public static BeatMap.Note NoteConstructor(float Time, int Type, int cutDirection, BeatMap.CustomData CustomData)
@@ -40,17 +40,19 @@ namespace ModChart
             return Convert.ToSingle(Note._type.ToString());
         }
 
-        public static BeatMap.Note NoteAppend(BeatMap.Note CurrentNote, BeatMap.CustomData CustomData, int Type)
+        public static BeatMap.Note Append(this BeatMap.Note CurrentNote, BeatMap.CustomData CustomData,  AppendTechnique Type)
         {
+            CurrentNote._customData ??= new BeatMap.CustomData();
+            CurrentNote._customData._animation ??= new BeatMap.CustomData.Animation();
+            CustomData ??= new BeatMap.CustomData();
+            CustomData._animation ??= new BeatMap.CustomData.Animation();
+            PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
+            PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
+
             // append technique 0 adds on customdata only if there is no existing customdata
-            if (Type == 0)
+            if (Type == AppendTechnique.NoOverwrites)
             {
-                CurrentNote._customData ??= new BeatMap.CustomData();
-                CurrentNote._customData._animation ??= new BeatMap.CustomData.Animation();
-                CustomData ??= new BeatMap.CustomData();
-                CustomData._animation ??= new BeatMap.CustomData.Animation();
-                PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
-                PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
+                
 
                 foreach (PropertyInfo property in propertiesCustomData)
                 {
@@ -71,14 +73,8 @@ namespace ModChart
                 return CurrentNote;
             }
             // append technique 1 adds on customdata, overwrites
-            else if (Type == 1)
+            else if (Type == AppendTechnique.Overwrites)
             {
-                CurrentNote._customData ??= new BeatMap.CustomData();
-                CurrentNote._customData._animation ??= new BeatMap.CustomData.Animation();
-                CustomData ??= new BeatMap.CustomData();
-                CustomData._animation ??= new BeatMap.CustomData.Animation();
-                PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
-                PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
 
                 foreach (PropertyInfo property in propertiesCustomData)
                 {
@@ -101,7 +97,6 @@ namespace ModChart
             // append technique 2 completely replaces the customdata
             else
             {
-                CurrentNote._customData ??= new BeatMap.CustomData();
                 CurrentNote._customData = CustomData;
                 return CurrentNote;
             }

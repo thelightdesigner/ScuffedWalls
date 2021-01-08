@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using ModChart;
-using System.Text;
+using ModChart.Note;
+using ModChart.Event;
+using ModChart.Wall;
 using System.Linq;
 
 namespace ScuffedWalls

@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ModChart
+namespace ModChart.Wall
 {
     class Model
     {
@@ -122,10 +122,19 @@ namespace ModChart
     }
     public class Color
     {
-        public float R;
-        public float G;
-        public float B;
-        public float A;
+        public float R { get; set; }
+        public float G { get; set; }
+        public float B { get; set; }
+        public float A { get; set; }
+        public bool Equals(Color color, float tolerance)
+        {
+            if (color == null) return false;
+            if (Math.Abs(color.R - R) > tolerance) return false;
+            if (Math.Abs(color.G - G) > tolerance) return false;
+            if (Math.Abs(color.B - B) > tolerance) return false;
+            if (Math.Abs(color.A - A) > tolerance) return false;
+            return true;
+        }
     }
     public class Transformation
     {

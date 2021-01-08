@@ -1,4 +1,7 @@
 ﻿using ModChart;
+using ModChart.Event;
+using ModChart.Wall;
+using ModChart.Note;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +16,9 @@ namespace ScuffedWalls
         {
             MapFolderPath = mapfolderpath;
             Workspaces = workspaces;
+            var image = ImageConverter.Imag3ToWall(@"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test\SmileW.png", new ImageConverter.ImageSettings() { Wall = new BeatMap.Obstacle() { _time = 10, _duration = 1 } });
+            Walls.AddRange(image);
+            ConsoleOut("Wall", image.Length, 10);
         }
         private Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
@@ -83,7 +89,7 @@ namespace ScuffedWalls
                 int i = 0;
                 foreach (var light in Lights)
                 {
-                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == Event.GetType(light)))
+                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == light.GetEventType()))
                     {
                         ApendedEvents.Add(light.EventAppend(new BeatMap.CustomData()
                         {
@@ -113,7 +119,7 @@ namespace ScuffedWalls
                 int c = 0;
                 foreach (var light in Lights)
                 {
-                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == Event.GetType(light)))
+                    if (light.GetTime() >= starttime && light.GetTime() <= endtime && lightypes.Any(t => t == light.GetEventType()))
                     {
                         int count = (Convert.ToInt32(light._type.ToString())).getCountByID();
                         for (int i = 0; i < count; i++)
@@ -121,7 +127,7 @@ namespace ScuffedWalls
                             newEvents.Add(new BeatMap.Event()
                             {
                                 _time = light.GetTime() + Pfactor - (Convert.ToSingle(i) / (Pfactor * Convert.ToSingle(count))),
-                                _type = Event.GetType(light),
+                                _type = light.GetEventType(),
                                 _value = light.GetValue().getValueFromOld(),
                                 _customData = new BeatMap.CustomData()
                                 {
@@ -146,7 +152,7 @@ namespace ScuffedWalls
                 int i = 0;
                 foreach (var light in Lights)
                 {
-                    if (Convert.ToSingle(light._time.ToString()) >= starttime && Convert.ToSingle(light._time.ToString()) <= endtime && lightypes.Any(t => t == Event.GetType(light)))
+                    if (Convert.ToSingle(light._time.ToString()) >= starttime && Convert.ToSingle(light._time.ToString()) <= endtime && lightypes.Any(t => t == light.GetEventType()))
                     {
                         ApendedEvents.Add(light.EventAppend(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
                         i++;
@@ -263,7 +269,12 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AnimateTrack", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
+                CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+                {
+                    _time = time + (i * repeatTime),
+                    _type = "AnimateTrack",
+                    _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                });
             }
             ConsoleOut("AnimateTrack", repeatcount, time);
         }
@@ -279,20 +290,36 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time + (i * repeatTime), "AssignPathAnimation", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
+                CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+                {
+                    _time = time + (i * repeatTime),
+                    _type = "AssignPathAnimation",
+                    _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                });
             }
             ConsoleOut("AssignPathAnimation", repeatcount, time);
         }
         [SFunction]
         public void assignplayertotrack(string[] args, float time)
         {
-            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignPlayerToTrack", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
+            
+            CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+            {
+                _time = time,
+                _type = "AssignPlayerToTrack",
+                _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+            });
             ConsoleOut("AssignPlayerToTrack", 1, time);
         }
         [SFunction]
         public void parenttrack(string[] args, float time)
         {
-            CustomEvents.Add(NoodleCustomEvents.CustomEventConstructor(time, "AssignTrackParent", args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()));
+            CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+            {
+                _time = time,
+                _type = "AssignTrackParent",
+                _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+            });
             ConsoleOut("AssignTrackParent", 1, time);
         }
 
@@ -324,7 +351,15 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                Notes.Add(NoodleNote.NoteConstructor(time + (i * repeatTime), type, cutdirection, args.TryGetParameters().toUsableCustomData().CustomDataParse()));
+                Notes.Add(new BeatMap.Note()
+                {
+                    _time = time + (i * repeatTime),
+                    _lineIndex = 0,
+                    _lineLayer =0,
+                    _cutDirection = cutdirection,
+                    _type = type,
+                    _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                });
             }
             ConsoleOut("Note", repeatcount, time);
         }
@@ -352,7 +387,15 @@ namespace ScuffedWalls
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                Walls.Add(NoodleWall.WallConstructor(time + (i * repeatTime), duration, args.TryGetParameters().toUsableCustomData().CustomDataParse()));
+                Walls.Add(new BeatMap.Obstacle()
+                {
+                    _time = time + (i * repeatTime),
+                    _duration = duration,
+                    _lineIndex = 0,
+                    _width = 0,
+                    _type = 0,
+                    _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                }) ;
             }
 
             ConsoleOut("Wall", repeatcount, time);
@@ -388,6 +431,7 @@ namespace ScuffedWalls
             }
 
             BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path));
+            beatMap._customData ??= new BeatMap.CustomData();
             beatMap._customData._customEvents ??= new BeatMap.CustomData.CustomEvents[] { };
             switch (Type)
             {
@@ -450,10 +494,12 @@ namespace ScuffedWalls
                 }
             }
 
-            BeatMap.Obstacle[] model = NoodleWall.Model2Wall(Path, smooth, normal, hasanimation, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration });
+            BeatMap.Obstacle[] model = ModelConvert.Model2Wall(Path, smooth, normal, hasanimation, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration });
             Walls.AddRange(model);
             ConsoleOut("Wall", model.Length, time);
         }
+
+
         [SFunction]
         public void imagetowall(string[] args, float time)
         {
@@ -499,7 +545,7 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            BeatMap.Obstacle[] image = NoodleWall.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime, alpha, args.TryGetParameters().toUsableCustomData().CustomDataParse(), NoodleWall.WallConstructor(time, duration));
+            BeatMap.Obstacle[] image = ImageConverter.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime, alpha, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration});
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time);
         }
@@ -526,7 +572,7 @@ namespace ScuffedWalls
             {
                 if (Convert.ToSingle(wall._time.ToString()) >= starttime && Convert.ToSingle(wall._time.ToString()) <= endtime)
                 {
-                    ApendedWalls.Add(NoodleWall.WallAppend(wall, args.TryGetParameters().toUsableCustomData().CustomDataParse(), type));
+                    ApendedWalls.Add(wall.Append(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
                     i++;
                 }
                 else
@@ -575,7 +621,7 @@ namespace ScuffedWalls
             {
                 if ((Convert.ToSingle(note._time.ToString()) >= starttime && Convert.ToSingle(note._time.ToString()) <= endtime) && notetype.Any(t => t == Convert.ToInt32(note._type.ToString())))
                 {
-                    ApendedNotes.Add(NoodleNote.NoteAppend(note, args.TryGetParameters().toUsableCustomData().CustomDataParse(), type));
+                    ApendedNotes.Add(note.Append( args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
                     i++;
                 }
                 else

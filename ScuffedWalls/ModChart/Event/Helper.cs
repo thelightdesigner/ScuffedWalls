@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 
-namespace ModChart
+namespace ModChart.Event
 {
-    static class Event
+    static class Helper
     {
         public static BeatMap.Event EventAppend(this BeatMap.Event CurrentEvent, BeatMap.CustomData CustomData, AppendTechnique Type)
         {
@@ -41,7 +41,7 @@ namespace ModChart
         {
             return Convert.ToSingle(Event._time.ToString());
         }
-        public static int GetType(this BeatMap.Event Event)
+        public static int GetEventType(this BeatMap.Event Event)
         {
             return Convert.ToInt32(Event._type.ToString());
         }
