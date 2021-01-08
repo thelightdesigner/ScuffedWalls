@@ -54,21 +54,21 @@ generic customdata for customevents
 - easing: string
 
 ## Chroma CustomData : CustomData
- - PropID: int
- - LightID: int
- - duration: float
- - StartColor: [r,g,b,a?]
- - EndColor: [r,g,b,a?]
- - easing: string
- - LockPosition: bool
- - PreciseSpeed: float
- - direction: int
- - NameFilter: string
- - reset: bool
- - step: float
- - prop: float
- - speed: float
- - CounterSpin: bool
+ - CPropID: int
+ - CLightID: int
+ - CGradientDuration: float
+ - CgradientStartColor: [r,g,b,a?]
+ - CgradientEndColor: [r,g,b,a?]
+ - CgradientEasing: string
+ - CLockPosition: bool
+ - CPreciseSpeed: float
+ - CDirection: int
+ - CNameFilter: string
+ - CReset: bool
+ - CStep: float
+ - CProp: float
+ - CSpeed: float
+ - CCounterSpin: bool
  - Color: [r,g,b,a?]
 
 # ModelToWall
