@@ -11,19 +11,122 @@ namespace ModChart.Wall
         public class ImageSettings
         {
             public ImageSettings(bool isBlackEmpty, float scale, float thicc, bool track, bool centered, float spread, float alfa, BeatMap.Obstacle baseWall)
-            { this.isBlackEmpty = isBlackEmpty; this.scale = scale; this.thicc = thicc; this.centered = centered; this.spread = spread; this.alfa = alfa; this.Wall = baseWall; }
+            {
+                this.isBlackEmpty = isBlackEmpty;
+                this.scale = scale;
+                this.thicc = thicc;
+                this.centered = centered;
+                this.spread = spread;
+                this.alfa = alfa;
+                this.Wall = baseWall;
+            }
             public ImageSettings() { }
 
 
-            public bool isBlackEmpty; public float scale; public float thicc; public bool track; public bool centered; public float spread; public float alfa; public BeatMap.Obstacle Wall;
+            public bool isBlackEmpty { get; set; }
+            public float scale { get; set; }
+            public float thicc { get; set; }
+            public bool track { get; set; }
+            public bool centered { get; set; }
+            public float spread { get; set; }
+            public float alfa { get; set; }
+            public float tolerance { get; set; }
+            public BeatMap.Obstacle Wall { get; set; }
         }
         public static BeatMap.Obstacle[] Imag3ToWall(string ImagePath, ImageSettings settings)
         {
-            Bitmap Image = new Bitmap(ImagePath);
-            Pixel[] FactoredPixels = Pixel.Analyze(Image,0.05f);
-            return FactoredPixels.Select(p => { return p.toWall(settings); }).ToArray();
-        }
+            Bitmap bitmap = new Bitmap(ImagePath);
+            Pixel[] Pixels = Pixel.Analyze(bitmap, settings.tolerance);
+            Random rnd = new Random();
+            List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
+            settings.Wall._customData ??= new BeatMap.CustomData();
+            settings.Wall._customData._animation ??= new BeatMap.CustomData.Animation();
+            int i = 0;
+            foreach (var pixel in Pixels)
+            {
+                if (settings.isBlackEmpty && pixel.Color.isBlackOrEmpty(0.01f)) continue;
 
+                //thicc controller
+                float ThisThiccX = settings.thicc * (pixel.Width.toFloat() * settings.scale);
+                float ThisThiccY = settings.thicc * (pixel.Height.toFloat() * settings.scale);
+
+                //position
+                object[][] defPos = null;
+                object[] pos = null;
+
+                //color
+                object[] color = null;
+
+                //scale
+                object[] scale = null;
+                object[][] animatescale = null;
+
+                color = pixel.Color.ToObjArray(settings.alfa);
+                if (settings.Wall._customData._color != null) color = settings.Wall._customData._color;
+
+                if (!settings.track)
+                {
+                    settings.Wall._customData._animation._definitePosition ??= new object[][] { new object[] { 0, 0, 0, 0 }, new object[] { 0, 0, 0, 1 } };
+                    List<object[]> DefPos = new List<object[]>();
+                    foreach (var defposset in settings.Wall._customData._animation._definitePosition)
+                    {
+                        float X = (pixel.StartPos.toFloat() * settings.scale) + Convert.ToSingle(defposset[0].ToString());
+                        if (settings.centered) X = (((settings.scale * pixel.StartPos.toFloat()) - ((settings.scale * bitmap.Width.toFloat()) / 2f)) + 2);
+
+                        List<object> points = new List<object>();
+                        points.AddRange(new object[]
+                        {
+                            X + (((pixel.Width.toFloat() * settings.scale)/2f)-(((pixel.Width.toFloat() * settings.scale)/ThisThiccX)/2f)),
+                            (pixel.Layer.toFloat()*settings.scale) + Convert.ToSingle(defposset[1].ToString()),
+                            Convert.ToSingle(defposset[2].ToString()),
+                            Convert.ToSingle(defposset[3].ToString())
+                        });
+
+                        if (defposset.Length > 4) points.Add(defposset[4]);
+
+                        DefPos.Add(points.ToArray());
+                    }
+                    defPos = DefPos.ToArray();
+                }
+                else
+                {
+                    settings.Wall._customData._position ??= new object[] { 0, 0 };
+                    float X = (pixel.StartPos.toFloat() * settings.scale) + Convert.ToSingle(settings.Wall._customData._position[0].ToString());
+                    if (settings.centered) X = (((settings.scale * pixel.StartPos.toFloat()) - ((settings.scale * bitmap.Width.toFloat()) / 2f)));
+
+                    pos = new object[]
+                    {
+                        X+ (((pixel.Width.toFloat() * settings.scale)/2f)-(((pixel.Width.toFloat() * settings.scale)/ThisThiccX)/2f)),
+                        (pixel.Layer.toFloat()*settings.scale) + Convert.ToSingle(settings.Wall._customData._position[1].ToString())
+                    };
+                }
+                scale = new object[] { (pixel.Width.toFloat() * settings.scale) / ThisThiccX, (pixel.Height.toFloat() * settings.scale) / ThisThiccY, settings.scale };
+                animatescale = new object[][] { new object[] { ThisThiccX, ThisThiccY, 1, 0 }, new object[] { ThisThiccX, ThisThiccY, 1, 1 } };
+
+                Walls.Add(new BeatMap.Obstacle()
+                {
+                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.spread,
+                    _duration = settings.Wall._duration,
+                    _lineIndex = 0,
+                    _type = 0,
+                    _width = 0,
+                    _customData = new BeatMap.CustomData()
+                    {
+                        _color = color,
+                        _position = pos,
+                        _scale = scale,
+                        _animation = new BeatMap.CustomData.Animation()
+                        {
+                            _definitePosition = defPos
+                           // _scale = animatescale
+                        }
+                    }
+                }.Append(settings.Wall._customData, 0)); //no overwrites
+                //Console.WriteLine($"{i}");
+                i++;
+            }
+            return Walls.ToArray();
+        }
         private class Pixel
         {
             public int StartPos { get; set; }
@@ -38,23 +141,6 @@ namespace ModChart.Wall
             public void addHeight()
             {
                 Height++;
-            }
-            public BeatMap.Obstacle toWall(ImageSettings imageSettings)
-            {
-                return new BeatMap.Obstacle()
-                {
-                    _time = imageSettings.Wall._time.,
-                    _type = 0,
-                    _lineIndex = 0,
-                    _duration = imageSettings.Wall._duration,
-                    _width = 0,
-                    _customData = new BeatMap.CustomData()
-                    {
-                        _color = new object[] { Color.R, Color.G, Color.B, 1 },
-                        _scale = new object[] { Width, Height, 1 },
-                        _position = new object[] { StartPos, Layer }
-                    }
-                };
             }
             public Pixel flipVertical(int imageHeight)
             {
@@ -72,8 +158,6 @@ namespace ModChart.Wall
             }
             public bool Equals(Pixel otherpixel, float tolerance)
             {
-                //if (StartPos != otherpixel.StartPos) return false; //these are kind of redundant
-                //if (Layer - otherpixel.Layer > 1) return false;
                 if (otherpixel == null) return false;
                 if (!Color.Equals(otherpixel.Color, tolerance)) return false;
                 if (Width != otherpixel.Width) return false;
@@ -97,6 +181,7 @@ namespace ModChart.Wall
                             if (CurrentPixel != null) pixels.Add(CurrentPixel.DeepClone());
                             CurrentPixel = new Pixel() { Color = GetCurrent(x, y), Height = 1, Layer = y, StartPos = x, Width = 1 };
                         }
+                        // Console.WriteLine($"{x},{y}");
                     }
                 }
                 if (CurrentPixel != null) pixels.Add(CurrentPixel.DeepClone());
@@ -106,7 +191,7 @@ namespace ModChart.Wall
                 List<Pixel> factoredPixels = new List<Pixel>();
 
                 //0,0 at bottom left 
-                
+
                 for (int x = 0; x < WallImageBitMap.Width; x++)
                 {
                     for (int y = 0; y < WallImageBitMap.Height; y++)
@@ -120,10 +205,12 @@ namespace ModChart.Wall
                             if (CurrentPixel != null) factoredPixels.Add(CurrentPixel.DeepClone());
                             CurrentPixel = getCurrent(pixels.ToArray(), x, y);
                         }
+                        // Console.WriteLine($"{x},{y}");
                     }
                 }
-                
-             //   return pixels.ToArray();
+                if (CurrentPixel != null) factoredPixels.Add(CurrentPixel.DeepClone());
+
+                //   return pixels.ToArray();
                 return factoredPixels.ToArray();
 
                 Color GetLast(int x, int y)
@@ -153,7 +240,7 @@ namespace ModChart.Wall
 
 
 
-
+        /*
 
         //older version
         public static BeatMap.Obstacle[] Image2Wall(string ImagePath, bool isBlackEmpty, float scale, float thicc, bool track, bool centered, float spread, float alfa, BeatMap.CustomData customData, BeatMap.Obstacle baseWall)
@@ -236,6 +323,7 @@ namespace ModChart.Wall
             }
             return Walls.ToArray();
         }
+        */
     }
 
 }

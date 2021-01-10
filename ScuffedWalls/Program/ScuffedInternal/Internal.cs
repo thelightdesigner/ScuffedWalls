@@ -169,7 +169,7 @@ namespace ScuffedWalls
 
                 else if (_customObjectSplit[0] == "Cspeed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
-                else if (_customObjectSplit[0] == "CounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (_customObjectSplit[0] == "CCounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
 
                 if (typeof(BeatMap.CustomData.Animation).GetProperties().Any(p => p.GetValue(Animation) != null)) CustomData._animation = Animation;
 

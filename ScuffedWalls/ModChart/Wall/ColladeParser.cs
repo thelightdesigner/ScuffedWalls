@@ -135,6 +135,20 @@ namespace ModChart.Wall
             if (Math.Abs(color.A - A) > tolerance) return false;
             return true;
         }
+        public object[] ToObjArray()
+        {
+            return new object[] { R, G, B, A };
+        }
+        public object[] ToObjArray(float alpha)
+        {
+            return new object[] { R, G, B, alpha };
+        }
+        public bool isBlackOrEmpty(float tolerance)
+        {
+            if (R + B + G < tolerance) return true;
+            if (A == 0) return true;
+            return false;
+        }
     }
     public class Transformation
     {

@@ -5,13 +5,24 @@ using System.Text;
 
 namespace ModChart
 {
+    public struct Point
+    {
+        public double x { get; set; }
+        public double y { get; set; }
+    }
+    public struct IntVector2
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
     static class Maths
     {
-        public struct Point
+        public static float toFloat(this object v)
         {
-            public double x { get; set; }
-            public double y { get; set; }
+            return Convert.ToSingle(v.ToString());
         }
+        
+
         public static Point PolarToCartesian(double angle, double radius)
         {
             double angleRad = (Math.PI / 180) * (angle - 90);

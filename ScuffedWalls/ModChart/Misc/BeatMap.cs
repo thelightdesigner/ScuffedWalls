@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ModChart
 {
-    class BeatMap
+    public class BeatMap
     {
         public string _version { get; set; }
         public CustomData _customData { get; set; }

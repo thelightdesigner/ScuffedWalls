@@ -16,9 +16,7 @@ namespace ScuffedWalls
         {
             MapFolderPath = mapfolderpath;
             Workspaces = workspaces;
-            var image = ImageConverter.Imag3ToWall(@"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test\SmileW.png", new ImageConverter.ImageSettings() { Wall = new BeatMap.Obstacle() { _time = 10, _duration = 1 } });
-            Walls.AddRange(image);
-            ConsoleOut("Wall", image.Length, 10);
+           
         }
         private Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
@@ -510,6 +508,7 @@ namespace ScuffedWalls
             float size = 1;
             float alpha = 1;
             float thicc = 1;
+            float compression = 0;
             bool track = false;
             float spreadspawntime = 0;
             foreach (var p in args.TryGetParameters())
@@ -543,9 +542,13 @@ namespace ScuffedWalls
                     case "centered":
                         centered = Convert.ToBoolean(p.argument);
                         break;
+                    case "compression":
+                        compression = Convert.ToSingle(p.argument);
+                        break;
                 }
             }
-            BeatMap.Obstacle[] image = ImageConverter.Image2Wall(Path, isBlackEmpty, size, thicc, track, centered, spreadspawntime, alpha, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration});
+            ImageToWall converter = new ImageToWall(Path, new ImageSettings() { isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, track = track, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
+            BeatMap.Obstacle[] image = converter.GetWalls();
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time);
         }
