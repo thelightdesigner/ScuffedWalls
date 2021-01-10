@@ -26,34 +26,57 @@ namespace ModChart.Wall
 
         public void Run()
         {
-            Pixel[] pixels = AnalyzeImage();
-            pixels.ToList().ForEach(p => p.FlipVertical(_Bitmap));
-            //pixels.ToList().ForEach(p => p.Inverse());
-            FloatingPixel[] floatingPixels = pixels.Select(p => { return p.ToFloating(); }).ToArray();
-            //floatingPixels.ToList().ForEach(p => p.Resize(0.2f));
+            FloatingPixel[] Pixels =
+                AnalyzeImage()
+                .Select(p =>
+                {
+                    return p
+                   .FlipVertical(_Bitmap)
+                   .ToFloating()
+                   .Resize(_Settings.scale);
+                }) //size
+                .ToArray();
 
-            Walls = floatingPixels.Select(p =>
+            //centered offseter
+            if (_Settings.centered) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = -(_Bitmap.Width.toFloat() * _Settings.scale / 2), Y = 0 }); }).ToArray();
+
+            //position offseter
+            if (_Settings.Wall._customData._position != null) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = _Settings.Wall._customData._position[0].toFloat(), Y = _Settings.Wall._customData._position[1].toFloat() }); }).ToArray();
+
+            Random rnd = new Random();
+            Walls = Pixels.Select(p =>
             {
+                p = p.Transform(new Vector2() { X = (p.Scale.X / 2f) - (1f / _Settings.thicc * 2f), Y = 0 }); //thicc offseter
+                float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.spread;
                 return new BeatMap.Obstacle()
                 {
-                    _time = 5,
-                    _duration = 1,
+                    _time = _Settings.Wall._time.toFloat() + spread,
+                    _duration = _Settings.Wall._duration,
                     _lineIndex = 0,
                     _type = 0,
                     _width = 0,
                     _customData = new BeatMap.CustomData()
                     {
                         _position = new object[] { p.Position.X, p.Position.Y },
-                        _scale = new object[] { p.Scale.X, p.Scale.Y, 0.2 },
-                        _color = p.Color.ToObjArray()
+                        _scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc },
+                        _color = p.Color.ToObjArray(_Settings.alfa),
+                        _animation = new BeatMap.CustomData.Animation()
+                        {
+                            _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
+                        }
                     }
-                };
+                }.Append(_Settings.Wall._customData, AppendTechnique.NoOverwrites);
+
             }).ToArray();
         }
 
         Pixel[] AnalyzeImage()
         {
-            return CompressPixels(GetAllPixels());
+            return
+                CompressPixels(
+                CompressPixels(GetAllPixels(), _Settings.tolerance / _Settings.shift)
+                .Select(p => { return p.Inverse(); }).ToArray(), _Settings.tolerance * _Settings.shift)
+                .Select(p => { return p.Inverse(); }).ToArray();
 
 
             Pixel[] GetAllPixels()
@@ -65,25 +88,30 @@ namespace ModChart.Wall
                     for (Pos.X = 0; Pos.X < _Bitmap.Width; Pos.X++)
                     {
                         pixels.Add(_Bitmap.ToPixel(Pos));
+
                     }
                 }
                 return pixels.ToArray();
             }
 
-            Pixel[] CompressPixels(Pixel[] pixels)
+            Pixel[] CompressPixels(Pixel[] pixels, float tolerance)
             {
                 IntVector2 Pos = new IntVector2();
                 IntVector2 Dimensions = pixels.GetDimensions();
-                List<Pixel> CompressedPixels = new List<Pixel>();
+                List<Pixel> CompressedPixels = new List<Pixel>(pixels.Length);
 
                 Pixel CurrentPixel = null;
                 for (Pos.X = 0; Pos.X < Dimensions.X; Pos.X++)
                 {
                     for (Pos.Y = 0; Pos.Y < Dimensions.Y; Pos.Y++)
                     {
+                        Pixel Current = pixels.GetCurrent(Pos);
+
                         bool CountPixel =
-                            pixels.GetCurrent(Pos) != null && //this pixel has to exist
-                            pixels.GetCurrent(Pos).Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), 0f); // the last one has to exist and be the same
+                            Current != null && //this pixel has to exist
+                            Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
+                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.01f)) &&  //stop immediatly cunt
+                            (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
 
                         if (CountPixel) //this vs last, color, width, existance
                         {
@@ -92,8 +120,9 @@ namespace ModChart.Wall
                         else
                         {
                             //add and reset
-                            if (CurrentPixel != null) CompressedPixels.Add(CurrentPixel);
-                            CurrentPixel = pixels.GetCurrent(Pos);
+                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.01f))) CompressedPixels.Add(CurrentPixel);
+
+                            CurrentPixel = Current;
                         }
                     }
                 }
@@ -102,12 +131,6 @@ namespace ModChart.Wall
             }
 
         }
-
-
-
-
-
-
     }
 
     public class ImageSettings
@@ -128,9 +151,11 @@ namespace ModChart.Wall
         public float scale { get; set; }
         public float thicc { get; set; }
         public bool track { get; set; }
+        public int maxPixelLength { get; set; }
         public bool centered { get; set; }
         public float spread { get; set; }
         public float alfa { get; set; }
+        public float shift { get; set; }
         public float tolerance { get; set; }
         public BeatMap.Obstacle Wall { get; set; }
     } //settings
@@ -141,17 +166,23 @@ namespace ModChart.Wall
         public IntVector2 Position { get; set; }
         public IntVector2 Scale { get; set; }
         public Color Color { get; set; }
-        public void FlipVertical(Bitmap bitmap)
+        public Pixel FlipVertical(Bitmap bitmap)
         {
-            IntVector2 NewPosition = new IntVector2() { X = Position.X, Y = bitmap.Height - Position.Y };
-            Position = NewPosition;
+            return new Pixel()
+            {
+                Position = new IntVector2() { X = Position.X, Y = bitmap.Height - Position.Y - Scale.Y },
+                Scale = Scale,
+                Color = Color
+            };
         }
-        public void Inverse()
+        public Pixel Inverse()
         {
-            IntVector2 NewPosition = new IntVector2() { X = Position.Y, Y = Position.X };
-            IntVector2 NewScale = new IntVector2() { X = Scale.Y, Y = Scale.X };
-            Position = NewPosition;
-            Scale = NewScale;
+            return new Pixel()
+            {
+                Position = new IntVector2() { X = Position.Y, Y = Position.X },
+                Scale = new IntVector2() { X = Scale.Y, Y = Scale.X },
+                Color = Color
+            };
         }
         public void AddHeight()
         {
@@ -183,29 +214,35 @@ namespace ModChart.Wall
         public Color Color { get; set; }
 
         //0,0 origin
-        public void Resize(float Factor)
+        public FloatingPixel Resize(float Factor)
         {
-            Vector2 NewPosition = new Vector2()
+            return new FloatingPixel()
             {
-                X = Position.X * Factor,
-                Y = Position.Y * Factor,
+                Position = new Vector2()
+                {
+                    X = Position.X * Factor,
+                    Y = Position.Y * Factor,
+                },
+                Scale = new Vector2()
+                {
+                    X = Scale.X * Factor,
+                    Y = Scale.Y * Factor,
+                },
+                Color = Color
             };
-            Vector2 NewScale = new Vector2()
-            {
-                X = Scale.X * Factor,
-                Y = Scale.Y * Factor,
-            };
-            Position = NewPosition;
-            Scale = NewScale;
         }
-        public void Transform(Vector2 tranformation)
+        public FloatingPixel Transform(Vector2 tranformation)
         {
-            Vector2 NewPosition = new Vector2()
+            return new FloatingPixel()
             {
-                X = Position.X + tranformation.X,
-                Y = Position.Y + tranformation.Y,
+                Position = new Vector2()
+                {
+                    X = Position.X + tranformation.X,
+                    Y = Position.Y + tranformation.Y,
+                },
+                Scale = Scale,
+                Color = Color
             };
-            Position = NewPosition;
         }
     }
 
@@ -214,7 +251,11 @@ namespace ModChart.Wall
         public static Pixel GetCurrent(this Pixel[] pixels, IntVector2 pos)
         {
             if (!pixels.Any(p => p.Position.X == pos.X && p.Position.Y == pos.Y)) return null; //if it dont exist
-            return pixels.Where(p => p.Position.Y == pos.Y && p.Position.X == pos.X).First();
+            //DateTime dateTime = DateTime.Now;
+            Pixel thing = pixels.Where(p => p.Position.Y == pos.Y && p.Position.X == pos.X).First();
+            //Console.WriteLine(DateTime.Now - dateTime);
+            return thing;
+            //  System.Threading.Tasks.Parallel.
         }
         public static Color GetCurrent(this Bitmap bitmap, IntVector2 pos)
         {

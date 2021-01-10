@@ -506,10 +506,11 @@ namespace ScuffedWalls
             bool isBlackEmpty = false;
             bool centered = false;
             float size = 1;
+            float shift = 2;
             float alpha = 1;
             float thicc = 1;
+            int maxlength = 100000;
             float compression = 0;
-            bool track = false;
             float spreadspawntime = 0;
             foreach (var p in args.TryGetParameters())
             {
@@ -524,11 +525,17 @@ namespace ScuffedWalls
                     case "duration":
                         duration = Convert.ToSingle(p.argument);
                         break;
+                    case "maxlinelength":
+                        maxlength = Convert.ToInt32(p.argument);
+                        break;
                     case "isblackempty":
                         isBlackEmpty = Convert.ToBoolean(p.argument);
                         break;
                     case "size":
                         size = Convert.ToSingle(p.argument);
+                        break;
+                    case "spreadspawntime":
+                        spreadspawntime = Convert.ToSingle(p.argument);
                         break;
                     case "alpha":
                         alpha = Convert.ToSingle(p.argument);
@@ -536,8 +543,8 @@ namespace ScuffedWalls
                     case "thicc":
                         thicc = Convert.ToSingle(p.argument);
                         break;
-                    case "normal":
-                        track = Convert.ToBoolean(p.argument);
+                    case "shift":
+                        shift = Convert.ToSingle(p.argument);
                         break;
                     case "centered":
                         centered = Convert.ToBoolean(p.argument);
@@ -547,7 +554,7 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            ImageToWall converter = new ImageToWall(Path, new ImageSettings() { isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, track = track, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
+            ImageToWall converter = new ImageToWall(Path, new ImageSettings() { maxPixelLength = maxlength,isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
             BeatMap.Obstacle[] image = converter.GetWalls();
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time);
