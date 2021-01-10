@@ -4,7 +4,8 @@ A simple tool for making ne 1.2 beat saber maps easier. (Heavilly inspired off o
 Features:
  - Noodle extensions custom json data
  - Simple 3d model to wall support with animation & color
- - Image to wall support
+ - Image to wall support w/ compression
+ ~~- Text to wall support~~ v0.7.0 <-
  - Custom events support
  - Importing map objects from other map files
  - Appending custom data to map objects
