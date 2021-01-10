@@ -5,10 +5,11 @@ Features:
  - Noodle extensions custom json data
  - Simple 3d model to wall support with animation & color
  - Image to wall support w/ compression
-~~- Text to wall support~~ v0.7.0 <-
  - Custom events support
  - Importing map objects from other map files
  - Appending custom data to map objects
+
+- ~~Text to wall support~~ v0.7.0 <-
  
  Usage:
   - Drag the map folder onto the program
