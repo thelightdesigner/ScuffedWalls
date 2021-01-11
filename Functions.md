@@ -89,10 +89,12 @@ constructs an image out of walls as pixels
  - isBlackEmpty: bool, doesn't add pixel if the pixel color is black
  - size: float, scales the image
  - thicc: float, makes the edges of the walls fill more of the center
- - normal: bool, makes the image use position
  - centered: bool, centers the x position
  - duration: float
  - spreadspawntime: float
+ - maxlinelength: int, the max line length
+ - shift: float, the difference in compression priorities between the inversed compression
+ - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1)
  - AnimateDefinitePosition => moves each pixel by this amount, defaults to \[0,0,0,0],\[0,0,0,1] (only if normal = false)
  - Position => moves each pixel by this amount, defaults to \[0,0] (only if normal = true)
  - generic custom data
