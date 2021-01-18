@@ -79,7 +79,7 @@ namespace ModChart.Wall
                         object[] pos = { ((cube.Position[0].X * -1) - cube.Scale[0].X), cube.Position[0].Y };
                         object[] rot = { cube.Rotation[0].X, cube.Rotation[0].Y * -1, cube.Rotation[0].Z * -1 };
                         object[] sca = { cube.Scale[0].X * 2, cube.Scale[0].Y * 2 };
-                        float beatlength = (5f / 3f * (60f / settings.BPM) * NJS); //nyir0 is a genius
+                        float beatlength = (5f / 3f * (60f / settings.BPM) * NJS); //nyri0 is a genius
                         float duration = (cube.Scale[0].Z * 2) / beatlength;
                         float time = (cube.Position[0].Z / beatlength) + settings.Wall.GetTime();
 
