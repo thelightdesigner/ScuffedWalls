@@ -1,7 +1,7 @@
 ﻿using ModChart;
 using ModChart.Event;
-using ModChart.Wall;
 using ModChart.Note;
+using ModChart.Wall;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,11 +12,11 @@ namespace ScuffedWalls
 {
     partial class FunctionParser
     {
-        public FunctionParser(string mapfolderpath, Workspace[] workspaces)
+        public FunctionParser(Config config, Workspace[] workspaces, Info info)
         {
-            MapFolderPath = mapfolderpath;
+            this.config = config;
             Workspaces = workspaces;
-           
+            this.info = info;
         }
         private Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
@@ -24,12 +24,13 @@ namespace ScuffedWalls
         public List<BeatMap.Event> Lights = new List<BeatMap.Event>();
         public List<BeatMap.Obstacle> Walls = new List<BeatMap.Obstacle>();
         public List<BeatMap.CustomData.CustomEvents> CustomEvents = new List<BeatMap.CustomData.CustomEvents>();
-        private string MapFolderPath;
+        private Config config;
+        private Info info;
 
 
-        public static FunctionParser parseWorkspace(string[] args, string ThisMapFolder, Workspace[] workspaces)
+        public static FunctionParser parseWorkspace(string[] args, Config config, Info info, Workspace[] workspaces)
         {
-            FunctionParser Workspace = new FunctionParser(ThisMapFolder, workspaces);
+            FunctionParser Workspace = new FunctionParser(config, workspaces, info);
             for (int i = 0; i < args.Length; i++)
             {
 
@@ -108,7 +109,7 @@ namespace ScuffedWalls
                 }
                 Lights = new List<BeatMap.Event>();
                 Lights.AddRange(ApendedEvents.ToArray());
-                ConsoleOut("Event", i, time);
+                ConsoleOut("Event", i, time, "Rainbow");
             }
 
             if (props)
@@ -142,7 +143,7 @@ namespace ScuffedWalls
                 }
                 Lights = new List<BeatMap.Event>();
                 Lights.AddRange(newEvents.ToArray());
-                ConsoleOut("Event", c, time);
+                ConsoleOut("Event", c, time, "Ring Props");
             }
 
             {
@@ -162,7 +163,7 @@ namespace ScuffedWalls
                 }
                 Lights = new List<BeatMap.Event>();
                 Lights.AddRange(ApendedEvents.ToArray());
-                ConsoleOut("Event", i, time);
+                ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} events from beats {starttime} to {endtime}");
             }
         }
         [SFunction]
@@ -195,15 +196,16 @@ namespace ScuffedWalls
                 _points = points
             });
 
-            ConsoleOut("PointDefinition", 1, time);
+            ConsoleOut("PointDefinition", 1, time, "PointDefinition");
         }
         [SFunction]
         public void clonefromworkspacebyindex(string[] args, float time)
         {
-            int Type = 0;
+            int[] Type = { 0, 1, 2, 3 };
             int Index = 0;
             float startbeat = 0;
             float endbeat = 1000000;
+            float addtime = 0;
 
             foreach (var p in args.TryGetParameters())
             {
@@ -213,7 +215,7 @@ namespace ScuffedWalls
                         Index = Convert.ToInt32(p.argument);
                         break;
                     case "type":
-                        Type = Convert.ToInt32(p.argument);
+                        Type = p.argument.Split(",").Select(a => Convert.ToInt32(a)).ToArray();
                         break;
                     case "frombeat":
                         startbeat = Convert.ToSingle(p.argument);
@@ -221,33 +223,32 @@ namespace ScuffedWalls
                     case "tobeat":
                         endbeat = Convert.ToSingle(p.argument);
                         break;
+                    case "addtime":
+                        addtime = Convert.ToSingle(p.argument);
+                        break;
                 }
             }
             BeatMap beatMap = toBeatMap(Workspaces[Index].DeepClone());
             beatMap._customData._customEvents ??= new BeatMap.CustomData.CustomEvents[] { };
-            if (Type == 0)
+            if (Type.Any(t => t == 0))
             {
-                Walls.AddRange(beatMap._obstacles.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time);
-                Notes.AddRange(beatMap._notes.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time);
-                Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time);
+                Walls.AddRange(beatMap._obstacles.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
+                ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time, "CloneWorkspace");
             }
-            else if (Type == 1)
+            if (Type.Any(t => t == 1))
             {
-                Walls.AddRange(beatMap._obstacles.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time);
+                Notes.AddRange(beatMap._notes.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
+                ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time, "CloneWorkspace");
             }
-            else if (Type == 2)
+            if (Type.Any(t => t == 2))
             {
-                Notes.AddRange(beatMap._notes.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time);
+                Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
+                ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time, "CloneWorkspace");
             }
-            else if (Type == 3)
+            if (Type.Any(t => t == 3))
             {
-                Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat));
-                ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time);
+                CustomEvents.AddRange(beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
+                ConsoleOut("CustomEvent", beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Length, time, "CloneWorkspace");
             }
         }
         [SFunction]
@@ -274,7 +275,7 @@ namespace ScuffedWalls
                     _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
                 });
             }
-            ConsoleOut("AnimateTrack", repeatcount, time);
+            ConsoleOut("AnimateTrack", repeatcount, time, "CustomEvent");
         }
         [SFunction]
         public void assignpathanimation(string[] args, float time)
@@ -295,19 +296,19 @@ namespace ScuffedWalls
                     _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
                 });
             }
-            ConsoleOut("AssignPathAnimation", repeatcount, time);
+            ConsoleOut("AssignPathAnimation", repeatcount, time, "CustomEvent");
         }
         [SFunction]
         public void assignplayertotrack(string[] args, float time)
         {
-            
+
             CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
             {
                 _time = time,
                 _type = "AssignPlayerToTrack",
                 _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
             });
-            ConsoleOut("AssignPlayerToTrack", 1, time);
+            ConsoleOut("AssignPlayerToTrack", 1, time, "CustomEvent");
         }
         [SFunction]
         public void parenttrack(string[] args, float time)
@@ -318,7 +319,7 @@ namespace ScuffedWalls
                 _type = "AssignTrackParent",
                 _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
             });
-            ConsoleOut("AssignTrackParent", 1, time);
+            ConsoleOut("AssignTrackParent", 1, time, "CustomEvent");
         }
 
         [SFunction]
@@ -353,13 +354,13 @@ namespace ScuffedWalls
                 {
                     _time = time + (i * repeatTime),
                     _lineIndex = 0,
-                    _lineLayer =0,
+                    _lineLayer = 0,
                     _cutDirection = cutdirection,
                     _type = type,
                     _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
                 });
             }
-            ConsoleOut("Note", repeatcount, time);
+            ConsoleOut("Note", repeatcount, time, "Note");
         }
         [SFunction]
         public void wall(string[] args, float time)
@@ -393,10 +394,10 @@ namespace ScuffedWalls
                     _width = 0,
                     _type = 0,
                     _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
-                }) ;
+                });
             }
 
-            ConsoleOut("Wall", repeatcount, time);
+            ConsoleOut("Wall", repeatcount, time, "Wall");
         }
         [SFunction]
         public void import(string[] args, float time)
@@ -411,7 +412,7 @@ namespace ScuffedWalls
                 switch (p.parameter)
                 {
                     case "path":
-                        Path = MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument;
                         break;
                     case "fullpath":
                         Path = p.argument;
@@ -435,27 +436,27 @@ namespace ScuffedWalls
             {
                 case 0:
                     Walls.AddRange(beatMap._obstacles.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     Notes.AddRange(beatMap._notes.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     break;
                 case 1:
                     Walls.AddRange(beatMap._obstacles.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Wall", beatMap._obstacles.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     break;
                 case 2:
                     Notes.AddRange(beatMap._notes.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Note", beatMap._notes.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     break;
                 case 3:
                     Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat));
-                    ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time);
+                    ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time, "Import");
                     break;
             }
             CustomEvents.AddRange(beatMap._customData._customEvents);
-            ConsoleOut("CustomEvent", beatMap._customData._customEvents.Length, time);
+            ConsoleOut("CustomEvent", beatMap._customData._customEvents.Length, time, "Import");
 
         }
         [SFunction]
@@ -466,16 +467,22 @@ namespace ScuffedWalls
             int normal = 0;
             float duration = 1;
             float smooth = 0;
+            float MapBpm = info._beatsPerMinute.toFloat();
+            float MapNjs = info._difficultyBeatmapSets
+                        .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(config.MapFilePath).Name))
+                        .First()._difficultyBeatmaps
+                        .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(config.MapFilePath).Name).First()._noteJumpMovementSpeed.toFloat();
+
 
             foreach (var p in args.TryGetParameters())
             {
                 switch (p.parameter)
                 {
                     case "normal":
-                        if (bool.Parse(p.argument) == true) normal = 1;
+                        normal = Convert.ToInt32(bool.Parse(p.argument));
                         break;
                     case "path":
-                        Path = MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument;
                         break;
                     case "fullpath":
                         Path = p.argument;
@@ -491,10 +498,11 @@ namespace ScuffedWalls
                         break;
                 }
             }
-
-            BeatMap.Obstacle[] model = ModelConvert.Model2Wall(Path, smooth, normal, hasanimation, args.TryGetParameters().toUsableCustomData().CustomDataParse(), new BeatMap.Obstacle() { _time = time, _duration = duration });
+            ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } };
+            BeatMap.Obstacle[] model = ModelConvert.Model2Wall(settings);
             Walls.AddRange(model);
-            ConsoleOut("Wall", model.Length, time);
+            ConsoleOut("Wall", model.Length, time, "ModelToWall");
+
         }
 
 
@@ -517,7 +525,7 @@ namespace ScuffedWalls
                 switch (p.parameter)
                 {
                     case "path":
-                        Path = MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument;
                         break;
                     case "fullpath":
                         Path = p.argument;
@@ -554,10 +562,10 @@ namespace ScuffedWalls
                         break;
                 }
             }
-            ImageToWall converter = new ImageToWall(Path, new ImageSettings() { maxPixelLength = maxlength,isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
+            WallImage converter = new WallImage(Path, new ImageSettings() { maxPixelLength = maxlength, isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
             BeatMap.Obstacle[] image = converter.GetWalls();
             Walls.AddRange(image);
-            ConsoleOut("Wall", image.Length, time);
+            ConsoleOut("Wall", image.Length, time, "ImageToWall");
         }
         [SFunction]
         public void appendtoallwallsbetween(string[] args, float time)
@@ -631,7 +639,7 @@ namespace ScuffedWalls
             {
                 if ((Convert.ToSingle(note._time.ToString()) >= starttime && Convert.ToSingle(note._time.ToString()) <= endtime) && notetype.Any(t => t == Convert.ToInt32(note._type.ToString())))
                 {
-                    ApendedNotes.Add(note.Append( args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
+                    ApendedNotes.Add(note.Append(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
                     i++;
                 }
                 else

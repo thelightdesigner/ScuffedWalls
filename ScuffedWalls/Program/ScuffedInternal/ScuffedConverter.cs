@@ -10,10 +10,10 @@ namespace ScuffedWalls
 {
     partial class FunctionParser
     {
-        static public void ConsoleOut(string Type, int Amount, float Beat)
+        static public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Added {Amount} {Type}'s at beat {Beat}");
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Type}s)");
             Console.ResetColor();
         }
         public Workspace toWorkspace()

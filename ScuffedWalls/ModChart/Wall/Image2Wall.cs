@@ -6,16 +6,22 @@ using System.Numerics;
 
 namespace ModChart.Wall
 {
-    class ImageToWall
+    class WallImage
     {
         ImageSettings _Settings;
         Bitmap _Bitmap;
         BeatMap.Obstacle[] Walls;
 
-        public ImageToWall(string path, ImageSettings settings)
+        public WallImage(string path, ImageSettings settings)
         {
             _Settings = settings;
             _Bitmap = new Bitmap(path);
+            Run();
+        }
+        public WallImage(Bitmap image, ImageSettings settings)
+        {
+            _Settings = settings;
+            _Bitmap = image;
             Run();
         }
 
@@ -110,6 +116,7 @@ namespace ModChart.Wall
                         bool CountPixel =
                             Current != null && //this pixel has to exist
                             Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
+                            Current.Color.Equals(CurrentPixel.Color, tolerance) &&
                             !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.01f)) &&  //stop immediatly cunt
                             (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
 
@@ -295,6 +302,8 @@ namespace ModChart.Wall
                 Y = t1.Y + t2.Y
             };
         }
+
+        //text to wall things
     }
 
 }

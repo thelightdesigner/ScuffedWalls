@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using ModChart;
 using System.Text.Json;
 
 namespace ScuffedWalls
@@ -10,15 +9,19 @@ namespace ScuffedWalls
     {
         private string[] args;
         private string ConfigFileName;
-        public Config ScuffedConfig;
-        
-        public Startup(string[] args) 
+        public Config ScuffedConfig { get; private set; }
+        public Info Info { get; private set; }
+
+        public Startup(string[] args)
         {
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             this.args = args;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine($"{AppDomain.CurrentDomain.BaseDirectory} ScuffedWalls.json");
             ScuffedConfig = GetConfig();
+            Info = GetInfo();
+            VerifyOld();
+            VerifySW();
         }
 
         public Config GetConfig()
@@ -46,6 +49,13 @@ namespace ScuffedWalls
                 }
                 Console.Write("[ConsoleLoggerDefault] Main: "); Console.ForegroundColor = ConsoleColor.Red; Console.Write("N"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("w"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("S"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("W"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("F"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("i"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("l"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("C"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("r"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("a"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("t"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("d"); Console.ForegroundColor = ConsoleColor.Blue; Console.WriteLine("!"); Console.ResetColor();
             }
+        }
+        public Info GetInfo()
+        {
+            Info info = null;
+            if (File.Exists($"{ScuffedConfig.MapFolderPath}\\info.dat")) info = JsonSerializer.Deserialize<Info>(File.ReadAllText($"{ScuffedConfig.MapFolderPath}\\info.dat"));
+            if (File.Exists($"{ScuffedConfig.MapFolderPath}\\Info.dat")) info = JsonSerializer.Deserialize<Info>(File.ReadAllText($"{ScuffedConfig.MapFolderPath}\\Info.dat"));
+            return info;
         }
         public void VerifyOld()
         {
