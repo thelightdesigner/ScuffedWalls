@@ -21,10 +21,13 @@ More info on scuffed functions can be found [`here`](https://github.com/thelight
 
 3d modeling for wall conversion
 
-Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling done for wall conversion must be made up of cuboids with a global transformation type. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. *At the time of writing this scuffedwalls does not have color animation support.*
+Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling done for wall conversion must be made up exclusivly of cubes with only transformations. Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. *At the time of writing this scuffedwalls does not have color animation support.*
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examp.gif)
+
+When going to export to collade hittinh 'n' will bring up a collade settings menu. this is where you will choose the Y up Z forwards and check the global orientation box.
+
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/global%20or.jpg)
 
 To line up the origin points of the deafault cube in blender, tab into edit mode and snap the cube to where the origin is front bottom center.
@@ -35,7 +38,7 @@ Only changes to transformation and color values will affect the converted walls.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
 
-ScuffedWalls support for decomposed transformation types in collada has been dropped so to ensure proper parsing check that 'Matrix' is the selected transformation type.
+To ensure proper parsing check that 'Matrix' is the selected transformation type.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/animation.jpg)
 
