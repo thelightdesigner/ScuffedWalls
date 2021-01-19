@@ -8,7 +8,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v4.2.0.6.9";
+        public static string ver = "v0.7.0";
         static void Main(string[] args)
         {
             ScuffedLogger.Log($"ScuffedWalls {ver}");
@@ -25,10 +25,12 @@ namespace ScuffedWalls
             //loop through 
             while (true)
             {
+                ScuffedLogger.Log($"Waiting for changes to {new FileInfo(ScuffedConfig.SWFilePath).Name}");
                 change.Detect();
+                var StartTime = DateTime.Now;
+                ScuffedLogger.Log("Changes detected, running...");
                 change._LastModifiedTime = File.GetLastWriteTime(ScuffedConfig.SWFilePath);
                 scuffedFile.Refresh();
-                ScuffedLogger.ScuffedFileParser.Log("ScuffedWall File Parsed");
                 List<Workspace> workspaces = new List<Workspace>();
 
                 for (int i = 0; i < scuffedFile.SWFileLines.Length; i++)
@@ -46,18 +48,19 @@ namespace ScuffedWalls
                         }
                     }
                 }
-
+                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(ScuffedConfig.MapFilePath).Name}");
                 //write to json file
                 JsonSerializerOptions jso = new JsonSerializerOptions(); jso.IgnoreNullValues = true;
                 BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
                 File.WriteAllText(ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, jso));
+                ScuffedLogger.ScuffedMapWriter.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
 
                 rpc.currentMap = new MapObj()
                 {
                     Walls = generate._obstacles.Length,
                     Notes = generate._notes.Length,
                     CustomEvents = generate._customData._customEvents.Length,
-                    MapName = new FileInfo(ScuffedConfig.MapFolderPath).Name
+                    MapName = startup.Info._songName.ToString()
                 };
 
                 //collect the trash
