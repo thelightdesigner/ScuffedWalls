@@ -26,11 +26,11 @@ Because beatsaber walls do not support meshes nativley, And because scuffedwalls
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examp.gif)
 
-When going to export to collade hittinh 'n' will bring up a collade settings menu. this is where you will choose the Y up Z forwards and check the global orientation box.
+When going to export to collade hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards and check the global orientation box.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/global%20or.jpg)
 
-To line up the origin points of the deafault cube in blender, tab into edit mode and snap the cube to where the origin is front bottom center.
+To line up the origin points of the default cube in blender, tab into edit mode and snap the cube to where the origin is front bottom center with y facing forwards. The converter wont work unless this is done exactly correct.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/cube.jpg)
 
