@@ -1,0 +1,48 @@
+0: default
+  time: false
+
+40: RandomCurve
+  p1: -5,-0.5,0
+  p2: 5,-0.5,33
+  amount:  10
+  color: rainbow(6)
+  repeat: 3
+
+73: RandomCurve
+  p1: -2.5,-0.5,0
+  p2: 2.5,-0.5,29
+  scale:0.5
+  amount:  5
+  color: rainbow(1)
+
+88: NoodleHelix
+  amount:100
+  count: 3
+  rotationamount:1000
+  radius:3.5
+  scale:12
+  color: rainbow(6)
+88: NoodleHelix
+  amount:100
+  count: 3
+  rotationamount:-888
+  radius:3.2
+  scale:12
+  color: rainbow(3)
+
+136:Line
+p1: -3,-0.5,0
+p2: -3,-0.5,32
+ amount:120
+ color: Rainbow(3)
+  changeWidth:0.2
+  changeDuration:0.1
+  repeat:5
+  repeataddx:1.5
+
+168:RandomCurve
+  p1: -2.5,-0.5,0
+  p2: 2.5,-0.5,60
+  scale:0.5
+  amount:  5
+  color: rainbow(6)
