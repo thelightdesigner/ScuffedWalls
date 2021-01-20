@@ -72,7 +72,7 @@ generic customdata for customevents
  - Color: [r,g,b,a?]
 
 # ModelToWall
-constructs a definite model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
+constructs a model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
 
  - path: string
  - fullpath string
@@ -103,7 +103,7 @@ constructs an image out of walls as pixels
 # CloneFromWorkspaceByIndex
 clones mapobjects from a different workspace by the index
 
-- Type: int(0-3), what to clone
+- Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events
 - Index: int
 - fromBeat: float
 - addTime: float, shifts the cloned things by this amount.
@@ -137,7 +137,7 @@ adds on custom noodle data to walls between the function time and endtime
 adds on custom noodle data to notes between the function time and endtime
 
  - toBeat: float
- - type: int,int,int (defaults to 0,1,2,3)
+ - type: int,int,int (defaults to 0,1,2,3,4,5,6,7,8)
  - appendTechnique: int(0-2)
  - generic custom data
  
@@ -146,7 +146,7 @@ adds in map objects from other map.dat files
 
  - path: string
  - fullpath string
- - type:int,int,int (defaults to 0,1,2,3)
+ - type:int(0-3), what to import
  - fromBeat: float
  - toBeat: float
 
