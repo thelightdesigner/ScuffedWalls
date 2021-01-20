@@ -76,9 +76,10 @@ constructs a definite model out of walls. see [README.md](https://github.com/the
 
  - path: string
  - fullpath string
- - hasAnimation: bool, tells the model parser to read animation
+ - hasAnimation: bool, tells the model parser to read animation. doesnt work with normal yet.
  - duration: float
  - spreadspawntime: float
+ - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
  - generic custom data
 
 # ImageToWall
@@ -86,15 +87,15 @@ constructs an image out of walls as pixels
 
  - path: string
  - fullpath string
- - isBlackEmpty: bool, doesn't add pixel if the pixel color is black
- - size: float, scales the image
+ - isBlackEmpty: bool, doesn't add pixel if the pixel color is black. default: false
+ - size: float, scales the image. default: 1
  - thicc: float, makes the edges of the walls fill more of the center
- - centered: bool, centers the x position
+ - centered: bool, centers the x position. default: false
  - duration: float
- - spreadspawntime: float
- - maxlinelength: int, the max line length
- - shift: float, the difference in compression priorities between the inversed compression
- - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1)
+ - spreadspawntime: float. default: 0
+ - maxlinelength: int, the max line length. default: +infinity
+ - shift: float, the difference in compression priorities between the inversed compression. default: 1
+ - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1) default: 0
  - AnimateDefinitePosition => moves each pixel by this amount, defaults to \[0,0,0,0],\[0,0,0,1] (only if normal = false)
  - Position => moves each pixel by this amount, defaults to \[0,0] (only if normal = true)
  - generic custom data
@@ -105,6 +106,7 @@ clones mapobjects from a different workspace by the index
 - Type: int(0-3), what to clone
 - Index: int
 - fromBeat: float
+- addTime: float, shifts the cloned things by this amount.
 - toBeat: float
 
 
@@ -135,7 +137,7 @@ adds on custom noodle data to walls between the function time and endtime
 adds on custom noodle data to notes between the function time and endtime
 
  - toBeat: float
- - NoteColor: red, blue, bomb, 1, 2, 3, 4; the type of the note
+ - type: int,int,int (defaults to 0,1,2,3)
  - appendTechnique: int(0-2)
  - generic custom data
  
@@ -144,7 +146,7 @@ adds in map objects from other map.dat files
 
  - path: string
  - fullpath string
- - type:int(0-3)
+ - type:int,int,int (defaults to 0,1,2,3)
  - fromBeat: float
  - toBeat: float
 
