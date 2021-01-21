@@ -11,7 +11,7 @@ It is important to note that changes are still being made to the model parser an
 
 To start remove everything from the default scene. Add in a 3d cube and tab into edit mode. Select the cube and enable Snap To Grid. Snap the cube so that its origin point is at the front, bottom, center of the cube.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/cube.jpg)
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/dothis.gif)
 
 ## Animating
 
@@ -21,13 +21,12 @@ Yes all transformations can be animated with ne2.0. So scuffedwalls can do the s
 
 ##  Parenting and Baking
 
-One of the great benefits of making a 3d model in blender is that complex 3d movement is all calculated internally inside of blender. Parenting is a great way to get a collection of cubes in blender to all move togethor just by moving the reference object. In order to get scuffedwalls to pick up on the child cubes in your scene you must bake the childeren.
+One of the benefits of making a 3d model in blender is that complex 3d movement is all calculated internally. Parenting is a good way to get a collection of cubes in blender to all move togethor just by moving the reference object. In order to get scuffedwalls to pick up on the child cubes in your scene you must bake the childeren.
 
 While selecting the childeren objects go to object, animation, bake action. Select visual keying and clear parents. This will automatically keyframe every child object to its visual position in the scene. It also clears all parents that the child objects may have had.
 
-[img]
-
-[img]
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake.png)
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake2.png)
 
 ## Exporting
 
@@ -44,6 +43,7 @@ Sampling rate can be adjusted if the map file size becomes an issue.
 
 ## Importing
 
-To make a 3d model in your map with scuffedwalls. Call the ModelToWall function. More info on the parameters can be found in [link here]
+To make a 3d model in your map with scuffedwalls. Call the ModelToWall function. More info on the parameters can be found in [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
+
 HasAnimation: bool; this tells the model parser to read the model file as if it has an animation attached to it. It is disabled by default.
 
