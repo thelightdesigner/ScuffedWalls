@@ -19,27 +19,4 @@ Windows will probably bother you about this being malware. If you dont trust it 
   
 More info on scuffed functions can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
-3d modeling for wall conversion
-
-Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling done for wall conversion must be made up exclusivly of cubes with only transformations. Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. *At the time of writing this scuffedwalls does not have color animation support.*
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examp.gif)
-
-When going to export to collade hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards and check the global orientation box.
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/global%20or.jpg)
-
-To line up the origin points of the default cube in blender, tab into edit mode and snap the cube to where the origin is front bottom center with y facing forwards. The converter wont work unless this is done exactly correct.
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/cube.jpg)
-
-Only changes to transformation and color values will affect the converted walls. Animation is supported.
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
-
-To ensure proper parsing check that 'Matrix' is the selected transformation type.
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/animation.jpg)
-
-Sampling rate can be adjusted if the map file size becomes an issue.
+More info on 3d modeling for wall conversion can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md)
