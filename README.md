@@ -9,7 +9,7 @@ Features:
  - Importing map objects from other map files
  - Appending custom data to map objects
 
-- ~~Text to wall support~~ v0.7.0 <-
+- ~~Text to wall support~~ v0.8.0 probably
  
  Usage:
   - Drag the map folder onto the program

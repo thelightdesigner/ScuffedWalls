@@ -2,7 +2,7 @@
 
 #comments start with #
 
-#starting at scuffedwalls 0.2.0, workspaces must be defined using
+#starting at scuffedwalls v0.2.0, workspaces must be defined using
 Workspace
 
 #import adds map objects into this map from other maps
@@ -36,7 +36,7 @@ Workspace
 
 #makes a note with a random position
 55: Note
-  position: [random(-30,50),random(-30,50)]
+  position: [Random(-30,50),Random(-30,50)]
 
 #makes a model with an animation
 60: ModelToWall
@@ -46,35 +46,14 @@ Workspace
   
 #throws an error
 70: SomethingThatIsntAFunction
-#also throws an error
-70 Wall
 
-#Most of the noodle customdata parameters
-  #Duration: float
-  #AnimateDefinitePosition:[x,y,z,t,e],[x,y,z,t,e]...
-  #AnimatePosition:[x,y,z,t,e],[x,y,z,t,e]...
-  #Scale: [x,y,z]
-  #Track: fucktrack
-  #Color: [r,g,b,a,t]
-  #NJSOffset: float
-  #NJS: float
-  #AnimateDissolve:[d,t],[,d,t]..
-  #AnimateColor: [r,g,b,a,t],[r,g,b,a,t]...
- # AnimateRotation:[x,y,z,t,e],[x,y,z,t,e]...
- # AnimateLocalRotation:[x,y,z,t,e],[x,y,z,t,e]...
- # AnimateScale: [x,y,z,t,e],[x,y,z,t,e]...
-  #isInteractable: bool
- # Fake: bool
-#  Position:[x,y,z]
-#  CutDirection:float
-#  NoSpawnEffect: bool
 
 #makes text using a low res image
 90: ImageToWall
   path: Fall into the darkside.png
   Size: 0.5
   AnimateDefinitePosition: [0,20,0,0],[5,10,-50,1]
-  Thicc: 2,2,2
+  Thicc: 12
 
 
   
@@ -83,7 +62,7 @@ Workspace
 0: Wall
   repeat: 200
   duration: 50
-  AnimateDefinitePosition: [random(-30,50),random(-30,50),random(0,100)]
+  AnimateDefinitePosition: [Random(-30,50),Random(-30,50),Random(0,100)]
   color:[0,0,1,1]
 
 #applys to only the walls in this workspace
