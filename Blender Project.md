@@ -11,7 +11,7 @@ It is important to note that changes are still being made to the model parser an
 
 To start remove everything from the default scene. Add in a 3d cube and tab into edit mode. Select the cube and enable Snap To Grid. Snap the cube so that its origin point is at the front, bottom, center of the cube. This is extremely important and the model converter wont work unless this is done exactly correctly. From here you can proceed to duplicate/clone this cube to continue creating your 3d model. Any wall you want to appear correctly ingame must have this modification applied to it in blender.
 
- **AFTER THIS STEP, DO NOT EDIT THE MESH. ONLY TRANSFORMATION AND COLOR**
+ **AFTER THIS STEP, DO NOT GO INTO EDIT MODE OR EDIT THE MESH. ONLY CHANGE POSITION, SCALE, ROTATION AND COLOR**
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/dothis.gif)
 
