@@ -7,9 +7,9 @@ Because beatsaber walls do not support meshes nativley, And because scuffedwalls
 
 It is important to note that changes are still being made to the model parser and this section will change in future updates.
 
-## Before creating your model
+## Before creating your model!!!!!!!
 
-To start remove everything from the default scene. Add in a 3d cube and tab into edit mode. Select the cube and enable Snap To Grid. Snap the cube so that its origin point is at the front, bottom, center of the cube.
+To start remove everything from the default scene. Add in a 3d cube and tab into edit mode. Select the cube and enable Snap To Grid. Snap the cube so that its origin point is at the front, bottom, center of the cube. This is extremely important and the model converter wont work unless this is done exactly correctly. From here you can proceed to duplicate/clone this cube to continue creating your 3d model. Any wall you want to appear correctly ingame must have this modification applied to it in blender.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/dothis.gif)
 
@@ -28,7 +28,7 @@ While selecting the childeren objects go to object, animation, bake action. Sele
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake.png)
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake2.png)
 
-## Exporting
+## Exporting!!!!!!
 
 When going to export to collada hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards. check the global orientation box.
 
