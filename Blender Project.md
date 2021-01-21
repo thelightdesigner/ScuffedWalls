@@ -2,7 +2,7 @@
 
 Because beatsaber walls do not support meshes nativley, And because scuffedwalls does not have an internal mesh converter; All modeling done for wall conversion must be made up exclusivly of 3d cubes with only changes to rotation, scale, position and color. Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
+
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examp.gif)
 
 It is important to note that changes are still being made to the model parser and this section will change in future updates.
@@ -10,6 +10,8 @@ It is important to note that changes are still being made to the model parser an
 ## Before creating your model!!!!!!!
 
 To start remove everything from the default scene. Add in a 3d cube and tab into edit mode. Select the cube and enable Snap To Grid. Snap the cube so that its origin point is at the front, bottom, center of the cube. This is extremely important and the model converter wont work unless this is done exactly correctly. From here you can proceed to duplicate/clone this cube to continue creating your 3d model. Any wall you want to appear correctly ingame must have this modification applied to it in blender.
+
+ **AFTER THIS STEP, DO NOT EDIT THE MESH. ONLY TRANSFORMATION AND COLOR**
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/dothis.gif)
 
@@ -46,4 +48,12 @@ Sampling rate can be adjusted if the map file size becomes an issue.
 To make a 3d model in your map with scuffedwalls. Call the ModelToWall function. More info on the parameters can be found in [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
 HasAnimation: bool; this tells the model parser to read the model file as if it has an animation attached to it. It is disabled by default.
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
+
+Normal: bool; makes the walls jump in and despawn as normal ne1.0 walls would. the proportions are preserved so overriding njs will change the amount of time it takes for the model finish being visible. Setting normal as true will ignore animations.
+
+Normal:true will result in this from a static model with no animations
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/normal.gif)
 
