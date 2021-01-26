@@ -15,6 +15,8 @@ To start remove everything from the default scene. Add in a 3d cube and tab into
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/dothis.gif)
 
+this step will no longer be required from v0.7.1 and up
+
 ## Animating
 
 Yes all transformations can be animated with ne2.0. So scuffedwalls can do the same. Any animation on position, rotation or scale to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
