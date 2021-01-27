@@ -499,7 +499,7 @@ namespace ScuffedWalls
                 }
             }
             ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } };
-            BeatMap.Obstacle[] model = ModelConvert.Model2Wall(settings);
+            BeatMap.Obstacle[] model = new WallModel(settings).Walls;
             Walls.AddRange(model);
             ConsoleOut("Wall", model.Length, time, "ModelToWall");
 

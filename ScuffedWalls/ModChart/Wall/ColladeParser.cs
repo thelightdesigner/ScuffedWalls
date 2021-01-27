@@ -10,24 +10,44 @@ namespace ModChart.Wall
 {
     class Model
     {
-        public Cube[] cubes;
+        public Cube[] Cubes { get; private set; }
+        public Cube[] OffsetCorrectedCubes { get; private set; }
+
+        ColladaXML model;
+
         public Model(string path, bool useAnimation)
         {
-            ColladaXML colladaFile = (ColladaXML)XMLDeserialize<ColladaXML>(path);
-            cubes = getAllCubes(colladaFile, useAnimation);
+            model = (ColladaXML)Converters.DeserializeXML<ColladaXML>(path);
+            SetCubes(useAnimation);
+            foreach (var cube in Cubes) cube.Decompose();
+            SetOffset();
+            foreach (var cube in OffsetCorrectedCubes) cube.Decompose();
         }
 
-        object XMLDeserialize<t>(string path)
+
+        void SetOffset()
         {
-            object obj = null;
-            XmlSerializer serializer = new XmlSerializer(typeof(t));
-            using (Stream reader = new FileStream(path, FileMode.Open))
+            OffsetCorrectedCubes = Cubes.Select(cube =>
             {
-                obj = serializer.Deserialize(reader);
-            }
-            return obj;
+                cube.Transformation = cube.Transformation.Select(trans =>
+                {
+                    Vector3 pos;
+                    Vector3 scale;
+                    Quaternion rotquat;
+                    Matrix4x4.Decompose(trans, out scale, out rotquat, out pos);
+                    Vector3 rotation = rotquat.ToEuler();
+
+                    var difference = Matrix4x4.CreateTranslation(new Vector3(0, -1, -1) * (scale)) - Matrix4x4.CreateScale(new Vector3(1,1,1)); //i guess this works
+                    var compensation = Matrix4x4.Transform(difference, rotquat);
+
+                    return trans + compensation + (Matrix4x4.CreateTranslation(new Vector3(cube.DTransformation.First().Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1))); //¯\_(ツ)_/¯
+                }).ToArray();
+
+                return cube; 
+
+            }).ToArray();
         }
-        Cube[] getAllCubes(ColladaXML model, bool useAnimation)
+        void SetCubes(bool useAnimation)
         {
             List<Cube> cubes = new List<Cube>();
 
@@ -36,11 +56,10 @@ namespace ModChart.Wall
                 for (int i = 0; i < model.library_visual_scenes.visual_scene.node.Length; i++)
                 {
                     Color color = null;
-                    Transformation node;
                     string thisCubeName = model.library_visual_scenes.visual_scene.node[i].name;
 
                     //node transformation
-                    node = Transformation.createFromNode(model.library_visual_scenes.visual_scene.node[i]);
+                    Matrix4x4 node = model.library_visual_scenes.visual_scene.node[i].matrix.toFloatArray().toMatrix();
 
                     //color 
                     if (model.library_effects != null)
@@ -65,8 +84,8 @@ namespace ModChart.Wall
 
                     if (useAnimation)
                     {
-                        AnimationList animationList = null;
                         int count = 1;
+                        Matrix4x4[] matrices = null;
                         //animation points
                         if (model.library_animations != null)
                         {
@@ -75,20 +94,18 @@ namespace ModChart.Wall
                             {
                                 if (element.name == thisCubeName && element.animation != null)
                                 {
-                                    animationList = AnimationList.decompose(element.animation[0].sources[1].float_array.values.toFloatArray());
+                                    matrices = element.animation[0].sources[1].float_array.values.toFloatArray().toMatricies();
                                     count = Convert.ToInt32(element.animation[0].sources[1].float_array.count);
                                 }
                                 continue;
                             }
                         }
-                        animationList ??= new AnimationList(); animationList.addTransformation(node);
+                        matrices ??= new Matrix4x4[] { node };
 
                         //add finished cube
                         cubes.Add(new Cube()
                         {
-                            Position = animationList.Position.ToArray(),
-                            Rotation = animationList.Rotation.ToArray(),
-                            Scale = animationList.Scale.ToArray(),
+                            Transformation = matrices,
                             Color = color
                         });
                     }
@@ -96,30 +113,44 @@ namespace ModChart.Wall
                     {
                         cubes.Add(new Cube()
                         {
-                            Position = new Vector3[] { node.Position },
-                            Rotation = new Vector3[] { node.Rotation },
-                            Scale = new Vector3[] { node.Scale },
+                            Transformation = new Matrix4x4[] { node },
                             Color = color
                         });
                     }
 
                 }
             }
-            return cubes.ToArray();
+            Cubes = cubes.ToArray();
         }
 
     }
-    public class MeshPoint
-    {
-        public Vector3 Pos;
-    }
     public class Cube
     {
-        public Vector3[] Position;
-        public Vector3[] Rotation;
-        public Vector3[] Scale;
+        public Decomposition[] DTransformation;
+        public Matrix4x4[] Transformation;
         public Color Color;
+        public class Decomposition
+        {
+            public Vector3 Position;
+            public Vector3 Rotation;
+            public Vector3 Scale;
+        }
+        public void Decompose()
+        {
+            List<Decomposition> New_Trans = new List<Decomposition>();
+            foreach (var matrix in Transformation)
+            {
+                Vector3 pos;
+                Quaternion rot;
+                Vector3 sca;
+                Matrix4x4.Decompose(matrix, out sca, out rot, out pos);
+                New_Trans.Add(new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca });
+            }
+            DTransformation = New_Trans.ToArray();
+        }
     }
+
+    //good color
     public class Color
     {
         public float R { get; set; }
@@ -149,20 +180,55 @@ namespace ModChart.Wall
             if (A == 0) return true;
             return false;
         }
-    }
-    public class Transformation
-    {
-        public Vector3 Position;
-        public Vector3 Rotation;
-        public Vector3 Scale;
-        public static Transformation createFromNode(ColladaXML.Visual_scenes.Visual_scene.Node node)
+        public override string ToString()
         {
-            return DecomposeColladaMatrix(node.matrix.toFloatArray());
+            return $"{R} {G} {B} {A}";
         }
-        public static Transformation DecomposeColladaMatrix(float[] floatArray)
+    }
+    public static class Converters
+    {
+        public static float[] toFloatArray(this string values)
         {
-            Transformation transformation = new Transformation();
-            object transformationMatrix = new Matrix4x4()
+            return values.Split(' ').Select(item => { return Convert.ToSingle(item); }).ToArray();
+        }
+        public static List<float> toListWithSize(this float floatA, int count)
+        {
+            List<float> newArray = new List<float>();
+            for (int i = 0; i < count; i++)
+            {
+                newArray.Add(floatA);
+            }
+            return newArray;
+        }
+        public static T[] Slice<T>(this T[] source, int start, int end)
+        {
+            // Handles negative ends.
+            if (end < 0)
+            {
+                end = source.Length + end;
+            }
+            int len = end - start;
+
+            // Return new array.
+            T[] res = new T[len];
+            for (int i = 0; i < len; i++)
+            {
+                res[i] = source[i + start];
+            }
+            return res;
+        }
+        public static Matrix4x4[] toMatricies(this float[] floatArray)
+        {
+            List<Matrix4x4> Matricies = new List<Matrix4x4>();
+            for (int i = 0; i < floatArray.Length; i += 16)
+            {
+                Matricies.Add(floatArray.Slice(i, i + 16).toMatrix());
+            }
+            return Matricies.ToArray();
+        }
+        public static Matrix4x4 toMatrix(this float[] floatArray)
+        {
+            return new Matrix4x4()
             {
                 M11 = floatArray[0],
                 M12 = floatArray[4],
@@ -181,47 +247,17 @@ namespace ModChart.Wall
                 M43 = floatArray[11],
                 M44 = floatArray[15]
             };
-            Quaternion quaternion;
-            Matrix4x4.Decompose((Matrix4x4)transformationMatrix, out transformation.Scale, out quaternion, out transformation.Position);
-            transformation.Rotation = quaternion.QuaternionToEuler();
-            return transformation;
+
         }
-    }
-    public class AnimationList
-    {
-        public List<Vector3> Position = new List<Vector3>();
-        public List<Vector3> Rotation = new List<Vector3>();
-        public List<Vector3> Scale = new List<Vector3>();
-        public void addTransformation(Transformation transformation)
+        public static object DeserializeXML<t>(string path)
         {
-            Position.Add(transformation.Position);
-            Rotation.Add(transformation.Rotation);
-            Scale.Add(transformation.Scale);
-        }
-        public static AnimationList decompose(float[] floatArray)
-        {
-            AnimationList animationList = new AnimationList();
-            for (int i = 0; i < floatArray.Length; i += 16)
+            object obj = null;
+            XmlSerializer serializer = new XmlSerializer(typeof(t));
+            using (Stream reader = new FileStream(path, FileMode.Open))
             {
-                animationList.addTransformation(Transformation.DecomposeColladaMatrix(new float[] { floatArray[i + 0], floatArray[i + 1], floatArray[i + 2], floatArray[i + 3], floatArray[i + 4], floatArray[i + 5], floatArray[i + 6], floatArray[i + 7], floatArray[i + 8], floatArray[i + 9], floatArray[i + 10], floatArray[i + 11], floatArray[i + 12], floatArray[i + 13], floatArray[i + 14], floatArray[i + 15] }));
+                obj = serializer.Deserialize(reader);
             }
-            return animationList;
-        }
-    }
-    public static class Converters
-    {
-        public static float[] toFloatArray(this string values)
-        {
-            return values.Split(' ').Select(item => { return Convert.ToSingle(item); }).ToArray();
-        }
-        public static List<float> toListWithSize(this float floatA, int count)
-        {
-            List<float> newArray = new List<float>();
-            for (int i = 0; i < count; i++)
-            {
-                newArray.Add(floatA);
-            }
-            return newArray;
+            return obj;
         }
     }
 

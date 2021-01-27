@@ -21,14 +21,17 @@ namespace ModChart
         {
             return Convert.ToSingle(v.ToString());
         }
-        
-
-        public static Point PolarToCartesian(double angle, double radius)
+        public static double toDouble(this object v)
         {
-            double angleRad = (Math.PI / 180) * (angle - 90);
-            double x = radius * Math.Cos(angleRad);
-            double y = radius * Math.Sin(angleRad);
-            return new Point() { x = x, y = y };
+            return Convert.ToDouble(v.ToString());
+        }
+
+        public static Vector2 PolarToCartesian(float angle, float radius)
+        {
+            float angleRad = (Math.PI.toFloat() / 180f) * (angle - 90f);
+            float x = radius * Math.Cos(angleRad).toFloat();
+            float y = radius * Math.Sin(angleRad).toFloat();
+            return new Vector2(x,y);
         }
 
         public static float Coterminal(this float angle)
@@ -40,7 +43,7 @@ namespace ModChart
             return angle;
         }
 
-        public static Vector3 QuaternionToEuler(this Quaternion q)
+        public static Vector3 ToEuler(this Quaternion q)
         {
             
             Vector3 euler;
@@ -83,7 +86,7 @@ namespace ModChart
             return euler;
         }
 
-        public static Quaternion EulerToQuaternion(this Vector3 euler)
+        public static Quaternion ToQuaternion(this Vector3 euler)
         {
             float xOver2 = euler.X * ((float)Math.PI / 180) * 0.5f;
             float yOver2 = euler.Y * ((float)Math.PI / 180) * 0.5f;
