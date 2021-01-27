@@ -72,7 +72,7 @@ generic customdata for customevents
  - Color: [r,g,b,a?]
 
 # ModelToWall
-constructs a model out of walls. see [README.md](https://github.com/thelightdesigner/ScuffedWalls/blob/main/README.md) for more info
+constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
  - path: string
  - fullpath string
