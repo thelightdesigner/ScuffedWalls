@@ -8,7 +8,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v0.7.2";
+        public static string ver = "v0.7.3-unreleased";
         static void Main(string[] args)
         {
             ScuffedLogger.Log($"ScuffedWalls {ver}");

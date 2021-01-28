@@ -49,16 +49,16 @@ namespace ModChart.Wall
                             animatedefiniteposition = positionN.ToArray();
                             animatelocalrotation = rotationN.ToArray();
                             animatescale = scaleN.ToArray();
-                            scale = new object[] { cube.DTransformation[0].Scale.X * 2, cube.DTransformation[0].Scale.Y * 2, cube.DTransformation[0].Scale.Z * 2 };
+                            scale = new object[] { cube.DTransformation[0].Scale.X * 2f, cube.DTransformation[0].Scale.Y * 2f, cube.DTransformation[0].Scale.Z * 2f };
                         }
                         break;
                     case ModelTechnique.Normal:
                         {
-                            position = new object[] { cube.DTransformation[0].Position.X * -1, cube.DTransformation[0].Position.Y };
-                            localrotation = new object[] { cube.DTransformation[0].Rotation.X, cube.DTransformation[0].Rotation.Y * -1, cube.DTransformation[0].Rotation.Z * -1 };
-                            scale = new object[] { cube.DTransformation[0].Scale.X, cube.DTransformation[0].Scale.Y };
+                            position = new object[] { (cube.DTransformation[0].Position.X * -1f) -2f, cube.DTransformation[0].Position.Y };
+                            localrotation = new object[] { cube.DTransformation[0].Rotation.X, cube.DTransformation[0].Rotation.Y * -1f, cube.DTransformation[0].Rotation.Z * -1f };
+                            scale = new object[] { cube.DTransformation[0].Scale.X * 2f, cube.DTransformation[0].Scale.Y * 2f};
                             float beatlength = (5f / 3f * (60f / settings.BPM) * NJS);
-                            duration = (cube.DTransformation[0].Scale.Z * 2) / beatlength;
+                            duration = (cube.DTransformation[0].Scale.Z * 2f) / beatlength;
                             time = (cube.DTransformation[0].Position.Z / beatlength) + settings.Wall.GetTime();
                         }
                         break;
