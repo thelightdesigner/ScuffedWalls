@@ -1,5 +1,7 @@
 # TextToWall
 
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/geico.png)
+
 ## Font Image
 Scuffedwalls uses a special image to get the font for text to wall conversion. The image consists of a black or transparent background with the all characters on the same line.
 
