@@ -1,5 +1,6 @@
 ## Functions
 
+- [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`CloneFromWorkspaceByIndex`](#CloneFromWorkspaceByIndex)
 - [`Blackout`](#Blackout)
@@ -71,6 +72,23 @@ generic customdata for customevents
  - CCounterSpin: bool
  - Color: [r,g,b,a?]
 
+# TextToWall
+uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
+
+see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images.
+
+ - path: string
+ - fullpath string
+ - line: string, the text you want to convert to walls. [this can be repeated](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/linetext.jpg) to add more lines of text.
+ - letting: float, the relative space between letters. default: 1
+ - leading: float, the relative space between lines. default: 1
+ - size: float, scales the text. default: 1 (gigantic)
+ - thicc: float, makes the edges of the walls fill more of the center
+ - duration: float
+ - Position => moves the text by this amount, defaults to \[0,0]
+ - all the other imagetowall params if your really interested
+ - generic custom data
+
 # ModelToWall
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
@@ -96,8 +114,7 @@ constructs an image out of walls as pixels
  - maxlinelength: int, the max line length. default: +infinity
  - shift: float, the difference in compression priorities between the inversed compression. default: 1
  - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1) default: 0
- - AnimateDefinitePosition => moves each pixel by this amount, defaults to \[0,0,0,0],\[0,0,0,1] (only if normal = false)
- - Position => moves each pixel by this amount, defaults to \[0,0] (only if normal = true)
+ - Position => moves each pixel by this amount, defaults to \[0,0]
  - generic custom data
  
 # CloneFromWorkspaceByIndex
