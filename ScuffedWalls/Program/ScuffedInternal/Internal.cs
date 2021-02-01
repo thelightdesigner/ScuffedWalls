@@ -46,7 +46,7 @@ namespace ScuffedWalls
             {
                 try
                 {
-                    string parameter = line.Split(':', 2)[0].ToLower();
+                    string parameter = line.removeWhiteSpace().Split(':', 2)[0].ToLower();
                     string argument = line.Split(':', 2)[1];
                     while (argument.Contains("Random("))
                     {

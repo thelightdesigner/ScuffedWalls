@@ -10,7 +10,7 @@ namespace ModChart.Wall
     {
         ImageSettings _Settings;
         Bitmap _Bitmap;
-        BeatMap.Obstacle[] Walls;
+        public BeatMap.Obstacle[] Walls { get; private set; }
 
         public WallImage(string path, ImageSettings settings)
         {
@@ -106,6 +106,7 @@ namespace ModChart.Wall
                 IntVector2 Dimensions = pixels.GetDimensions();
                 List<Pixel> CompressedPixels = new List<Pixel>(pixels.Length);
 
+                int i = 0;
                 Pixel CurrentPixel = null;
                 for (Pos.X = 0; Pos.X < Dimensions.X; Pos.X++)
                 {
@@ -117,7 +118,7 @@ namespace ModChart.Wall
                             Current != null && //this pixel has to exist
                             Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
                             Current.Color.Equals(CurrentPixel.Color, tolerance) &&
-                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.01f)) &&  //stop immediatly cunt
+                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly cunt
                             (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
 
                         if (CountPixel) //this vs last, color, width, existance
@@ -127,13 +128,13 @@ namespace ModChart.Wall
                         else
                         {
                             //add and reset
-                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.01f))) CompressedPixels.Add(CurrentPixel);
+                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
 
                             CurrentPixel = Current;
                         }
                     }
                 }
-                if (CurrentPixel != null) CompressedPixels.Add(CurrentPixel);
+                if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
                 return CompressedPixels.ToArray();
             }
 
@@ -142,7 +143,7 @@ namespace ModChart.Wall
 
     public class ImageSettings
     {
-        public ImageSettings(bool isBlackEmpty, float scale, float thicc, bool track, bool centered, float spread, float alfa, BeatMap.Obstacle baseWall)
+        public ImageSettings(bool isBlackEmpty, float scale, float thicc, bool centered, float spread, float alfa, BeatMap.Obstacle baseWall)
         {
             this.isBlackEmpty = isBlackEmpty;
             this.scale = scale;
@@ -157,7 +158,6 @@ namespace ModChart.Wall
         public bool isBlackEmpty { get; set; }
         public float scale { get; set; }
         public float thicc { get; set; }
-        public bool track { get; set; }
         public int maxPixelLength { get; set; }
         public bool centered { get; set; }
         public float spread { get; set; }
@@ -167,7 +167,7 @@ namespace ModChart.Wall
         public BeatMap.Obstacle Wall { get; set; }
     } //settings
 
-    class Pixel
+    public class Pixel
     {
         //data type
         public IntVector2 Position { get; set; }
@@ -181,6 +181,10 @@ namespace ModChart.Wall
                 Scale = Scale,
                 Color = Color
             };
+        }
+        public void AddWidth()
+        {
+            Scale = Scale.Transform(new IntVector2(1,0));
         }
         public Pixel Inverse()
         {
@@ -214,7 +218,7 @@ namespace ModChart.Wall
 
     }
 
-    class FloatingPixel
+    public class FloatingPixel
     {
         public Vector2 Position { get; set; }
         public Vector2 Scale { get; set; }
@@ -253,13 +257,23 @@ namespace ModChart.Wall
         }
     }
 
-    static class BitmapHelper
+    public static class BitmapHelper
     {
+        public static Bitmap Crop(this Bitmap b, Pixel r)
+        {
+            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y);
+            using (Graphics g = Graphics.FromImage(nb))
+            {
+                g.DrawImage(b, -r.Position.X, r.Position.Y);
+                return nb;
+            }
+        }
         public static Pixel GetCurrent(this Pixel[] pixels, IntVector2 pos)
         {
             if (!pixels.Any(p => p.Position.X == pos.X && p.Position.Y == pos.Y)) return null; //if it dont exist
             //DateTime dateTime = DateTime.Now;
             Pixel thing = pixels.Where(p => p.Position.Y == pos.Y && p.Position.X == pos.X).First();
+            //Console.WriteLine("e");
             //Console.WriteLine(DateTime.Now - dateTime);
             return thing;
             //  System.Threading.Tasks.Parallel.
@@ -286,11 +300,24 @@ namespace ModChart.Wall
         public static IntVector2 GetDimensions(this Pixel[] pixels)
         {
             if (pixels.Length == 0) return new IntVector2() { X = 0, Y = 0 };
-            Pixel[] Sorted = pixels.OrderBy(p => p.Position.Y).ThenBy(p => p.Position.X).ToArray();
+            Pixel[] SortedY = pixels.OrderBy(p => p.Position.Y).ToArray();
+            Pixel[] SortedX = pixels.OrderBy(p => p.Position.X).ToArray();
             return new IntVector2()
             {
-                Y = Sorted.Last().Position.Y + Sorted.Last().Scale.Y,
-                X = Sorted.Last().Position.X + Sorted.Last().Scale.X
+                Y = SortedY.Last().Position.Y + SortedY.Last().Scale.Y,
+                X = SortedX.Last().Position.X + SortedX.Last().Scale.X
+            };
+
+        }
+        public static Vector2 GetDimensions(this BeatMap.Obstacle[] walls)
+        {
+            if (walls.Length == 0) return new Vector2() { X = 0, Y = 0};
+            var SortedY = walls.OrderBy(p => p._customData._position[1].toFloat()).ToArray();
+            var SortedX = walls.OrderBy(p => p._customData._position[0].toFloat()).ToArray();
+            return new Vector2()
+            {
+                X = SortedX.Last()._customData._position[0].toFloat() - SortedX.First()._customData._position[0].toFloat(),
+                Y = SortedY.Last()._customData._position[1].toFloat() - SortedY.First()._customData._position[1].toFloat(),
             };
 
         }
@@ -301,6 +328,14 @@ namespace ModChart.Wall
                 X = t1.X + t2.X,
                 Y = t1.Y + t2.Y
             };
+        }
+        public static bool IsVerticalBlackOrEmpty(this Bitmap img, IntVector2 pos)
+        {
+            for (int y = 0; y < img.Height; y++)
+            {
+                if (!img.GetCurrent(new IntVector2(pos.X, y)).isBlackOrEmpty(0.01f)) return false;
+            }
+            return true;
         }
 
         //text to wall things

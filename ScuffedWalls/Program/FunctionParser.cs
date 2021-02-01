@@ -17,6 +17,7 @@ namespace ScuffedWalls
             this.config = config;
             Workspaces = workspaces;
             this.info = info;
+
         }
         private Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
@@ -34,10 +35,10 @@ namespace ScuffedWalls
             for (int i = 0; i < args.Length; i++)
             {
 
-                if (Char.IsNumber(args[i][0]))
+                if (Char.IsNumber(args[i].removeWhiteSpace()[0]))
                 {
-                    string functionName = args[i].Split(':')[1].Trim(' ').ToLower();
-                    float time = Convert.ToSingle(args[i].Split(':')[0].Trim(' '));
+                    string functionName = args[i].removeWhiteSpace().Split(':')[1].Trim(' ').ToLower();
+                    float time = Convert.ToSingle(args[i].removeWhiteSpace().Split(':')[0].Trim(' '));
                     if (functionName.MethodExists<FunctionParser>())
                     {
                         try
@@ -45,12 +46,13 @@ namespace ScuffedWalls
                             typeof(FunctionParser).GetMethod(functionName)
                                 .Invoke(Workspace, new object[] { ScuffedFile.getLinesUntilNextFunction(i, args), time });
                         }
-                        catch
+                        catch(Exception e)
                         {
-                            throw new ScuffedException($"Error parsing function \"{functionName}\" at beat {time}");
+                            throw new ScuffedException($"Error parsing function \"{functionName}\" at beat {time}   ERR: {e.InnerException.Message}");
+                            
                         }
                     }
-                    else throw new ScuffedException($"Function \"{functionName}\" does not exist, Skipping");
+                    else throw new ScuffedException($"Function \"{functionName}\" does not exist");
                 }
 
             }
@@ -167,9 +169,97 @@ namespace ScuffedWalls
             }
         }
         [SFunction]
-        public void texttowall()
+        public void texttowall(string[] args, float time)
         {
-            //nothing yet...
+            List<string> lines = new List<string>();
+            float letting = 1;
+            float leading = 1;
+            float size = 1;
+            float thicc = 1;
+            float duration = 1;
+            float compression = 0.1f;
+            float shift = 1;
+            int linelength = 1000000;
+            bool isblackempty = true;
+            float alpha = 1;
+            float smooth = 0;
+            string path = "";
+            foreach(var p in args.TryGetParameters())
+            {
+                switch(p.parameter)
+                {
+                    case "line":
+                        lines.Add(p.argument);
+                        break;
+                    case "duration":
+                        duration = p.argument.toFloat();
+                        break;
+                    case "letting":
+                        letting = p.argument.toFloat();
+                        break;
+                    case "leading":
+                        leading = p.argument.toFloat();
+                        break;
+                    case "size":
+                        size = p.argument.toFloat();
+                        break;
+                    case "path":
+                        path = config.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
+                        break;
+                    case "fullpath":
+                        path = p.argument;
+                        break;
+                    case "thicc":
+                        thicc = p.argument.toFloat();
+                        break;
+                    case "compression":
+                        compression = p.argument.toFloat();
+                        break;
+                    case "shift":
+                        shift = p.argument.toFloat();
+                        break;
+                    case "maxlinelength":
+                        linelength = Convert.ToInt32(p.argument);
+                        break;
+                    case "alpha":
+                        alpha = p.argument.toFloat();
+                        break;
+                    case "spreadspawntime":
+                        smooth = p.argument.toFloat();
+                        break;
+                    case "isblackempty":
+                        isblackempty = bool.Parse(p.argument);
+                        break;
+                }
+            }
+            lines.Reverse();
+            WallText text = new WallText(new TextSettings()
+            {
+                Leading = leading,
+                Letting = letting,
+                ImagePath = path,
+                Text = lines.ToArray(),
+                ImageSettings = new ImageSettings()
+                {
+                    scale = size,
+                    shift = shift,
+                    spread = smooth,
+                    alfa = alpha,
+                    centered = false,
+                    isBlackEmpty = isblackempty,
+                    maxPixelLength = linelength,
+                    thicc = thicc,
+                    tolerance = compression,
+                    Wall = new BeatMap.Obstacle()
+                    {
+                        _time = time,
+                        _duration = duration,
+                        _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                    }
+                }
+            });
+            Walls.AddRange(text.Walls);
+            ConsoleOut("Wall",text.Walls.Length,time,"TextToWall");
         }
 
         [SFunction]
@@ -412,7 +502,7 @@ namespace ScuffedWalls
                 switch (p.parameter)
                 {
                     case "path":
-                        Path = config.MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.argument;
@@ -482,7 +572,7 @@ namespace ScuffedWalls
                         normal = Convert.ToInt32(bool.Parse(p.argument));
                         break;
                     case "path":
-                        Path = config.MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.argument;
@@ -525,7 +615,7 @@ namespace ScuffedWalls
                 switch (p.parameter)
                 {
                     case "path":
-                        Path = config.MapFolderPath + @"\" + p.argument;
+                        Path = config.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.argument;

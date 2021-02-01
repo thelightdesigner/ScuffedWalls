@@ -21,8 +21,8 @@ namespace ScuffedWalls
             StreamReader FileReader = new StreamReader(FileStream);
             while (!FileReader.EndOfStream)
             {
-                string line = new string(FileReader.ReadLine().removeWhiteSpace());
-                if (!string.IsNullOrEmpty(line)) if (line[0] != '#') lines.Add(line);
+                string line = new string(FileReader.ReadLine());
+                if (!string.IsNullOrEmpty(line.removeWhiteSpace())) if (line.removeWhiteSpace()[0] != '#') lines.Add(line);
             }
             //clean up
             FileReader.Close();

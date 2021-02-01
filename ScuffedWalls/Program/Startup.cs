@@ -3,6 +3,8 @@ using System.IO;
 using ModChart;
 using System.Text.Json;
 using System.Linq;
+using System.Threading.Tasks;
+using Octokit;
 
 namespace ScuffedWalls
 {
@@ -35,6 +37,7 @@ namespace ScuffedWalls
             Info = GetInfo();
             VerifyOld();
             VerifySW();
+            _ = CheckReleases();
         }
 
         public Config GetConfig()
@@ -59,6 +62,17 @@ namespace ScuffedWalls
                 }
                 Console.Write("[ConsoleLoggerDefault] Main: "); Console.ForegroundColor = ConsoleColor.Red; Console.Write("N"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("w"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("S"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("W"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("F"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("i"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("l"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("C"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("r"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("a"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("t"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("d"); Console.ForegroundColor = ConsoleColor.Blue; Console.WriteLine("!"); Console.ResetColor();
             }
+        }
+        public async Task CheckReleases()
+        {
+            GitHubClient client = new GitHubClient(new ProductHeaderValue("ScuffedWalls"));
+            var releases = await client.Repository.Release.GetAll("thelightdesigner", "ScuffedWalls");
+            var latest = releases.OrderByDescending(r => r.PublishedAt).First();
+            if (latest.TagName != ScuffedWalls.ver)
+            {
+                ScuffedLogger.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
+            }
+
         }
         public Info GetInfo()
         {

@@ -8,7 +8,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v0.7.3-unreleased";
+        public static string ver = "v0.8.0";
         static void Main(string[] args)
         {
             ScuffedLogger.Log($"ScuffedWalls {ver}");
@@ -35,7 +35,7 @@ namespace ScuffedWalls
 
                 for (int i = 0; i < scuffedFile.SWFileLines.Length; i++)
                 {
-                    if (scuffedFile.SWFileLines[i].ToLower().StartsWith("workspace"))
+                    if (scuffedFile.SWFileLines[i].ToLower().removeWhiteSpace().StartsWith("workspace"))
                     {
                         try
                         {

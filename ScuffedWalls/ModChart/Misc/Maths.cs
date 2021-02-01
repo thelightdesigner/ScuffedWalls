@@ -12,8 +12,17 @@ namespace ModChart
     }
     public struct IntVector2
     {
+        public IntVector2(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
         public int X { get; set; }
         public int Y { get; set; }
+        public override string ToString()
+        {
+            return $"{X},{Y}";
+        }
     }
     static class Maths
     {
@@ -25,7 +34,22 @@ namespace ModChart
         {
             return Convert.ToDouble(v.ToString());
         }
-
+        public static Vector2 ToVector2(this object[] array)
+        {
+            return new Vector2(array[0].toFloat(), array[1].toFloat());
+        }
+        public static object[] FromVector2(this Vector2 vector)
+        {
+            return new object[] { vector.X, vector.Y};
+        }
+        public static Vector3 ToVector3(this object[] array)
+        {
+            return new Vector3(array[0].toFloat(), array[1].toFloat(), array[2].toFloat());
+        }
+        public static object[] FromVector3(this Vector3 vector)
+        {
+            return new object[] { vector.X, vector.Y, vector.Z };
+        }
         public static Vector2 PolarToCartesian(float angle, float radius)
         {
             float angleRad = (Math.PI.toFloat() / 180f) * (angle - 90f);

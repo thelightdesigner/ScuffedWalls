@@ -176,8 +176,8 @@ namespace ModChart.Wall
         }
         public bool isBlackOrEmpty(float tolerance)
         {
-            if (R + B + G < tolerance) return true;
-            if (A == 0) return true;
+            if (R + B + G < tolerance)  return true;  
+            if (A == 0f) return true;
             return false;
         }
         public override string ToString()
