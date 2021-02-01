@@ -20,3 +20,5 @@ Windows will probably bother you about this being malware. If you dont trust it 
 More info on scuffed functions can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
 More info on 3d modeling for wall conversion can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md)
+
+More info on TextToWall images can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md)
