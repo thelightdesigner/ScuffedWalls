@@ -1,5 +1,5 @@
 # ScuffedWalls
-A simple tool for making ne 1.2 beat saber maps easier. (Heavilly inspired off of BeatWalls)
+A simple tool for making NE 2.0 beat saber maps easier. (Heavilly inspired off of BeatWalls)
 
 Features:
  - Noodle extensions custom json data
