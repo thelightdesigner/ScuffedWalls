@@ -8,8 +8,7 @@ Features:
  - Custom events support
  - Importing map objects from other map files
  - Appending custom data to map objects
-
-- ~~Text to wall support~~ v0.8.0 probably
+ - Text to wall support
  
  Usage:
   - Drag the map folder onto the program
