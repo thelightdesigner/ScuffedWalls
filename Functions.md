@@ -1,5 +1,7 @@
 ## Functions
 
+Functions are defined by a number followed with a colon and the function name (i.e  5:function). Every line beneath the function will apply to that function. All the available functions that can be used are the following.
+
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`CloneFromWorkspaceByIndex`](#CloneFromWorkspaceByIndex)
@@ -18,7 +20,7 @@
 - [`PointDefinition`](#PointDefinition)
 
 ## CustomData
-generic customdata that can be parsed on most functions
+generic customdata that can be parsed as a parameter on most functions
 "" = put in quotes, ? = optional
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - AnimatePosition: \[x,y,z,t,"e"?]
