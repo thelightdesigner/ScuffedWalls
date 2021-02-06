@@ -1,5 +1,5 @@
 # ScuffedWalls
-A simple tool for making ne 1.2 beat saber maps easier. (Heavilly inspired off of BeatWalls)
+A simple tool for making NE 2.0 beat saber maps easier. (Heavilly inspired off of BeatWalls)
 
 Features:
  - Noodle extensions custom json data
@@ -8,8 +8,7 @@ Features:
  - Custom events support
  - Importing map objects from other map files
  - Appending custom data to map objects
-
-- ~~Text to wall support~~ v0.8.0 probably
+ - Text to wall support
  
  Usage:
   - Drag the map folder onto the program
@@ -20,3 +19,5 @@ Windows will probably bother you about this being malware. If you dont trust it 
 More info on scuffed functions can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
 More info on 3d modeling for wall conversion can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md)
+
+More info on TextToWall images can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md)
