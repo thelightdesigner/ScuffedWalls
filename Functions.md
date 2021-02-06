@@ -88,6 +88,22 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - generic custom data
+ 
+ Example
+ ```
+ 5:TextToWall
+   Path:font.png
+   line:a line of text!
+   line:another line of text?
+   letting:2
+   leading:-1
+   thicc:12
+   spreadspawntime:1
+   size:0.1
+   position:[0,2]
+   duration:12
+   animatedefiniteposition:[0,0,0,0]
+ ```
 
 # ModelToWall
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
@@ -99,6 +115,16 @@ constructs a model out of walls. see [here](https://github.com/thelightdesigner/
  - spreadspawntime: float
  - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
  - generic custom data
+ 
+  Example
+  ```
+ 5:ModelToWall
+   Path:model.dae
+   hasAnimation:false
+   spreadspawntime:1
+   normal:true
+   track:FurryTrack
+ ```
 
 # ImageToWall
 constructs an image out of walls as pixels
@@ -117,6 +143,22 @@ constructs an image out of walls as pixels
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - generic custom data
  
+  Example
+  ```
+ 5:ImageToWall
+   Path:image.png
+   thicc:12
+   size:0.5
+   isBlackEmpty: true
+   centered: true
+   maxlinelength:8
+   compression:0.1
+   spreadspawntime:1
+   position:[0,2]
+   duration:12
+   animatedefiniteposition:[0,0,0,0]
+ ```
+ 
 # CloneFromWorkspaceByIndex
 clones mapobjects from a different workspace by the index
 
@@ -126,9 +168,23 @@ clones mapobjects from a different workspace by the index
 - addTime: float, shifts the cloned things by this amount.
 - toBeat: float
 
-
+ Example
+```
+ 5:CloneFromWorkspaceByIndex
+   Index:2
+   Type:0,1,2
+   fromBeat:25
+   toBeat:125
+   addTime:32
+ ```
+ 
 # Blackout
 adds a single light off event
+
+ Example
+  ```
+ 5:Blackout
+ ```
 
 # AppendToAllEventsBetween
 adds on custom chroma data to events/lights between the function time and endtime
@@ -137,11 +193,24 @@ adds on custom chroma data to events/lights between the function time and endtim
  - appendTechnique: int(0-2)
  - chroma customdata
   lighttype: 0, 1, 2, 3; the type of the light
+  
  ~special things~
  - converttoprops
  - propfactor
  - converttorainbow
  - rainbowfactor
+
+ Example
+```
+ 5:AppendToAllEventsBetween
+   toBeat:10
+   appendTechnique:2
+   lightType:1,3,0
+   converttoprops: true
+   propfactor: 1
+   converttorainbow: true
+   rainbowfactor:1
+ ```
 
 # AppendToAllWallsBetween
 adds on custom noodle data to walls between the function time and endtime
@@ -149,6 +218,13 @@ adds on custom noodle data to walls between the function time and endtime
  - toBeat: float
  - appendTechnique: int(0-2)
  - generic custom data
+ 
+  Example
+ ```
+ 5:AppendToAllWallsBetween
+   toBeat:10
+   track: FurryTrack
+ ```
 
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime
@@ -158,6 +234,13 @@ adds on custom noodle data to notes between the function time and endtime
  - appendTechnique: int(0-2)
  - generic custom data
  
+  Example
+  ```
+ 5:AppendToAllNotesBetween
+   toBeat:10
+   track: FurryTrack
+ ```
+ 
 # Import
 adds in map objects from other map.dat files
 
@@ -166,6 +249,15 @@ adds in map objects from other map.dat files
  - type:int(0-3), what to import
  - fromBeat: float
  - toBeat: float
+ 
+  Example
+  ```
+ 5:Import
+   fullpath:E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test\EasyStandard.dat
+   type:2
+   fromBeat:15
+   toBeat:180
+ ```
 
 # Wall
 makes a wall
@@ -175,6 +267,22 @@ makes a wall
 - repeatAddTime: float
 - generic custom data
 
+ Example
+```
+5:Wall
+  repeat:160
+  repeataddtime:0.2
+  NJSOffset:-10
+  animatedefiniteposition:[Random(0,2),Random(8,12),Random(28,31),0],[Random(-7,-4),Random(10,14),Random(28,31),1,"easeInSine"]
+  animatescale:[1,1,1,0],[0.01,0.01,0.01,1,"easeInSine"]
+  scale:[0.8,0.8,0.8]
+  color:[0,Random(1.6,1.7),Random(1.9,2),2]
+  localrotation:[Random(0,360),Random(0,360),Random(0,360)]
+  rotation:[0,0,-5]
+  track:flowerfloat
+  animatedissolve:[0,0],[1,0],[1,0.9],[0,1]
+```
+
 # Note
 makes a note
 
@@ -183,12 +291,46 @@ makes a note
 - repeatAddTime: float
 - generic custom data
 
+ Example
+```
+100:Note
+  repeat:66
+  repeatAddTime:0.3
+  localRotation:[Random(0,360),Random(0,360),Random(0,360)]
+  Rotation:[90,0,0]
+  Position:[Random(-12,-6),Random(8,18)]
+  AnimatePosition:[0,0,-10,0],[0,0,-10,1]
+  AnimateDissolve:[0,0],[1,0.1],[1,1]
+  AnimateScale:[2,2,2,0],[2,2,2,1]
+  AnimateColor:[1, 0, 0, 1,0], [0, 1, 0, 0.5, 0.0832], [0, 0, 1, 1, 0.15], [1, 0, 0, 1, 0.23], [0, 1, 0, 1, 0.30], [0, 0, 1, 1, 0.38], [1, 0, 0, 1, 0.45], [0, 1, 0, 1, 0.52],     [0, 0, 1, 1, 0.60], [1, 0, 0, 1, 0.68], [0, 1, 0, 1, 0.75], [0, 0, 1, 1, 0.84],[1,1,1,1,1]
+  NJS:10
+  NJSOffset:4
+  fake:true
+  isInteractable: false
+  track: RandomShit
+```
+
 # AnimateTrack
 makes a custom event
 
  - customevent data
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
+ 
+  Example
+ ```
+ 70:AnimateTrack
+  track:RandomShit
+  duration:1
+  animatedissolve:[0,0],[0,1]
+  animatedissolvearrow:[0,0],[0,1]
+  
+  100:AnimateTrack
+  track:RandomShit
+  duration:1
+  animatedissolve:[0,0],[1,1]
+  animatedissolvearrow:[0,0],[1,1]
+```
 
 # AssignPathAnimation
 makes a custom event
@@ -196,18 +338,35 @@ makes a custom event
  - customevent data
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
+ 
+  Example
+ ```
+42:AssignPathAnimation
+  track:BeginningStretch
+  duration:8
+  AnimateRotation:[0,0,0,0],[0,0,0,0.5,"easeOutQuad"],[0,0,0,1]
+  easing:easeInOutSine
+```
 
 # AssignPlayerToTrack
 makes a custom event
  - customevent data
+ 
+  Example
+ ```
+ 3:AssignPlayerToTrack
+    track:BigMovement
+ ```
 
 # ParentTrack
 makes a custom event
  - customevent data
-
-# PointDefinition
-defines a set of points
-- name: string
-- points: \[],\[],\[]
+ 
+  Example
+  ```
+ 3:ParentTrack
+    track:BigMovement
+    ChildTracks:["rightnotes","leftnotes"]
+ ```
 
 
