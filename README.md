@@ -13,10 +13,12 @@ Features:
  Usage:
   - Drag the map folder onto the program
   - Input the number of the map file to generate to (Will overwrite anything in this map file)
+  - Input y/n for Autoimport (avoids complete overwrite)
+  - Input y/n for Backup (creates backups of map and SW file)
   - Type in the generated SW file, saving refreshes the program automatically. Or hitting R in the console window.
 Windows will probably bother you about this being malware. If you dont trust it clone the repo and build it yourself.
 
-***Intro and Setup video tuturial [`right here`](https://youtu.be/RrcQRQfaXAI)***
+Intro and Setup video tutorial [`right here`](https://youtu.be/RrcQRQfaXAI)
   
 More info on scuffed functions can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 

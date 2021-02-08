@@ -19,6 +19,12 @@ namespace ModChart
                 public object _beatmapFilename { get; set; }
                 public object _noteJumpMovementSpeed { get; set; }
                 public object _noteJumpStartBeatOffset { get; set; }
+                public customData _customData { get; set; }
+                public class customData
+                {
+                    public object[] _requirements { get; set; } = { };
+                    public object[] _suggestions { get; set; } = { };
+                }
             }
         }
 

@@ -50,6 +50,7 @@ namespace ModChart.Wall
             CustomData._animation ??= new BeatMap.CustomData.Animation();
             PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
             PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
+           // Console.WriteLine("Before Overwrite" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true }));
 
             // append technique 0 adds on customdata only if there is no existing customdata
             if (Type == AppendTechnique.NoOverwrites)
@@ -78,7 +79,7 @@ namespace ModChart.Wall
 
                 foreach (PropertyInfo property in propertiesCustomData)
                 {
-                    if (property.GetValue(CustomData) != null)
+                    if (property.GetValue(CustomData) != null && property.Name != "_animation")
                     {
                         property.SetValue(CurrentWall._customData, property.GetValue(CustomData));
                     }
@@ -86,12 +87,17 @@ namespace ModChart.Wall
                 }
                 foreach (PropertyInfo property in propertiesCustomDataAnimation)
                 {
+                    //Console.WriteLine(property.Name);
                     if (property.GetValue(CustomData._animation) != null)
                     {
                         property.SetValue(CurrentWall._customData._animation, property.GetValue(CustomData._animation));
+
                     }
+                    //Console.WriteLine($"changed from {property.GetValue(CurrentWall._customData._animation)} to {property.GetValue(CustomData._animation)}");
 
                 }
+                //Console.WriteLine("wtf is this" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true }));
+                //Console.WriteLine("After Overwrite" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true}));
                 return CurrentWall;
             }
             // append technique 2 completely replaces the customdata

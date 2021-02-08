@@ -16,7 +16,7 @@ namespace ScuffedWalls
             ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Type}s)");
             Console.ResetColor();
         }
-        public Workspace toWorkspace()
+        public Workspace toWorkspace(string name)
         {
             return new Workspace()
             {
@@ -24,7 +24,8 @@ namespace ScuffedWalls
                 Walls = Walls.ToArray(),
                 CustomEvents = CustomEvents.ToArray(),
                 Lights = Lights.ToArray(),
-                PointDefinitions = PointDefinitions.ToArray()
+                PointDefinitions = PointDefinitions.ToArray(),
+                Name = name
             };
         }
         public static BeatMap toBeatMap(Workspace[] workspaces)

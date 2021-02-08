@@ -23,17 +23,26 @@ Functions are defined by a number followed with a colon and the function name (i
 generic customdata that can be parsed as a parameter on most functions
 "" = put in quotes, ? = optional
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
+- DefineAnimateDefinitePosition:string
 - AnimatePosition: \[x,y,z,t,"e"?]
+- DefineAnimatePosition:string
 - Scale: \[x,y?,z?]
 - Track: string
 - NJSOffset: float
 - NJS: float
 - AnimateDissolve: \[d,t,"e"?]
+- DefineAnimateDissolve:string
 - AnimateColor: \[r,g,b,t,"e"?]
+- DefineAnimateColor:string
 - AnimateRotation: \[x,y,z,t,"e"?]
+- DefineAnimateRotation:string
 - AnimateLocalRotation: \[x,y,z,t,"e"?]
+- DefineAnimateLocalRotation:string
 - AnimateScale: \[x,y,z,t,"e"?]
-- isInteractable: bool
+- DefineAnimateScale:string
+- AnimateInteractable:\[i,t]
+- DefineAnimateInteractable:string
+- Interactable: bool
 - Fake: bool
 - Position: \[x,y]
 - Rotation: \[x,y,z] or float
@@ -45,13 +54,20 @@ generic customdata that can be parsed as a parameter on most functions
 generic customdata for customevents
 "" = put in quotes, ? = optional
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
+- DefineAnimateDefinitePosition:string
 - AnimatePosition: \[x,y,z,t,"e"?]
+- DefineAnimatePosition:string
 - Track: string
 - AnimateDissolve: \[d,t,"e"?]
+- DefineAnimateDissolve:string
 - AnimateColor: \[r,g,b,t,"e"?]
+- DefineAnimateColor:string
 - AnimateRotation: \[x,y,z,t,"e"?]
+- DefineAnimateRotation:string
 - AnimateLocalRotation: \[x,y,z,t,"e"?]
+- DefineAnimateLocalRotation:string
 - AnimateScale: \[x,y,z,t,"e"?]
+- DefineAnimateScale:string
 - childTracks:\["str","str"...]
 - parentTrack: string
 - easing: string
@@ -163,27 +179,32 @@ constructs an image out of walls as pixels
    animatedefiniteposition:[0,0,0,0]
  ```
  
-# CloneFromWorkspaceByIndex
-clones mapobjects from a different workspace by the index
+# CloneFromWorkspace
+clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
 
-- Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events
-- Index: int
-- fromBeat: float
+- Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events & NOT point definitions
+- Index: int, the index of the workspace you want fo clone from. Its ethier one or the other.
+- Name:string, the name of the workspace you want to clone from. Its ethier one or the other.
 - addTime: float, shifts the cloned things by this amount.
-- toBeat: float
+- toBeat: float, the beat where to stop cloning from.
 
  Example
 ```
- 5:CloneFromWorkspaceByIndex
-   Index:2
+Workspace:wtf workspace
+64:wall
+
+Workspace:hahaball
+
+Workspace
+ 25:CloneFromWorkspaceByIndex
+   Name:wtf workspace
    Type:0,1,2
-   fromBeat:25
    toBeat:125
    addTime:32
  ```
  
 # Blackout
-adds a single light off event
+adds a single light off event at the beat number. why? because why not.
 
  Example
   ```
@@ -228,6 +249,7 @@ adds on custom noodle data to walls between the function time and endtime
  5:AppendToAllWallsBetween
    toBeat:10
    track: FurryTrack
+   appendTechnique:1
  ```
 
 # AppendToAllNotesBetween
@@ -243,14 +265,23 @@ adds on custom noodle data to notes between the function time and endtime
  5:AppendToAllNotesBetween
    toBeat:10
    track: FurryTrack
+   appendTechnique:2
  ```
+
+ ## AppendTechnique
+tells the append function how to add on your custom data to other map object custom data.
+  0 = Will not overwrite any old custom data property but can still append to nulled properties.
+  1 = Overwrites the old custom data property for the new one.
+  2 = Removes all old customdata and adds on the new ones.
+
+**default is always 0**
  
 # Import
 adds in map objects from other map.dat files
 
  - path: string
  - fullpath string
- - type:int(0-3), what to import
+ - type:int,int,int (defaults to 0,1,2,3) what to import where 0 = walls, 1 = notes, 2 = lights, 3 = customevents & point definitions
  - fromBeat: float
  - toBeat: float
  
@@ -262,6 +293,8 @@ adds in map objects from other map.dat files
    fromBeat:15
    toBeat:180
  ```
+
+
 
 # Wall
 makes a wall
@@ -373,4 +406,18 @@ makes a custom event
     ChildTracks:["rightnotes","leftnotes"]
  ```
 
+# PointDefinition
+makes a point definition
+  - name:string
+  - points:points?
+
+  Example
+```
+  5:PointDefinition
+    name:UpDownPoints
+    points:[0,0,0,0],[0,15,0,0.5,"easeInOutSine"],[0,0,0,1,"easeInOutSine"]
+
+  15:Wall
+    DefineAnimateDefinitePosition:UpDownPoints
+```
 

@@ -174,6 +174,10 @@ namespace ModChart.Wall
         {
             return new object[] { R, G, B, alpha };
         }
+        public static Color ColorFromObjArray(object[] array)
+        {
+            return new Color() { R = array[0].toFloat(), G = array[1].toFloat(), B = array[2].toFloat() , A = array[3].toFloat() };
+        }
         public bool isBlackOrEmpty(float tolerance)
         {
             if (R + B + G < tolerance)  return true;  

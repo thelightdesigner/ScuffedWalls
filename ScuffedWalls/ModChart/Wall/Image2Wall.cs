@@ -42,12 +42,16 @@ namespace ModChart.Wall
                    .Resize(_Settings.scale);
                 }) //size
                 .ToArray();
+           // Console.WriteLine(_Settings.scale);
 
             //centered offseter
             if (_Settings.centered) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = -(_Bitmap.Width.toFloat() * _Settings.scale / 2), Y = 0 }); }).ToArray();
 
             //position offseter
             if (_Settings.Wall._customData._position != null) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = _Settings.Wall._customData._position[0].toFloat(), Y = _Settings.Wall._customData._position[1].toFloat() }); }).ToArray();
+
+            //color override
+            if (_Settings.Wall._customData._color != null) Pixels = Pixels.Select(p => { p.Color = Color.ColorFromObjArray(_Settings.Wall._customData._color); return p; }).ToArray();
 
             Random rnd = new Random();
             Walls = Pixels.Select(p =>

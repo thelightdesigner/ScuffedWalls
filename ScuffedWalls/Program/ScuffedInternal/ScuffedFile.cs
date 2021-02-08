@@ -8,26 +8,33 @@ namespace ScuffedWalls
     {
         string SWFilePath;
         public string[] SWFileLines;
+        public string[] SWRaw;
         public ScuffedFile(string path)
         {
             SWFilePath = path;
-            Refresh();
         }
         public void Refresh()
         {
             //get all new lines from file
             List<string> lines = new List<string>();
-            FileStream FileStream = new FileStream(SWFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            StreamReader FileReader = new StreamReader(FileStream);
-            while (!FileReader.EndOfStream)
+            List<string> raw = new List<string>();
+
+            using (StreamReader FileReader = new StreamReader(new FileStream(SWFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
-                string line = new string(FileReader.ReadLine());
-                if (!string.IsNullOrEmpty(line.removeWhiteSpace())) if (line.removeWhiteSpace()[0] != '#') lines.Add(line);
+                while (!FileReader.EndOfStream)
+                {
+                    string line = FileReader.ReadLine();
+                    raw.Add(line);
+                    if (!string.IsNullOrEmpty(line.removeWhiteSpace())) if (line.removeWhiteSpace()[0] != '#') lines.Add(line);
+                }
             }
-            //clean up
-            FileReader.Close();
-            FileStream.Close();
+            SWRaw = raw.ToArray();
             SWFileLines = lines.ToArray();
+
+            if (Startup.ScuffedConfig.IsBackupEnabled)
+            {
+                File.Copy(Startup.ScuffedConfig.SWFilePath,$"{Startup.ScuffedConfig.BackupPaths.BackupSWFolderPath}\\{DateTime.Now.ToFileString()}.sw");
+            }
         }
         public string[] getLinesUntilNextWorkspace(int index)
         {

@@ -2,45 +2,55 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v0.8.0";
+        public static string ver = "v0.8.2";
         static void Main(string[] args)
         {
             ScuffedLogger.Log($"ScuffedWalls {ver}");
             Rainbow rnb = new Rainbow();
             RPC rpc = new RPC();
-            Startup startup = new Startup(args);
-            Config ScuffedConfig = startup.ScuffedConfig;
-            Change change = new Change(ScuffedConfig);
-
-            ScuffedFile scuffedFile = new ScuffedFile(ScuffedConfig.SWFilePath);
+            new Startup(args);
+            Change change = new Change();
+            ScuffedFile scuffedFile = new ScuffedFile(Startup.ScuffedConfig.SWFilePath);
 
 
-            ScuffedLogger.Log(ScuffedConfig.MapFolderPath);
-            //loop through 
-            while (true)
+            ScuffedLogger.Log(Startup.ScuffedConfig.MapFolderPath);
+
+
+            do
             {
-                ScuffedLogger.Log($"Waiting for changes to {new FileInfo(ScuffedConfig.SWFilePath).Name}");
-                change.Detect();
                 var StartTime = DateTime.Now;
-                ScuffedLogger.Log("Changes detected, running...");
-                change._LastModifiedTime = File.GetLastWriteTime(ScuffedConfig.SWFilePath);
-                scuffedFile.Refresh();
-                List<Workspace> workspaces = new List<Workspace>();
 
+                ScuffedLogger.Log("Changes detected, running...");
+
+                change._LastModifiedTime = File.GetLastWriteTime(Startup.ScuffedConfig.SWFilePath);
+
+                scuffedFile.Refresh();
+
+
+                List<Workspace> workspaces = new List<Workspace>();
                 for (int i = 0; i < scuffedFile.SWFileLines.Length; i++)
                 {
                     if (scuffedFile.SWFileLines[i].ToLower().removeWhiteSpace().StartsWith("workspace"))
                     {
                         try
                         {
-                            rnb.Next(); ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}"); Console.ResetColor();
-                            workspaces.Add(FunctionParser.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), ScuffedConfig, startup.Info, workspaces.ToArray()).toWorkspace());
+                            var workspaceparam = scuffedFile.SWFileLines[i].TryGetParameter();
+
+                            rnb.Next();
+                            if(workspaceparam.argument != string.Empty) ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count} : \"{workspaceparam.argument}\"");
+                            else ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}");
+                            Console.ResetColor();
+
+                            if (workspaces.Any(w => w.Name == workspaceparam.argument && w.Name != string.Empty)) ConsoleErrorLogger.Log($"Workspaces should not have the same name. The first will be used on Clone");
+
+                            workspaces.Add(FunctionParser.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), workspaces.ToArray()).toWorkspace(workspaceparam.argument));
                         }
                         catch (Exception e)
                         {
@@ -48,25 +58,31 @@ namespace ScuffedWalls
                         }
                     }
                 }
-                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(ScuffedConfig.MapFilePath).Name}");
+                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
+
                 //write to json file
-                JsonSerializerOptions jso = new JsonSerializerOptions(); jso.IgnoreNullValues = true;
                 BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
-                File.WriteAllText(ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, jso));
+                File.WriteAllText(Startup.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, new JsonSerializerOptions() { IgnoreNullValues = true }));
+
                 ScuffedLogger.ScuffedMapWriter.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
 
-                rpc.currentMap = new MapObj()
-                {
-                    Walls = generate._obstacles.Length,
-                    Notes = generate._notes.Length,
-                    CustomEvents = generate._customData._customEvents.Length,
-                    MapName = startup.Info._songName.ToString()
-                };
+                rpc.currentMap = generate;
 
                 //collect the trash
                 GC.Collect();
 
-            }
+                if (!Startup.InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && generate.needsNoodleExtensions())
+                {
+                    ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required field Noodle Extensions");
+                }
+                if (!(Startup.InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Chroma") || Startup.InfoDifficulty._customData._suggestions.Any(s => s.ToString() == "Chroma")) && generate.needsChroma())
+                {
+                    ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required/suggested field Chroma");
+                }
+                ScuffedLogger.Log($"Waiting for changes to {new FileInfo(Startup.ScuffedConfig.SWFilePath).Name}");
+                change.Detect();
+
+            } while (true);
 
         }
 

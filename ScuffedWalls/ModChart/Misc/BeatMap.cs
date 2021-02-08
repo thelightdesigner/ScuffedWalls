@@ -57,16 +57,16 @@ namespace ModChart
 
             public class Animation
             {
-                public object[][] _position { get; set; }
-                public object[][] _scale { get; set; }
-                public object[][] _rotation { get; set; }
-                public object[][] _localRotation { get; set; }
-                public object[][] _dissolve { get; set; }
-                public object[][] _dissolveArrow { get; set; }
-                public object[][] _definitePosition { get; set; }
-                public object[][] _color { get; set; }
-                public object[][] _time { get; set; }
-                public object[][] _interactable { get; set; }
+                public dynamic _position { get; set; }
+                public dynamic _scale { get; set; }
+                public dynamic _rotation { get; set; }
+                public dynamic _localRotation { get; set; }
+                public dynamic _dissolve { get; set; }
+                public dynamic _dissolveArrow { get; set; }
+                public dynamic _definitePosition { get; set; }
+                public dynamic _color { get; set; }
+                public dynamic _time { get; set; }
+                public dynamic _interactable { get; set; }
             }
 
             //chroma
@@ -118,20 +118,20 @@ namespace ModChart
                 public class Data
                 {
                     public object _track { get; set; } //string
-                    public object _duration { get; set; } //float
+                    public object _duration { get; set; }  //float
                     public object _easing { get; set; } //string
                     public object[] _childrenTracks { get; set; }
                     public object _parentTrack { get; set; }
-                    public object[][] _position { get; set; }
-                    public object[][] _scale { get; set; }
-                    public object[][] _rotation { get; set; }
-                    public object[][] _localRotation { get; set; }
-                    public object[][] _dissolve { get; set; }
-                    public object[][] _dissolveArrow { get; set; }
-                    public object[][] _definitePosition { get; set; }
-                    public object[][] _color { get; set; }
-                    public object[][] _time { get; set; }
-                    public object[][] _interactable { get; set; }
+                    public dynamic _position { get; set; }
+                    public dynamic _scale { get; set; }
+                    public dynamic _rotation { get; set; }
+                    public dynamic _localRotation { get; set; }
+                    public dynamic _dissolve { get; set; }
+                    public dynamic _dissolveArrow { get; set; }
+                    public dynamic _definitePosition { get; set; }
+                    public dynamic _color { get; set; }
+                    public dynamic _time { get; set; }
+                    public dynamic _interactable { get; set; }
 
                 }
             }
@@ -139,7 +139,7 @@ namespace ModChart
             public class PointDefinition
             {
                 public object _name { get; set; }
-                public object[][] _points { get; set; }
+                public dynamic _points { get; set; }
             }
             public Bookmark[] _bookmarks { get; set; }
 

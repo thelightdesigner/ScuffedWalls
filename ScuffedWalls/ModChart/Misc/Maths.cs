@@ -50,6 +50,7 @@ namespace ModChart
         {
             return new object[] { vector.X, vector.Y, vector.Z };
         }
+        
         public static Vector2 PolarToCartesian(float angle, float radius)
         {
             float angleRad = (Math.PI.toFloat() / 180f) * (angle - 90f);

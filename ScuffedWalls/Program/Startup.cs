@@ -1,20 +1,23 @@
-﻿using System;
-using System.IO;
-using ModChart;
-using System.Text.Json;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ModChart;
 using Octokit;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ScuffedWalls
 {
     class Startup
     {
         private string[] args;
-        private string ConfigFileName;
-        public Config ScuffedConfig { get; private set; }
-        public Info Info { get; private set; }
-        static string[] SWText = { 
+
+        public static string ConfigFileName { get; private set; }
+        public static Config ScuffedConfig { get; private set; }
+        public static Info Info { get; private set; }
+        public static Info.DifficultySet.Difficulty InfoDifficulty { get; private set; }
+
+        static string[] SWText = {
             $"# ScuffedWalls {ScuffedWalls.ver}",
             "",
             @"# Documentation on functions can be found at",
@@ -32,12 +35,42 @@ namespace ScuffedWalls
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             this.args = args;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
-            Console.WriteLine($"{AppDomain.CurrentDomain.BaseDirectory} ScuffedWalls.json");
+            Console.WriteLine(ConfigFileName);
             ScuffedConfig = GetConfig();
             Info = GetInfo();
+            InfoDifficulty = Info._difficultyBeatmapSets
+                        .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name))
+                        .First()._difficultyBeatmaps
+                        .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name).First();
             VerifyOld();
             VerifySW();
+            VerifyBackups();
             _ = CheckReleases();
+        }
+
+        void BackupMap()
+        {
+            File.Copy(ScuffedConfig.MapFilePath, ScuffedConfig.BackupPaths.BackupMAPFolderPath + $"\\{DateTime.Now.ToFileString()}.dat");
+        }
+
+        void VerifyBackups()
+        {
+            if (!ScuffedConfig.IsBackupEnabled) return;
+            //check for
+            if (!Directory.Exists(ScuffedConfig.BackupPaths.BackupFolderPath))
+            {
+                
+                Directory.CreateDirectory(ScuffedConfig.BackupPaths.BackupFolderPath);
+            }
+            if (!Directory.Exists(ScuffedConfig.BackupPaths.BackupSWFolderPath))
+            {
+                Directory.CreateDirectory(ScuffedConfig.BackupPaths.BackupSWFolderPath);
+            }
+            if (!Directory.Exists(ScuffedConfig.BackupPaths.BackupMAPFolderPath))
+            {
+                Directory.CreateDirectory(ScuffedConfig.BackupPaths.BackupMAPFolderPath);
+            }
+            BackupMap();
         }
 
         public Config GetConfig()
@@ -52,8 +85,8 @@ namespace ScuffedWalls
                 using (StreamWriter file = new StreamWriter(ScuffedConfig.SWFilePath))
                 {
                     SWText.ToList().ForEach(line => { file.WriteLine(line); });
-                        
-                    if (ScuffedConfig.AutoImport)
+
+                    if (ScuffedConfig.IsAutoImportEnabled)
                     {
                         file.WriteLine("");
                         file.WriteLine("0: Import");
@@ -72,18 +105,18 @@ namespace ScuffedWalls
             {
                 ScuffedLogger.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
             }
-
         }
         public Info GetInfo()
         {
             Info info = null;
-            if (File.Exists($"{ScuffedConfig.MapFolderPath}\\info.dat")) info = JsonSerializer.Deserialize<Info>(File.ReadAllText($"{ScuffedConfig.MapFolderPath}\\info.dat"));
-            if (File.Exists($"{ScuffedConfig.MapFolderPath}\\Info.dat")) info = JsonSerializer.Deserialize<Info>(File.ReadAllText($"{ScuffedConfig.MapFolderPath}\\Info.dat"));
+            if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<Info>(File.ReadAllText(ScuffedConfig.InfoPath));
             return info;
         }
         public void VerifyOld()
         {
-            if ((!File.Exists(ScuffedConfig.OldMapPath)) && ScuffedConfig.AutoImport)
+            if (!ScuffedConfig.IsAutoImportEnabled) return;
+
+            if ((!File.Exists(ScuffedConfig.OldMapPath)))
             {
                 using (StreamWriter file = new StreamWriter(ScuffedConfig.OldMapPath))
                 {
@@ -97,15 +130,23 @@ namespace ScuffedWalls
             if (args.Length != 0 || !File.Exists(ConfigFileName))
             {
                 Config reConfig = ConfigureSW();
+
+
                 if (File.Exists(ConfigFileName)) File.Delete(ConfigFileName);
-                using StreamWriter file = new StreamWriter(ConfigFileName);
-                file.Write(JsonSerializer.Serialize(reConfig));
+
+
+                using (StreamWriter file = new StreamWriter(ConfigFileName))
+                {
+                    file.Write(JsonSerializer.Serialize(reConfig, new JsonSerializerOptions() { WriteIndented = true }));
+                }
                 File.SetAttributes(ConfigFileName, FileAttributes.Hidden);
             }
         }
 
         Config ConfigureSW()
         {
+            Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
+
             if ((args.Length == 0 || args == null))
             {
                 Console.WriteLine("No file was dragged into the exe!");
@@ -124,6 +165,10 @@ namespace ScuffedWalls
                 {
                     Console.WriteLine(j + ": " + filename.Name.Split('.')[0]);
                 }
+                else
+                {
+                    config.InfoPath = filename.FullName;
+                }
                 j++;
             }
 
@@ -131,16 +176,35 @@ namespace ScuffedWalls
             int option = Convert.ToInt32(Console.ReadLine());
 
             Console.Write("AutoImport Map? (y/n):");
-            char answer = Convert.ToChar(Console.ReadLine());
-            bool AutoImportMap = false;
-            if (answer == 'y') AutoImportMap = true;
+            {
+                char answer = Convert.ToChar(Console.ReadLine());
+                if (answer == 'y') config.IsAutoImportEnabled = true;
+            }
+
+            Console.Write("Create a Backup of SW History? (y/n):");
+            {
+                char answer = Convert.ToChar(Console.ReadLine());
+                if (answer == 'n') config.IsBackupEnabled = false;
+            }
 
             //path of the sw file by difficulty name
-            string SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
+            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
 
-            string OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_OldMap.dat";
+            config.OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_OldMap.dat";
 
-            return new Config() { SWFilePath = SWFilePath, MapFilePath = mapDataFiles[option].FullName, MapFolderPath = args[0], OldMapPath = OldMapPath, AutoImport = AutoImportMap };
+            config.BackupPaths = new Config.Backup();
+
+            config.MapFilePath = mapDataFiles[option].FullName;
+
+            config.MapFolderPath = args[0];
+
+            config.BackupPaths.BackupFolderPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_Backup";
+
+            config.BackupPaths.BackupSWFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "SW_History";
+
+            config.BackupPaths.BackupMAPFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "Map_History";
+
+            return config;
         }
     }
 }
