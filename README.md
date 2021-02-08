@@ -15,6 +15,8 @@ Features:
   - Input the number of the map file to generate to (Will overwrite anything in this map file)
   - Type in the generated SW file, saving refreshes the program automatically. Or hitting R in the console window.
 Windows will probably bother you about this being malware. If you dont trust it clone the repo and build it yourself.
+
+***Intro and Setup video tuturial [`right here`](https://youtu.be/RrcQRQfaXAI)***
   
 More info on scuffed functions can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
@@ -22,4 +24,4 @@ More info on 3d modeling for wall conversion can be found [`here`](https://githu
 
 More info on TextToWall images can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md)
 
-Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
+Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing), 
