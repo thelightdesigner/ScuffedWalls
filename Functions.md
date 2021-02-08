@@ -77,6 +77,8 @@ generic customdata for customevents
 # TextToWall
 uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
 
+Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) functions
+
 see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images.
 
  - path: string
