@@ -16,7 +16,7 @@ namespace ScuffedWalls
         {
             Workspaces = workspaces;
         }
-        private Workspace[] Workspaces;
+        private readonly Workspace[] Workspaces;
         public List<BeatMap.Note> Notes = new List<BeatMap.Note>();
         public List<BeatMap.CustomData.PointDefinition> PointDefinitions = new List<BeatMap.CustomData.PointDefinition>();
         public List<BeatMap.Event> Lights = new List<BeatMap.Event>();
@@ -69,13 +69,13 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                if (p.parameter == "appendtechnique") type = Convert.ToInt32(p.argument);
-                else if (p.parameter == "tobeat") { endtime = Convert.ToSingle(p.argument); b = true; }
-                else if (p.parameter == "converttoprops") props = bool.Parse(p.argument);
-                else if (p.parameter == "converttorainbow") rainbow = bool.Parse(p.argument);
-                else if (p.parameter == "rainbowfactor") Rfactor = Convert.ToSingle(p.argument);
-                else if (p.parameter == "propfactor") Pfactor = Convert.ToSingle(p.argument);
-                else if (p.parameter == "lighttype") lightypes = p.argument.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
+                if (p.Name == "appendtechnique") type = Convert.ToInt32(p.Data);
+                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); b = true; }
+                else if (p.Name == "converttoprops") props = bool.Parse(p.Data);
+                else if (p.Name == "converttorainbow") rainbow = bool.Parse(p.Data);
+                else if (p.Name == "rainbowfactor") Rfactor = Convert.ToSingle(p.Data);
+                else if (p.Name == "propfactor") Pfactor = Convert.ToSingle(p.Data);
+                else if (p.Name == "lighttype") lightypes = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
             }
             if (!b) throw new ScuffedException($"missing \"ToBeat\" parameter -> AppendToAllWallsBetween at beat {time}");
 
@@ -150,7 +150,7 @@ namespace ScuffedWalls
                 {
                     if (Convert.ToSingle(light._time.ToString()) >= starttime && Convert.ToSingle(light._time.ToString()) <= endtime && lightypes.Any(t => t == light.GetEventType()))
                     {
-                        ApendedEvents.Add(light.EventAppend(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
+                        ApendedEvents.Add(light.EventAppend(args.TryGetParameters().CustomDataParse(), (AppendTechnique)type));
                         i++;
                     }
                     else
@@ -181,49 +181,49 @@ namespace ScuffedWalls
             string path = "";
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "line":
-                        lines.Add(p.argument);
+                        lines.Add(p.Data);
                         break;
                     case "duration":
-                        duration = p.argument.toFloat();
+                        duration = p.Data.toFloat();
                         break;
                     case "letting":
-                        letting = p.argument.toFloat();
+                        letting = p.Data.toFloat();
                         break;
                     case "leading":
-                        leading = p.argument.toFloat();
+                        leading = p.Data.toFloat();
                         break;
                     case "size":
-                        size = p.argument.toFloat();
+                        size = p.Data.toFloat();
                         break;
                     case "path":
-                        path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
+                        path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
                         break;
                     case "fullpath":
-                        path = p.argument;
+                        path = p.Data;
                         break;
                     case "thicc":
-                        thicc = p.argument.toFloat();
+                        thicc = p.Data.toFloat();
                         break;
                     case "compression":
-                        compression = p.argument.toFloat();
+                        compression = p.Data.toFloat();
                         break;
                     case "shift":
-                        shift = p.argument.toFloat();
+                        shift = p.Data.toFloat();
                         break;
                     case "maxlinelength":
-                        linelength = Convert.ToInt32(p.argument);
+                        linelength = Convert.ToInt32(p.Data);
                         break;
                     case "alpha":
-                        alpha = p.argument.toFloat();
+                        alpha = p.Data.toFloat();
                         break;
                     case "spreadspawntime":
-                        smooth = p.argument.toFloat();
+                        smooth = p.Data.toFloat();
                         break;
                     case "isblackempty":
-                        isblackempty = bool.Parse(p.argument);
+                        isblackempty = bool.Parse(p.Data);
                         break;
                 }
             }
@@ -249,7 +249,7 @@ namespace ScuffedWalls
                     {
                         _time = time,
                         _duration = duration,
-                        _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                        _customData = args.TryGetParameters().CustomDataParse()
                     }
                 }
             });
@@ -264,13 +264,13 @@ namespace ScuffedWalls
             object[][] points = null;
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "name":
-                        name = p.argument;
+                        name = p.Data;
                         break;
                     case "points":
-                        points = JsonSerializer.Deserialize<object[][]>($"[{p.argument}]");
+                        points = JsonSerializer.Deserialize<object[][]>($"[{p.Data}]");
                         break;
                 }
             }
@@ -289,31 +289,28 @@ namespace ScuffedWalls
             int[] Type = { 0, 1, 2, 3 };
             string name = string.Empty;
             int Index = 0;
-            float startbeat = 0;
+            float startbeat = time;
             float endbeat = 1000000;
             float addtime = 0;
 
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "index":
-                        Index = Convert.ToInt32(p.argument);
+                        Index = Convert.ToInt32(p.Data);
                         break;
                     case "name":
-                        name = p.argument;
+                        name = p.Data;
                         break;
                     case "type":
-                        Type = p.argument.Split(",").Select(a => Convert.ToInt32(a)).ToArray();
-                        break;
-                    case "frombeat":
-                        startbeat = Convert.ToSingle(p.argument);
+                        Type = p.Data.Split(",").Select(a => Convert.ToInt32(a)).ToArray();
                         break;
                     case "tobeat":
-                        endbeat = Convert.ToSingle(p.argument);
+                        endbeat = Convert.ToSingle(p.Data);
                         break;
                     case "addtime":
-                        addtime = Convert.ToSingle(p.argument);
+                        addtime = Convert.ToSingle(p.Data);
                         break;
                 }
             }
@@ -352,7 +349,6 @@ namespace ScuffedWalls
         {
             ConsoleOut("Light",1,time,"Blackout");
             Lights.Add(new BeatMap.Event() { _time = time, _type = 0, _value = 0 });
-            
         }
         [SFunction]
         public void animatetrack(string[] args, float time)
@@ -361,8 +357,8 @@ namespace ScuffedWalls
             float repeatTime = 0;
             foreach (var p in args.TryGetParameters())
             {
-                if (p.parameter == "repeat") repeatcount = Convert.ToInt32(p.argument);
-                else if (p.parameter == "repeataddtime") repeatTime = Convert.ToSingle(p.argument);
+                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
+                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
             }
             for (float i = 0; i < repeatcount; i++)
             {
@@ -370,7 +366,7 @@ namespace ScuffedWalls
                 {
                     _time = time + (i * repeatTime),
                     _type = "AnimateTrack",
-                    _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                    _data = args.TryGetParameters().CustomEventsDataParse()
                 });
             }
             ConsoleOut("AnimateTrack", repeatcount, time, "CustomEvent");
@@ -382,8 +378,8 @@ namespace ScuffedWalls
             float repeatTime = 0;
             foreach (var p in args.TryGetParameters())
             {
-                if (p.parameter == "repeat") repeatcount = Convert.ToInt32(p.argument);
-                else if (p.parameter == "repeataddtime") repeatTime = Convert.ToSingle(p.argument);
+                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
+                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
             }
             for (float i = 0; i < repeatcount; i++)
             {
@@ -391,7 +387,7 @@ namespace ScuffedWalls
                 {
                     _time = time + (i * repeatTime),
                     _type = "AssignPathAnimation",
-                    _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                    _data = args.TryGetParameters().CustomEventsDataParse()
                 });
             }
             ConsoleOut("AssignPathAnimation", repeatcount, time, "CustomEvent");
@@ -404,7 +400,7 @@ namespace ScuffedWalls
             {
                 _time = time,
                 _type = "AssignPlayerToTrack",
-                _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                _data = args.TryGetParameters().CustomEventsDataParse()
             });
             ConsoleOut("AssignPlayerToTrack", 1, time, "CustomEvent");
         }
@@ -415,7 +411,7 @@ namespace ScuffedWalls
             {
                 _time = time,
                 _type = "AssignTrackParent",
-                _data = args.TryGetParameters().toUsableCustomData().CustomEventsDataParse()
+                _data = args.TryGetParameters().CustomEventsDataParse()
             });
             ConsoleOut("AssignTrackParent", 1, time, "CustomEvent");
         }
@@ -430,19 +426,19 @@ namespace ScuffedWalls
             //parse special parameters
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "type":
-                        type = Convert.ToInt32(p.argument);
+                        type = Convert.ToInt32(p.Data);
                         break;
                     case "cutdirection":
-                        cutdirection = Convert.ToInt32(p.argument);
+                        cutdirection = Convert.ToInt32(p.Data);
                         break;
                     case "repeat":
-                        repeatcount = Convert.ToInt32(p.argument);
+                        repeatcount = Convert.ToInt32(p.Data);
                         break;
                     case "repeataddtime":
-                        repeatTime = Convert.ToSingle(p.argument);
+                        repeatTime = Convert.ToSingle(p.Data);
                         break;
                 }
             }
@@ -455,7 +451,7 @@ namespace ScuffedWalls
                     _lineLayer = 0,
                     _cutDirection = cutdirection,
                     _type = type,
-                    _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                    _customData = args.TryGetParameters().CustomDataParse()
                 });
             }
             ConsoleOut("Note", repeatcount, time, "Note");
@@ -469,16 +465,16 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "repeat":
-                        repeatcount = Convert.ToInt32(p.argument);
+                        repeatcount = Convert.ToInt32(p.Data);
                         break;
                     case "repeataddtime":
-                        repeatTime = Convert.ToSingle(p.argument);
+                        repeatTime = Convert.ToSingle(p.Data);
                         break;
                     case "duration":
-                        duration = Convert.ToSingle(p.argument);
+                        duration = Convert.ToSingle(p.Data);
                         break;
                 }
             }
@@ -491,7 +487,7 @@ namespace ScuffedWalls
                     _lineIndex = 0,
                     _width = 0,
                     _type = 0,
-                    _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse()
+                    _customData = args.TryGetParameters().CustomDataParse()
                 });
             }
 
@@ -508,25 +504,25 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
                         break;
                     case "fullpath":
-                        Path = p.argument;
+                        Path = p.Data;
                         break;
                     case "type":
-                        Type = p.argument.Split(",").Select(a => Convert.ToInt32(a)).ToArray();
+                        Type = p.Data.Split(",").Select(a => Convert.ToInt32(a)).ToArray();
                         break;
                     case "frombeat":
-                        startbeat = Convert.ToSingle(p.argument);
+                        startbeat = Convert.ToSingle(p.Data);
                         break;
                     case "addtime":
-                        addtime = Convert.ToSingle(p.argument);
+                        addtime = Convert.ToSingle(p.Data);
                         break;
                     case "tobeat":
-                        endbeat = Convert.ToSingle(p.argument);
+                        endbeat = Convert.ToSingle(p.Data);
                         break;
                 }
             }
@@ -549,10 +545,18 @@ namespace ScuffedWalls
                 Lights.AddRange(beatMap._events.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
                 ConsoleOut("Light", beatMap._events.GetAllBetween(startbeat, endbeat).Length, time, "Import");
             }
-            if (Type.Any(t => t == 3))
+            if (Type.Any(t => t == 3) && beatMap._customData != null)
             {
-                CustomEvents.AddRange(beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
-                ConsoleOut("CustomEvent", beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Length, time, "Import");
+                if (beatMap._customData._customEvents != null)
+                {
+                    CustomEvents.AddRange(beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }));
+                    ConsoleOut("CustomEvent", beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Length, time, "Import");
+                }
+                if (beatMap._customData._pointDefinitions != null)
+                {
+                    PointDefinitions.AddRange(beatMap._customData._pointDefinitions);
+                    ConsoleOut("PointDefinition", beatMap._customData._pointDefinitions.Length, time, "Import");
+                }
             }
 
         }
@@ -570,29 +574,29 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "normal":
-                        normal = Convert.ToInt32(bool.Parse(p.argument));
+                        normal = Convert.ToInt32(bool.Parse(p.Data));
                         break;
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
                         break;
                     case "fullpath":
-                        Path = p.argument;
+                        Path = p.Data;
                         break;
                     case "hasanimation":
-                        hasanimation = Convert.ToBoolean(p.argument);
+                        hasanimation = Convert.ToBoolean(p.Data);
                         break;
                     case "duration":
-                        duration = Convert.ToSingle(p.argument);
+                        duration = Convert.ToSingle(p.Data);
                         break;
                     case "spreadspawntime":
-                        smooth = Convert.ToSingle(p.argument);
+                        smooth = Convert.ToSingle(p.Data);
                         break;
                 }
             }
-            ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } };
+            ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().CustomDataParse() } };
             BeatMap.Obstacle[] model = new WallModel(settings).Walls;
             Walls.AddRange(model);
             ConsoleOut("Wall", model.Length, time, "ModelToWall");
@@ -616,49 +620,49 @@ namespace ScuffedWalls
             float spreadspawntime = 0;
             foreach (var p in args.TryGetParameters())
             {
-                Console.WriteLine(p.argument + " " + p.parameter);
-                switch (p.parameter)
+                Console.WriteLine(p.Data + " " + p.Name);
+                switch (p.Name)
                 {
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.argument.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
                         break;
                     case "fullpath":
-                        Path = p.argument;
+                        Path = p.Data;
                         break;
                     case "duration":
-                        duration = Convert.ToSingle(p.argument);
+                        duration = Convert.ToSingle(p.Data);
                         break;
                     case "maxlinelength":
-                        maxlength = Convert.ToInt32(p.argument);
+                        maxlength = Convert.ToInt32(p.Data);
                         break;
                     case "isblackempty":
-                        isBlackEmpty = Convert.ToBoolean(p.argument);
+                        isBlackEmpty = Convert.ToBoolean(p.Data);
                         break;
                     case "size":
-                        size = Convert.ToSingle(p.argument);
-                        Console.WriteLine($"size has been changed to {size} argument {p.argument} to float {p.argument.toFloat()}");
+                        size = Convert.ToSingle(p.Data);
+                        Console.WriteLine($"size has been changed to {size} argument {p.Data} to float {p.Data.toFloat()}");
                         break;
                     case "spreadspawntime":
-                        spreadspawntime = Convert.ToSingle(p.argument);
+                        spreadspawntime = Convert.ToSingle(p.Data);
                         break;
                     case "alpha":
-                        alpha = Convert.ToSingle(p.argument);
+                        alpha = Convert.ToSingle(p.Data);
                         break;
                     case "thicc":
-                        thicc = Convert.ToSingle(p.argument);
+                        thicc = Convert.ToSingle(p.Data);
                         break;
                     case "shift":
-                        shift = Convert.ToSingle(p.argument);
+                        shift = Convert.ToSingle(p.Data);
                         break;
                     case "centered":
-                        centered = Convert.ToBoolean(p.argument);
+                        centered = Convert.ToBoolean(p.Data);
                         break;
                     case "compression":
-                        compression = Convert.ToSingle(p.argument);
+                        compression = Convert.ToSingle(p.Data);
                         break;
                 }
             }
-            WallImage converter = new WallImage(Path, new ImageSettings() { maxPixelLength = maxlength, isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().toUsableCustomData().CustomDataParse() } });
+            WallImage converter = new WallImage(Path, new ImageSettings() { maxPixelLength = maxlength, isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = time, _duration = duration, _customData = args.TryGetParameters().CustomDataParse() } });
             BeatMap.Obstacle[] image = converter.GetWalls();
             Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, time, "ImageToWall");
@@ -675,8 +679,8 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                if (p.parameter == "appendtechnique") type = (AppendTechnique)Convert.ToInt32(p.argument);
-                else if (p.parameter == "tobeat") { endtime = Convert.ToSingle(p.argument); b = true; }
+                if (p.Name == "appendtechnique") type = (AppendTechnique)Convert.ToInt32(p.Data);
+                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); b = true; }
             }
             if (!b) ConsoleErrorLogger.Log($"missing \"ToBeat\" parameter -> AppendToAllWallsBetween at beat {time}");
 
@@ -686,7 +690,7 @@ namespace ScuffedWalls
             {
                 if (Convert.ToSingle(wall._time.ToString()) >= starttime && Convert.ToSingle(wall._time.ToString()) <= endtime)
                 {
-                    ApendedWalls.Add(wall.Append(args.TryGetParameters().toUsableCustomData().CustomDataParse(), type));
+                    ApendedWalls.Add(wall.Append(args.TryGetParameters().CustomDataParse(), type));
                     //Console.WriteLine(((AppendTechnique)type).ToString());
                     i++;
                 }
@@ -712,19 +716,19 @@ namespace ScuffedWalls
 
             foreach (var p in args.TryGetParameters())
             {
-                switch (p.parameter)
+                switch (p.Name)
                 {
                     case "appendtechnique":
-                        type = Convert.ToInt32(p.argument);
+                        type = Convert.ToInt32(p.Data);
                         break;
                     case "tobeat":
-                        endtime = Convert.ToSingle(p.argument); b = true;
+                        endtime = Convert.ToSingle(p.Data); b = true;
                         break;
                     case "notecolor":
-                        if (p.argument == "red") notetype = new int[] { 0 };
-                        else if (p.argument == "blue") notetype = new int[] { 1 };
-                        else if (p.argument == "bomb") notetype = new int[] { 2 };
-                        else notetype = p.argument.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
+                        if (p.Data == "red") notetype = new int[] { 0 };
+                        else if (p.Data == "blue") notetype = new int[] { 1 };
+                        else if (p.Data == "bomb") notetype = new int[] { 2 };
+                        else notetype = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
                         break;
                 }
             }
@@ -736,7 +740,7 @@ namespace ScuffedWalls
             {
                 if ((Convert.ToSingle(note._time.ToString()) >= starttime && Convert.ToSingle(note._time.ToString()) <= endtime) && notetype.Any(t => t == Convert.ToInt32(note._type.ToString())))
                 {
-                    ApendedNotes.Add(note.Append(args.TryGetParameters().toUsableCustomData().CustomDataParse(), (AppendTechnique)type));
+                    ApendedNotes.Add(note.Append(args.TryGetParameters().CustomDataParse(), (AppendTechnique)type));
                     i++;
                 }
                 else

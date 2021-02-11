@@ -1,4 +1,5 @@
 ﻿using ModChart;
+using ModChart.Wall;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,6 @@ namespace ScuffedWalls
 
     static class Internal
     {
-        public static string[] toUsableCustomData(this Parameter[] parameter)
-        {
-            List<string> customDatas = new List<string>();
-            foreach (var p in parameter)
-            {
-                customDatas.Add(p.parameter + ":" + p.argument);
-            }
-            return customDatas.ToArray();
-        }
         public static T[] GetAllBetween<T>(this T[] mapObjects, float starttime, float endtime)
         {
             return mapObjects.Where(obj => (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) >= starttime) && (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) <= endtime)).ToArray();
@@ -47,16 +39,16 @@ namespace ScuffedWalls
                 try
                 {
                     var param = new Parameter();
-                    param.parameter = line.removeWhiteSpace().Split(':', 2)[0].ToLower();
-                    param.argument = line.Split(':', 2)[1];
+                    param.Name = line.removeWhiteSpace().Split(':', 2)[0].ToLower();
+                    param.Data = line.Split(':', 2)[1];
 
 
                     Random rnd = new Random();
-                    while (param.argument.Contains("Random("))
+                    while (param.Data.Contains("Random("))
                     {
-                        string[] asplit = param.argument.Split("Random(", 2);
+                        string[] asplit = param.Data.Split("Random(", 2);
                         string[] randomparam = asplit[1].Split(',');
-                        param.argument = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0]) * 100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0]) * 100f) + 1))) / 100f) + asplit[1].Split(')', 2)[1];
+                        param.Data = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0]) * 100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0]) * 100f) + 1))) / 100f) + asplit[1].Split(')', 2)[1];
 
                     }
                     parameters.Add(param);
@@ -76,8 +68,8 @@ namespace ScuffedWalls
             var param = new Parameter();
             try
             {
-                param.parameter = arg.removeWhiteSpace().Split(':', 2)[0].ToLower();
-                if(arg.removeWhiteSpace().Split(':', 2).Count() > 1) param.argument = arg.Split(':', 2)[1];
+                param.Name = arg.removeWhiteSpace().Split(':', 2)[0].ToLower();
+                if (arg.removeWhiteSpace().Split(':', 2).Count() > 1) param.Data = arg.Split(':', 2)[1];
             }
             catch (Exception e)
             {
@@ -134,102 +126,102 @@ namespace ScuffedWalls
             return $"Backup - {time.ToFileTime()}";
         }
 
-
         public static string removeWhiteSpace(this string WhiteSpace)
         {
             return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
 
+
         //adjust for lower caseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-        public static BeatMap.CustomData CustomDataParse(this string[] CustomNoodleData)
+        public static BeatMap.CustomData CustomDataParse(this Parameter[] CustomNoodleData)
         {
             BeatMap.CustomData CustomData = new BeatMap.CustomData();
             BeatMap.CustomData.Animation Animation = new BeatMap.CustomData.Animation();
 
-            foreach (var _customObject in CustomNoodleData)
+            foreach (var param in CustomNoodleData)
             {
-                string[] _customObjectSplit = _customObject.Split(':');
 
-                if (_customObjectSplit[0] == "AnimateDefinitePosition".ToLower()) Animation._definitePosition = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDefinitePosition".ToLower()) Animation._definitePosition = _customObjectSplit[1];
+                if (param.Name == "AnimateDefinitePosition".ToLower()) Animation._definitePosition = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDefinitePosition".ToLower()) Animation._definitePosition = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimatePosition".ToLower()) Animation._position = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimatePosition".ToLower()) Animation._position = _customObjectSplit[1];
+                else if (param.Name == "AnimatePosition".ToLower()) Animation._position = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimatePosition".ToLower()) Animation._position = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateDissolve".ToLower()) Animation._dissolve = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDissolve".ToLower()) Animation._dissolve = _customObjectSplit[1];
+                else if (param.Name == "AnimateDissolve".ToLower()) Animation._dissolve = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDissolve".ToLower()) Animation._dissolve = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateDissolveArrow".ToLower()) Animation._dissolveArrow = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDissolveArrow".ToLower()) Animation._dissolveArrow = _customObjectSplit[1];
+                else if (param.Name == "AnimateDissolveArrow".ToLower()) Animation._dissolveArrow = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDissolveArrow".ToLower()) Animation._dissolveArrow = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateColor".ToLower()) Animation._color = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateColor".ToLower()) Animation._color = _customObjectSplit[1];
+                else if (param.Name == "AnimateColor".ToLower()) Animation._color = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateColor".ToLower()) Animation._color = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateRotation".ToLower()) Animation._rotation = JsonSerializer.Deserialize<object[][]>("[" + _customObjectSplit[1] + "]");
-                else if (_customObjectSplit[0] == "DefineAnimateRotation".ToLower()) Animation._rotation = _customObjectSplit[1];
+                else if (param.Name == "AnimateRotation".ToLower()) Animation._rotation = JsonSerializer.Deserialize<object[][]>("[" + param.Data + "]");
+                else if (param.Name == "DefineAnimateRotation".ToLower()) Animation._rotation = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateLocalRotation".ToLower()) Animation._localRotation = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateLocalRotation".ToLower()) Animation._localRotation = _customObjectSplit[1];
+                else if (param.Name == "AnimateLocalRotation".ToLower()) Animation._localRotation = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateLocalRotation".ToLower()) Animation._localRotation = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateScale".ToLower()) Animation._scale = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateScale".ToLower()) Animation._scale = _customObjectSplit[1];
+                else if (param.Name == "AnimateScale".ToLower()) Animation._scale = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateScale".ToLower()) Animation._scale = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateInteractable".ToLower()) CustomData._interactable = JsonSerializer.Deserialize<object>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateInteractable".ToLower()) CustomData._interactable = _customObjectSplit[1];
+                else if (param.Name == "AnimateInteractable".ToLower()) Animation._interactable = JsonSerializer.Deserialize<object>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateInteractable".ToLower()) Animation._interactable = param.Data;
 
-                else if (_customObjectSplit[0] == "interactable".ToLower()) CustomData._interactable = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "interactable".ToLower()) CustomData._interactable = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "rotation".ToLower()) CustomData._rotation = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "rotation".ToLower()) CustomData._rotation = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (_customObjectSplit[0] == "LocalRotation".ToLower()) CustomData._localRotation = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "LocalRotation".ToLower()) CustomData._localRotation = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (_customObjectSplit[0] == "fake".ToLower()) CustomData._fake = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "fake".ToLower()) CustomData._fake = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "position".ToLower()) CustomData._position = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "position".ToLower()) CustomData._position = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (_customObjectSplit[0] == "cutDirection".ToLower()) CustomData._cutDirection = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "cutDirection".ToLower()) CustomData._cutDirection = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "scale".ToLower()) CustomData._scale = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "scale".ToLower()) CustomData._scale = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (_customObjectSplit[0] == "track".ToLower()) CustomData._track = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1].removeWhiteSpace()}\"");
+                else if (param.Name == "track".ToLower()) CustomData._track = JsonSerializer.Deserialize<object>($"\"{param.Data.removeWhiteSpace()}\"");
 
-                else if (_customObjectSplit[0] == "color".ToLower()) CustomData._color = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "color".ToLower()) CustomData._color = JsonSerializer.Deserialize<object[]>(param.Data);
+                else if (param.Name == "rgbcolor".ToLower()) CustomData._color = JsonSerializer.Deserialize<object[]>(param.Data).Select(o => { return (object)(o.toFloat() / 255f); }).ToArray();
 
-                else if (_customObjectSplit[0] == "NJSOffset".ToLower()) CustomData._noteJumpStartBeatOffset = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "NJSOffset".ToLower()) CustomData._noteJumpStartBeatOffset = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "NJS".ToLower()) CustomData._noteJumpMovementSpeed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "NJS".ToLower()) CustomData._noteJumpMovementSpeed = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "NoSpawnEffect".ToLower()) CustomData._disableSpawnEffect = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "NoSpawnEffect".ToLower()) CustomData._disableSpawnEffect = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CPropID".ToLower()) CustomData._propID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "CPropID".ToLower()) CustomData._propID = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CLightID".ToLower()) CustomData._lightID = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "CLightID".ToLower()) CustomData._lightID = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CgradientDuration".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._duration = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (param.Name == "CgradientDuration".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._duration = JsonSerializer.Deserialize<object[]>(param.Data); }
 
-                else if (_customObjectSplit[0] == "CgradientStartColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._startColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (param.Name == "CgradientStartColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._startColor = JsonSerializer.Deserialize<object[]>(param.Data); }
 
-                else if (_customObjectSplit[0] == "CgradientEndColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._endColor = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]); }
+                else if (param.Name == "CgradientEndColor".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._endColor = JsonSerializer.Deserialize<object[]>(param.Data); }
 
-                else if (_customObjectSplit[0] == "CgradientEasing".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._easing = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\""); }
+                else if (param.Name == "CgradientEasing".ToLower()) { CustomData._lightGradient ??= new BeatMap.CustomData.LightGradient(); CustomData._lightGradient._easing = JsonSerializer.Deserialize<object>($"\"{param.Data}\""); }
 
-                else if (_customObjectSplit[0] == "CLockPosition".ToLower()) CustomData._lockPosition = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "CLockPosition".ToLower()) CustomData._lockPosition = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CPreciseSpeed".ToLower()) CustomData._preciseSpeed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "CPreciseSpeed".ToLower()) CustomData._preciseSpeed = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "Cdirection".ToLower()) CustomData._direction = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "Cdirection".ToLower()) CustomData._direction = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CNameFilter".ToLower()) CustomData._nameFilter = JsonSerializer.Deserialize<object>($"\"{_customObjectSplit[1]}\"");
+                else if (param.Name == "CNameFilter".ToLower()) CustomData._nameFilter = JsonSerializer.Deserialize<object>($"\"{param.Data}\"");
 
-                else if (_customObjectSplit[0] == "Creset".ToLower()) CustomData._reset = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "Creset".ToLower()) CustomData._reset = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "Cstep".ToLower()) CustomData._step = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "Cstep".ToLower()) CustomData._step = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "Cprop".ToLower()) CustomData._prop = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "Cprop".ToLower()) CustomData._prop = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "Cspeed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "Cspeed".ToLower()) CustomData._speed = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "CCounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "CCounterSpin".ToLower()) CustomData._counterSpin = JsonSerializer.Deserialize<object>(param.Data);
 
                 if (typeof(BeatMap.CustomData.Animation).GetProperties().Any(p => p.GetValue(Animation) != null)) CustomData._animation = Animation;
 
@@ -240,54 +232,54 @@ namespace ScuffedWalls
         }
 
         //adjust for lowercaseeaaa
-        public static BeatMap.CustomData.CustomEvents.Data CustomEventsDataParse(this string[] CustomNoodleData)
+        public static BeatMap.CustomData.CustomEvents.Data CustomEventsDataParse(this Parameter[] CustomNoodleData)
         {
 
             BeatMap.CustomData.CustomEvents.Data Data = new BeatMap.CustomData.CustomEvents.Data();
 
-            foreach (var _customObject in CustomNoodleData)
+            foreach (var param in CustomNoodleData)
             {
-                string[] _customObjectSplit = _customObject.Split(':');
 
-                if (_customObjectSplit[0] == "track".ToLower()) Data._track = JsonSerializer.Deserialize<object>("\"" + _customObjectSplit[1] + "\"");
 
-                else if (_customObjectSplit[0] == "parentTrack".ToLower()) Data._parentTrack = JsonSerializer.Deserialize<object>("\"" + _customObjectSplit[1] + "\"");
+                if (param.Name == "track".ToLower()) Data._track = JsonSerializer.Deserialize<object>("\"" + param.Data + "\"");
 
-                else if (_customObjectSplit[0] == "duration".ToLower()) Data._duration = JsonSerializer.Deserialize<object>(_customObjectSplit[1]);
+                else if (param.Name == "parentTrack".ToLower()) Data._parentTrack = JsonSerializer.Deserialize<object>("\"" + param.Data + "\"");
 
-                else if (_customObjectSplit[0] == "easing".ToLower()) Data._easing = JsonSerializer.Deserialize<object>("\"" + _customObjectSplit[1] + "\"");
+                else if (param.Name == "duration".ToLower()) Data._duration = JsonSerializer.Deserialize<object>(param.Data);
 
-                else if (_customObjectSplit[0] == "childTracks".ToLower()) Data._childrenTracks = JsonSerializer.Deserialize<object[]>(_customObjectSplit[1]);
+                else if (param.Name == "easing".ToLower()) Data._easing = JsonSerializer.Deserialize<object>("\"" + param.Data + "\"");
 
-                else if (_customObjectSplit[0] == "AnimateDefinitePosition".ToLower()) Data._definitePosition = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDefinitePosition".ToLower()) Data._definitePosition = _customObjectSplit[1];
+                else if (param.Name == "childTracks".ToLower()) Data._childrenTracks = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (_customObjectSplit[0] == "AnimatePosition".ToLower()) Data._position = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimatePosition".ToLower()) Data._position = _customObjectSplit[1];
+                else if (param.Name == "AnimateDefinitePosition".ToLower()) Data._definitePosition = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDefinitePosition".ToLower()) Data._definitePosition = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateDissolve".ToLower()) Data._dissolve = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDissolve".ToLower()) Data._dissolve = _customObjectSplit[1];
+                else if (param.Name == "AnimatePosition".ToLower()) Data._position = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimatePosition".ToLower()) Data._position = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateDissolveArrow".ToLower()) Data._dissolveArrow = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateDissolveArrow".ToLower()) Data._dissolveArrow = _customObjectSplit[1];
+                else if (param.Name == "AnimateDissolve".ToLower()) Data._dissolve = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDissolve".ToLower()) Data._dissolve = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateColor".ToLower()) Data._color = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateColor".ToLower()) Data._color = _customObjectSplit[1];
+                else if (param.Name == "AnimateDissolveArrow".ToLower()) Data._dissolveArrow = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateDissolveArrow".ToLower()) Data._dissolveArrow = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateRotation".ToLower()) Data._rotation = JsonSerializer.Deserialize<object[][]>("[" + _customObjectSplit[1] + "]");
-                else if (_customObjectSplit[0] == "DefineAnimateRotation".ToLower()) Data._rotation = _customObjectSplit[1];
+                else if (param.Name == "AnimateColor".ToLower()) Data._color = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateColor".ToLower()) Data._color = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateLocalRotation".ToLower()) Data._localRotation = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateLocalRotation".ToLower()) Data._localRotation = _customObjectSplit[1];
+                else if (param.Name == "AnimateRotation".ToLower()) Data._rotation = JsonSerializer.Deserialize<object[][]>("[" + param.Data + "]");
+                else if (param.Name == "DefineAnimateRotation".ToLower()) Data._rotation = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateScale".ToLower()) Data._scale = JsonSerializer.Deserialize<object[][]>($"[{_customObjectSplit[1]}]");
-                else if (_customObjectSplit[0] == "DefineAnimateScale".ToLower()) Data._scale = _customObjectSplit[1];
+                else if (param.Name == "AnimateLocalRotation".ToLower()) Data._localRotation = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateLocalRotation".ToLower()) Data._localRotation = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateTime".ToLower()) Data._time = JsonSerializer.Deserialize<object[][]>("[" + _customObjectSplit[1] + "]");
-                else if (_customObjectSplit[0] == "DefineAnimateTime".ToLower()) Data._time = _customObjectSplit[1];
+                else if (param.Name == "AnimateScale".ToLower()) Data._scale = JsonSerializer.Deserialize<object[][]>($"[{param.Data}]");
+                else if (param.Name == "DefineAnimateScale".ToLower()) Data._scale = param.Data;
 
-                else if (_customObjectSplit[0] == "AnimateInteractable".ToLower()) Data._interactable = JsonSerializer.Deserialize<object[][]>("[" + _customObjectSplit[1] + "]");
-                else if (_customObjectSplit[0] == "DefineAnimateInteractable".ToLower()) Data._interactable = _customObjectSplit[1];
+                else if (param.Name == "AnimateTime".ToLower()) Data._time = JsonSerializer.Deserialize<object[][]>("[" + param.Data + "]");
+                else if (param.Name == "DefineAnimateTime".ToLower()) Data._time = param.Data;
+
+                else if (param.Name == "AnimateInteractable".ToLower()) Data._interactable = JsonSerializer.Deserialize<object[][]>("[" + param.Data + "]");
+                else if (param.Name == "DefineAnimateInteractable".ToLower()) Data._interactable = param.Data;
 
             }
             return Data;
@@ -295,8 +287,8 @@ namespace ScuffedWalls
     }
     public class Parameter
     {
-        public string parameter { get; set; } = string.Empty;
-        public string argument { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Data { get; set; } = string.Empty;
     }
 
 }

@@ -44,13 +44,13 @@ namespace ScuffedWalls
                             var workspaceparam = scuffedFile.SWFileLines[i].TryGetParameter();
 
                             rnb.Next();
-                            if(workspaceparam.argument != string.Empty) ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count} : \"{workspaceparam.argument}\"");
+                            if(workspaceparam.Data != string.Empty) ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count} : \"{workspaceparam.Data}\"");
                             else ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count}");
                             Console.ResetColor();
 
-                            if (workspaces.Any(w => w.Name == workspaceparam.argument && w.Name != string.Empty)) ConsoleErrorLogger.Log($"Workspaces should not have the same name. The first will be used on Clone");
+                            if (workspaces.Any(w => w.Name == workspaceparam.Data && w.Name != string.Empty)) ConsoleErrorLogger.Log($"Workspaces should not have the same name. The first will be used on Clone");
 
-                            workspaces.Add(FunctionParser.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), workspaces.ToArray()).toWorkspace(workspaceparam.argument));
+                            workspaces.Add(FunctionParser.parseWorkspace(scuffedFile.getLinesUntilNextWorkspace(i), workspaces.ToArray()).toWorkspace(workspaceparam.Data));
                         }
                         catch (Exception e)
                         {
@@ -58,19 +58,26 @@ namespace ScuffedWalls
                         }
                     }
                 }
-                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
+
+                BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
+                if (Startup.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled) generate = generate.SimplifyAllPointDefinitions();
 
                 //write to json file
-                BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
+                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
                 File.WriteAllText(Startup.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, new JsonSerializerOptions() { IgnoreNullValues = true }));
 
                 ScuffedLogger.ScuffedMapWriter.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
 
                 rpc.currentMap = generate;
+                rpc.workspace = workspaces.Count();
 
                 //collect the trash
                 GC.Collect();
 
+                if (Startup.InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Mapping Extensions") && generate.needsNoodleExtensions())
+                {
+                    ScuffedLogger.ScuffedMapWriter.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
+                }
                 if (!Startup.InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && generate.needsNoodleExtensions())
                 {
                     ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required field Noodle Extensions");

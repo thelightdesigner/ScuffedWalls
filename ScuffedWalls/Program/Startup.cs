@@ -59,7 +59,6 @@ namespace ScuffedWalls
             //check for
             if (!Directory.Exists(ScuffedConfig.BackupPaths.BackupFolderPath))
             {
-                
                 Directory.CreateDirectory(ScuffedConfig.BackupPaths.BackupFolderPath);
             }
             if (!Directory.Exists(ScuffedConfig.BackupPaths.BackupSWFolderPath))
@@ -203,6 +202,8 @@ namespace ScuffedWalls
             config.BackupPaths.BackupSWFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "SW_History";
 
             config.BackupPaths.BackupMAPFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "Map_History";
+
+            config.IsAutoSimplifyPointDefinitionsEnabled = true;
 
             return config;
         }

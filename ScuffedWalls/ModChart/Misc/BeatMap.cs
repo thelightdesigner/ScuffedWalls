@@ -7,6 +7,7 @@ namespace ModChart
 {
     public class BeatMap
     {
+        public static BeatMap Empty { get { return new BeatMap { _version = "2.0.0", _events = new Event[] { }, _notes = new Note[] { }, _obstacles = new Obstacle[] { }, _customData = new CustomData() }; } }
         public string _version { get; set; }
         public CustomData _customData { get; set; }
         public Event[] _events { get; set; }

@@ -270,9 +270,9 @@ adds on custom noodle data to notes between the function time and endtime
 
  ## AppendTechnique
 tells the append function how to add on your custom data to other map object custom data.
-  0 = Will not overwrite any old custom data property but can still append to nulled properties.
-  1 = Overwrites the old custom data property for the new one.
-  2 = Removes all old customdata and adds on the new ones.
+ - 0 = Will not overwrite any old custom data property but can still append to nulled properties.
+ - 1 = Overwrites the old custom data property for the new one.
+ - 2 = Removes all old customdata and adds on the new ones.
 
 **default is always 0**
  
