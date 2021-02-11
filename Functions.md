@@ -4,7 +4,7 @@ Functions are defined by a number followed with a colon and the function name (i
 
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
-- [`CloneFromWorkspaceByIndex`](#CloneFromWorkspaceByIndex)
+- [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
 - [`ImageToWall`](#ImageToWall)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
@@ -76,8 +76,8 @@ generic customdata for customevents
  - CPropID: int
  - CLightID: int
  - CGradientDuration: float
- - CgradientStartColor: [r,g,b,a?]
- - CgradientEndColor: [r,g,b,a?]
+ - CgradientStartColor: \[r,g,b,a?]
+ - CgradientEndColor: \[r,g,b,a?]
  - CgradientEasing: string
  - CLockPosition: bool
  - CPreciseSpeed: float
@@ -88,7 +88,8 @@ generic customdata for customevents
  - CProp: float
  - CSpeed: float
  - CCounterSpin: bool
- - Color: [r,g,b,a?]
+ - Color: \[r,g,b,a] (0-1)
+ - RGBColor:\[r,g,b,a] (0-255)
 
 # TextToWall
 uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
@@ -196,7 +197,7 @@ Workspace:wtf workspace
 Workspace:hahaball
 
 Workspace
- 25:CloneFromWorkspaceByIndex
+ 25:CloneFromWorkspace
    Name:wtf workspace
    Type:0,1,2
    toBeat:125
@@ -323,7 +324,6 @@ makes a wall
 # Note
 makes a note
 
-- duration: float
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
 - generic custom data
@@ -402,7 +402,7 @@ makes a custom event
   Example
   ```
  3:ParentTrack
-    track:BigMovement
+    ParentTrack:BigMovement
     ChildTracks:["rightnotes","leftnotes"]
  ```
 
