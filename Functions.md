@@ -94,7 +94,7 @@ generic customdata for customevents
 # TextToWall
 uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
 
-Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) functions
+Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
 
 see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images.
 
@@ -128,6 +128,8 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
 
 # ModelToWall
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
+
+Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
  - path: string
  - fullpath string
