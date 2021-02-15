@@ -32,7 +32,7 @@ generic customdata that can be parsed as a parameter on most functions
 - NJS: float
 - AnimateDissolve: \[d,t,"e"?]
 - DefineAnimateDissolve:string
-- AnimateColor: \[r,g,b,t,"e"?]
+- AnimateColor: \[r,g,b,a,t,"e"?]
 - DefineAnimateColor:string
 - AnimateRotation: \[x,y,z,t,"e"?]
 - DefineAnimateRotation:string
@@ -60,7 +60,7 @@ generic customdata for customevents
 - Track: string
 - AnimateDissolve: \[d,t,"e"?]
 - DefineAnimateDissolve:string
-- AnimateColor: \[r,g,b,t,"e"?]
+- AnimateColor: \[r,g,b,a,t,"e"?]
 - DefineAnimateColor:string
 - AnimateRotation: \[x,y,z,t,"e"?]
 - DefineAnimateRotation:string
@@ -132,7 +132,7 @@ constructs a model out of walls. see [here](https://github.com/thelightdesigner/
  - path: string
  - fullpath string
  - hasAnimation: bool, tells the model parser to read animation. doesnt work with normal yet.
- - duration: float
+ - duration: float, controls the duration of the model. this affects the length of time it takes to play the model animation.
  - spreadspawntime: float
  - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
  - generic custom data
@@ -284,12 +284,13 @@ track:CameraMoveNotes
  ```
 
  ## AppendTechnique
-tells the append function how to add on your custom data to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties.
- - 1 = Overwrites the old custom data property for the new one.
- - 2 = Removes all old customdata and adds on the new ones.
+tells the append function how to add on your custom data properties to other map object custom data.
+ - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Usefull for NJS and Offset fixing.
+ - 1 = Overwrites the old custom data property for the new one. Usefull for most applications.
+ - 2 = Nulls all old customdata properties and appends on new ones. Usefull for some internal stuff but not much else.
 
 **default is always 0**
+
  
 # Import
 adds in map objects from other map.dat files
