@@ -6,6 +6,7 @@ Features:
  - Can create custom events.
  - Can import/combine map objects from other map files
  - Can append custom data to map objects
+ - Allows for a stable and quick workflow
  - Simple 3d model to wall support with animation & color
  - Image to wall support w/ compression
  - Text to wall support
