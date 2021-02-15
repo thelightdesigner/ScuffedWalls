@@ -218,7 +218,7 @@ adds on custom chroma data to events/lights between the function time and endtim
  - toBeat: float
  - appendTechnique: int(0-2)
  - chroma customdata
-  lighttype: 0, 1, 2, 3; the type of the light
+ - lighttype: 0, 1, 2, 3; the type of the light
   
  ~special things~
  - converttoprops
@@ -267,6 +267,20 @@ adds on custom noodle data to notes between the function time and endtime
    toBeat:10
    track: FurryTrack
    appendTechnique:2
+
+60:AppendToAllNotesBetween
+tobeat:63
+Njsoffset:Random(1,3)
+AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
+AnimateDissolve:[0,0],[1,0.1],[1,1]
+NoSpawnEffect:true
+
+66:AppendToAllNotesBetween
+tobeat:99
+NJS:10
+NoSpawnEffect:true
+AnimateDissolveArrow: [0,0],[0,1]
+track:CameraMoveNotes
  ```
 
  ## AppendTechnique
@@ -307,6 +321,7 @@ makes a wall
 
  Example
 ```
+	#blue fire
 5:Wall
   repeat:160
   repeataddtime:0.2
@@ -319,6 +334,18 @@ makes a wall
   rotation:[0,0,-5]
   track:flowerfloat
   animatedissolve:[0,0],[1,0],[1,0.9],[0,1]
+
+	#shooting star
+164:Wall
+  repeat:50
+  repeataddtime:0.4
+  scale:[0.2,0.2,18]
+  Njs:10
+  NjsOffset:20
+  position:[Random(0,80),Random(-100,100)]
+  color:[Random(0,20),Random(0,20),Random(0,20),20]
+  rotation:[Random(0,360),90,0]
+
 ```
 
 # Note
@@ -330,6 +357,7 @@ makes a note
 
  Example
 ```
+	#Note fire
 100:Note
   repeat:66
   repeatAddTime:0.3
@@ -409,7 +437,7 @@ makes a custom event
 # PointDefinition
 makes a point definition
   - name:string
-  - points:points?
+  - points:points
 
   Example
 ```

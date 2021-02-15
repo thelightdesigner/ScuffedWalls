@@ -4,16 +4,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using ScuffedWalls;
 using ModChart;
 using ModChart.Wall;
 
-namespace ScuffedWalls
+namespace ModChart
 {
     static class BeatmapCompressor
     {
         public static BeatMap SimplifyAllPointDefinitions(this BeatMap Map)
         {
-            ScuffedLogger.ScuffedMapWriter.Log("Simplifying point definitions...");
 
             //simplify custom event point definitions
             if (Map._customData != null && Map._customData._customEvents != null && Map._customData._customEvents.Length > 0)
@@ -100,6 +100,12 @@ namespace ScuffedWalls
                     (pointDefinition[i].Slice(0, importantvalues).EqualsArray(pointDefinition[i-1].Slice(0, importantvalues))) && 
                     (pointDefinition[i].Slice(0, importantvalues).EqualsArray(pointDefinition[i + 1].Slice(0, importantvalues)))) continue;
                 CleanedPoints.Add(pointDefinition[i]);
+            }
+            if (CleanedPoints.Last()[importantvalues].toFloat() != 1f)
+            {
+                var lastPoint = CleanedPoints.Last().DeepClone();
+                lastPoint[importantvalues] = 1;
+                CleanedPoints.Add(lastPoint);
             }
             return CleanedPoints.ToArray();
         }

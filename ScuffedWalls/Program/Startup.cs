@@ -16,6 +16,7 @@ namespace ScuffedWalls
         public static Config ScuffedConfig { get; private set; }
         public static Info Info { get; private set; }
         public static Info.DifficultySet.Difficulty InfoDifficulty { get; private set; }
+        public static BpmAdjuster bpmAdjuster { get; private set; }
 
         static string[] SWText = {
             $"# ScuffedWalls {ScuffedWalls.ver}",
@@ -42,9 +43,12 @@ namespace ScuffedWalls
                         .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name))
                         .First()._difficultyBeatmaps
                         .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name).First();
+
+            bpmAdjuster = new BpmAdjuster(Info._beatsPerMinute.toFloat(), InfoDifficulty._noteJumpMovementSpeed.toFloat(), InfoDifficulty._noteJumpStartBeatOffset.toFloat());
             VerifyOld();
             VerifySW();
             VerifyBackups();
+            ScuffedLogger.BpmAdjuster.Log($"Njs: {bpmAdjuster.Njs} Offset: {bpmAdjuster.StartBeatOffset} HalfJump: {bpmAdjuster.HalfJumpBeats}");
             _ = CheckReleases();
         }
 
@@ -204,6 +208,8 @@ namespace ScuffedWalls
             config.BackupPaths.BackupMAPFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "Map_History";
 
             config.IsAutoSimplifyPointDefinitionsEnabled = true;
+
+            config.PrettyPrintJson = false;
 
             return config;
         }

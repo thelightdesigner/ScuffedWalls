@@ -9,7 +9,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v0.8.2";
+        public static string ver = "v0.8.3";
         static void Main(string[] args)
         {
             ScuffedLogger.Log($"ScuffedWalls {ver}");
@@ -21,7 +21,6 @@ namespace ScuffedWalls
 
 
             ScuffedLogger.Log(Startup.ScuffedConfig.MapFolderPath);
-
 
             do
             {
@@ -60,11 +59,15 @@ namespace ScuffedWalls
                 }
 
                 BeatMap generate = FunctionParser.toBeatMap(workspaces.ToArray());
-                if (Startup.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled) generate = generate.SimplifyAllPointDefinitions();
+                if (Startup.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled) 
+                {
+                    ScuffedLogger.ScuffedMapWriter.Log("Simplifying point definitions...");
+                    generate = generate.SimplifyAllPointDefinitions(); 
+                }
 
                 //write to json file
                 ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
-                File.WriteAllText(Startup.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, new JsonSerializerOptions() { IgnoreNullValues = true }));
+                File.WriteAllText(Startup.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(generate, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Startup.ScuffedConfig.PrettyPrintJson }));
 
                 ScuffedLogger.ScuffedMapWriter.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
 

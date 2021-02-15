@@ -28,7 +28,10 @@ namespace ScuffedWalls
             public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] ScuffedMapWriter: {msg}");
             
         }
-        
+        static public class BpmAdjuster
+        {
+            public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] BpmAdjuster: {msg}");
+        }
     }
     static class ConsoleErrorLogger
     {
@@ -36,6 +39,12 @@ namespace ScuffedWalls
         {
             Console.ForegroundColor = ConsoleColor.Red;  
             Console.WriteLine($"[ConsoleErrorLogger] Exception.Log: {msg}");
+            Console.ResetColor();
+        }
+        public static void Log(Exception msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"[ConsoleErrorLogger] Exception.Log: {msg.Message}");
             Console.ResetColor();
         }
 
