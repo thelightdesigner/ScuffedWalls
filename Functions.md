@@ -4,9 +4,9 @@ Functions are defined by a number followed with a colon and the function name (i
 
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
+- [`ImageToWall`](#ImageToWall)
 - [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
-- [`ImageToWall`](#ImageToWall)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
 - [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
 - [`AppendToAllEventsBetween`](#AppendToAllEventsBetween)
@@ -151,6 +151,8 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
 # ImageToWall
 constructs an image out of walls as pixels
+
+Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
 
  - path: string
  - fullpath string
