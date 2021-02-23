@@ -87,20 +87,15 @@ namespace ModChart.Wall
                 }
                 foreach (PropertyInfo property in propertiesCustomDataAnimation)
                 {
-                    //Console.WriteLine(property.Name);
                     if (property.GetValue(CustomData._animation) != null)
                     {
                         property.SetValue(CurrentWall._customData._animation, property.GetValue(CustomData._animation));
 
                     }
-                    //Console.WriteLine($"changed from {property.GetValue(CurrentWall._customData._animation)} to {property.GetValue(CustomData._animation)}");
 
                 }
-                //Console.WriteLine("wtf is this" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true }));
-                //Console.WriteLine("After Overwrite" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true}));
                 return CurrentWall;
             }
-            // append technique 2 completely replaces the customdata
             else
             {
                 CurrentWall._customData = CustomData;

@@ -26,6 +26,16 @@ namespace ModChart
     }
     static class Maths
     {
+        public static float[] Mult(this float[] array1, float[] array2)
+        {
+            if (array1.Length != array2.Length) throw new ArgumentOutOfRangeException("Mult() array1 length does not equal array2 length");
+
+            for(int index = 0; index < array1.Length; index++)
+            {
+                array1[index] = array1[index] * array2[index];
+            }
+            return array1;
+        }
         public static float toFloat(this object v)
         {
             return Convert.ToSingle(v.ToString());

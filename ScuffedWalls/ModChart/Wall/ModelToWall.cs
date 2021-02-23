@@ -39,27 +39,27 @@ namespace ModChart.Wall
                             List<object[]> positionN = new List<object[]>();
                             List<object[]> rotationN = new List<object[]>();
                             List<object[]> scaleN = new List<object[]>();
-                            for (int i = 0; i < cube.DTransformation.Length; i++)
+                            for (int i = 0; i < cube.Transformation.Length; i++)
                             {
-                                float TimeStamp = i.toFloat() / cube.DTransformation.Length.toFloat();
-                                positionN.Add(new object[] { cube.DTransformation[i].Position.X * -1f, cube.DTransformation[i].Position.Y, cube.DTransformation[i].Position.Z, TimeStamp });
-                                rotationN.Add(new object[] { cube.DTransformation[i].Rotation.X, cube.DTransformation[i].Rotation.Y * -1, cube.DTransformation[i].Rotation.Z * -1, TimeStamp });
-                                scaleN.Add(new object[] { cube.DTransformation[i].Scale.X / cube.DTransformation[0].Scale.X, cube.DTransformation[i].Scale.Y / cube.DTransformation[0].Scale.Y, cube.DTransformation[i].Scale.Z / cube.DTransformation[0].Scale.Z, TimeStamp });
+                                float TimeStamp = i.toFloat() / cube.Transformation.Length.toFloat();
+                                positionN.Add(new object[] { cube.Transformation[i].Position.X * -1f, cube.Transformation[i].Position.Y, cube.Transformation[i].Position.Z, TimeStamp });
+                                rotationN.Add(new object[] { cube.Transformation[i].Rotation.X, cube.Transformation[i].Rotation.Y * -1, cube.Transformation[i].Rotation.Z * -1, TimeStamp });
+                                scaleN.Add(new object[] { cube.Transformation[i].Scale.X / cube.Transformation[0].Scale.X, cube.Transformation[i].Scale.Y / cube.Transformation[0].Scale.Y, cube.Transformation[i].Scale.Z / cube.Transformation[0].Scale.Z, TimeStamp });
                             }
                             animatedefiniteposition = positionN.ToArray();
                             animatelocalrotation = rotationN.ToArray();
                             animatescale = scaleN.ToArray();
-                            scale = new object[] { cube.DTransformation[0].Scale.X * 2f, cube.DTransformation[0].Scale.Y * 2f, cube.DTransformation[0].Scale.Z * 2f };
+                            scale = new object[] { cube.Transformation[0].Scale.X * 2f, cube.Transformation[0].Scale.Y * 2f, cube.Transformation[0].Scale.Z * 2f };
                         }
                         break;
                     case ModelTechnique.Normal:
                         {
-                            position = new object[] { (cube.DTransformation[0].Position.X * -1f) -2f, cube.DTransformation[0].Position.Y };
-                            localrotation = new object[] { cube.DTransformation[0].Rotation.X, cube.DTransformation[0].Rotation.Y * -1f, cube.DTransformation[0].Rotation.Z * -1f };
-                            scale = new object[] { cube.DTransformation[0].Scale.X * 2f, cube.DTransformation[0].Scale.Y * 2f};
+                            position = new object[] { (cube.Transformation[0].Position.X * -1f) -2f, cube.Transformation[0].Position.Y };
+                            localrotation = new object[] { cube.Transformation[0].Rotation.X, cube.Transformation[0].Rotation.Y * -1f, cube.Transformation[0].Rotation.Z * -1f };
+                            scale = new object[] { cube.Transformation[0].Scale.X * 2f, cube.Transformation[0].Scale.Y * 2f};
                             float beatlength = (5f / 3f * (60f / settings.BPM) * NJS);
-                            duration = (cube.DTransformation[0].Scale.Z * 2f) / beatlength;
-                            time = (cube.DTransformation[0].Position.Z / beatlength) + settings.Wall.GetTime();
+                            duration = (cube.Transformation[0].Scale.Z * 2f) / beatlength;
+                            time = (cube.Transformation[0].Position.Z / beatlength) + settings.Wall.GetTime();
                         }
                         break;
                 }

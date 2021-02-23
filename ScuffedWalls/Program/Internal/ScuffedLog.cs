@@ -6,31 +6,31 @@ namespace ScuffedWalls
 {
     static class ScuffedLogger
     {
-        public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] Main: {msg}");
+        public static void Log(string msg) => Console.WriteLine($"[Default] Main - {msg}");
         
         static public class ScuffedFileParser
         {
-            public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] ScuffedFileParser: {msg}");
+            public static void Log(string msg) => Console.WriteLine($"[Default] MapFileParser - {msg}");
             
         }
         static public class ScuffedWorkspace
         {
-            public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] ScuffedWorkspace: {msg}");
+            public static void Log(string msg) => Console.WriteLine($"[Default] Parser.Workspace - {msg}");
             
             static public class FunctionParser
             {
-                public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] ScuffedWorkspace.FunctionParser: {msg}");
+                public static void Log(string msg) => Console.WriteLine($"[Default] Parser.Workspace.Function - {msg}");
                 
             }
         }
         static public class ScuffedMapWriter
         {
-            public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] ScuffedMapWriter: {msg}");
+            public static void Log(string msg) => Console.WriteLine($"[Default] MapFileWriter - {msg}");
             
         }
         static public class BpmAdjuster
         {
-            public static void Log(string msg) => Console.WriteLine($"[ConsoleLoggerDefault] BpmAdjuster: {msg}");
+            public static void Log(string msg) => Console.WriteLine($"[Default] BpmAdjuster - {msg}");
         }
     }
     static class ConsoleErrorLogger
@@ -38,13 +38,13 @@ namespace ScuffedWalls
         public static void Log(string msg) 
         {
             Console.ForegroundColor = ConsoleColor.Red;  
-            Console.WriteLine($"[ConsoleErrorLogger] Exception.Log: {msg}");
+            Console.WriteLine($"[Error] Exception.Log - {msg}");
             Console.ResetColor();
         }
         public static void Log(Exception msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[ConsoleErrorLogger] Exception.Log: {msg.Message}");
+            Console.WriteLine($"[Error] Exception.Log - {msg.Message}");
             Console.ResetColor();
         }
 

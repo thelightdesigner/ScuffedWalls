@@ -25,10 +25,6 @@ namespace ModChart.Wall
             Run();
         }
 
-        public BeatMap.Obstacle[] GetWalls()
-        {
-            return Walls;
-        }
 
         public void Run()
         {

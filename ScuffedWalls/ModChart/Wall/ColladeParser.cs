@@ -29,7 +29,7 @@ namespace ModChart.Wall
         {
             OffsetCorrectedCubes = Cubes.Select(cube =>
             {
-                cube.Transformation = cube.Transformation.Select(trans =>
+                cube.Matrix = cube.Matrix.Select(trans =>
                 {
                     Vector3 pos;
                     Vector3 scale;
@@ -40,7 +40,7 @@ namespace ModChart.Wall
                     var difference = Matrix4x4.CreateTranslation(new Vector3(0, -1, -1) * (scale)) - Matrix4x4.CreateScale(new Vector3(1,1,1)); //i guess this works
                     var compensation = Matrix4x4.Transform(difference, rotquat);
 
-                    return trans + compensation + (Matrix4x4.CreateTranslation(new Vector3(cube.DTransformation.First().Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1))); //¯\_(ツ)_/¯
+                    return trans + compensation + (Matrix4x4.CreateTranslation(new Vector3(cube.Transformation.First().Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1))); //¯\_(ツ)_/¯
                 }).ToArray();
 
                 return cube; 
@@ -57,6 +57,7 @@ namespace ModChart.Wall
                 {
                     Color color = null;
                     string thisCubeName = model.library_visual_scenes.visual_scene.node[i].name;
+                    string track = null;
 
                     //node transformation
                     Matrix4x4 node = model.library_visual_scenes.visual_scene.node[i].matrix.toFloatArray().toMatrix();
@@ -68,8 +69,9 @@ namespace ModChart.Wall
                         {
                             if (model.library_visual_scenes.visual_scene.node[i].instance_geometry.bind_material != null)
                             {
-                                if (effect.id.Split('-')[0] == model.library_visual_scenes.visual_scene.node[i].instance_geometry.bind_material.technique_common.instance_material.symbol.Split('-')[0])
+                                if (effect.id.Split('-')[0] == model.library_visual_scenes.visual_scene.node[i].instance_geometry.bind_material.technique_common.instance_material[0].symbol.Split('-')[0])
                                 {
+                                    if (effect.profile.technique.lambert.diffuse is null) { Console.ForegroundColor = ConsoleColor.Yellow; Console.WriteLine($"[Warning] ColladaParser - {effect.id} diffuse is nulled! skipping"); Console.ResetColor(); continue; }
                                     float[] colorArray = effect.profile.technique.lambert.diffuse.color.toFloatArray();
                                     color = new Color();
                                     color.R = colorArray[0];
@@ -78,6 +80,7 @@ namespace ModChart.Wall
                                     color.A = colorArray[3];
                                     continue;
                                 }
+                                if (model.library_visual_scenes.visual_scene.node[i].instance_geometry.bind_material.technique_common.instance_material.Length > 1) track = model.library_visual_scenes.visual_scene.node[i].instance_geometry.bind_material.technique_common.instance_material.First().symbol;
                             }
                         }
                     }
@@ -105,7 +108,7 @@ namespace ModChart.Wall
                         //add finished cube
                         cubes.Add(new Cube()
                         {
-                            Transformation = matrices,
+                            Matrix = matrices,
                             Color = color
                         });
                     }
@@ -113,7 +116,7 @@ namespace ModChart.Wall
                     {
                         cubes.Add(new Cube()
                         {
-                            Transformation = new Matrix4x4[] { node },
+                            Matrix = new Matrix4x4[] { node },
                             Color = color
                         });
                     }
@@ -126,9 +129,10 @@ namespace ModChart.Wall
     }
     public class Cube
     {
-        public Decomposition[] DTransformation;
-        public Matrix4x4[] Transformation;
+        public Decomposition[] Transformation;
+        public Matrix4x4[] Matrix;
         public Color Color;
+        public string Track;
         public class Decomposition
         {
             public Vector3 Position;
@@ -138,7 +142,7 @@ namespace ModChart.Wall
         public void Decompose()
         {
             List<Decomposition> New_Trans = new List<Decomposition>();
-            foreach (var matrix in Transformation)
+            foreach (var matrix in Matrix)
             {
                 Vector3 pos;
                 Quaternion rot;
@@ -146,10 +150,59 @@ namespace ModChart.Wall
                 Matrix4x4.Decompose(matrix, out sca, out rot, out pos);
                 New_Trans.Add(new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca });
             }
-            DTransformation = New_Trans.ToArray();
+            Transformation = New_Trans.ToArray();
+        }
+    }
+    
+    public class Cube2
+    {
+        public string Track;
+        public bool Animated;
+        public Frame[] Frames;
+        public Decomposition Transformation;
+        public Matrix4x4 Matrix;
+        public IntVector2 FrameSpan;
+        public Color Color;
+        public class Frame
+        {
+            public int Number;
+            public Decomposition Transformation;
+            public Matrix4x4 Matrix;
+            public float Dissolve;
+            public float Alpha;
+            public Color Color;
+        }
+        public class Decomposition
+        {
+            public Vector3 Position;
+            public Vector3 Rotation;
+            public Vector3 Scale;
+        }
+        public void Decompose()
+        {
+            if (Matrix != null)
+            {
+                Vector3 pos;
+                Quaternion rot;
+                Vector3 sca;
+                Matrix4x4.Decompose(Matrix, out sca, out rot, out pos);
+                Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+            }
+            if (Frames != null && Frames.Any(f => f.Matrix != null))
+
+            Frames = Frames.Select(frame =>
+            {
+                Vector3 pos;
+                Quaternion rot;
+                Vector3 sca;
+                Matrix4x4.Decompose(frame.Matrix, out sca, out rot, out pos);
+                frame.Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+                return frame;
+            }).ToArray();
         }
     }
 
+    
     //good color
     public class Color
     {
@@ -409,7 +462,7 @@ namespace ModChart.Wall
                             public class Technique_Common
                             {
                                 [XmlElement(ElementName = "instance_material")]
-                                public Instance_Material instance_material { get; set; }
+                                public Instance_Material[] instance_material { get; set; }
                                 public class Instance_Material
                                 {
                                     [XmlAttribute(AttributeName = "symbol")]

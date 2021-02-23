@@ -5,7 +5,7 @@ namespace ModChart.Event
 {
     static class Helper
     {
-        public static BeatMap.Event EventAppend(this BeatMap.Event CurrentEvent, BeatMap.CustomData CustomData, AppendTechnique Type)
+        public static BeatMap.Event Append(this BeatMap.Event CurrentEvent, BeatMap.CustomData CustomData, AppendTechnique Type)
         {
             CurrentEvent._customData ??= new BeatMap.CustomData();
             CustomData ??= new BeatMap.CustomData();

@@ -31,53 +31,6 @@ namespace ScuffedWalls
             }
             return false;
         }
-        static public Parameter[] TryGetParameters(this string[] args)
-        {
-            List<Parameter> parameters = new List<Parameter>();
-            foreach (var line in args)
-            {
-                try
-                {
-                    var param = new Parameter();
-                    param.Name = line.removeWhiteSpace().Split(':', 2)[0].ToLower();
-                    param.Data = line.Split(':', 2)[1];
-
-
-                    Random rnd = new Random();
-                    while (param.Data.Contains("Random("))
-                    {
-                        string[] asplit = param.Data.Split("Random(", 2);
-                        string[] randomparam = asplit[1].Split(',');
-                        param.Data = asplit[0] + (Convert.ToSingle(rnd.Next(Convert.ToInt32(Convert.ToSingle(randomparam[0]) * 100f), Convert.ToInt32((Convert.ToSingle(randomparam[1].Split(')')[0]) * 100f) + 1))) / 100f) + asplit[1].Split(')', 2)[1];
-
-                    }
-                    parameters.Add(param);
-                }
-                catch (Exception e)
-                {
-                    if (e is IndexOutOfRangeException) throw new ScuffedException($"Error parsing \"{line}\", Missing Colon?");
-                    else throw new ScuffedException($"Error parsing line\"{line}\"");
-                }
-
-            }
-
-            return parameters.ToArray();
-        }
-        static public Parameter TryGetParameter(this string arg)
-        {
-            var param = new Parameter();
-            try
-            {
-                param.Name = arg.removeWhiteSpace().Split(':', 2)[0].ToLower();
-                if (arg.removeWhiteSpace().Split(':', 2).Count() > 1) param.Data = arg.Split(':', 2)[1];
-            }
-            catch (Exception e)
-            {
-                if (e is IndexOutOfRangeException) throw new ScuffedException($"Error parsing \"{arg}\", Missing Colon?");
-                else throw new ScuffedException($"Error parsing line\"{arg}\"");
-            }
-            return param;
-        }
         public static bool needsNoodleExtensions(this BeatMap map)
         {
             //are there any custom events?
@@ -284,11 +237,6 @@ namespace ScuffedWalls
             }
             return Data;
         }
-    }
-    public class Parameter
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Data { get; set; } = string.Empty;
     }
 
 }

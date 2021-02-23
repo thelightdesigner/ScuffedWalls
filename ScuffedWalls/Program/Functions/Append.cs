@@ -1,0 +1,127 @@
+﻿using ModChart;
+using ModChart.Event;
+using ModChart.Note;
+using ModChart.Wall;
+using System;
+using System.Linq;
+
+namespace ScuffedWalls.Functions
+{
+    [ScuffedFunction("AppendToAllWallsBetween")]
+    class AppendWalls : SFunction
+    {
+        public void Run()
+        {
+            AppendTechnique type = 0;
+
+            float starttime = Time;
+            float endtime = float.PositiveInfinity;
+
+            foreach (var p in Parameters)
+            {
+                if (p.Name == "appendtechnique") type = (AppendTechnique)Convert.ToInt32(p.Data);
+                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); }
+            }
+
+            int i = 0;
+            InstanceWorkspace.Walls = InstanceWorkspace.Walls.Select(obj =>
+            {
+                i++;
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), type);
+                else return obj;
+            }).ToList();
+
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} walls from beats {starttime} to {endtime}");
+        }
+    }
+    [ScuffedFunction("AppendToAllNotesBetween")]
+    class AppendNotes : SFunction
+    {
+        public void Run()
+        {
+            int type = 0;
+
+            bool b = false;
+            float starttime = Time;
+            float endtime = float.PositiveInfinity;
+            int[] notetype = { 0, 1, 2, 3 };
+
+            foreach (var p in Parameters)
+            {
+                switch (p.Name)
+                {
+                    case "appendtechnique":
+                        type = Convert.ToInt32(p.Data);
+                        break;
+                    case "tobeat":
+                        endtime = Convert.ToSingle(p.Data); b = true;
+                        break;
+                    case "notecolor":
+                        if (p.Data == "red") notetype = new int[] { 0 };
+                        else if (p.Data == "blue") notetype = new int[] { 1 };
+                        else if (p.Data == "bomb") notetype = new int[] { 2 };
+                        else notetype = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
+                        break;
+                }
+            }
+            InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
+            {
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), (AppendTechnique)type);
+                else return obj;
+            }).ToList();
+        }
+    }
+    [ScuffedFunction("AppendToAllEventsBetween")]
+    class AppendEvents : SFunction
+    {
+        public void Run()
+        {
+            int type = 0;
+            int[] lightypes = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            float starttime = Time;
+            bool rainbow = false;
+            bool props = false;
+            float Rfactor = 1f;
+            float Pfactor = 1f;
+            float endtime = float.PositiveInfinity;
+
+            foreach (var p in Parameters)
+            {
+                if (p.Name == "appendtechnique") type = Convert.ToInt32(p.Data);
+                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); }
+                else if (p.Name == "converttoprops") props = bool.Parse(p.Data);
+                else if (p.Name == "converttorainbow") rainbow = bool.Parse(p.Data);
+                else if (p.Name == "rainbowfactor") Rfactor = Convert.ToSingle(p.Data);
+                else if (p.Name == "propfactor") Pfactor = Convert.ToSingle(p.Data);
+                else if (p.Name == "lighttype") lightypes = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
+            }
+
+            if (rainbow)
+            {
+                InstanceWorkspace.Lights = InstanceWorkspace.Lights.Select(obj =>
+                {
+                    if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime)
+                    {
+                        return obj.Append(new BeatMap.CustomData()
+                        {
+                            _color = new object[]
+                            {
+                                    0.5f * Math.Sin(Math.PI * Rfactor * obj.GetTime()) + 0.5f,
+                                    0.5f * Math.Sin((Math.PI * Rfactor * obj.GetTime()) - (Math.PI * (2f / 3f))) + 0.5f,
+                                    0.5f * Math.Sin((Math.PI * Rfactor * obj.GetTime()) - (Math.PI * (4f / 3f))) + 0.5f,
+                                    1
+                            }
+                        }, AppendTechnique.Overwrites);
+                    }
+                    else return obj;
+                }).ToList();
+            }
+
+            InstanceWorkspace.Lights = InstanceWorkspace.Lights.Select(obj =>
+            {
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), (AppendTechnique)type);
+                else return obj;
+            }).ToList();
+        }
+    }
+}
