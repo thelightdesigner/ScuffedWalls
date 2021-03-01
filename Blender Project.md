@@ -5,7 +5,7 @@ Because beatsaber walls do not support meshes nativley, And because scuffedwalls
 It is important to note that changes are still being made to the model parser and this section will change in future updates.
 
 ## Animating
-Any animation on position, rotation or scale to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
+Any animation on position, rotation, scale and NOT color to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
 
