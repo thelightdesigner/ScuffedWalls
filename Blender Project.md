@@ -11,6 +11,7 @@ Any animation on position, rotation, scale and NOT color to a cube will show up 
 
 ##  Parenting and Baking
 
+
 One of the benefits of making a 3d model in blender is that complex 3d movement is all calculated internally. Parenting is a good way to get a collection of cubes in blender to all move togethor just by moving the reference object. In order to get scuffedwalls to pick up on the child cubes in your scene you must bake the childeren.
 
 While selecting the childeren objects go to object, animation, bake action. Select visual keying and clear parents. This will automatically keyframe every child object to its visual position in the scene. It also clears all parents that the child objects may have had.
@@ -19,6 +20,7 @@ While selecting the childeren objects go to object, animation, bake action. Sele
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake2.png)
 
 ## Exporting!!!!!!
+
 
 When going to export to collada hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards. check the global orientation box.
 

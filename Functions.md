@@ -20,9 +20,6 @@ Functions are defined by a number followed with a colon and the function name (i
 - [`PointDefinition`](#PointDefinition)
 
 
-
-
-
 ## CustomData
 generic customdata that can be parsed as a parameter on most functions
 "" = put in quotes, ? = optional
