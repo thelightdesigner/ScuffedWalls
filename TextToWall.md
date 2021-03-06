@@ -22,3 +22,5 @@ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
 questionmark period exclamation apostrophe
 
 if you generate and all the text is the wrong character, check your font.png file! there is probably character overlap.
+
+

@@ -45,3 +45,8 @@ Normal:true will result in this from a static model with no animations
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/normal.gif)
 
+
+
+
+
+

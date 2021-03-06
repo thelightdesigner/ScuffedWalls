@@ -25,6 +25,8 @@ namespace ModChart
                 }).ToArray();
             }
 
+
+
             //simplify wall point definitions
             if (Map._obstacles != null && Map._obstacles.Length > 0)
             {

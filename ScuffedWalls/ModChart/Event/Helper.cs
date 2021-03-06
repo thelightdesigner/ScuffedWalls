@@ -20,6 +20,8 @@ namespace ModChart.Event
                 }
                 return CurrentEvent;
             }
+
+
             // append technique 1 adds on customdata, overwrites
             else if (Type == AppendTechnique.Overwrites)
             {

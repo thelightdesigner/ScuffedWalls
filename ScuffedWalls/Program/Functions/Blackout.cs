@@ -14,4 +14,6 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.Lights.Add(new BeatMap.Event() { _time = Time, _type = 0, _value = 0 });
         }
     }
+
+
 }

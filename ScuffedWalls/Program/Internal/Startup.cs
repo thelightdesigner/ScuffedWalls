@@ -57,6 +57,21 @@ namespace ScuffedWalls
             File.Copy(ScuffedConfig.MapFilePath, ScuffedConfig.BackupPaths.BackupMAPFolderPath + $"\\{DateTime.Now.ToFileString()}.dat");
         }
 
+        public void Check(BeatMap map)
+        {
+            if (InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
+            {
+                ScuffedLogger.ScuffedMapWriter.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
+            }
+            if (!InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
+            {
+                ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required field Noodle Extensions");
+            }
+            if (!(InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Chroma") || InfoDifficulty._customData._suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
+            {
+                ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required/suggested field Chroma");
+            }
+        }
         void VerifyBackups()
         {
             if (!ScuffedConfig.IsBackupEnabled) return;
@@ -146,6 +161,9 @@ namespace ScuffedWalls
             }
         }
 
+
+
+
         Config ConfigureSW()
         {
             Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
@@ -214,4 +232,8 @@ namespace ScuffedWalls
             return config;
         }
     }
+
+
+
+
 }

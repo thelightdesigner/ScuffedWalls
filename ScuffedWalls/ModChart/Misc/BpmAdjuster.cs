@@ -38,6 +38,24 @@ namespace ModChart
            // Console.WriteLine(duration - (2f * GetJumps(NjsOffset, Njs, Bpm)));
             return duration - (2f * GetJumps(NjsOffset,Njs,Bpm));
         }
+        public float GetRealDuration(float duration, float NjsOffset)
+        {
+            return duration + (2 * GetJumps(NjsOffset,Njs,Bpm));
+        }
+        public float GetRealTime(float beat, float NjsOffset)
+        {
+            return beat - GetJumps(NjsOffset, Njs, Bpm);
+        }
+        public float GetRealDuration(float duration)
+        {
+            return duration + (2 * HalfJumpBeats);
+        }
+        public float GetRealTime(float beat)
+        {
+            return beat - HalfJumpBeats;
+        }
+
+
         public float ToBeat(float seconds)
         {
             return seconds * SecondLength;

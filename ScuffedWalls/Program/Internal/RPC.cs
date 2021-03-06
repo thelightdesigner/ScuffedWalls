@@ -36,27 +36,31 @@ namespace ScuffedWalls
         }
         async Task autoUpdateRPC()
         {
-            while (currentMap == null) await Task.Delay(20);
+            //while (currentMap == null) await Task.Delay(20);
 
-            client.UpdateDetails($"{new DirectoryInfo(Startup.ScuffedConfig.MapFolderPath).Name }");
+            client.UpdateDetails($"remies map");
             Random rnd = new Random();
 
             while (true)
             {
                 string[] RPCMsg =
                 {
-                $"{currentMap._customData._customEvents.Length} CustomEvents",
-                $"{currentMap._events.Length} Events",
-                $"{currentMap._notes.Length} Notes",
-                $"{currentMap._obstacles.Length} Walls",
-                $"{workspace} Workspaces"
+                $"at least 5 CustomEvents i think dont go asking me because i probably dont know or wouldnt answer anyways tbh i dont even know how discord can fit this long of a message into its rich presence",
+                $"~2 Events",
+                $"1,237,241 Notes",
+                $"7.8+ Billion Walls",
+                $"609+ billion Workspaces"
                 };
                 foreach (string mesg in RPCMsg)
                 {
+                    Console.WriteLine("updating");
                     client.UpdateState(mesg);
+                    Console.WriteLine("done");
                     await Task.Delay(5000);
                 }
             }
         }
     }
+
+
 }

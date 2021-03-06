@@ -124,4 +124,6 @@ namespace ScuffedWalls.Functions
             ConsoleOut("Wall", text.Walls.Length, Time, "TextToWall");
         }
     }
+
+
 }

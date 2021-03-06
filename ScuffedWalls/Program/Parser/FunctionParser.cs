@@ -1,5 +1,6 @@
 ﻿//classes that provide additional features to modcharting
 using ModChart;
+using ModChart.Wall;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,4 +73,8 @@ namespace ScuffedWalls
             }
         }
     }
+
+
+
+
 }

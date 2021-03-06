@@ -29,4 +29,7 @@ namespace ScuffedWalls
     {
         Red, Yellow, Green, Cyan, Blue, Magenta
     }
+
+
+
 }

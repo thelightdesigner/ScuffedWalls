@@ -68,5 +68,8 @@ namespace ScuffedWalls.Functions
                 ConsoleOut("CustomEvent", beatMap._customData._customEvents.GetAllBetween(startbeat, endbeat).Length, Time, "CloneWorkspace");
             }
         }
+
+
+
     }
 }

@@ -26,7 +26,10 @@ namespace ScuffedWalls.Functions
             bool hasanimation = false;
             float[] colormult = null;
             int normal = 0;
+            bool tracks = true;
             float duration = 1;
+            bool assigncamtotrack = true;
+            bool spline = false;
             float smooth = 0;
             float MapBpm = Startup.Info._beatsPerMinute.toFloat();
             float MapNjs = Startup.InfoDifficulty._noteJumpMovementSpeed.toFloat();
@@ -91,18 +94,24 @@ namespace ScuffedWalls.Functions
                 }
             }
             int walls = 0;
+            int notes = 0;
+            int customevents = 0;
             for (int i = 0; i < repeatcount; i++)
             {
-                ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Wall = new BeatMap.Obstacle() { _time = Time + (i.toFloat() * repeataddtime), _duration = duration, _customData = Parameters.CustomDataParse() } };
-                BeatMap.Obstacle[] model = new WallModel(settings).Walls.Select(w =>
-                {
-                    if (w._customData != null && w._customData._color != null) w._customData._color = w._customData._color.Select(a => a.toFloat()).ToArray().Mult(colormult).Cast<object[]>().ToArray();
-                    return w;
-                }).ToArray();
-                InstanceWorkspace.Walls.AddRange(model);
-                walls += model.Length;
+                ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal,AssignCameraToTrack = assigncamtotrack, CreateTracks = tracks, Spline = spline,  HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Offset = Startup.bpmAdjuster.StartBeatOffset, Wall = new BeatMap.Obstacle() { _time = Time + (i.toFloat() * repeataddtime), _duration = duration, _customData = Parameters.CustomDataParse() } };
+                var model = new WallModel(settings);
+                InstanceWorkspace.Walls.AddRange(model.Output._obstacles);
+                InstanceWorkspace.Notes.AddRange(model.Output._notes);
+                InstanceWorkspace.CustomEvents.AddRange(model.Output._customData._customEvents);
+                walls += model.Output._obstacles.Length;
+                notes += model.Output._notes.Length;
+                customevents += model.Output._customData._customEvents.Length;
             }
-            ConsoleOut("Wall", walls, Time, "ModelToWall");
+            if(walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");
+            if (notes > 0) ConsoleOut("Note", notes, Time, "ModelToWall");
+            if (customevents > 0) ConsoleOut("CustomEvent", customevents, Time, "ModelToWall");
         }
     }
+
+
 }

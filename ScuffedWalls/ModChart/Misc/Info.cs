@@ -16,6 +16,9 @@ namespace ModChart
             public Difficulty[] _difficultyBeatmaps { get; set; }
             public class Difficulty
             {
+
+
+
                 public object _beatmapFilename { get; set; }
                 public object _noteJumpMovementSpeed { get; set; }
                 public object _noteJumpStartBeatOffset { get; set; }
@@ -27,6 +30,8 @@ namespace ModChart
                 }
             }
         }
+
+
 
     }
 }

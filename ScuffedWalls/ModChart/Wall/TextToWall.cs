@@ -32,7 +32,7 @@ namespace ModChart.Wall
                 {
                     alphabet letter = alphabet.nonchar;
                     letter = (alphabet)Settings.Text[LineLayer][LineIndex];
-                    
+
                     if (letterCollection.Any(l => l.Character == letter))
                     {
                         var wallletter = letterCollection
@@ -50,9 +50,9 @@ namespace ModChart.Wall
                 }
                 LineLayerPos += letterCollection.First().Dimensions.Y + (Settings.Leading * scalefactor);
             }
-            
+
             //centeres the text
-            Walls = walls.ToArray().Transform_Pos(new Vector2(-walls.ToArray().GetDimensions().X/2f,0));
+            Walls = walls.ToArray().Transform_Pos(new Vector2(-walls.ToArray().GetDimensions().X / 2f, 0));
         }
 
     }
@@ -61,7 +61,7 @@ namespace ModChart.Wall
         public BeatMap.Obstacle[] Walls { get; set; }
         public alphabet Character { get; set; }
         public Vector2 Dimensions { get; private set; }
-        
+
         public static LetterCollection[] CreateLetters(Bitmap bitmap, ImageSettings settings)
         {
             int i = 0;
@@ -77,6 +77,12 @@ namespace ModChart.Wall
                 return collection;
             }).ToArray();
         }
+
+        public static LetterCollection[] CreateLetters(Model model, ImageSettings settings)
+        {
+            return null;
+        }
+
         public BeatMap.Obstacle[] PlaceAt(Vector2 pos)
         {
             return this.DeepClone().Set_Position(pos);
@@ -98,10 +104,10 @@ namespace ModChart.Wall
             Pixel CurrentLetter = null;
             for (int x = 0; x < LetterIMG.Width; x++)
             {
-                Pixel Current = null;
-                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) Current = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) };
+                Pixel CurrentVerticleLine = null;
+                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) CurrentVerticleLine = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) };
 
-                bool CountLetter = Current != null && CurrentLetter != null;
+                bool CountLetter = CurrentVerticleLine != null && CurrentLetter != null;
                 if (CountLetter)
                 {
                     CurrentLetter.AddWidth();
@@ -109,7 +115,7 @@ namespace ModChart.Wall
                 else
                 {
                     if (CurrentLetter != null) letters.Add(CurrentLetter);
-                    CurrentLetter = Current;
+                    CurrentLetter = CurrentVerticleLine;
                 }
             }
             if (CurrentLetter != null) letters.Add(CurrentLetter);
@@ -167,7 +173,7 @@ namespace ModChart.Wall
     {
         a = 'a', b = 'b', c = 'c', d = 'd', e = 'e', f = 'f', g = 'g', h = 'h', i = 'i', j = 'j', k = 'k', l = 'l', m = 'm', n = 'n', o = 'o', p = 'p', q = 'q', r = 'r', s = 's', t = 't', u = 'u', v = 'v', w = 'w', x = 'x', y = 'y', z = 'z',
         A = 'A', B = 'B', C = 'C', D = 'D', E = 'E', F = 'F', G = 'G', H = 'H', I = 'I', J = 'J', K = 'K', L = 'L', M = 'M', N = 'N', O = 'O', P = 'P', Q = 'Q', R = 'R', S = 'S', T = 'T', U = 'U', V = 'V', W = 'W', X = 'X', Y = 'Y', Z = 'Z',
-        questionmark = '?', period = '.', exclamation = '!', space = ' ', apostrophe = '\'', 
+        questionmark = '?', period = '.', exclamation = '!', space = ' ', apostrophe = '\'',
         nonchar = 0
     }
     public enum alphabetOrder
@@ -176,4 +182,9 @@ namespace ModChart.Wall
         A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
         questionmark, period, exclamation, apostrophe
     }
+
+
+
 }
+
+

@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
+
+
 namespace ModChart
 {
+
+
+
     public class BeatMap
     {
-        public static BeatMap Empty { get { return new BeatMap { _version = "2.0.0", _events = new Event[] { }, _notes = new Note[] { }, _obstacles = new Obstacle[] { }, _customData = new CustomData() }; } }
+        public static BeatMap Empty { get { return new BeatMap { _version = "2.2.0", _events = new Event[] { }, _notes = new Note[] { }, _obstacles = new Obstacle[] { }, _waypoints = new object[] { }, _customData = new CustomData() { _customEvents = new CustomData.CustomEvents[] { }, _pointDefinitions = new CustomData.PointDefinition[] { } } }; } }
         public string _version { get; set; }
         public CustomData _customData { get; set; }
         public Event[] _events { get; set; }
         public Note[] _notes { get; set; }
         public Obstacle[] _obstacles { get; set; }
+        public object[] _waypoints { get; set; }
 
         public class Event
         {
@@ -54,6 +60,7 @@ namespace ModChart
             public object[] _scale { get; set; }
             public object[] _flip { get; set; }
             public object _fake { get; set; } //bool
+            public object _disableNoteGravity { get; set; } //bool
             public Animation _animation { get; set; }
 
             public class Animation

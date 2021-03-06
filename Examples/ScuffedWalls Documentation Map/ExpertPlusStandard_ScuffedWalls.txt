@@ -3,7 +3,7 @@
 #comments start with #
 
 #starting at scuffedwalls v0.2.0, workspaces must be defined using
-Workspace
+Workspace:hi
 
 #import adds map objects into this map from other maps
 0: Import
@@ -82,10 +82,10 @@ Workspace
  AppendTechnique: 1
  
 #will add all walls from workspace 0
-10:CloneFromWorkspaceByIndex
+10:CloneFromWorkspace
   toBeat: 50
   Type: 1
-  index: 0
+  name:hi
   
  
  

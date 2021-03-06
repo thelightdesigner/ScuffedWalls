@@ -24,6 +24,9 @@ namespace ModChart.Note
             };
         }
 
+
+
+
         //returns an array of all notes
         public static BeatMap.Note[] ReadAllNotes(string MapPull)
         {

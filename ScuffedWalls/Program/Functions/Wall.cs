@@ -78,4 +78,6 @@ namespace ScuffedWalls.Functions
             ConsoleOut("Wall", repeatcount, Time, "Wall");
         }
     }
+
+
 }

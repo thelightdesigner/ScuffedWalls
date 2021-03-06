@@ -24,6 +24,24 @@ namespace ModChart
             return $"{X},{Y}";
         }
     }
+    public class DoubleInt
+    {
+        public DoubleInt(int first, int second)
+        {
+            Val1 = first;
+            Val2 = second;
+        }
+        public int Val1 { get; set; }
+        public int Val2 { get; set; }
+        public override string ToString()
+        {
+            return $"{Val1},{Val2}";
+        }
+        public DoubleInt Clone()
+        {
+            return new DoubleInt(Val1,Val2);
+        }
+    }
     static class Maths
     {
         public static float[] Mult(this float[] array1, float[] array2)
@@ -35,6 +53,18 @@ namespace ModChart
                 array1[index] = array1[index] * array2[index];
             }
             return array1;
+        }
+        public static Matrix4x4 TransformLoc(this Matrix4x4 m, Vector3 trans)
+        {
+            var matrix = m;
+            Vector3 pos;
+            Vector3 scale;
+            Quaternion rotquat;
+            Matrix4x4.Decompose(matrix, out scale, out rotquat, out pos);
+
+            var difference = Matrix4x4.CreateTranslation(new Vector3(0, -1, -1) * scale) - Matrix4x4.CreateScale(new Vector3(1, 1, 1)); //i guess this works
+            var compensation = Matrix4x4.Transform(difference, rotquat);
+            return matrix + compensation;
         }
         public static float toFloat(this object v)
         {
@@ -143,4 +173,7 @@ namespace ModChart
             return result;
         }
     }
+
+
+
 }

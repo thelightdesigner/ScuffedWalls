@@ -59,4 +59,6 @@ namespace ScuffedWalls.Functions
             ConsoleOut("Note", repeatcount, Time, "Note");
         }
     }
+
+
 }
