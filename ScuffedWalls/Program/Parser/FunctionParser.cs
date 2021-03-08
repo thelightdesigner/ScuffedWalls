@@ -26,9 +26,9 @@ namespace ScuffedWalls
                  .GetTypes()
                  .Where(t => t.Namespace == "ScuffedWalls.Functions" && t.GetCustomAttributes<ScuffedFunctionAttribute>().Any())
                  .ToArray();
-            ParseRequest();
+            RunRequest();
         }
-        void ParseRequest()
+        void RunRequest()
         {
             Workspaces = new Workspace[] { };
             List<Variable> globalvariables = new List<Variable>();
@@ -40,7 +40,7 @@ namespace ScuffedWalls
                 else ScuffedLogger.ScuffedWorkspace.Log($"Workspace {workspaces.Count()}");
                 Console.ResetColor();
 
-                Workspace WorkspaceInstance = new Workspace();
+                Workspace WorkspaceInstance = new Workspace() { Name = workreq.Name, Number = workreq.Number};
                 foreach (var varreq in workreq.VariableRequests)
                 {
                     Variable variable = new Variable()
@@ -53,13 +53,24 @@ namespace ScuffedWalls
                 }
                 foreach (var funcreq in workreq.FunctionRequests)
                 {
+                    if(!Functions.Any(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName == funcreq.Name)))
+                    {
+                        ConsoleErrorLogger.Log($"Function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} does NOT exist, skipping");
+                        continue;
+                    }
                     Type func = Functions.Where(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName == funcreq.Name)).First();
 
                     var funcInstance = Activator.CreateInstance(func);
-                    //Console.WriteLine(func.GetMethod("InstantiateSFunction"));
                     func.GetMethod("InstantiateSFunction").Invoke(funcInstance, new object[] { funcreq.Parameters.AddVariables(globalvariables.ToArray()), WorkspaceInstance, funcreq.Time });
 
-                    func.GetMethod("Run").Invoke(funcInstance, new object[] { });
+                    try
+                    {
+                        func.GetMethod("Run").Invoke(funcInstance, new object[] { });
+                    }
+                    catch(Exception e)
+                    {
+                        ConsoleErrorLogger.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number}");
+                    }
                 }
                 workspaces.Add(WorkspaceInstance);
                 Workspaces = workspaces.ToArray();

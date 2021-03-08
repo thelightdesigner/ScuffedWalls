@@ -68,6 +68,7 @@ namespace ModChart
         }
         public static float toFloat(this object v)
         {
+            //try { return Convert.ToSingle(v); } catch { }
             return Convert.ToSingle(v.ToString());
         }
         public static double toDouble(this object v)

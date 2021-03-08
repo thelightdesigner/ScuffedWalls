@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ModChart.Note;
 using System.Linq;
 
 namespace ModChart.Wall
@@ -18,9 +19,8 @@ namespace ModChart.Wall
         }
         void SetWalls()
         {
-            Model model = new Model(settings.Path, settings.HasAnimation);
+            Model model = new Model(settings.Path);
             Random rnd = new Random();
-            List<BeatMap.Obstacle> walls = new List<BeatMap.Obstacle>();
             float NJS = settings.NJS;
             float Offset = settings.Offset;
             if (settings.Wall._customData._noteJumpMovementSpeed != null) NJS = settings.Wall._customData._noteJumpMovementSpeed.toFloat();
@@ -29,6 +29,7 @@ namespace ModChart.Wall
             float realduration = bpmAdjuster.GetRealDuration(settings.Wall._duration.toFloat());
             float realstarttime = bpmAdjuster.GetRealTime(settings.Wall._time.toFloat());
 
+            //camera
             if (settings.AssignCameraToTrack && model.Cubes.Any(c => c.isCamera))
             {
                 var camera = model.Cubes.Where(c => c.isCamera).First();
@@ -62,8 +63,9 @@ namespace ModChart.Wall
                 }).ToArray();
             }
 
-
-            foreach (var cube in model.OffsetCorrectedCubes)
+            //walls
+            List<BeatMap.Obstacle> walls = new List<BeatMap.Obstacle>();
+            foreach (var cube in model.OffsetCorrectedCubes.Where(c => !c.isBomb && !c.isCamera && !c.isNote))
             {
 
                 var wall = new BeatMap.Obstacle()
@@ -84,49 +86,57 @@ namespace ModChart.Wall
                 {
                     case ModelTechnique.Definite:
                         {
-                         //   Console.WriteLine($"{cube.FrameSpan.Val1} {cube.FrameSpan.Val2}");
-                          //  Console.WriteLine($"rd{realduration} rs{realstarttime}");
-                          //  Console.WriteLine(realduration * ((cube.FrameSpan.Val2.toFloat() - cube.FrameSpan.Val1.toFloat()) / cube.Count.Value.toFloat()));
-                            wall._duration = bpmAdjuster.GetDefiniteDurationBeats(realduration * ((cube.FrameSpan.Val2.toFloat() - cube.FrameSpan.Val1.toFloat()) /cube.Count.Value.toFloat()));
-                            wall._time = bpmAdjuster.GetPlaceTimeBeats(realstarttime + (realduration * (cube.FrameSpan.Val1.toFloat() / cube.Count.Value.toFloat())));
+                            wall._time = settings.Wall._time;
                             wall._customData._animation._definitePosition = new object[][] { new object[] { cube.Transformation.Position.X, cube.Transformation.Position.Y, cube.Transformation.Position.Z, 0 } };
                             wall._customData._animation._localRotation = new object[][] { new object[] { cube.Transformation.Rotation.X, cube.Transformation.Rotation.Y, cube.Transformation.Rotation.Z, 0 } };
                             wall._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X, cube.Transformation.Scale.Y, cube.Transformation.Scale.Z, 0 } };
-                            List<object[]> positionN = new List<object[]>();
-                            List<object[]> rotationN = new List<object[]>();
-                            List<object[]> scaleN = new List<object[]>();
-                            List<object[]> colorN = new List<object[]>();
-                            for (int i = 0; i < cube.Frames.Length; i++)
+                            if(settings.HasAnimation && cube.Frames != null && cube.Frames.Any())
                             {
-                                float TimeStamp = i.toFloat() / cube.Frames.Length.toFloat();
-                                if(cube.Frames[i].Transformation != null)
+                                wall._duration = bpmAdjuster.GetDefiniteDurationBeats(realduration * ((cube.FrameSpan.Val2.toFloat() - cube.FrameSpan.Val1.toFloat()) / cube.Count.Value.toFloat()));
+                                wall._time = bpmAdjuster.GetPlaceTimeBeats(realstarttime + (realduration * (cube.FrameSpan.Val1.toFloat() / cube.Count.Value.toFloat())));
+                                List<object[]> positionN = new List<object[]>();
+                                List<object[]> rotationN = new List<object[]>();
+                                List<object[]> scaleN = new List<object[]>();
+                                List<object[]> colorN = new List<object[]>();
+                                for (int i = 0; i < cube.Frames.Length; i++)
                                 {
-                                    positionN.Add(new object[] { cube.Frames[i].Transformation.Position.X * -1f, cube.Frames[i].Transformation.Position.Y, cube.Frames[i].Transformation.Position.Z, TimeStamp });
-                                    rotationN.Add(new object[] { cube.Frames[i].Transformation.Rotation.X, cube.Frames[i].Transformation.Rotation.Y * -1, cube.Frames[i].Transformation.Rotation.Z * -1, TimeStamp });
-                                    scaleN.Add(new object[] { cube.Frames[i].Transformation.Scale.X / cube.Frames[i].Transformation.Scale.X, cube.Frames[i].Transformation.Scale.Y / cube.Frames[i].Transformation.Scale.Y, cube.Frames[i].Transformation.Scale.Z / cube.Frames[i].Transformation.Scale.Z, TimeStamp });
+                                    float TimeStamp = i.toFloat() / cube.Frames.Length.toFloat();
+                                    if (cube.Frames[i].Transformation != null)
+                                    {
+                                        positionN.Add(new object[] { cube.Frames[i].Transformation.Position.X * -1f, cube.Frames[i].Transformation.Position.Y, cube.Frames[i].Transformation.Position.Z, TimeStamp });
+                                        rotationN.Add(new object[] { cube.Frames[i].Transformation.Rotation.X, cube.Frames[i].Transformation.Rotation.Y * -1, cube.Frames[i].Transformation.Rotation.Z * -1, TimeStamp });
+                                        scaleN.Add(new object[] { cube.Frames[i].Transformation.Scale.X / cube.Frames[i].Transformation.Scale.X, cube.Frames[i].Transformation.Scale.Y / cube.Frames[i].Transformation.Scale.Y, cube.Frames[i].Transformation.Scale.Z / cube.Frames[i].Transformation.Scale.Z, TimeStamp });
+                                    }
+                                    if (cube.Frames[i].Color != null)
+                                    {
+                                        colorN.Add(new object[] { cube.Frames[i].Color.R, cube.Frames[i].Color.G, cube.Frames[i].Color.B, cube.Frames[i].Color.A, TimeStamp });
+                                    }
                                 }
-                                if(cube.Frames[i].Color != null)
-                                {
-                                    colorN.Add(new object[] { cube.Frames[i].Color.R, cube.Frames[i].Color.G, cube.Frames[i].Color.B, cube.Frames[i].Color.A, TimeStamp });
-                                }
+                                if (positionN.Any()) wall._customData._animation._definitePosition = positionN.ToArray();
+                                if (rotationN.Any()) wall._customData._animation._localRotation = rotationN.ToArray();
+                                if (scaleN.Any()) wall._customData._animation._scale = scaleN.ToArray();
+                                if (colorN.Any()) wall._customData._animation._color = colorN.ToArray();
                             }
-                            if(positionN.Any())  wall._customData._animation._definitePosition = positionN.ToArray();
-                            if (rotationN.Any()) wall._customData._animation._localRotation = rotationN.ToArray();
-                            if (scaleN.Any()) wall._customData._animation._scale = scaleN.ToArray();
-                            if (colorN.Any()) wall._customData._animation._color = colorN.ToArray();
                             wall._customData._scale = new object[] { cube.Transformation.Scale.X * 2f, cube.Transformation.Scale.Y * 2f, cube.Transformation.Scale.Z * 2f };
                         }
                         break;
                     case ModelTechnique.Normal:
                         {
-                            /*
-                            position = new object[] { (cube.Transformation[0].Position.X * -1f) -2f, cube.Transformation[0].Position.Y };
-                            localrotation = new object[] { cube.Transformation[0].Rotation.X, cube.Transformation[0].Rotation.Y * -1f, cube.Transformation[0].Rotation.Z * -1f };
-                            scale = new object[] { cube.Transformation[0].Scale.X * 2f, cube.Transformation[0].Scale.Y * 2f};
+                            wall._customData._position = new object[] { (cube.Transformation.Position.X * -1f) -2f, cube.Transformation.Position.Y };
+                            wall._customData._localRotation = new object[] { cube.Transformation.Rotation.X, cube.Transformation.Rotation.Y * -1f, cube.Transformation.Rotation.Z * -1f };
+                            wall._customData._scale = new object[] { cube.Transformation.Scale.X * 2f, cube.Transformation.Scale.Y * 2f };
                             float beatlength = (5f / 3f * (60f / settings.BPM) * NJS);
-                            duration = (cube.Transformation[0].Scale.Z * 2f) / beatlength;
-                            time = (cube.Transformation[0].Position.Z / beatlength) + settings.Wall.GetTime();
-                            */
+
+                            if (!settings.PreserveTime)
+                            {
+                                wall._duration = (cube.Transformation.Scale.Z * 2f) / beatlength;
+                                wall._time = (cube.Transformation.Position.Z / beatlength) + settings.Wall.GetTime();
+                            }
+                            else
+                            {
+                                wall._duration = cube.Transformation.Scale.Z * 2f;
+                                wall._time = cube.Transformation.Position.Z;
+                            }
                         }
                         break;
                 }
@@ -138,6 +148,88 @@ namespace ModChart.Wall
 
             }
             Output._obstacles = walls.ToArray();
+
+            //notes and bombs
+            List<BeatMap.Note> notes = new List<BeatMap.Note>();
+            foreach (var cube in model.Cubes.Where(c => c.isBomb || c.isNote))
+            {
+                int type = 0;
+                if (cube.isBomb) type = 3;
+
+                var note = new BeatMap.Note()
+                {
+                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.spread,
+                    _lineIndex = 0,
+                    _cutDirection = 1,
+                    _lineLayer = 0,
+                    _type = type,
+                    _customData = new BeatMap.CustomData()
+                    {
+                        _animation = new BeatMap.CustomData.Animation()
+                    }
+                };
+
+
+                switch (settings.technique)
+                {
+                    case ModelTechnique.Definite:
+                        {
+                            note._time = settings.Wall._time;
+                            note._customData._animation._definitePosition = new object[][] { new object[] { cube.Transformation.Position.X, cube.Transformation.Position.Y, cube.Transformation.Position.Z, 0 } };
+                            note._customData._animation._localRotation = new object[][] { new object[] { cube.Transformation.Rotation.X, cube.Transformation.Rotation.Y, cube.Transformation.Rotation.Z, 0 } };
+                            note._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * 2f, cube.Transformation.Scale.Y * 2f, cube.Transformation.Scale.Z * 2f, 0 } };
+                            if (settings.HasAnimation && cube.Frames != null && cube.Frames.Any())
+                            {
+                                note._time = bpmAdjuster.GetPlaceTimeBeats(realstarttime + (realduration * (cube.FrameSpan.Val1.toFloat() / cube.Count.Value.toFloat())));
+                                List<object[]> positionN = new List<object[]>();
+                                List<object[]> rotationN = new List<object[]>();
+                                List<object[]> scaleN = new List<object[]>();
+                                List<object[]> colorN = new List<object[]>();
+                                for (int i = 0; i < cube.Frames.Length; i++)
+                                {
+                                    float TimeStamp = i.toFloat() / cube.Frames.Length.toFloat();
+                                    if (cube.Frames[i].Transformation != null)
+                                    {
+                                        positionN.Add(new object[] { cube.Frames[i].Transformation.Position.X * -1f, cube.Frames[i].Transformation.Position.Y, cube.Frames[i].Transformation.Position.Z, TimeStamp });
+                                        rotationN.Add(new object[] { cube.Frames[i].Transformation.Rotation.X, cube.Frames[i].Transformation.Rotation.Y * -1, cube.Frames[i].Transformation.Rotation.Z * -1, TimeStamp });
+                                        scaleN.Add(new object[] { cube.Frames[i].Transformation.Scale.X * 2f, cube.Frames[i].Transformation.Scale.Y * 2f, cube.Frames[i].Transformation.Scale.Z * 2f, TimeStamp });
+                                    }
+                                    if (cube.Frames[i].Color != null)
+                                    {
+                                        colorN.Add(new object[] { cube.Frames[i].Color.R, cube.Frames[i].Color.G, cube.Frames[i].Color.B, cube.Frames[i].Color.A, TimeStamp });
+                                    }
+                                }
+                                if (positionN.Any()) note._customData._animation._definitePosition = positionN.ToArray();
+                                if (rotationN.Any()) note._customData._animation._localRotation = rotationN.ToArray();
+                                if (scaleN.Any()) note._customData._animation._scale = scaleN.ToArray();
+                                if (colorN.Any()) note._customData._animation._color = colorN.ToArray();
+                            }
+                        }
+                        break;
+                    case ModelTechnique.Normal:
+                        {
+                            note._customData._position = new object[] { (cube.Transformation.Position.X * -1f) - 2f, cube.Transformation.Position.Y };
+                            note._customData._localRotation = new object[] { cube.Transformation.Rotation.X, cube.Transformation.Rotation.Y * -1f, cube.Transformation.Rotation.Z * -1f };
+                            note._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * 2f, cube.Transformation.Scale.Y * 2f, cube.Transformation.Scale.Z * 2f } };
+                            float beatlength = (5f / 3f * (60f / settings.BPM) * NJS);
+
+                            if (!settings.PreserveTime)
+                            {
+                                note._time = (cube.Transformation.Position.Z / beatlength) + settings.Wall.GetTime();
+                            }
+                            else
+                            {
+                                note._time = cube.Transformation.Position.Z;
+                            }
+                        }
+                        break;
+                }
+
+                if (cube.Color != null) note._customData._color = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, cube.Color.A };
+                if (settings.Wall._customData._color != null) note._customData._color = settings.Wall._customData._color;
+
+                notes.Add(note.Append(settings.Wall._customData, AppendTechnique.NoOverwrites));
+            }
         }
     }
     public class ModelSettings
@@ -169,6 +261,7 @@ namespace ModChart.Wall
         public bool AssignCameraToTrack { get; set; }
         public bool CreateTracks { get; set; }
         public bool CreateNotes { get; set; }
+
     }
     public enum ModelTechnique
     {

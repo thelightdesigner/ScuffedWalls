@@ -50,9 +50,7 @@ namespace ModChart.Wall
             CustomData._animation ??= new BeatMap.CustomData.Animation();
             PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
             PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
-           // Console.WriteLine("Before Overwrite" + JsonSerializer.Serialize(CurrentWall, new JsonSerializerOptions { IgnoreNullValues = true }));
-
-            // append technique 0 adds on customdata only if there is no existing customdata
+           
             if (Type == AppendTechnique.NoOverwrites)
             {
                 foreach (PropertyInfo property in propertiesCustomData)

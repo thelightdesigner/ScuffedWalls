@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -13,10 +14,21 @@ namespace ModChart.Wall
 
         TextSettings Settings;
         LetterCollection[] letterCollection;
+        static WallFont[] fonts;
         public WallText(TextSettings settings)
         {
             Settings = settings;
-            letterCollection = LetterCollection.CreateLetters(new Bitmap(Settings.ImagePath), Settings.ImageSettings);
+
+            //performance time
+            string fontname = new FileInfo(settings.ImagePath).Name;
+            if (fonts == null || !fonts.Any(f => f.Name == fontname))
+            { 
+
+                if (fonts == null) fonts = new WallFont[] { };
+                fonts = fonts.Append(new WallFont() { Name = fontname, Letters = LetterCollection.CreateLetters(new Bitmap(settings.ImagePath), settings.ImageSettings) }).ToArray();
+
+            }
+            letterCollection = fonts.Where(f => f.Name == fontname).First().Letters;
             GenerateText();
         }
         void GenerateText()
@@ -56,6 +68,11 @@ namespace ModChart.Wall
         }
 
     }
+    public class WallFont
+    {
+        public string Name { get; set; }
+        public LetterCollection[] Letters { get; set; }
+    }
     public class LetterCollection
     {
         public BeatMap.Obstacle[] Walls { get; set; }
@@ -80,7 +97,7 @@ namespace ModChart.Wall
 
         public static LetterCollection[] CreateLetters(Model model, ImageSettings settings)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public BeatMap.Obstacle[] PlaceAt(Vector2 pos)

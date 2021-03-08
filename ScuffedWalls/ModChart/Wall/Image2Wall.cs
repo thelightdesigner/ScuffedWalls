@@ -38,7 +38,7 @@ namespace ModChart.Wall
                    .Resize(_Settings.scale);
                 }) //size
                 .ToArray();
-           // Console.WriteLine(_Settings.scale);
+            // Console.WriteLine(_Settings.scale);
 
             //centered offseter
             if (_Settings.centered) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = -(_Bitmap.Width.toFloat() * _Settings.scale / 2), Y = 0 }); }).ToArray();
@@ -184,7 +184,7 @@ namespace ModChart.Wall
         }
         public void AddWidth()
         {
-            Scale = Scale.Transform(new IntVector2(1,0));
+            Scale = Scale.Transform(new IntVector2(1, 0));
         }
         public Pixel Inverse()
         {
@@ -311,7 +311,7 @@ namespace ModChart.Wall
         }
         public static Vector2 GetDimensions(this BeatMap.Obstacle[] walls)
         {
-            if (walls.Length == 0) return new Vector2() { X = 0, Y = 0};
+            if (walls.Length == 0) return new Vector2() { X = 0, Y = 0 };
             var SortedY = walls.OrderBy(p => p._customData._position[1].toFloat()).ToArray();
             var SortedX = walls.OrderBy(p => p._customData._position[0].toFloat()).ToArray();
             return new Vector2()

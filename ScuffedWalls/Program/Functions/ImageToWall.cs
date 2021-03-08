@@ -63,6 +63,7 @@ namespace ScuffedWalls.Functions
                         break;
                     case "compression":
                         compression = Convert.ToSingle(p.Data);
+                        Console.WriteLine(compression);
                         break;
                     case "definiteduration":
                         duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat());

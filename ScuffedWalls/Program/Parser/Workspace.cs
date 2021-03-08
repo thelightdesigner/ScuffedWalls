@@ -9,6 +9,7 @@ namespace ScuffedWalls
 {
     public class Workspace
     {
+        public int Number { get; set; }
         public string Name { get; set; }
         public List<BeatMap.Note> Notes { get; set; } = new List<BeatMap.Note>();
         public List<BeatMap.Event> Lights { get; set; } = new List<BeatMap.Event>();
@@ -36,10 +37,11 @@ namespace ScuffedWalls
             }
             return new BeatMap()
             {
-                _version = "2.0.0",
+                _version = "2.2.0",
                 _notes = notes.ToArray().OrderBy(o => o.GetTime()).ToArray(),
                 _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToArray(),
                 _events = events.ToArray().OrderBy(o => o.GetTime()).ToArray(),
+                _waypoints = new object[] { },
                 _customData = new BeatMap.CustomData() { _customEvents = customEvents.ToArray().OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = pointDefinitions.ToArray() }
             };
         }
@@ -47,10 +49,11 @@ namespace ScuffedWalls
         {
             return new BeatMap()
             {
-                _version = "2.0.0",
+                _version = "2.2.0",
                 _notes = workspace.Notes.OrderBy(o => o.GetTime()).ToArray(),
                 _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToArray(),
                 _events = workspace.Lights.OrderBy(o => o.GetTime()).ToArray(),
+                _waypoints = new object[] { },
                 _customData = new BeatMap.CustomData() { _customEvents = workspace.CustomEvents.OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = workspace.PointDefinitions.ToArray() }
             };
         }

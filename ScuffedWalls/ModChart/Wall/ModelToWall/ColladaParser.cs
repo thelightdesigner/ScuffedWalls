@@ -17,7 +17,7 @@ namespace ModChart.Wall
 
         ColladaXML model;
 
-        public Model(string path, bool useAnimation)
+        public Model(string path)
         {
             model = (ColladaXML)Converters.DeserializeXML<ColladaXML>(path);
             SetCubes();
@@ -175,7 +175,6 @@ namespace ModChart.Wall
 
                         }
 
-
                     }
 
                     if (node.instance_cam != null)
@@ -184,9 +183,13 @@ namespace ModChart.Wall
                         cubes.Add(cube);
                         continue;
                     }
+                    if(node.instance_geometry != null && node.instance_geometry.url.ToLower().Contains("sphere"))
+                    {
+                        cube.isBomb = true;
+                    }
 
                     //materials
-                    if (node.instance_geometry.bind_material != null && node.instance_geometry.bind_material.technique_common.instance_material != null)
+                    if (node.instance_geometry != null && node.instance_geometry.bind_material != null && node.instance_geometry.bind_material.technique_common.instance_material != null)
                         cube.Material = node.instance_geometry.bind_material.technique_common.instance_material.Select(m => m.symbol.Split("-material")[0]).ToArray();
 
                     //library_effects
@@ -208,7 +211,6 @@ namespace ModChart.Wall
                     cubes.Add(cube);
                 }
             }
-
 
             List<Cube> instancecubes = new List<Cube>();
             foreach (var cube in cubes) instancecubes.AddRange(cube.InstantiateMultiples());

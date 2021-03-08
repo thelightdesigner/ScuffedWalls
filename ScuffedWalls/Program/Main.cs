@@ -15,12 +15,11 @@ namespace ScuffedWalls
             var helper = new Startup(args);
 
             ScuffedLogger.Log($"ScuffedWalls {ver}");
-            var rnb = new Rainbow();
             var rpc = new RPC();
+            var rainbow = new Rainbow();
             var Ts = new TimeKeeper();
             var scuffedFile = new ScuffedWallFile(Startup.ScuffedConfig.SWFilePath);
             var change = new Change(scuffedFile);
-
 
             ScuffedLogger.Log(Startup.ScuffedConfig.MapFolderPath);
 
@@ -62,7 +61,7 @@ namespace ScuffedWalls
                 rpc.workspace = FunctionParser.Workspaces.Count();
 
                 //collect the trash
-                GC.Collect();
+                //GC.Collect();
 
                 //Warn the user
                 helper.Check(Parser.BeatMap);

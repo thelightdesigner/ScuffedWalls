@@ -1,6 +1,7 @@
 ﻿using ModChart;
 using Octokit;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -111,7 +112,8 @@ namespace ScuffedWalls
                         file.WriteLine($"   Path:{new FileInfo(ScuffedConfig.OldMapPath).Name}");
                     }
                 }
-                Console.Write("[ConsoleLoggerDefault] Main: "); Console.ForegroundColor = ConsoleColor.Red; Console.Write("N"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("w"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("S"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("W"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("F"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("i"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("l"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.Write(" "); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("C"); Console.ForegroundColor = ConsoleColor.Blue; Console.Write("r"); Console.ForegroundColor = ConsoleColor.Magenta; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Red; Console.Write("a"); Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("t"); Console.ForegroundColor = ConsoleColor.Green; Console.Write("e"); Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("d"); Console.ForegroundColor = ConsoleColor.Blue; Console.WriteLine("!"); Console.ResetColor();
+                Console.Write("[ConsoleLoggerDefault] Main: ");
+                new Rainbow().PrintRainbow("New Scuffed Wall File Created");
             }
         }
         public async Task CheckReleases()
@@ -180,11 +182,13 @@ namespace ScuffedWalls
             FileInfo[] mapDataFiles = mapFolder.GetFiles("*.dat");
 
             int j = 0;
+            List<int> indexoption = new List<int>();
             foreach (var filename in mapDataFiles)
             {
                 if (filename.Name != "info.dat" && filename.Name != "Info.dat")
                 {
                     Console.WriteLine(j + ": " + filename.Name.Split('.')[0]);
+                    indexoption.Add(j);
                 }
                 else
                 {
@@ -193,25 +197,25 @@ namespace ScuffedWalls
                 j++;
             }
 
-            Console.Write("Input Difficulty Number:");
+            Console.Write($"Difficulty To Work On (Will overwrite everything in this difficulty file) ({string.Join(",",indexoption)}):");
             int option = Convert.ToInt32(Console.ReadLine());
 
-            Console.Write("AutoImport Map? (y/n):");
+            Console.Write("AutoImport Map? (Creates a backup of the difficulty file and writes an import statement to bring back original map objects) (y/n):");
             {
-                char answer = Convert.ToChar(Console.ReadLine());
+                char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'y') config.IsAutoImportEnabled = true;
             }
 
-            Console.Write("Create a Backup of SW History? (y/n):");
+            Console.Write("Create a Backup of SW History? (Creates a backup of SW file on each save) (y/n):");
             {
-                char answer = Convert.ToChar(Console.ReadLine());
+                char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'n') config.IsBackupEnabled = false;
             }
 
             //path of the sw file by difficulty name
-            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
+            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_SW.sw";
 
-            config.OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_OldMap.dat";
+            config.OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_Old.dat";
 
             config.BackupPaths = new Config.Backup();
 
@@ -219,7 +223,7 @@ namespace ScuffedWalls
 
             config.MapFolderPath = args[0];
 
-            config.BackupPaths.BackupFolderPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_Backup";
+            config.BackupPaths.BackupFolderPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "Backup";
 
             config.BackupPaths.BackupSWFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "SW_History";
 

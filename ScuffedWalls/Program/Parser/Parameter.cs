@@ -9,7 +9,8 @@ namespace ScuffedWalls
 {
     public class Parameter
     {
-        public List<Variable> Variables { get; set; } = new List<Variable>();
+        public Variable[] InternalVariables { get; set; } = new Variable[] { };
+        public Variable[] ExternalVariables { get; set; } = new Variable[] { };
         public Parameter()
         {
             SetRaw();
@@ -37,14 +38,6 @@ namespace ScuffedWalls
             Raw.Name = split[0];
             if (split.Length > 1) Raw.Data = split[1];
         }
-        public void SetData(string s)
-        {
-            Internal.Data = s;
-        }
-        public void SetName(string s)
-        {
-            Internal.Name = s;
-        }
 
         public void SetNameAndData()
         {
@@ -54,8 +47,7 @@ namespace ScuffedWalls
             {
                 if (Type == ParamType.Function) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace().ToLower(); //function names are lower and without whitespace
                 else if (Type == ParamType.Variable) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace(); //variable names can have casing but no space
-                else if (Type == ParamType.Workspace) Internal.Data = Line.Split(':', 2)[1].ToLower(); //workspace names can have spaces
-                else if (Type == ParamType.Parameter) Internal.Data = Line.Split(':', 2)[1];
+                else if (Type == ParamType.Workspace || Type == ParamType.Parameter) Internal.Data = Line.Split(':', 2)[1]; 
             }
 
         }
@@ -67,20 +59,19 @@ namespace ScuffedWalls
             else Type = ParamType.Parameter;
         }
 
-        //replaces Random(v1,v2) with a random precision number
-        public static string CreateRandom(string s)
+        //replaces Random(v1,v2) with a random single precision floating point number
+        public string ParseRandom(string s)
         {
             Random rnd = new Random();
             try
             {
-                while (s.ToLower().Contains("random("))
+                while (s.Contains("Random("))
                 {
-
-
-                    string[] asplit = s.Split("random(", 2);
-                    string[] randomparams = asplit[1].Split(',');
+                    //Console.WriteLine("wow");
+                    string[] asplit = s.Split("Random(", 2);
+                    string[] randomparams = asplit[1].Split(',',2);
                     float first = randomparams[0].toFloat();
-                    float last = randomparams[1].toFloat();
+                    float last = randomparams[1].Split(")")[0].toFloat();
                     double random = rnd.NextDouble() * (last - first) + first;
                     s = asplit[0] + random + asplit[1].Split(')', 2)[1];
 
@@ -92,9 +83,17 @@ namespace ScuffedWalls
             return s;
         }
         //replaces a variable name with a number
-        public string CreateVar(string s)
+        public string ParseVar(string s)
         {
-            foreach (var v in Variables)
+            foreach (var v in ExternalVariables)
+            {
+                while (s.Contains(v.Name))
+                {
+                    string[] split = s.Split(v.Name, 2);
+                    s = split[0] + v.Data + split[1];
+                }
+            }
+            foreach (var v in InternalVariables)
             {
                 while (s.Contains(v.Name))
                 {
@@ -105,10 +104,10 @@ namespace ScuffedWalls
             return s;
         }
         //computes things in {} i guess
-        public static string CreateMath(string s)
+        public string ParseMath(string s)
         {
-            try
-            {
+           // try
+           // {
                 while (s.ToLower().Contains("{"))
                 {
                     string[] asplit = s.Split("{", 2);
@@ -117,8 +116,8 @@ namespace ScuffedWalls
 
                     s = asplit[0] + e.Evaluate().ToString() + endsplit[1];
                 }
-            }
-            catch { throw new ScuffedException($"Unable to parse Math {{ }} Line:{s}"); }
+           // }
+           // catch { throw new ScuffedException($"Unable to parse Math {{}} Line:{s}"); }
 
             return s;
         }
@@ -143,9 +142,9 @@ namespace ScuffedWalls
             get
             {
                 if (Internal.Data == null) return Internal.Data;
-                return CreateMath(
-                    CreateRandom(
-                        CreateVar(
+                return ParseMath(
+                    ParseRandom(
+                        ParseVar(
                             Internal.Data
                             .Clone()
                             .ToString())));
@@ -158,17 +157,27 @@ namespace ScuffedWalls
         {
             return parameters.Select(p =>
             {
-                p.Variables.AddRange(var);
+                p.ExternalVariables = p.ExternalVariables.CombineWith(var);
                 return p;
-            }).ToArray(); ;
+            }).ToArray();
         }
     }
 
 
     public class Variable
     {
+        public Variable() { }
+        public Variable(string name, string data)
+        {
+            Name = name;
+            Data = data;
+        }
         public string Name { get; set; }
         public string Data { get; set; }
+        public override string ToString()
+        {
+            return $"Name:{Name} Data:{Data}";
+        }
     }
     public enum ParamType
     {
@@ -177,8 +186,4 @@ namespace ScuffedWalls
         Parameter,
         Variable
     }
-
-
-
-
 }

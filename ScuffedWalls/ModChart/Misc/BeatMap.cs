@@ -141,6 +141,28 @@ namespace ModChart
                     public dynamic _time { get; set; }
                     public dynamic _interactable { get; set; }
 
+
+                    /// <summary>
+                    /// wip mod dont touch
+                    /// </summary>
+                    public Shader[] _shaders { get; set; }
+                    public class Shader
+                    {
+                        public object _id { get; set; }
+                        public object _ref { get; set; }
+                        public object _clearAfterDone { get; set; }
+                        public object _clearID { get; set; }
+                        public Prop[] _props { get; set; }
+                        public class Prop
+                        {
+                            public object _prop { get; set; }
+                            public object _duration { get; set; }
+                            public object _easing { get; set; }
+                            public dynamic _value { get; set; }
+                                
+                        }
+                    }
+
                 }
             }
             public PointDefinition[] _pointDefinitions { get; set; }

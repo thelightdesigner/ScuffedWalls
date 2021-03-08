@@ -24,6 +24,15 @@ namespace ScuffedWalls
             }
             return ConsoleColor.Red;
         }
+        public void PrintRainbow(string s)
+        {
+            foreach(var letter in s)
+            {
+                Next();
+                Console.Write(letter);
+            }
+            Console.Write("\n");
+        }
     }
     enum Color
     {

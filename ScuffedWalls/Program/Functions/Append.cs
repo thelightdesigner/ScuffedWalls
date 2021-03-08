@@ -13,7 +13,7 @@ namespace ScuffedWalls.Functions
         public void Run()
         {
             AppendTechnique type = 0;
-
+            VariablePopulator internalvars = new VariablePopulator();
             float starttime = Time;
             float endtime = float.PositiveInfinity;
 
@@ -27,8 +27,14 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.Walls = InstanceWorkspace.Walls.Select(obj =>
             {
                 i++;
+
+                internalvars.CurrentWall = obj;
+
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
+
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), type);
                 else return obj;
+
             }).ToList();
 
             ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} walls from beats {starttime} to {endtime}");

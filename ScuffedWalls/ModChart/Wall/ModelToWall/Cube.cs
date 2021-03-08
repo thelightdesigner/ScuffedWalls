@@ -89,6 +89,12 @@ namespace ModChart.Wall
         public bool isCamera { get; set; }
 
         /// <summary>
+        /// shpere
+        /// </summary>
+        public bool isBomb { get; set; }
+
+
+        /// <summary>
         /// The span of this cubes lifetime,
         /// Set by `hide viewport` in blender.
         /// </summary>

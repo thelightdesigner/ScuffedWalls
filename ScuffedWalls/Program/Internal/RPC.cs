@@ -2,6 +2,7 @@
 using ModChart;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScuffedWalls
@@ -25,7 +26,7 @@ namespace ScuffedWalls
                     Timestamps = Timestamps.Now,
                     Assets = new Assets()
                     {
-                        LargeImageKey = "scuffed_png",
+                        LargeImageKey = "scuffed_v1_update",
                         LargeImageText = $"ScuffedWalls {ScuffedWalls.ver}",
                         SmallImageKey = "??",
                         SmallImageText = "??"
@@ -36,26 +37,23 @@ namespace ScuffedWalls
         }
         async Task autoUpdateRPC()
         {
-            //while (currentMap == null) await Task.Delay(20);
+            while (currentMap == null) await Task.Delay(500);
 
-            client.UpdateDetails($"remies map");
-            Random rnd = new Random();
+            client.UpdateDetails(Startup.Info._songName.ToString());
 
             while (true)
             {
                 string[] RPCMsg =
                 {
-                $"at least 5 CustomEvents i think dont go asking me because i probably dont know or wouldnt answer anyways tbh i dont even know how discord can fit this long of a message into its rich presence",
-                $"~2 Events",
-                $"1,237,241 Notes",
-                $"7.8+ Billion Walls",
-                $"609+ billion Workspaces"
+                $"{currentMap._customData._customEvents.Length} CustomEvents",
+                $"{currentMap._events.Length} Lights",
+                $"{currentMap._notes.Length} Notes",
+                $"{currentMap._obstacles.Length} Walls",
+                $"{workspace} Workspaces"
                 };
                 foreach (string mesg in RPCMsg)
                 {
-                    Console.WriteLine("updating");
                     client.UpdateState(mesg);
-                    Console.WriteLine("done");
                     await Task.Delay(5000);
                 }
             }

@@ -14,6 +14,7 @@ namespace ScuffedWalls
         public class WorkspaceRequest
         {
             public string Name { get; set; }
+            public int Number { get; set; }
             public Parameter[] Parameters { get; set; } = new Parameter[] { };
             public FunctionRequest[] FunctionRequests { get; set; } = new FunctionRequest[] { };
             public VariableRequest[] VariableRequests { get; set; } = new VariableRequest[] { };
@@ -46,7 +47,7 @@ namespace ScuffedWalls
                 if (line.Type == ParamType.Workspace)
                 {
                     if (CurrentWorkspace != null) WorkspaceRequests = WorkspaceRequests.Append(CurrentWorkspace).ToArray();
-                    CurrentWorkspace = new WorkspaceRequest() { Name = line.Data };
+                    CurrentWorkspace = new WorkspaceRequest() { Name = line.Data, Number = WorkspaceRequests.Length };
                 }
                 else if (line.Type == ParamType.Function && CurrentWorkspace != null)
                 {

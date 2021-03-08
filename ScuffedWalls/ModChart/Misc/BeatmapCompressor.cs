@@ -103,11 +103,18 @@ namespace ModChart
                     (pointDefinition[i].Slice(0, importantvalues).EqualsArray(pointDefinition[i + 1].Slice(0, importantvalues)))) continue;
                 CleanedPoints.Add(pointDefinition[i]);
             }
-            if (CleanedPoints.Last()[importantvalues].toFloat() != 1f)
+            if (CleanedPoints.Last()[importantvalues].toFloat() < 1f)
             {
                 var lastPoint = CleanedPoints.Last().DeepClone();
                 lastPoint[importantvalues] = 1;
                 CleanedPoints.Add(lastPoint);
+            }
+            else if(CleanedPoints.Last()[importantvalues].toFloat() > 1f)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"[Warning] Noodle Extensions point definitions do NOT end with values higher than 1");
+                Console.WriteLine(JsonSerializer.Serialize(CleanedPoints));
+                Console.ResetColor();
             }
             return CleanedPoints.ToArray();
         }

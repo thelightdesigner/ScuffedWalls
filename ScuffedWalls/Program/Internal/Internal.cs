@@ -11,6 +11,21 @@ namespace ScuffedWalls
 
     static class Internal
     {
+        public static T[] CombineWith<T>(this T[] first, params T[][] arrays)
+        {
+            List<T> list = new List<T>();
+            list.AddRange(first);
+            foreach (var array in arrays) if(array != null) list.AddRange(array);
+            return list.ToArray();
+        }
+        public static string Remove(this string str, char ch)
+        {
+            return string.Join("", str.Split(ch));
+        }
+        public static string Remove(this string str, string ch)
+        {
+            return string.Join("", str.Split(ch));
+        }
         public static T[] GetAllBetween<T>(this T[] mapObjects, float starttime, float endtime)
         {
             return mapObjects.Where(obj => (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) >= starttime) && (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) <= endtime)).ToArray();
