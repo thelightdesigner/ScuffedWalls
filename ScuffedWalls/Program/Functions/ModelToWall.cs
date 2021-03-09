@@ -1,7 +1,6 @@
 ﻿using ModChart;
 using ModChart.Wall;
 using System;
-using System.Linq;
 using System.Text.Json;
 
 namespace ScuffedWalls.Functions
@@ -23,12 +22,15 @@ namespace ScuffedWalls.Functions
             int repeatcount = 1;
             float repeataddtime = 0;
             string Path = string.Empty;
-            bool hasanimation = false;
+            bool hasanimation = true;
             float[] colormult = null;
             int normal = 0;
             bool tracks = true;
+            float? thicc = null;
             float duration = 1;
+            bool preserveTime = false;
             bool assigncamtotrack = true;
+            bool Notes = true;
             bool spline = false;
             float smooth = 0;
             float MapBpm = Startup.Info._beatsPerMinute.toFloat();
@@ -55,6 +57,9 @@ namespace ScuffedWalls.Functions
                         break;
                     case "fullpath":
                         Path = p.Data;
+                        break;
+                    case "thicc":
+                        thicc = float.Parse(p.Data);
                         break;
                     case "colormult":
                         colormult = JsonSerializer.Deserialize<float[]>(p.Data);
@@ -98,7 +103,7 @@ namespace ScuffedWalls.Functions
             int customevents = 0;
             for (int i = 0; i < repeatcount; i++)
             {
-                ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, technique = (ModelTechnique)normal,AssignCameraToTrack = assigncamtotrack, CreateTracks = tracks, Spline = spline,  HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Offset = Startup.bpmAdjuster.StartBeatOffset, Wall = new BeatMap.Obstacle() { _time = Time + (i.toFloat() * repeataddtime), _duration = duration, _customData = Parameters.CustomDataParse() } };
+                ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, Thicc = thicc, CreateNotes = Notes, DeltaTransformation = null, PreserveTime = preserveTime, technique = (ModelTechnique)normal, AssignCameraToTrack = assigncamtotrack, CreateTracks = tracks, Spline = spline, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Offset = Startup.bpmAdjuster.StartBeatOffset, Wall = new BeatMap.Obstacle() { _time = Time + (i.toFloat() * repeataddtime), _duration = duration, _customData = Parameters.CustomDataParse() } };
                 var model = new WallModel(settings);
                 InstanceWorkspace.Walls.AddRange(model.Output._obstacles);
                 InstanceWorkspace.Notes.AddRange(model.Output._notes);
@@ -106,8 +111,10 @@ namespace ScuffedWalls.Functions
                 walls += model.Output._obstacles.Length;
                 notes += model.Output._notes.Length;
                 customevents += model.Output._customData._customEvents.Length;
+                Repeat.Data = i.ToString();
+                Beat.Data = (Time + (i * repeataddtime)).ToString();
             }
-            if(walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");
+            if (walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");
             if (notes > 0) ConsoleOut("Note", notes, Time, "ModelToWall");
             if (customevents > 0) ConsoleOut("CustomEvent", customevents, Time, "ModelToWall");
         }

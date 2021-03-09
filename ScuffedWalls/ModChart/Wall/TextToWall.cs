@@ -21,11 +21,11 @@ namespace ModChart.Wall
 
             //performance time
             string fontname = new FileInfo(settings.ImagePath).Name;
-            if (fonts == null || !fonts.Any(f => f.Name == fontname))
+            if (fonts == null || !fonts.Any(f => f.Name == fontname && f.size == settings.ImageSettings.scale))
             { 
 
                 if (fonts == null) fonts = new WallFont[] { };
-                fonts = fonts.Append(new WallFont() { Name = fontname, Letters = LetterCollection.CreateLetters(new Bitmap(settings.ImagePath), settings.ImageSettings) }).ToArray();
+                fonts = fonts.Append(new WallFont() { size = settings.ImageSettings.scale, Name = fontname, Letters = LetterCollection.CreateLetters(new Bitmap(settings.ImagePath), settings.ImageSettings) }).ToArray();
 
             }
             letterCollection = fonts.Where(f => f.Name == fontname).First().Letters;
@@ -71,6 +71,7 @@ namespace ModChart.Wall
     public class WallFont
     {
         public string Name { get; set; }
+        public float size { get; set; }
         public LetterCollection[] Letters { get; set; }
     }
     public class LetterCollection
@@ -119,10 +120,12 @@ namespace ModChart.Wall
         {
             List<Pixel> letters = new List<Pixel>();
             Pixel CurrentLetter = null;
+            int counter = 0;
             for (int x = 0; x < LetterIMG.Width; x++)
             {
                 Pixel CurrentVerticleLine = null;
-                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) CurrentVerticleLine = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) };
+                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) {  CurrentVerticleLine = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) }; }
+               // else { Console.WriteLine($"oof {counter}"); counter++; }
 
                 bool CountLetter = CurrentVerticleLine != null && CurrentLetter != null;
                 if (CountLetter)
@@ -131,7 +134,13 @@ namespace ModChart.Wall
                 }
                 else
                 {
-                    if (CurrentLetter != null) letters.Add(CurrentLetter);
+
+                    if (CurrentLetter != null)
+                    {
+                        //Console.WriteLine(x);
+                        counter++;
+                        letters.Add(CurrentLetter);
+                    }
                     CurrentLetter = CurrentVerticleLine;
                 }
             }
@@ -139,6 +148,7 @@ namespace ModChart.Wall
             Letters = letters.Select(l =>
             {
                 var cropped = LetterIMG.Crop(l);
+                //cropped.Save(@$"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\falling away\debug textwall\{l.Position.X}{l.Position.Y}.png");
                 return cropped;
             }).ToArray();
         }

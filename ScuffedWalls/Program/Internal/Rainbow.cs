@@ -32,6 +32,7 @@ namespace ScuffedWalls
                 Console.Write(letter);
             }
             Console.Write("\n");
+            Console.ResetColor();
         }
     }
     enum Color

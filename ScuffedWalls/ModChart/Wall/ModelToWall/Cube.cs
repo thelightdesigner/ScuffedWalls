@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace ModChart.Wall
 {
@@ -93,6 +92,8 @@ namespace ModChart.Wall
         /// </summary>
         public bool isBomb { get; set; }
 
+        public string Track { get; set; }
+
 
         /// <summary>
         /// The span of this cubes lifetime,
@@ -155,6 +156,14 @@ namespace ModChart.Wall
         }
         public class Decomposition
         {
+            public static Decomposition fromMatrix(Matrix4x4 Matrix)
+            {
+                Vector3 pos;
+                Quaternion rot;
+                Vector3 sca;
+                Matrix4x4.Decompose(Matrix, out sca, out rot, out pos);
+                return new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+            }
             public Decomposition Clone()
             {
                 return new Decomposition() { Position = Position, Rotation = Rotation, Scale = Scale };
@@ -167,21 +176,13 @@ namespace ModChart.Wall
         {
             if ((Matrix.HasValue))
             {
-                Vector3 pos;
-                Quaternion rot;
-                Vector3 sca;
-                Matrix4x4.Decompose(Matrix.Value, out sca, out rot, out pos);
-                Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+                Transformation = Decomposition.fromMatrix(Matrix.Value);
             }
             if (Frames != null && Frames.All(f => f.Matrix.HasValue))
             {
                 Frames = Frames.Select(frame =>
                 {
-                    Vector3 pos;
-                    Quaternion rot;
-                    Vector3 sca;
-                    Matrix4x4.Decompose(frame.Matrix.Value, out sca, out rot, out pos);
-                    frame.Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+                    frame.Transformation = Decomposition.fromMatrix(frame.Matrix.Value);
                     return frame;
                 }).ToArray();
             }
@@ -206,7 +207,7 @@ namespace ModChart.Wall
                     }
                     lastactive = Frames[i].Active.Value;
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
 
                 return framespan.Select(f =>
                 {
@@ -234,6 +235,29 @@ namespace ModChart.Wall
             if (Material != null) newCube.Material = (string[])Material.Clone();
 
             return newCube;
+        }
+        public Cube Transform(Vector3 Position, Vector3 Rotation, Vector3 Scale)
+        {
+            return null;
+        }
+        public static Cube[] TransformGroup(Cube[] cubes, Vector3 Position, Vector3 Rotation, Vector3 Scale)
+        {
+            var newCubes = cubes.Select(c => c.Clone());
+
+            //matrix transform position
+            newCubes = newCubes.Select(c =>
+            {
+                c.Matrix = c.Matrix + (Matrix4x4.CreateTranslation(Position - c.Matrix.Value.Translation) - Matrix4x4.CreateScale(new Vector3(0, 0, 0)));
+                return c;
+            });
+
+            //get median
+
+
+            //decompose all
+            foreach (var c in newCubes) c.Decompose();
+
+            return null;
         }
     }
 

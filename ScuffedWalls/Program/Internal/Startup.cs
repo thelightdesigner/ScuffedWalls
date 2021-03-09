@@ -19,18 +19,20 @@ namespace ScuffedWalls
         public static Info.DifficultySet.Difficulty InfoDifficulty { get; private set; }
         public static BpmAdjuster bpmAdjuster { get; private set; }
 
-        static string[] SWText = {
-            $"# ScuffedWalls {ScuffedWalls.ver}",
-            "",
-            @"# Documentation on functions can be found at",
-            @"# https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md",
-            "",
-            @"# An example SW File can be found at",
-            @"# https://github.com/thelightdesigner/ScuffedWalls/blob/main/ScuffedWalls%20Documentation%20Map/ExpertPlusStandard_ScuffedWalls.txt",
-            "",
-            "# DM @thelightdesigner#1337 for more help?",
-            "",
-            "Workspace" };
+        static string SWText = 
+@$"# ScuffedWalls {ScuffedWalls.ver}
+
+# Documentation on functions can be found at
+# https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md
+            
+# DM @thelightdesigner#1337 for more help?
+
+# Using this tool requires an understanding of Noodle Extensions.
+# https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md
+
+# Playtest.
+
+Workspace";
 
         public Startup(string[] args)
         {
@@ -103,13 +105,14 @@ namespace ScuffedWalls
             {
                 using (StreamWriter file = new StreamWriter(ScuffedConfig.SWFilePath))
                 {
-                    SWText.ToList().ForEach(line => { file.WriteLine(line); });
+                    file.WriteLine(SWText);
 
                     if (ScuffedConfig.IsAutoImportEnabled)
                     {
-                        file.WriteLine("");
-                        file.WriteLine("0: Import");
-                        file.WriteLine($"   Path:{new FileInfo(ScuffedConfig.OldMapPath).Name}");
+                        file.WriteLine(
+@$"
+0: Import
+   Path:{new FileInfo(ScuffedConfig.OldMapPath).Name}");
                     }
                 }
                 Console.Write("[ConsoleLoggerDefault] Main: ");

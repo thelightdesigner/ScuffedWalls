@@ -10,8 +10,15 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("AppendToAllWallsBetween")]
     class AppendWalls : SFunction
     {
+        public Variable WallIndex;
+        public void SetParameters()
+        {
+            WallIndex = new Variable { Name = "index", Data = "1" };
+            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+        }
         public void Run()
         {
+            SetParameters();
             AppendTechnique type = 0;
             VariablePopulator internalvars = new VariablePopulator();
             float starttime = Time;
@@ -32,7 +39,11 @@ namespace ScuffedWalls.Functions
 
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
 
-                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), type);
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime)
+                {
+                    WallIndex.Data = i.ToString();
+                    return obj.Append(Parameters.CustomDataParse(), type); 
+                }
                 else return obj;
 
             }).ToList();
@@ -43,10 +54,17 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("AppendToAllNotesBetween")]
     class AppendNotes : SFunction
     {
+        public Variable WallIndex;
+        public void SetParameters()
+        {
+            WallIndex = new Variable { Name = "index", Data = "1" };
+            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+        }
         public void Run()
         {
+            SetParameters();
             int type = 0;
-
+            VariablePopulator internalvars = new VariablePopulator();
             bool b = false;
             float starttime = Time;
             float endtime = float.PositiveInfinity;
@@ -70,23 +88,38 @@ namespace ScuffedWalls.Functions
                         break;
                 }
             }
+            int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
+                i++;
+                internalvars.CurrentNote = obj;
+                WallIndex.Data = i.ToString();
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), (AppendTechnique)type);
                 else return obj;
             }).ToList();
+
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} notes from beats {starttime} to {endtime}");
         }
     }
     [ScuffedFunction("AppendToAllEventsBetween")]
     class AppendEvents : SFunction
     {
+        public Variable WallIndex;
+        public void SetParameters()
+        {
+            WallIndex = new Variable { Name = "index", Data = "1" };
+            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+        }
         public void Run()
         {
+            SetParameters();
             int type = 0;
             int[] lightypes = { 1, 2, 3, 4, 5, 6, 7, 8 };
             float starttime = Time;
             bool rainbow = false;
             bool props = false;
+            VariablePopulator internalvars = new VariablePopulator();
             float Rfactor = 1f;
             float Pfactor = 1f;
             float endtime = float.PositiveInfinity;
@@ -122,12 +155,18 @@ namespace ScuffedWalls.Functions
                     else return obj;
                 }).ToList();
             }
-
+            int i = 0;
             InstanceWorkspace.Lights = InstanceWorkspace.Lights.Select(obj =>
             {
+                i++;
+                internalvars.CurrentEvent = obj;
+                WallIndex.Data = i.ToString();
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(), (AppendTechnique)type);
                 else return obj;
             }).ToList();
+
+            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} events from beats {starttime} to {endtime}");
         }
     }
 

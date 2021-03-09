@@ -15,7 +15,7 @@ namespace ScuffedWalls
             Parameters = parameters;
             InstanceWorkspace = instance;
             Time = time;
-            foreach (var s in parameters) Console.WriteLine(s);
+            //foreach (var s in parameters) Console.WriteLine(s);
         }
         public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {

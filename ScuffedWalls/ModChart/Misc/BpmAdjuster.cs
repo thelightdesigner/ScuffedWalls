@@ -8,9 +8,21 @@ namespace ModChart
         public float Bpm { get; private set; }
         public float Njs { get; private set; }
         public float StartBeatOffset { get; private set; }
+        /// <summary>
+        /// how long a beat is in seconds
+        /// </summary>
         public float BeatLength { get; private set; }
+        /// <summary>
+        /// how long a second is in beats
+        /// </summary>
         public float SecondLength { get; private set; }
+        /// <summary>
+        /// how many beats long the half jump duration is
+        /// </summary>
         public float HalfJumpBeats { get; private set; }
+        /// <summary>
+        /// how many seconds long the half jump duration is
+        /// </summary>
         public float HalfJumpSeconds { get; private set; }
 
         public BpmAdjuster(float Bpm, float Njs, float NjsOffset)
@@ -37,6 +49,14 @@ namespace ModChart
         {
            // Console.WriteLine(duration - (2f * GetJumps(NjsOffset, Njs, Bpm)));
             return duration - (2f * GetJumps(NjsOffset,Njs,Bpm));
+        }
+        /// <summary>
+        /// Gets a njs offset that will make the note/bomb stay around for exactly this long in beats
+        /// </summary>
+        /// <returns></returns>
+        public float GetDefiniteNjsOffsetBeats(float duration)
+        {
+            return (duration - (GetJumps(0,Njs,Bpm)*2f/*get whole jump duration*/)/ 2f);
         }
         public float GetRealDuration(float duration, float NjsOffset)
         {
@@ -80,6 +100,8 @@ namespace ModChart
             {
                 num2 /= 2;
             }
+            //at this point num2 is equal to the hjd at njsoffset 0
+            //num2 concat what equals 1
             num2 += _noteJumpStartBeatOffset;
             if (num2 < 1)
             {

@@ -9,7 +9,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v1.0.0";
+        public static string ver = "v1.0.0-unreleased";
         static void Main(string[] args)
         {
             var helper = new Startup(args);
@@ -42,14 +42,14 @@ namespace ScuffedWalls
 
                 //Do request
                 FunctionParser Parser = null;
-               // try
-               // {
+                try
+                {
                     Parser = new FunctionParser(Request);
-               // }
-               // catch (Exception e)
-               // {
-                 //   ConsoleErrorLogger.Log($"Error executing ScuffedRequest ERR: {e.InnerException.Message}");
-              //  }
+                }
+                catch (Exception e)
+                {
+                    ConsoleErrorLogger.Log($"Error executing ScuffedRequest ERR: {e.InnerException.Message}");
+                }
 
                 //write to json file
                 ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
@@ -61,7 +61,7 @@ namespace ScuffedWalls
                 rpc.workspace = FunctionParser.Workspaces.Count();
 
                 //collect the trash
-                //GC.Collect();
+                GC.Collect();
 
                 //Warn the user
                 helper.Check(Parser.BeatMap);

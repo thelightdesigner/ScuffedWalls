@@ -46,6 +46,8 @@ namespace ScuffedWalls
 
                 else if (param.Name == "interactable".ToLower()) CustomData._interactable = JsonSerializer.Deserialize<object>(param.Data);
 
+                else if (param.Name == "disableNoteGravity".ToLower()) CustomData._interactable = JsonSerializer.Deserialize<object>(param.Data);
+
                 else if (param.Name == "rotation".ToLower()) CustomData._rotation = JsonSerializer.Deserialize<object[]>(param.Data);
 
                 else if (param.Name == "LocalRotation".ToLower()) CustomData._localRotation = JsonSerializer.Deserialize<object[]>(param.Data);

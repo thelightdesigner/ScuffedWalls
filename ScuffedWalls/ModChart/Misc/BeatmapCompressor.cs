@@ -112,8 +112,8 @@ namespace ModChart
             else if(CleanedPoints.Last()[importantvalues].toFloat() > 1f)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"[Warning] Noodle Extensions point definitions do NOT end with values higher than 1");
-                Console.WriteLine(JsonSerializer.Serialize(CleanedPoints));
+                Console.WriteLine($"[Warning] Noodle Extensions point definitions don't end with values higher than 1");
+                //Console.WriteLine(JsonSerializer.Serialize(CleanedPoints));
                 Console.ResetColor();
             }
             return CleanedPoints.ToArray();

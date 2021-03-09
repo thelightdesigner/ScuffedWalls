@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
 
@@ -259,15 +260,77 @@ namespace ModChart.Wall
 
     public static class BitmapHelper
     {
+        /*
         public static Bitmap Crop(this Bitmap b, Pixel r)
         {
-            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y);
+            Console.WriteLine($"pixel {r.Position.X}, {r.Scale.X}");
+            
+            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y, PixelFormat.Format24bppRgb);
+            
             using (Graphics g = Graphics.FromImage(nb))
             {
                 g.DrawImage(b, -r.Position.X, r.Position.Y);
+                //nb.SetResolution(r.Scale.X, r.Scale.Y);
                 return nb;
             }
         }
+        */
+        /*
+        public static Bitmap Crop(this Bitmap b, Pixel r)
+        {
+            Bitmap src = b;
+            Bitmap target = new Bitmap(r.Scale.X, r.Scale.Y);
+
+            using (Graphics g = Graphics.FromImage(target))
+            {
+                g.DrawImage(src, new Rectangle(0, 0, target.Width, target.Height),
+                                 target,
+                                 GraphicsUnit.Pixel);
+            }
+        }
+        */
+        public static Bitmap Crop(this Bitmap img, Pixel p)
+        {
+           // try
+           // {
+                Bitmap bmpImage = new Bitmap(img);
+                Rectangle cropArea = new Rectangle(p.Position.X, p.Position.Y, p.Scale.X, p.Scale.Y);
+
+                return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+          //  }
+          //  catch
+          //  {
+          //      return null;
+          //  }
+        }
+        /*
+        public Bitmap Crop(Bitmap m, int width, int height, int x, int y)
+        {
+            try
+            {
+                Image image = m;
+                Bitmap bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                bmp.SetResolution(80, 60);
+
+                Graphics gfx = Graphics.FromImage(bmp);
+                gfx.SmoothingMode = SmoothingMode.AntiAlias;
+                gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gfx.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gfx.DrawImage(image, new Rectangle(0, 0, width, height), x, y, width, height, GraphicsUnit.Pixel);
+                // Dispose to free up resources
+                image.Dispose();
+                bmp.Dispose();
+                gfx.Dispose();
+
+                return bmp;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+        */
         public static Pixel GetCurrent(this Pixel[] pixels, IntVector2 pos)
         {
             if (!pixels.Any(p => p.Position.X == pos.X && p.Position.Y == pos.Y)) return null; //if it dont exist

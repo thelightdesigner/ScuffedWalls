@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ModChart.Wall;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -65,6 +67,38 @@ namespace ModChart
             var difference = Matrix4x4.CreateTranslation(new Vector3(0, -1, -1) * scale) - Matrix4x4.CreateScale(new Vector3(1, 1, 1)); //i guess this works
             var compensation = Matrix4x4.Transform(difference, rotquat);
             return matrix + compensation;
+        }
+        /// <summary>
+        /// Returns a scale vector with dimensions equal to the bounding box of the matrix
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static Vector3 GetBoundingBox(this Matrix4x4 m)
+        {
+            List<Matrix4x4> corners = new List<Matrix4x4>();
+            corners.Add(m.TransformLoc(new Vector3(-1, -1, -1)));
+            corners.Add(m.TransformLoc(new Vector3(1, -1, -1)));
+            corners.Add(m.TransformLoc(new Vector3(-1, 1, -1)));
+            corners.Add(m.TransformLoc(new Vector3(1, 1, -1)));
+
+            corners.Add(m.TransformLoc(new Vector3(-1, -1, 1)));
+            corners.Add(m.TransformLoc(new Vector3(1, -1, 1)));
+            corners.Add(m.TransformLoc(new Vector3(-1, 1, 1)));
+            corners.Add(m.TransformLoc(new Vector3(1, 1, 1)));
+
+            //foreach (var corner in corners) Console.WriteLine($"corners: {corner.Translation.X} {corner.Translation.Y} {corner.Translation.Z}");
+
+            var debug = m.TransformLoc(new Vector3(-100, -100, -10000));
+            //Console.WriteLine($"degub {debug.Translation.X} {debug.Translation.Y} {debug.Translation.Z}");
+
+            var orderedbyX = corners.OrderBy(p => p.Translation.X);
+            var orderedbyY = corners.OrderBy(p => p.Translation.Y);
+            var orderedbyZ = corners.OrderBy(p => p.Translation.Z);
+
+            return new Vector3(
+                orderedbyX.Last().Translation.X - orderedbyX.First().Translation.X,
+                orderedbyY.Last().Translation.Y - orderedbyX.First().Translation.Y,
+                orderedbyZ.Last().Translation.Z - orderedbyX.First().Translation.Z);
         }
         public static float toFloat(this object v)
         {

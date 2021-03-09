@@ -21,14 +21,16 @@ namespace ScuffedWalls
             //get all new lines from file
             List<string> lines = new List<string>();
             List<string> raw = new List<string>();
-            
-            using (StreamReader FileReader = new StreamReader(new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (FileStream stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                while (!FileReader.EndOfStream)
+                using (StreamReader FileReader = new StreamReader(stream))
                 {
-                    string line = FileReader.ReadLine();
-                    raw.Add(line);
-                    if (!string.IsNullOrEmpty(line.removeWhiteSpace()) && line.removeWhiteSpace()[0] != '#') lines.Add(line);
+                    while (!FileReader.EndOfStream)
+                    {
+                        string line = FileReader.ReadLine();
+                        raw.Add(line);
+                        if (!string.IsNullOrEmpty(line.removeWhiteSpace()) && line.removeWhiteSpace()[0] != '#') lines.Add(line);
+                    }
                 }
             }
             SWRaw = raw.ToArray();

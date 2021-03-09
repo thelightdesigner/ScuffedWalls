@@ -174,7 +174,6 @@ namespace ModChart.Wall
                             }
 
                         }
-
                     }
 
                     if (node.instance_cam != null)
@@ -207,6 +206,9 @@ namespace ModChart.Wall
                         }
 
                     }
+
+                    if (cube.Material != null && cube.Material.Any(m => m.ToLower().Contains("note"))) cube.isNote = true;
+                    if (cube.Material != null && cube.Material.Where(m => !m.ToLower().Contains("note")).Count() > 1) cube.Track = cube.Material.Where(m => !m.ToLower().Contains("note")).Last();
 
                     cubes.Add(cube);
                 }

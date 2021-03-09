@@ -69,7 +69,7 @@ namespace ScuffedWalls
                     }
                     catch(Exception e)
                     {
-                        ConsoleErrorLogger.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number}");
+                        ConsoleErrorLogger.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERR:{e.Message}");
                     }
                 }
                 workspaces.Add(WorkspaceInstance);
