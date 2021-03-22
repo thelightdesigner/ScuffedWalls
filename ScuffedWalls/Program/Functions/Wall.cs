@@ -43,12 +43,12 @@ namespace ScuffedWalls.Functions
                         if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
                         break;
                     case "definitetime":
-                        if (p.Data.ToLower().removeWhiteSpace() == "beats")
+                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                         }
-                        else if (p.Data.ToLower().removeWhiteSpace() == "seconds")
+                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));

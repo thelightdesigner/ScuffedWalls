@@ -216,7 +216,7 @@ Workspace";
             }
 
             //path of the sw file by difficulty name
-            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_SW.sw";
+            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
 
             config.OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_Old.dat";
 

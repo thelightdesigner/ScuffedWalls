@@ -60,7 +60,7 @@ namespace ScuffedWalls
 
                 else if (param.Name == "scale".ToLower()) CustomData._scale = JsonSerializer.Deserialize<object[]>(param.Data);
 
-                else if (param.Name == "track".ToLower()) CustomData._track = JsonSerializer.Deserialize<object>($"\"{param.Data.removeWhiteSpace()}\"");
+                else if (param.Name == "track".ToLower()) CustomData._track = JsonSerializer.Deserialize<object>($"\"{param.Data.RemoveWhiteSpace()}\"");
 
                 else if (param.Name == "color".ToLower()) CustomData._color = JsonSerializer.Deserialize<object[]>(param.Data);
                 else if (param.Name == "rgbcolor".ToLower()) CustomData._color = JsonSerializer.Deserialize<object[]>(param.Data).Select(o => { return (object)(o.toFloat() / 255f); }).ToArray();

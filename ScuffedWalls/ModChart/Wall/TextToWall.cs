@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -14,21 +13,10 @@ namespace ModChart.Wall
 
         TextSettings Settings;
         LetterCollection[] letterCollection;
-        static WallFont[] fonts;
         public WallText(TextSettings settings)
         {
             Settings = settings;
-
-            //performance time
-            string fontname = new FileInfo(settings.ImagePath).Name;
-            if (fonts == null || !fonts.Any(f => f.Name == fontname && f.size == settings.ImageSettings.scale))
-            { 
-
-                if (fonts == null) fonts = new WallFont[] { };
-                fonts = fonts.Append(new WallFont() { size = settings.ImageSettings.scale, Name = fontname, Letters = LetterCollection.CreateLetters(new Bitmap(settings.ImagePath), settings.ImageSettings) }).ToArray();
-
-            }
-            letterCollection = fonts.Where(f => f.Name == fontname).First().Letters;
+            letterCollection = LetterCollection.CreateLetters(new Bitmap(Settings.ImagePath), Settings.ImageSettings);
             GenerateText();
         }
         void GenerateText()
@@ -68,12 +56,6 @@ namespace ModChart.Wall
         }
 
     }
-    public class WallFont
-    {
-        public string Name { get; set; }
-        public float size { get; set; }
-        public LetterCollection[] Letters { get; set; }
-    }
     public class LetterCollection
     {
         public BeatMap.Obstacle[] Walls { get; set; }
@@ -95,12 +77,6 @@ namespace ModChart.Wall
                 return collection;
             }).ToArray();
         }
-
-        public static LetterCollection[] CreateLetters(Model model, ImageSettings settings)
-        {
-            throw new NotImplementedException();
-        }
-
         public BeatMap.Obstacle[] PlaceAt(Vector2 pos)
         {
             return this.DeepClone().Set_Position(pos);
@@ -120,35 +96,26 @@ namespace ModChart.Wall
         {
             List<Pixel> letters = new List<Pixel>();
             Pixel CurrentLetter = null;
-            int counter = 0;
             for (int x = 0; x < LetterIMG.Width; x++)
             {
-                Pixel CurrentVerticleLine = null;
-                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) {  CurrentVerticleLine = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) }; }
-               // else { Console.WriteLine($"oof {counter}"); counter++; }
+                Pixel Current = null;
+                if (!LetterIMG.IsVerticalBlackOrEmpty(new IntVector2(x, 0))) Current = new Pixel() { Position = new IntVector2(x, 0), Scale = new IntVector2(1, LetterIMG.Height) };
 
-                bool CountLetter = CurrentVerticleLine != null && CurrentLetter != null;
+                bool CountLetter = Current != null && CurrentLetter != null;
                 if (CountLetter)
                 {
                     CurrentLetter.AddWidth();
                 }
                 else
                 {
-
-                    if (CurrentLetter != null)
-                    {
-                        //Console.WriteLine(x);
-                        counter++;
-                        letters.Add(CurrentLetter);
-                    }
-                    CurrentLetter = CurrentVerticleLine;
+                    if (CurrentLetter != null) letters.Add(CurrentLetter);
+                    CurrentLetter = Current;
                 }
             }
             if (CurrentLetter != null) letters.Add(CurrentLetter);
             Letters = letters.Select(l =>
             {
                 var cropped = LetterIMG.Crop(l);
-                //cropped.Save(@$"E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\falling away\debug textwall\{l.Position.X}{l.Position.Y}.png");
                 return cropped;
             }).ToArray();
         }
@@ -209,9 +176,4 @@ namespace ModChart.Wall
         A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
         questionmark, period, exclamation, apostrophe
     }
-
-
-
 }
-
-

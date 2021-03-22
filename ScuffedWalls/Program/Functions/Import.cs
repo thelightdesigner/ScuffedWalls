@@ -24,7 +24,7 @@ namespace ScuffedWalls.Functions
                 switch (p.Name)
                 {
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.Data;

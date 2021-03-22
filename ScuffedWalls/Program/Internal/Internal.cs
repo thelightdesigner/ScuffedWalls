@@ -11,7 +11,7 @@ namespace ScuffedWalls
 
     static class Internal
     {
-        public static T[] CombineWith<T>(this T[] first, params T[][] arrays)
+        public static IEnumerable<T> CombineWith<T>(this IEnumerable<T> first, params IEnumerable<T>[] arrays)
         {
             List<T> list = new List<T>();
             list.AddRange(first);
@@ -94,9 +94,14 @@ namespace ScuffedWalls
             return $"Backup - {time.ToFileTime()}";
         }
 
-        public static string removeWhiteSpace(this string WhiteSpace)
+        public static string RemoveWhiteSpace(this string WhiteSpace)
         {
             return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
+        }
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> Array)
+        {
+            Random rnd = new Random();
+            return Array.OrderBy(x => rnd.Next());
         }
     }
 

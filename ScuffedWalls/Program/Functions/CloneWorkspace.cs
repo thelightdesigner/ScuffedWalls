@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("CloneFromWorkspace")]
+    [ScuffedFunction("CloneFromWorkspace","CloneFromWorkspaceByIndex", "CloneWorkspace")]
     class CloneWorkspace : SFunction
     {
         public void Run()

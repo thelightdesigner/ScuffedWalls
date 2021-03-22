@@ -1,11 +1,12 @@
 ﻿using ModChart;
 using ModChart.Wall;
 using System;
+using System.Numerics;
 using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("ModelToWall")]
+    [ScuffedFunction("ModelToWall","ModelToNote", "ModelToBomb", "Model")]
     class ModelToWall : SFunction
     {
         public Variable Repeat;
@@ -23,7 +24,6 @@ namespace ScuffedWalls.Functions
             float repeataddtime = 0;
             string Path = string.Empty;
             bool hasanimation = true;
-            float[] colormult = null;
             int normal = 0;
             bool tracks = true;
             float? thicc = null;
@@ -33,6 +33,8 @@ namespace ScuffedWalls.Functions
             bool Notes = true;
             bool spline = false;
             float smooth = 0;
+            Transformation Delta = new Transformation() { Position = new Vector3(0,0,0), RotationEul = new Vector3(0, 0, 0), Scale = new Vector3(0, 0, 0) };
+            ModelSettings.TypeOverride tpye  = ModelSettings.TypeOverride.ModelDefined;
             float MapBpm = Startup.Info._beatsPerMinute.toFloat();
             float MapNjs = Startup.InfoDifficulty._noteJumpMovementSpeed.toFloat();
             var customdata = Parameters.CustomDataParse();
@@ -53,16 +55,25 @@ namespace ScuffedWalls.Functions
                         normal = Convert.ToInt32(bool.Parse(p.Data));
                         break;
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.Data;
                         break;
+                    case "type":
+                        tpye = (ModelSettings.TypeOverride)int.Parse(p.Data);
+                        break;
+                    case "deltaposition":
+                        Delta.Position = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
+                        break;
+                    case "deltarotation":
+                        Delta.RotationEul = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
+                        break;
+                    case "deltascale":
+                        Delta.Scale = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
+                        break;
                     case "thicc":
                         thicc = float.Parse(p.Data);
-                        break;
-                    case "colormult":
-                        colormult = JsonSerializer.Deserialize<float[]>(p.Data);
                         break;
                     case "hasanimation":
                         hasanimation = Convert.ToBoolean(p.Data);
@@ -78,12 +89,12 @@ namespace ScuffedWalls.Functions
                         if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
                         break;
                     case "definitetime":
-                        if (p.Data.ToLower().removeWhiteSpace() == "beats")
+                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                         }
-                        else if (p.Data.ToLower().removeWhiteSpace() == "seconds")
+                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
@@ -103,14 +114,39 @@ namespace ScuffedWalls.Functions
             int customevents = 0;
             for (int i = 0; i < repeatcount; i++)
             {
-                ModelSettings settings = new ModelSettings() { spread = smooth, Path = Path, Thicc = thicc, CreateNotes = Notes, DeltaTransformation = null, PreserveTime = preserveTime, technique = (ModelTechnique)normal, AssignCameraToTrack = assigncamtotrack, CreateTracks = tracks, Spline = spline, HasAnimation = hasanimation, BPM = MapBpm, NJS = MapNjs, Offset = Startup.bpmAdjuster.StartBeatOffset, Wall = new BeatMap.Obstacle() { _time = Time + (i.toFloat() * repeataddtime), _duration = duration, _customData = Parameters.CustomDataParse() } };
+                ModelSettings settings = new ModelSettings() 
+                { 
+                    spread = smooth,
+                    Path = Path,
+                    Thicc = thicc,
+                    CreateNotes = Notes,
+                    DeltaTransformation = Delta,
+                    PreserveTime = preserveTime,
+                    technique = (ModelSettings.Technique)normal,
+                    AssignCameraToTrack = assigncamtotrack,
+                    CreateTracks = tracks, Spline = spline,
+                    HasAnimation = hasanimation,
+                    ObjectOverride = tpye,
+                    BPM = MapBpm, 
+                    NJS = MapNjs,
+                    Offset = Startup.bpmAdjuster.StartBeatOffset,
+                    Wall = new BeatMap.Obstacle() 
+                    { 
+                        _time = Time + (i.toFloat() * repeataddtime),
+                        _duration = duration,
+                        _customData = Parameters.CustomDataParse() 
+                    } 
+                };
                 var model = new WallModel(settings);
+
                 InstanceWorkspace.Walls.AddRange(model.Output._obstacles);
                 InstanceWorkspace.Notes.AddRange(model.Output._notes);
                 InstanceWorkspace.CustomEvents.AddRange(model.Output._customData._customEvents);
+
                 walls += model.Output._obstacles.Length;
                 notes += model.Output._notes.Length;
                 customevents += model.Output._customData._customEvents.Length;
+
                 Repeat.Data = i.ToString();
                 Beat.Data = (Time + (i * repeataddtime)).ToString();
             }

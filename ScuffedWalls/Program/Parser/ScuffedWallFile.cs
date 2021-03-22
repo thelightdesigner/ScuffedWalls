@@ -29,7 +29,7 @@ namespace ScuffedWalls
                     {
                         string line = FileReader.ReadLine();
                         raw.Add(line);
-                        if (!string.IsNullOrEmpty(line.removeWhiteSpace()) && line.removeWhiteSpace()[0] != '#') lines.Add(line);
+                        if (!string.IsNullOrEmpty(line.RemoveWhiteSpace()) && line.RemoveWhiteSpace()[0] != '#') lines.Add(line);
                     }
                 }
             }

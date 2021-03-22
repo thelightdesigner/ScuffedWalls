@@ -41,21 +41,21 @@ namespace ScuffedWalls
 
         public void SetNameAndData()
         {
-            Internal.Name = Line.removeWhiteSpace().ToLower().Split(':', 2)[0];
+            Internal.Name = Line.RemoveWhiteSpace().ToLower().Split(':', 2)[0];
 
             if (Raw.Data != null)
             {
-                if (Type == ParamType.Function) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace().ToLower(); //function names are lower and without whitespace
-                else if (Type == ParamType.Variable) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace(); //variable names can have casing but no space
+                if (Type == ParamType.Function) Internal.Data = Line.Split(':', 2)[1].RemoveWhiteSpace().ToLower(); //function names are lower and without whitespace
+                else if (Type == ParamType.Variable) Internal.Data = Line.Split(':', 2)[1].RemoveWhiteSpace(); //variable names can have casing but no space
                 else if (Type == ParamType.Workspace || Type == ParamType.Parameter) Internal.Data = Line.Split(':', 2)[1]; 
             }
 
         }
         public void SetType()
         {
-            if (char.IsDigit(Raw.Name.ToLower().removeWhiteSpace()[0])) Type = ParamType.Function;
-            else if (Raw.Name.ToLower().removeWhiteSpace() == "workspace") Type = ParamType.Workspace;
-            else if (Raw.Name.ToLower().removeWhiteSpace() == "var") Type = ParamType.Variable;
+            if (char.IsDigit(Raw.Name.ToLower().RemoveWhiteSpace()[0])) Type = ParamType.Function;
+            else if (Raw.Name.ToLower().RemoveWhiteSpace() == "workspace") Type = ParamType.Workspace;
+            else if (Raw.Name.ToLower().RemoveWhiteSpace() == "var") Type = ParamType.Variable;
             else Type = ParamType.Parameter;
         }
 
@@ -157,7 +157,7 @@ namespace ScuffedWalls
         {
             return parameters.Select(p =>
             {
-                p.ExternalVariables = p.ExternalVariables.CombineWith(var);
+                p.ExternalVariables = p.ExternalVariables.CombineWith(var).ToArray();
                 return p;
             }).ToArray();
         }

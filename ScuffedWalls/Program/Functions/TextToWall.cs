@@ -46,7 +46,7 @@ namespace ScuffedWalls.Functions
                         size = p.Data.toFloat();
                         break;
                     case "path":
-                        path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
+                        path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
                         break;
                     case "fullpath":
                         path = p.Data;
@@ -77,12 +77,12 @@ namespace ScuffedWalls.Functions
                         if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
                         break;
                     case "definitetime":
-                        if (p.Data.ToLower().removeWhiteSpace() == "beats")
+                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                         }
-                        else if (p.Data.ToLower().removeWhiteSpace() == "seconds")
+                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
@@ -105,7 +105,7 @@ namespace ScuffedWalls.Functions
                 {
                     scale = size,
                     shift = shift,
-                    spread = smooth,
+                    PCOptimizerPro = smooth,
                     alfa = alpha,
                     centered = false,
                     isBlackEmpty = isblackempty,

@@ -54,7 +54,7 @@ namespace ModChart.Wall
             Walls = Pixels.Select(p =>
             {
                 p = p.Transform(new Vector2() { X = (p.Scale.X / 2f) - (1f / _Settings.thicc * 2f), Y = 0 }); //thicc offseter
-                float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.spread;
+                float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.PCOptimizerPro;
                 return new BeatMap.Obstacle()
                 {
                     _time = _Settings.Wall._time.toFloat() + spread,
@@ -119,7 +119,7 @@ namespace ModChart.Wall
                             Current != null && //this pixel has to exist
                             Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
                             Current.Color.Equals(CurrentPixel.Color, tolerance) &&
-                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly cunt
+                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly
                             (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
 
                         if (CountPixel) //this vs last, color, width, existance
@@ -150,7 +150,7 @@ namespace ModChart.Wall
             this.scale = scale;
             this.thicc = thicc;
             this.centered = centered;
-            this.spread = spread;
+            this.PCOptimizerPro = spread;
             this.alfa = alfa;
             this.Wall = baseWall;
         }
@@ -161,7 +161,7 @@ namespace ModChart.Wall
         public float thicc { get; set; }
         public int maxPixelLength { get; set; }
         public bool centered { get; set; }
-        public float spread { get; set; }
+        public float PCOptimizerPro { get; set; }
         public float alfa { get; set; }
         public float shift { get; set; }
         public float tolerance { get; set; }

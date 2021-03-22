@@ -75,7 +75,7 @@ namespace ModChart.Wall
         /// <summary>
         /// The static decomposed transformation of this cube
         /// </summary>
-        public Decomposition Transformation { get; set; }
+        public Transformation Transformation { get; set; }
 
         /// <summary>
         /// The static matrix transformation of this cube
@@ -129,7 +129,7 @@ namespace ModChart.Wall
         public class Frame
         {
             public int Number { get; set; }
-            public Decomposition Transformation { get; set; }
+            public Transformation Transformation { get; set; }
             public Matrix4x4? Matrix { get; set; }
             public float? Dissolve { get; set; }
             public Color Color { get; set; }
@@ -154,37 +154,21 @@ namespace ModChart.Wall
             }
 
         }
-        public class Decomposition
-        {
-            public static Decomposition fromMatrix(Matrix4x4 Matrix)
-            {
-                Vector3 pos;
-                Quaternion rot;
-                Vector3 sca;
-                Matrix4x4.Decompose(Matrix, out sca, out rot, out pos);
-                return new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
-            }
-            public Decomposition Clone()
-            {
-                return new Decomposition() { Position = Position, Rotation = Rotation, Scale = Scale };
-            }
-            public Vector3 Position { get; set; }
-            public Vector3 Rotation { get; set; }
-            public Vector3 Scale { get; set; }
-        }
         public void Decompose()
         {
             if ((Matrix.HasValue))
             {
-                Transformation = Decomposition.fromMatrix(Matrix.Value);
+                Transformation = Transformation.fromMatrix(Matrix.Value);
             }
             if (Frames != null && Frames.All(f => f.Matrix.HasValue))
             {
                 Frames = Frames.Select(frame =>
                 {
-                    frame.Transformation = Decomposition.fromMatrix(frame.Matrix.Value);
+                    frame.Transformation = Transformation.fromMatrix(frame.Matrix.Value);
                     return frame;
                 }).ToArray();
+                Transformation = Frames.First().Transformation;
+                Matrix = Frames.First().Matrix;
             }
         }
         public Cube[] InstantiateMultiples()
@@ -225,6 +209,10 @@ namespace ModChart.Wall
             {
                 Count = Count,
                 IOR = IOR,
+                isBomb = isBomb,
+                isNote = isNote,
+                Track = Track,
+                Name = Name,
                 isCamera = isCamera,
                 Matrix = Matrix
             };
@@ -236,28 +224,52 @@ namespace ModChart.Wall
 
             return newCube;
         }
-        public Cube Transform(Vector3 Position, Vector3 Rotation, Vector3 Scale)
+        
+        public static IEnumerable<Cube> TransformCollection(IEnumerable<Cube> cubes, Vector3 Position, Vector3 Rotation, float Scale)
         {
-            return null;
-        }
-        public static Cube[] TransformGroup(Cube[] cubes, Vector3 Position, Vector3 Rotation, Vector3 Scale)
-        {
-            var newCubes = cubes.Select(c => c.Clone());
+            var newCubes = cubes.Select(c => c);
+            
+            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox().Main;
 
-            //matrix transform position
+            Console.WriteLine(boundingbox.ToString());
+
+            /*
+            //center the collection
             newCubes = newCubes.Select(c =>
             {
-                c.Matrix = c.Matrix + (Matrix4x4.CreateTranslation(Position - c.Matrix.Value.Translation) - Matrix4x4.CreateScale(new Vector3(0, 0, 0)));
+                var mat = c.Matrix.Value;
+                mat.Translation = mat.Translation - boundingbox.Position;
+                c.Matrix = mat;
                 return c;
             });
-
-            //get median
-
-
+            */
+            
+            //scale them
+            newCubes = newCubes.Select(cube =>
+            {
+                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value,Matrix4x4.CreateScale(Scale));
+                return cube;
+            });
+            
+            /*
+            //rotate them
+            newCubes = newCubes.Select(c =>
+            {
+                c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Rotation.ToQuaternion());
+                return c;
+            });
+            
+            
+            //translate
+            newCubes = newCubes.Select(c =>
+            {
+                c.Matrix = c.Matrix.Value + (Matrix4x4.CreateTranslation(boundingbox.Position + Position) - Matrix4x4.CreateScale(new Vector3(0, 0, 0)));
+                return c;
+            });*/
             //decompose all
             foreach (var c in newCubes) c.Decompose();
 
-            return null;
+            return newCubes;
         }
     }
 

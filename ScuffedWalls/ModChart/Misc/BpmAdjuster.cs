@@ -56,7 +56,7 @@ namespace ModChart
         /// <returns></returns>
         public float GetDefiniteNjsOffsetBeats(float duration)
         {
-            return (duration - (GetJumps(0,Njs,Bpm)*2f/*get whole jump duration*/)/ 2f);
+            return ((duration/2) - (GetJumps(0,Njs,Bpm)*2f/*get whole jump duration*/)/ 2f);
         }
         public float GetRealDuration(float duration, float NjsOffset)
         {
@@ -95,6 +95,29 @@ namespace ModChart
 
             float _noteJumpMovementSpeed = (_startNoteJumpMovementSpeed * BPM) / BPM;
             float num = 60f / BPM;
+            float num2 = _startHalfJumpDurationInBeats;
+            while (_noteJumpMovementSpeed * num * num2 > _maxHalfJumpDistance)
+            {
+                num2 /= 2;
+            }
+            //at this point num2 is equal to the hjd at njsoffset 0
+            //num2 concat what equals 1
+            num2 += _noteJumpStartBeatOffset;
+            if (num2 < 1)
+            {
+                num2 = 1;
+            }
+            return num2;
+        }
+        public float GetJumps(float NjsOffset)
+        {
+            float _startHalfJumpDurationInBeats = 4;
+            float _maxHalfJumpDistance = 18;
+            float _startNoteJumpMovementSpeed = Njs;
+            float _noteJumpStartBeatOffset = NjsOffset;
+
+            float _noteJumpMovementSpeed = (_startNoteJumpMovementSpeed * Bpm) / Bpm;
+            float num = 60f / Bpm;
             float num2 = _startHalfJumpDurationInBeats;
             while (_noteJumpMovementSpeed * num * num2 > _maxHalfJumpDistance)
             {

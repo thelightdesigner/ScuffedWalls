@@ -1,8 +1,6 @@
 ﻿using ModChart;
 using ModChart.Wall;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ScuffedWalls.Functions
 {
@@ -17,8 +15,8 @@ namespace ScuffedWalls.Functions
             bool centered = false;
             float size = 1;
             float shift = 2;
-            float alpha = 1;
-            float thicc = 1;
+            float alpha = 0;
+            float thicc = 12;
             int maxlength = 100000;
             float compression = 0;
             float spreadspawntime = 0;
@@ -29,7 +27,7 @@ namespace ScuffedWalls.Functions
                 switch (p.Name)
                 {
                     case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.removeWhiteSpace();
+                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
                         break;
                     case "fullpath":
                         Path = p.Data;
@@ -70,12 +68,12 @@ namespace ScuffedWalls.Functions
                         if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
                         break;
                     case "definitetime":
-                        if (p.Data.ToLower().removeWhiteSpace() == "beats")
+                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                         }
-                        else if (p.Data.ToLower().removeWhiteSpace() == "seconds")
+                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
                         {
                             if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
                             else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
@@ -87,7 +85,25 @@ namespace ScuffedWalls.Functions
                         break;
                 }
             }
-            WallImage converter = new WallImage(Path, new ImageSettings() { maxPixelLength = maxlength, isBlackEmpty = isBlackEmpty, scale = size, thicc = thicc, shift = shift, centered = centered, spread = spreadspawntime, alfa = alpha, tolerance = compression, Wall = new BeatMap.Obstacle() { _time = Time, _duration = duration, _customData = Parameters.CustomDataParse() } });
+            WallImage converter = new WallImage(Path,
+                new ImageSettings()
+                {
+                    maxPixelLength = maxlength,
+                    isBlackEmpty = isBlackEmpty,
+                    scale = size,
+                    thicc = thicc,
+                    shift = shift,
+                    centered = centered,
+                    PCOptimizerPro = spreadspawntime,
+                    alfa = alpha,
+                    tolerance = compression,
+                    Wall = new BeatMap.Obstacle()
+                    {
+                        _time = Time,
+                        _duration = duration,
+                        _customData = Parameters.CustomDataParse()
+                    }
+                });
             BeatMap.Obstacle[] image = converter.Walls;
             InstanceWorkspace.Walls.AddRange(image);
             ConsoleOut("Wall", image.Length, Time, "ImageToWall");
