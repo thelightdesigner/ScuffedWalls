@@ -73,6 +73,7 @@ namespace ScuffedWalls
             return false;
 
         }
+        
         public static int getCountByID(this int type)
         {
             if (type == 0 || type == 2 || type == 3) return 5;

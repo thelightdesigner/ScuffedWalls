@@ -35,15 +35,24 @@ namespace ModChart.Wall
                 {
                     cube.Frames = cube.Frames.Select(frame =>
                     {
-                        frame.Matrix = frame.Matrix.Value.TransformLoc(new Vector3(0, -1, -1)) + (Matrix4x4.CreateTranslation(new Vector3(cube.Transformation.Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1))); //¯\_(ツ)_/¯
+                        frame.Matrix = frame.Matrix.Value.TransformLoc(new Vector3(0, -1, -1)); //compensate pivot difference
+
+                        var mat = frame.Matrix.Value;
+                        mat.Translation = mat.Translation + new Vector3(cube.Transformation.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+                        frame.Matrix = mat;
+
                         return frame;
                     }).ToArray();
                 }
-                cube.Matrix = cube.Matrix.Value.TransformLoc( new Vector3(0, -1, -1)) + (Matrix4x4.CreateTranslation(new Vector3(cube.Transformation.Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1)));
+                cube.Matrix = cube.Matrix.Value.TransformLoc(new Vector3(0, -1, -1));//compensate pivot difference
+
+                var mat = cube.Matrix.Value;
+                mat.Translation = mat.Translation + new Vector3(cube.Transformation.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+                cube.Matrix = mat;
+
                 return cube;
 
             }).ToArray();
-
         }
         
         void SetCubes()
@@ -195,10 +204,11 @@ namespace ModChart.Wall
                     //library_effects
                     if (model.library_effects != null)
                     {
+
                         if(cube.Material != null && cube.Material.Any())
                         {
                             var effectcontainer = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));
-                            var correcteffect = effectcontainer.Where(e => e.id.Contains(cube.Material[0])).First();
+                            var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0] || e.id.Contains(cube.Material[0])).First();
 
                             if (correcteffect.profile.technique.lambert.diffuse == null) { Console.ForegroundColor = ConsoleColor.Yellow; Console.WriteLine($"[Warning] ColladaParser - {cube.Name} diffuse is nulled! skipping"); Console.ResetColor(); continue; }
 

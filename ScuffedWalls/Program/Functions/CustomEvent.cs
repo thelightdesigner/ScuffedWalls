@@ -9,21 +9,9 @@ namespace ScuffedWalls.Functions
     {
         public void Run()
         {
-            string name = null;
-            object[][] points = null;
-            foreach (var p in Parameters)
-            {
-                switch (p.Name)
-                {
-                    case "name":
-                        name = p.Data;
-                        break;
-                    case "points":
-                        points = JsonSerializer.Deserialize<object[][]>($"[{p.Data}]");
-                        break;
-                }
-            }
-
+            string name = GetParam("name", "unimplemented_pointdefinition", p => p);
+            object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
+            
             InstanceWorkspace.PointDefinitions.Add(new BeatMap.CustomData.PointDefinition()
             {
                 _name = name,
@@ -47,13 +35,8 @@ namespace ScuffedWalls.Functions
         public void Run()
         {
             SetParameters();
-            int repeatcount = 1;
-            float repeatTime = 0;
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
-                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
-            }
+            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
+            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
                 InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
@@ -82,13 +65,8 @@ namespace ScuffedWalls.Functions
         public void Run()
         {
             SetParameters();
-            int repeatcount = 1;
-            float repeatTime = 0;
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
-                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
-            }
+            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
+            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
                 InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()

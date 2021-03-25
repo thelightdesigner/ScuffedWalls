@@ -1,6 +1,5 @@
 ﻿using ModChart;
 using ModChart.Wall;
-using System;
 
 namespace ScuffedWalls.Functions
 {
@@ -9,82 +8,47 @@ namespace ScuffedWalls.Functions
     {
         public void Run()
         {
-            string Path = string.Empty;
-            float duration = 1;
-            bool isBlackEmpty = false;
-            bool centered = false;
-            float size = 1;
-            float shift = 2;
-            float alpha = 0;
-            float thicc = 12;
-            int maxlength = 100000;
-            float compression = 0;
-            float spreadspawntime = 0;
             var customdata = Parameters.CustomDataParse();
             var isNjs = customdata != null && customdata._noteJumpStartBeatOffset != null;
-            foreach (var p in Parameters)
+
+            string Path = GetParam("path", DefaultValue: string.Empty, p => Startup.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
+            Path = GetParam("fullpath", DefaultValue: Path, p => p);
+            float duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
+            bool isBlackEmpty = GetParam("isblackempty", DefaultValue: true, p => bool.Parse(p));
+            bool centered = GetParam("centered", DefaultValue: true, p => bool.Parse(p));
+            float size = GetParam("size", DefaultValue: 1, p => float.Parse(p));
+            float shift = GetParam("shift", DefaultValue: 2, p => float.Parse(p));
+            float alpha = GetParam("alpha", DefaultValue: 0, p => float.Parse(p));
+            float thicc = GetParam("thicc", DefaultValue: 12, p => float.Parse(p));
+            int maxlength = GetParam("maxlinelength", DefaultValue: 100000, p => int.Parse(p));
+            float compression = GetParam("compression", DefaultValue: 0, p => float.Parse(p));
+            float spreadspawntime = GetParam("spreadspawntime", DefaultValue: 0, p => float.Parse(p));
+            duration = GetParam("definiteduration", duration, p =>
+              {
+                  if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
+                  else return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
+              });
+            Time = GetParam("definitetime", Time, p =>
+              {
+                  if (p.ToLower().RemoveWhiteSpace() == "beats")
+                  {
+                      if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
+                      else return Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
+                  }
+                  else if (p.ToLower().RemoveWhiteSpace() == "seconds")
+                  {
+                      if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
+                      else return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
+                  }
+                  return Time;
+              });
+            duration = GetParam("definitedurationseconds",duration,p =>
             {
-                switch (p.Name)
-                {
-                    case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
-                        break;
-                    case "fullpath":
-                        Path = p.Data;
-                        break;
-                    case "duration":
-                        duration = Convert.ToSingle(p.Data);
-                        break;
-                    case "maxlinelength":
-                        maxlength = Convert.ToInt32(p.Data);
-                        break;
-                    case "isblackempty":
-                        isBlackEmpty = Convert.ToBoolean(p.Data);
-                        break;
-                    case "size":
-                        size = Convert.ToSingle(p.Data);
-                        break;
-                    case "spreadspawntime":
-                        spreadspawntime = Convert.ToSingle(p.Data);
-                        break;
-                    case "alpha":
-                        alpha = Convert.ToSingle(p.Data);
-                        break;
-                    case "thicc":
-                        thicc = Convert.ToSingle(p.Data);
-                        break;
-                    case "shift":
-                        shift = Convert.ToSingle(p.Data);
-                        break;
-                    case "centered":
-                        centered = Convert.ToBoolean(p.Data);
-                        break;
-                    case "compression":
-                        compression = Convert.ToSingle(p.Data);
-                        //Console.WriteLine(compression);
-                        break;
-                    case "definiteduration":
-                        duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat());
-                        if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
-                        break;
-                    case "definitetime":
-                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
-                        {
-                            if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
-                            else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
-                        }
-                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
-                        {
-                            if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
-                            else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
-                        }
-                        break;
-                    case "definitedurationseconds":
-                        duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.Data.toFloat()));
-                        if (isNjs) duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.Data.toFloat()), customdata._noteJumpStartBeatOffset.toFloat());
-                        break;
-                }
-            }
+                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()), customdata._noteJumpStartBeatOffset.toFloat());
+                return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()));
+            });
+
+
             WallImage converter = new WallImage(Path,
                 new ImageSettings()
                 {

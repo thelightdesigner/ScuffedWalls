@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("ModelToWall","ModelToNote", "ModelToBomb", "Model")]
+    [ScuffedFunction("ModelToWall", "ModelToNote", "ModelToBomb", "Model")]
     class ModelToWall : SFunction
     {
         public Variable Repeat;
@@ -20,122 +20,89 @@ namespace ScuffedWalls.Functions
         public void Run()
         {
             SetParameters();
-            int repeatcount = 1;
-            float repeataddtime = 0;
-            string Path = string.Empty;
-            bool hasanimation = true;
-            int normal = 0;
-            bool tracks = true;
-            float? thicc = null;
-            float duration = 1;
-            bool preserveTime = false;
-            bool assigncamtotrack = true;
-            bool Notes = true;
-            bool spline = false;
-            float smooth = 0;
-            Transformation Delta = new Transformation() { Position = new Vector3(0,0,0), RotationEul = new Vector3(0, 0, 0), Scale = new Vector3(0, 0, 0) };
-            ModelSettings.TypeOverride tpye  = ModelSettings.TypeOverride.ModelDefined;
-            float MapBpm = Startup.Info._beatsPerMinute.toFloat();
-            float MapNjs = Startup.InfoDifficulty._noteJumpMovementSpeed.toFloat();
             var customdata = Parameters.CustomDataParse();
             var isNjs = customdata != null && customdata._noteJumpStartBeatOffset != null;
 
-
-            foreach (var p in Parameters)
+            int repeatcount =       GetParam("repeat", DefaultValue: 1, p => int.Parse(p));
+            float repeataddtime =   GetParam("repeataddtime", DefaultValue: 0, p => float.Parse(p));
+            string Path =           GetParam("path", DefaultValue: string.Empty, p => Startup.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
+            Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
+            int normal =            GetParam("normal", DefaultValue: 0, p => Convert.ToInt32(bool.Parse(p)));
+            bool tracks =           GetParam("createtracks", DefaultValue: true, p => bool.Parse(p));
+            float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
+            bool preserveTime =     GetParam("preservetime", DefaultValue: false, p => bool.Parse(p));
+            bool hasanimation =     GetParam("hasanimation", DefaultValue: true, p => bool.Parse(p));
+            bool assigncamtotrack=  GetParam("cameratoplayer", DefaultValue: true, p => bool.Parse(p));
+            bool Notes =            GetParam("createnotes", DefaultValue: true, p => bool.Parse(p));
+            bool spline =           GetParam("spline", DefaultValue: false, p => bool.Parse(p));
+            float smooth =          GetParam("spreadspawntime", DefaultValue: 0, p => float.Parse(p));
+            ModelSettings
+            .TypeOverride tpye =    GetParam("type", DefaultValue: ModelSettings.TypeOverride.ModelDefined, p => (ModelSettings.TypeOverride)int.Parse(p));
+            float? alpha =          GetParam("alpha", DefaultValue: null, p => (float?)float.Parse(p));
+            float? thicc =          GetParam("thicc", DefaultValue: null, p => (float?)float.Parse(p));
+            duration =              GetParam("definiteduration", duration, p =>
             {
-                switch (p.Name)
+                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
+                else return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
+            });
+            Time =                  GetParam("definitetime", Time, p =>
+            {
+                if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    case "repeat":
-                        repeatcount = Convert.ToInt32(p.Data);
-                        break;
-                    case "repeataddtime":
-                        repeataddtime = Convert.ToSingle(p.Data);
-                        break;
-                    case "normal":
-                        normal = Convert.ToInt32(bool.Parse(p.Data));
-                        break;
-                    case "path":
-                        Path = Startup.ScuffedConfig.MapFolderPath + @"\" + p.Data.RemoveWhiteSpace();
-                        break;
-                    case "fullpath":
-                        Path = p.Data;
-                        break;
-                    case "type":
-                        tpye = (ModelSettings.TypeOverride)int.Parse(p.Data);
-                        break;
-                    case "deltaposition":
-                        Delta.Position = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
-                        break;
-                    case "deltarotation":
-                        Delta.RotationEul = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
-                        break;
-                    case "deltascale":
-                        Delta.Scale = JsonSerializer.Deserialize<float[]>(p.Data).ToVector3();
-                        break;
-                    case "thicc":
-                        thicc = float.Parse(p.Data);
-                        break;
-                    case "hasanimation":
-                        hasanimation = Convert.ToBoolean(p.Data);
-                        break;
-                    case "duration":
-                        duration = Convert.ToSingle(p.Data);
-                        break;
-                    case "spreadspawntime":
-                        smooth = Convert.ToSingle(p.Data);
-                        break;
-                    case "definiteduration":
-                        duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat());
-                        if (isNjs) Startup.bpmAdjuster.GetDefiniteDurationBeats(p.Data.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
-                        break;
-                    case "definitetime":
-                        if (p.Data.ToLower().RemoveWhiteSpace() == "beats")
-                        {
-                            if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
-                            else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
-                        }
-                        else if (p.Data.ToLower().RemoveWhiteSpace() == "seconds")
-                        {
-                            if (isNjs) Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
-                            else Time = Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
-                        }
-                        break;
-                    case "definitedurationseconds":
-                        duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.Data.toFloat()));
-                        if (isNjs)
-                        {
-                            duration = Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.Data.toFloat()), customdata._noteJumpStartBeatOffset.toFloat());
-                        }
-                        break;
+                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
+                    else return Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                 }
-            }
+                else if (p.ToLower().RemoveWhiteSpace() == "seconds")
+                {
+                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
+                    else return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
+                }
+                return Time;
+            });
+            duration =              GetParam("definitedurationseconds", duration, p =>
+            {
+                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()), customdata._noteJumpStartBeatOffset.toFloat());
+                return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()));
+            });
+
+
+            float MapBpm = Startup.Info._beatsPerMinute.toFloat();
+            float MapNjs = Startup.InfoDifficulty._noteJumpMovementSpeed.toFloat();
+
             int walls = 0;
             int notes = 0;
             int customevents = 0;
             for (int i = 0; i < repeatcount; i++)
             {
-                ModelSettings settings = new ModelSettings() 
-                { 
-                    spread = smooth,
+                Transformation Delta = new Transformation();
+                Delta.Position = GetParam("deltaposition", DefaultValue: new Vector3(0, 0, 0), p => JsonSerializer.Deserialize<float[]>(p).ToVector3());
+                Delta.RotationEul = GetParam("deltarotation", DefaultValue: new Vector3(0, 0, 0), p => JsonSerializer.Deserialize<float[]>(p).ToVector3());
+                Delta.Scale = GetParam("deltascale", DefaultValue: new Vector3(1, 0, 0), p => new Vector3(float.Parse(p), 0, 0));
+
+                ModelSettings settings = new ModelSettings()
+                {
+                    PCOptimizerPro = smooth,
                     Path = Path,
                     Thicc = thicc,
                     CreateNotes = Notes,
                     DeltaTransformation = Delta,
                     PreserveTime = preserveTime,
+                    Alpha = alpha,
                     technique = (ModelSettings.Technique)normal,
-                    AssignCameraToTrack = assigncamtotrack,
-                    CreateTracks = tracks, Spline = spline,
+                    AssignCameraToPlayerTrack = assigncamtotrack,
+                    CreateTracks = tracks,
+                    Spline = spline,
                     HasAnimation = hasanimation,
                     ObjectOverride = tpye,
-                    BPM = MapBpm, 
+                    BPM = MapBpm,
                     NJS = MapNjs,
                     Offset = Startup.bpmAdjuster.StartBeatOffset,
-                    Wall = new BeatMap.Obstacle() 
-                    { 
+                    Wall = new BeatMap.Obstacle()
+                    {
                         _time = Time + (i.toFloat() * repeataddtime),
                         _duration = duration,
-                        _customData = Parameters.CustomDataParse() 
-                    } 
+                        _customData = Parameters.CustomDataParse()
+                    }
                 };
                 var model = new WallModel(settings);
 

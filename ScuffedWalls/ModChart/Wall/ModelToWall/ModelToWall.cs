@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace ModChart.Wall
 {
@@ -75,7 +74,7 @@ namespace ModChart.Wall
 
             }
 
-            Model.OffsetCorrectedCubes = Cube.TransformCollection(Model.OffsetCorrectedCubes,settings.DeltaTransformation.Position, settings.DeltaTransformation.RotationEul, settings.DeltaTransformation.Scale.X).ToArray();
+            Model.OffsetCorrectedCubes = Cube.TransformCollection(Model.OffsetCorrectedCubes, settings.DeltaTransformation.Position, settings.DeltaTransformation.RotationEul, settings.DeltaTransformation.Scale.X).ToArray();
             Model.Cubes = Cube.TransformCollection(Model.Cubes, settings.DeltaTransformation.Position, settings.DeltaTransformation.RotationEul, settings.DeltaTransformation.Scale.X).ToArray();
 
             float realduration = BPMAdjuster.GetRealDuration(settings.Wall._duration.toFloat());
@@ -83,7 +82,7 @@ namespace ModChart.Wall
 
 
             //camera
-            if (settings.AssignCameraToTrack && Model.Cubes.Any(c => c.isCamera))
+            if (settings.AssignCameraToPlayerTrack && Model.Cubes.Any(c => c.isCamera))
             {
                 var camera = Model.Cubes.Where(c => c.isCamera).First();
                 camera.Frames = camera.Frames.Select(f =>
@@ -123,7 +122,7 @@ namespace ModChart.Wall
             {
                 var wall = new BeatMap.Obstacle()
                 {
-                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.spread,
+                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.PCOptimizerPro,
                     _duration = settings.Wall._duration.toFloat(),
                     _lineIndex = 0,
                     _width = 0,
@@ -176,8 +175,9 @@ namespace ModChart.Wall
                                         rotationN.Add(framerot);
                                         if (settings.Thicc.HasValue)
                                         {
-                                            var framescale = new object[] { cube.Frames[i].Transformation.Scale.X * settings.Thicc.Value, cube.Frames[i].Transformation.Scale.Y * settings.Thicc.Value, cube.Frames[i].Transformation.Scale.Z * settings.Thicc.Value, TimeStamp };
-                                            var framepos = new object[] { (cube.Frames[i].Transformation.Position.X * -1f) - (settings.Thicc.Value / 2f), cube.Frames[i].Transformation.Position.Y - (settings.Thicc.Value / 2f), cube.Frames[i].Transformation.Position.Z - (settings.Thicc.Value / 2f), TimeStamp };
+                                            float thiccoffset = cube.Frames[i].Transformation.Scale.X - (1f / settings.Thicc.Value / 2f);
+                                            var framescale = new object[] { cube.Frames[i].Transformation.Scale.X * 2f * settings.Thicc.Value, cube.Frames[i].Transformation.Scale.Y * 2f * settings.Thicc.Value, cube.Frames[i].Transformation.Scale.Z * 2f * settings.Thicc.Value, TimeStamp };
+                                            var framepos = new object[] { (cube.Frames[i].Transformation.Position.X * -1f) + thiccoffset, cube.Frames[i].Transformation.Position.Y - (settings.Thicc.Value / 2f), cube.Frames[i].Transformation.Position.Z - (settings.Thicc.Value / 2f), TimeStamp };
 
                                             if (settings.Spline)
                                             {
@@ -225,9 +225,10 @@ namespace ModChart.Wall
 
                             if (settings.Thicc.HasValue)
                             {
-                                wall._customData._position = new object[] { ((cube.Transformation.Position.X * -1f) - 2f), cube.Transformation.Position.Y };
+                                float thiccoffset = cube.Transformation.Scale.X - (1f / settings.Thicc.Value / 2f);
+                                wall._customData._position = new object[] { ((cube.Transformation.Position.X * -1f) - 2f) + thiccoffset, cube.Transformation.Position.Y };
                                 wall._customData._scale = new object[] { 1 / settings.Thicc.Value, 1 / settings.Thicc.Value, 1 / settings.Thicc.Value };
-                                wall._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * settings.Thicc.Value, cube.Transformation.Scale.Y * settings.Thicc.Value, cube.Transformation.Scale.Z * settings.Thicc.Value, 0 } };
+                                wall._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * 2f * settings.Thicc.Value, cube.Transformation.Scale.Y * 2f * settings.Thicc.Value, cube.Transformation.Scale.Z * 2f * settings.Thicc.Value, 0 } };
                             }
                             else
                             {
@@ -246,13 +247,19 @@ namespace ModChart.Wall
                                 wall._duration = cube.Transformation.Scale.Z * 2f;
                                 wall._time = cube.Transformation.Position.Z;
                             }
+
                         }
                         break;
                 }
-                if (cube.Color != null) wall._customData._color = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, cube.Color.A };
+
+                if (cube.Color != null)
+                {
+                    float alpha = cube.Color.A;
+                    if (settings.Alpha.HasValue) alpha = settings.Alpha.Value;
+                    wall._customData._color = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, alpha };
+                }
                 if (settings.Wall._customData._color != null) wall._customData._color = settings.Wall._customData._color;
                 if (settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) wall._customData._track = cube.Track;
-
                 walls.Add(wall.Append(settings.Wall._customData, AppendTechnique.NoOverwrites));
 
             }
@@ -267,7 +274,7 @@ namespace ModChart.Wall
 
                 var note = new BeatMap.Note()
                 {
-                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.spread,
+                    _time = settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * settings.PCOptimizerPro,
                     _lineIndex = 0,
                     _cutDirection = 1,
                     _lineLayer = 0,
@@ -279,7 +286,7 @@ namespace ModChart.Wall
                 };
 
 
-                float notesizefactor = 2.33f;
+                float notesizefactor = 2.1f;
                 switch (settings.technique)
                 {
                     case ModelSettings.Technique.Definite:
@@ -295,7 +302,6 @@ namespace ModChart.Wall
                                 note._time = (realstarttime + (realduration * (cube.FrameSpan.Val1.toFloat() / cube.Count.Value.toFloat()))) + BPMAdjuster.GetJumps(defnjsoffset);
                                 note._customData._noteJumpStartBeatOffset = defnjsoffset;
 
-                                //note._time = bpmAdjuster.GetPlaceTimeBeats(realstarttime + (realduration * (cube.FrameSpan.Val1.toFloat() / cube.Count.Value.toFloat())));
                                 List<object[]> positionN = new List<object[]>();
                                 List<object[]> rotationN = new List<object[]>();
                                 List<object[]> scaleN = new List<object[]>();
@@ -325,7 +331,7 @@ namespace ModChart.Wall
                         {
                             note._customData._position = new object[] { (cube.Transformation.Position.X * -1f) - 2f, cube.Transformation.Position.Y };
                             note._customData._localRotation = new object[] { cube.Transformation.RotationEul.X, cube.Transformation.RotationEul.Y * -1f, cube.Transformation.RotationEul.Z * -1f };
-                            note._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * notesizefactor, cube.Transformation.Scale.Y * notesizefactor, cube.Transformation.Scale.Z * notesizefactor } };
+                            note._customData._animation._scale = new object[][] { new object[] { cube.Transformation.Scale.X * notesizefactor, cube.Transformation.Scale.Y * notesizefactor, cube.Transformation.Scale.Z * notesizefactor, 0 } };
                             float beatlength = (5f / 3f * (60f / settings.BPM) * NJS);
 
                             if (!settings.PreserveTime)
@@ -353,7 +359,10 @@ namespace ModChart.Wall
     {
 
         public string Path { get; set; }
-        public float spread { get; set; }
+        /// <summary>
+        /// (spreadspawntime)
+        /// </summary>
+        public float PCOptimizerPro { get; set; }
         public Technique technique { get; set; }
         /// <summary>
         /// controls normal and definite
@@ -368,8 +377,9 @@ namespace ModChart.Wall
         public bool PreserveTime { get; set; }
         public Transformation DeltaTransformation { get; set; }
         public bool Spline { get; set; }
-        public bool AssignCameraToTrack { get; set; }
+        public bool AssignCameraToPlayerTrack { get; set; }
         public bool CreateTracks { get; set; }
+        public float? Alpha { get; set; }
         public bool CreateNotes { get; set; }
         public enum Technique
         {
@@ -387,5 +397,3 @@ namespace ModChart.Wall
     }
 
 }
-
-

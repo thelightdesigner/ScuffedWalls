@@ -58,11 +58,14 @@ namespace ScuffedWalls
                         ConsoleErrorLogger.Log($"Function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} does NOT exist, skipping");
                         continue;
                     }
+
                     Type func = Functions.Where(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))).First();
 
                     var funcInstance = Activator.CreateInstance(func);
-                    func.GetMethod("InstantiateSFunction").Invoke(funcInstance, new object[] { funcreq.Parameters.AddVariables(globalvariables.ToArray()), WorkspaceInstance, funcreq.Time });
+                    func.GetMethod("InstantiateSFunction")
+                        .Invoke(funcInstance, new object[] { funcreq.Parameters.AddVariables(globalvariables.ToArray()), WorkspaceInstance, funcreq.Time });
                     
+
                     try
                     {
                         func.GetMethod("Run").Invoke(funcInstance, new object[] { });
@@ -71,6 +74,7 @@ namespace ScuffedWalls
                     {
                         ConsoleErrorLogger.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERR:{e.InnerException.Message}");
                     }
+
                 }
                 workspaces.Add(WorkspaceInstance);
                 Workspaces = workspaces.ToArray();

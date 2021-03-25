@@ -158,7 +158,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
                 Extra = corners.ToArray()
             };
         }
-        public static ValuePair<Transformation, Vector3[]> GetBoundingBox(this Matrix4x4[] ms)
+        public static ValuePair<Transformation, Vector3[]> GetBoundingBox(this Matrix4x4[] ms, Vector3 PosOffset)
         {
             List<Vector3> corners = new List<Vector3>();
             foreach (var matrix in ms) corners.AddRange(matrix.GetBoundingBox().Extra);
@@ -176,9 +176,9 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
                     orderedbyY.Last().Y - orderedbyY.First().Y,
                     orderedbyZ.Last().Z - orderedbyZ.First().Z),
                     Position = new Vector3(
-                        (orderedbyX.Last().X + orderedbyX.First().X) / 2f,
-                        (orderedbyY.Last().Y + orderedbyY.First().Y) / 2f,
-                        (orderedbyZ.Last().Z + orderedbyZ.First().Z) / 2f),
+                        (orderedbyX.Last().X + orderedbyX.First().X) / 2f + PosOffset.X,
+                        (orderedbyY.Last().Y + orderedbyY.First().Y) / 2f + PosOffset.Y,
+                        (orderedbyZ.Last().Z + orderedbyZ.First().Z) / 2f + PosOffset.Z),
                     RotationEul = new Vector3()
                 },
                 Extra = corners.ToArray()

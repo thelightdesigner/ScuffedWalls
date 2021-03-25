@@ -19,26 +19,14 @@ namespace ScuffedWalls
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class FuncParameterAttribute : Attribute
     {
-        public FuncParameterAttribute(params string[] name)
+        public FuncParameterAttribute(Func<string,object> Converter, params string[] Name)
         {
-            Name = name;
-            ParserName = name.Select(n => n.ToLower()).ToArray();
+            this.Converter = Converter;
+            this.Name = Name;
+            ParserName = Name.Select(n => n.ToLower()).ToArray();
         }
-        public FuncParameterAttribute(InputFormat format, params string[] name)
-        {
-            ConverterFormat = format;
-            Name = name;
-            ParserName = name.Select(n => n.ToLower()).ToArray();
-        }
-        public InputFormat ConverterFormat;
+        public Func<string, object> Converter;
         public string[] Name;
         public string[] ParserName;
     }
-    public enum InputFormat
-    {
-        ConvertToType,
-        Json,
-        CommaSeperatedArray
-    }
-    
 }

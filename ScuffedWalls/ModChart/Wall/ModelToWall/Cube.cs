@@ -224,17 +224,15 @@ namespace ModChart.Wall
 
             return newCube;
         }
-        
+
         public static IEnumerable<Cube> TransformCollection(IEnumerable<Cube> cubes, Vector3 Position, Vector3 Rotation, float Scale)
         {
             var newCubes = cubes.Select(c => c);
+
+            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox(new Vector3(1,1,1)).Main;
+
             
-            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox().Main;
-
-            Console.WriteLine(boundingbox.ToString());
-
-            /*
-            //center the collection
+            //center
             newCubes = newCubes.Select(c =>
             {
                 var mat = c.Matrix.Value;
@@ -242,17 +240,17 @@ namespace ModChart.Wall
                 c.Matrix = mat;
                 return c;
             });
-            */
             
-            //scale them
+            
+            //scale
             newCubes = newCubes.Select(cube =>
             {
                 cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value,Matrix4x4.CreateScale(Scale));
                 return cube;
             });
             
-            /*
-            //rotate them
+            
+            //rotate
             newCubes = newCubes.Select(c =>
             {
                 c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Rotation.ToQuaternion());
@@ -263,10 +261,13 @@ namespace ModChart.Wall
             //translate
             newCubes = newCubes.Select(c =>
             {
-                c.Matrix = c.Matrix.Value + (Matrix4x4.CreateTranslation(boundingbox.Position + Position) - Matrix4x4.CreateScale(new Vector3(0, 0, 0)));
+                var mat = c.Matrix.Value;
+                mat.Translation = mat.Translation + boundingbox.Position + Position;
+                c.Matrix = mat;
                 return c;
-            });*/
-            //decompose all
+            });
+
+            //decompose
             foreach (var c in newCubes) c.Decompose();
 
             return newCubes;

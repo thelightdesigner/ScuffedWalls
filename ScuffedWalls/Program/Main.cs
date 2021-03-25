@@ -42,14 +42,14 @@ namespace ScuffedWalls
 
                 //Do request
                 FunctionParser Parser = null;
-                try
-                {
+             //   try
+            //    {
                     Parser = new FunctionParser(Request);
-                }
-                catch (Exception e)
-                {
-                    ConsoleErrorLogger.Log($"Error executing ScuffedRequest ERR: {e.InnerException.Message}");
-                }
+             //   }
+            //    catch (Exception e)
+              //  {
+               //     ConsoleErrorLogger.Log($"Error executing ScuffedRequest ERR: {e.InnerException.Message}");
+             //   }
 
                 //write to json file
                 ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
