@@ -52,6 +52,19 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         }
         public int X { get; set; }
         public int Y { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is IntVector2 vector &&
+                   X == vector.X &&
+                   Y == vector.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
+        }
+
         public override string ToString()
         {
             return $"{X},{Y}";
