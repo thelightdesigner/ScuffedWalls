@@ -30,7 +30,7 @@ namespace ModChart.Wall
         public void Run()
         {
             FloatingPixel[] Pixels =
-                AnalyzeImage()
+                AnalyzeImage().Values.ToArray()
                 .Select(p =>
                 {
                     return p
@@ -77,47 +77,70 @@ namespace ModChart.Wall
             }).ToArray();
         }
 
-        Pixel[] AnalyzeImage()
+        public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary)
         {
-            return
-                CompressPixels(
-                CompressPixels(GetAllPixels(), _Settings.tolerance / _Settings.shift)
-                .Select(p => { return p.Inverse(); }).ToArray(), _Settings.tolerance * _Settings.shift)
-                .Select(p => { return p.Inverse(); }).ToArray();
+            return "{" + string.Join(",", dictionary.Select(kv => kv.Key + "=" + kv.Value).ToArray()) + "}";
+        }
 
+        Dictionary<IntVector2, Pixel> AnalyzeImage()
+        {
 
-            Pixel[] GetAllPixels()
+            var pixels = GetAllPixels();
+            var one = CompressPixels(pixels, _Settings.tolerance / _Settings.shift);
+            var originalKeysOne = one.Keys.ToList();
+            var oneInv = new Dictionary<IntVector2, Pixel>();
+            foreach (var a in originalKeysOne)
             {
-                List<Pixel> pixels = new List<Pixel>();
+                oneInv.Add(new IntVector2(a.Y, a.X), one[a].Inverse());
+                one.Remove(a);
+            }
+            one.Clear();
+            var two = CompressPixels(oneInv, _Settings.tolerance * _Settings.shift);
+            var twoInv = new Dictionary<IntVector2, Pixel>();
+            var originalKeysTwo = two.Keys.ToList();
+            foreach (var a in originalKeysTwo)
+            {
+                twoInv.Add(new IntVector2(a.Y, a.X), two[a].Inverse());
+                two.Remove(a);
+            }
+            two.Clear();
+            return twoInv;
+
+
+
+            Dictionary<IntVector2, Pixel> GetAllPixels()
+            {
+                Dictionary<IntVector2, Pixel> pixels = new Dictionary<IntVector2, Pixel>();
                 IntVector2 Pos = new IntVector2();
                 for (Pos.Y = 0; Pos.Y < _Bitmap.Height; Pos.Y++)
                 {
                     for (Pos.X = 0; Pos.X < _Bitmap.Width; Pos.X++)
                     {
-                        pixels.Add(_Bitmap.ToPixel(Pos));
+                        pixels.Add(Pos, _Bitmap.ToPixel(Pos));
 
                     }
                 }
-                return pixels.ToArray();
+                return pixels;
             }
 
-            Pixel[] CompressPixels(Pixel[] pixels, float tolerance)
+            Dictionary<IntVector2, Pixel> CompressPixels(Dictionary<IntVector2, Pixel> pixels, float tolerance)
             {
                 IntVector2 Pos = new IntVector2();
-                IntVector2 Dimensions = pixels.GetDimensions();
-                List<Pixel> CompressedPixels = new List<Pixel>(pixels.Length);
+                IntVector2 Dimensions = pixels.Values.ToArray().GetDimensions();
+                Dictionary<IntVector2, Pixel> CompressedPixels = new Dictionary<IntVector2, Pixel>();
 
-                int i = 0;
                 Pixel CurrentPixel = null;
                 for (Pos.X = 0; Pos.X < Dimensions.X; Pos.X++)
                 {
                     for (Pos.Y = 0; Pos.Y < Dimensions.Y; Pos.Y++)
                     {
-                        Pixel Current = pixels.GetCurrent(Pos);
-
+                        Pixel Current = null;
+                        pixels.TryGetValue(Pos, out Current);
+                        Pixel temp = null;
+                        bool exists = pixels.TryGetValue(Pos.Transform(new IntVector2(0, -1)), out temp);
                         bool CountPixel =
                             Current != null && //this pixel has to exist
-                            Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
+                            Current.Equals(exists ? pixels[Pos.Transform(new IntVector2(0, -1))] : null, tolerance) && // the last one has to exist and be the same
                             Current.Color.Equals(CurrentPixel.Color, tolerance) &&
                             !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly
                             (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
@@ -129,14 +152,15 @@ namespace ModChart.Wall
                         else
                         {
                             //add and reset
-                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
+                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel.Position, CurrentPixel);
 
                             CurrentPixel = Current;
                         }
+
                     }
                 }
-                if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
-                return CompressedPixels.ToArray();
+                if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f)) && !CompressedPixels.ContainsKey(CurrentPixel.Position)) CompressedPixels.Add(CurrentPixel.Position, CurrentPixel);
+                return CompressedPixels;
             }
 
         }
@@ -291,17 +315,17 @@ namespace ModChart.Wall
         */
         public static Bitmap Crop(this Bitmap img, Pixel p)
         {
-           // try
-           // {
-                Bitmap bmpImage = new Bitmap(img);
-                Rectangle cropArea = new Rectangle(p.Position.X, p.Position.Y, p.Scale.X, p.Scale.Y);
+            // try
+            // {
+            Bitmap bmpImage = new Bitmap(img);
+            Rectangle cropArea = new Rectangle(p.Position.X, p.Position.Y, p.Scale.X, p.Scale.Y);
 
-                return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
-          //  }
-          //  catch
-          //  {
-          //      return null;
-          //  }
+            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+            //  }
+            //  catch
+            //  {
+            //      return null;
+            //  }
         }
         /*
         public Bitmap Crop(Bitmap m, int width, int height, int x, int y)
