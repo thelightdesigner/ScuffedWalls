@@ -1,15 +1,14 @@
 # ScuffedWalls
-A simple tool for making NE 2.0 beat saber maps & modcharts easier. It provides an alternative to direct scripting and allows for a more user friendly and stable approach to creating mod maps. It also comes with some extra features which can aid in creation like Model, Image, and Text to wall converters.
+A command line tool for making NE 2.0 beat saber maps & modcharts. It provides an alternative to direct scripting and comes with some extra features which can aid in creation like Model, Image, and Text to wall converters.
 
 Features:
- - Can parse all Noodle Extensions custom json data
- - Can create custom events.
- - Can import/combine map objects from other map files
- - Can append custom data to map objects
- - Allows for a stable and quick workflow
- - Simple 3d model to wall support with animation & color
- - Image to wall support w/ compression
- - Text to wall support
+ - No code
+ - Create custom events
+ - Import/combine map objects from other map files
+ - Append custom data to map objects
+ - Simple 3d model to wall with animation & color
+ - Image to wall w/ compression
+ - Text to wall
  
  Usage:
   - Drag the map folder onto the program
