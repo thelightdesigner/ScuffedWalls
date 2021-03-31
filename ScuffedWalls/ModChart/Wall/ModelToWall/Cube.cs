@@ -83,6 +83,16 @@ namespace ModChart.Wall
         public Matrix4x4? Matrix { get; set; }
 
         /// <summary>
+        /// The static decomposed transformation of this cube
+        /// </summary>
+        public Transformation OffsetTransformation { get; set; }
+
+        /// <summary>
+        /// The static matrix transformation of this cube
+        /// </summary>
+        public Matrix4x4? OffsetMatrix { get; set; }
+
+        /// <summary>
         /// who left the camera in the scene *BARF*
         /// </summary>
         public bool isCamera { get; set; }
@@ -131,6 +141,8 @@ namespace ModChart.Wall
             public int Number { get; set; }
             public Transformation Transformation { get; set; }
             public Matrix4x4? Matrix { get; set; }
+            public Transformation OffsetTransformation { get; set; }
+            public Matrix4x4? OffsetMatrix { get; set; }
             public float? Dissolve { get; set; }
             public Color Color { get; set; }
 
@@ -160,6 +172,10 @@ namespace ModChart.Wall
             {
                 Transformation = Transformation.fromMatrix(Matrix.Value);
             }
+            if ((OffsetMatrix.HasValue))
+            {
+                OffsetTransformation = Transformation.fromMatrix(OffsetMatrix.Value);
+            }
             if (Frames != null && Frames.All(f => f.Matrix.HasValue))
             {
                 Frames = Frames.Select(frame =>
@@ -169,6 +185,16 @@ namespace ModChart.Wall
                 }).ToArray();
                 Transformation = Frames.First().Transformation;
                 Matrix = Frames.First().Matrix;
+            }
+            if (Frames != null && Frames.All(f => f.OffsetMatrix.HasValue))
+            {
+                Frames = Frames.Select(frame =>
+                {
+                    frame.OffsetTransformation = Transformation.fromMatrix(frame.OffsetMatrix.Value);
+                    return frame;
+                }).ToArray();
+                OffsetTransformation = Frames.First().Transformation;
+                OffsetMatrix = Frames.First().Matrix;
             }
         }
         public Cube[] InstantiateMultiples()
@@ -214,9 +240,11 @@ namespace ModChart.Wall
                 Track = Track,
                 Name = Name,
                 isCamera = isCamera,
-                Matrix = Matrix
+                Matrix = Matrix.Value,
+                OffsetMatrix = OffsetMatrix.Value
             };
             if (Transformation != null) newCube.Transformation = Transformation.Clone();
+            if (OffsetTransformation != null) newCube.OffsetTransformation = OffsetTransformation.Clone();
             if (Frames != null && Frames.Any()) newCube.Frames = Frames.Select(f => f.Clone()).ToArray();
             if (Color != null) newCube.Color = Color.Clone();
             if (FrameSpan != null) newCube.FrameSpan = FrameSpan.Clone();
@@ -224,14 +252,63 @@ namespace ModChart.Wall
 
             return newCube;
         }
-
-        public static IEnumerable<Cube> TransformCollection(IEnumerable<Cube> cubes, Vector3 Position, Vector3 Rotation, float Scale)
+        public void SetOffset()
         {
-            var newCubes = cubes.Select(c => c);
 
-            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox(new Vector3(1,1,1)).Main;
+            if (Frames != null && Frames.Any() && Frames.All(f => f.Matrix.HasValue && f.Transformation != null))
+            {
+                Frames = Frames.Select(frame =>
+                {
+                    var trans = Transformation.fromMatrix(frame.Matrix.Value);
+                    var mat = frame.Matrix.Value;
+                    mat = mat.TransformLoc(new Vector3(0, -1, -1)); //compensate pivot difference
 
-            
+                    mat.Translation = mat.Translation + new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+                    frame.OffsetMatrix = mat;
+
+                    return frame;
+                }).ToArray();
+            }
+            var trans = Transformation.fromMatrix(Matrix.Value);
+            var mat = Matrix.Value;
+            mat = mat.TransformLoc(new Vector3(0, -1, -1));//compensate pivot difference
+
+            mat.Translation = mat.Translation + new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+            OffsetMatrix = mat;
+
+        }
+        public enum Axis
+        {
+            X,
+            Y,
+            Z
+        }
+        /// <summary>
+        /// Transforms a collection of cubes around the center of their bounding box.
+        /// </summary>
+        /// <param name="cubes"></param>
+        /// <param name="Position"></param>
+        /// <param name="Rotation"></param>
+        /// <param name="Scale"></param>
+        /// <param name="SetPos"></param>
+        /// <param name="SetScale"></param>
+        /// <param name="SetScaleAxis"></param>
+        /// <returns>
+        /// A deep copy of the collection
+        /// </returns>
+        public static IEnumerable<Cube> TransformCollection(
+            IEnumerable<Cube> cubes,
+            Vector3 Position,
+            Vector3 Rotation,
+            float Scale,
+            bool SetPos = false,
+            bool SetScale = false,
+            Axis SetScaleAxis = Axis.X)
+        {
+            Cube[] newCubes = cubes.Select(c => c.Clone()).ToArray();
+
+            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox().Main;
+
             //center
             newCubes = newCubes.Select(c =>
             {
@@ -239,35 +316,46 @@ namespace ModChart.Wall
                 mat.Translation = mat.Translation - boundingbox.Position;
                 c.Matrix = mat;
                 return c;
-            });
-            
-            
+            }).ToArray();
+
+
             //scale
+            if (SetScale)
+            {
+                if(SetScaleAxis == Axis.X) Scale /= boundingbox.Scale.X;
+                else if (SetScaleAxis == Axis.Y) Scale /= boundingbox.Scale.Y;
+                else if(SetScaleAxis == Axis.Z) Scale /= boundingbox.Scale.Z;
+            }
+
             newCubes = newCubes.Select(cube =>
             {
-                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value,Matrix4x4.CreateScale(Scale));
+                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value, Matrix4x4.CreateScale(Scale));
                 return cube;
-            });
-            
-            
+            }).ToArray();
+
+
             //rotate
             newCubes = newCubes.Select(c =>
             {
                 c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Rotation.ToQuaternion());
                 return c;
-            });
-            
-            
+            }).ToArray();
+
+
             //translate
+            var ReLoc = boundingbox.Position;
+            if (SetPos) ReLoc = new Vector3(0);
+
             newCubes = newCubes.Select(c =>
             {
                 var mat = c.Matrix.Value;
-                mat.Translation = mat.Translation + boundingbox.Position + Position;
+                mat.Translation = mat.Translation + ReLoc + Position;
                 c.Matrix = mat;
                 return c;
-            });
+            }).ToArray();
 
             //decompose
+            foreach (var c in newCubes) c.SetOffset();
             foreach (var c in newCubes) c.Decompose();
 
             return newCubes;

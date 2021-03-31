@@ -44,15 +44,15 @@ namespace ScuffedWalls.Functions
             }
             for (float i = 0; i < repeatcount; i++)
             {
-                InstanceWorkspace.Notes.Add(new BeatMap.Note()
+                InstanceWorkspace.Notes.Add((BeatMap.Note)new BeatMap.Note()
                 {
                     _time = Time + (i * repeatTime),
                     _lineIndex = 0,
                     _lineLayer = 0,
                     _cutDirection = cutdirection,
-                    _type = type,
-                    _customData = Parameters.CustomDataParse()
-                });
+                    _type = type
+                }.Append(Parameters.CustomDataParse(new BeatMap.Note()), AppendTechnique.Overwrites));
+
                 Repeat.Data = i.ToString();
                 Beat.Data = (Time + (i * repeatTime)).ToString();
             }

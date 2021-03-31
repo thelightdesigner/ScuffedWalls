@@ -12,11 +12,18 @@ namespace ModChart.Wall
         public BeatMap.Obstacle[] Walls { get; private set; }
 
         TextSettings Settings;
-        LetterCollection[] letterCollection;
+        IEnumerable<IPlaceableLetterWallCollection> letterCollection;
         public WallText(TextSettings settings)
         {
             Settings = settings;
-            letterCollection = LetterCollection.CreateLetters(new Bitmap(Settings.ImagePath), Settings.ImageSettings);
+            if(Settings.ModelEnabled)
+            {
+                letterCollection = ModelLetterManager.CreateLetters(new Model(Settings.Path),Settings);
+            }
+            else
+            {
+                letterCollection = WallLetterCollection.CreateLetters(new Bitmap(Settings.Path), Settings.ImageSettings);
+            }
             GenerateText();
         }
         void GenerateText()
@@ -56,18 +63,18 @@ namespace ModChart.Wall
         }
 
     }
-    public class LetterCollection
+    public class WallLetterCollection : IPlaceableLetterWallCollection
     {
-        public BeatMap.Obstacle[] Walls { get; set; }
+        public IEnumerable<BeatMap.Obstacle> Walls { get; set; }
         public alphabet Character { get; set; }
-        public Vector2 Dimensions { get; private set; }
+        public Vector2 Dimensions { get; set; }
 
-        public static LetterCollection[] CreateLetters(Bitmap bitmap, ImageSettings settings)
+        public static WallLetterCollection[] CreateLetters(Bitmap bitmap, ImageSettings settings)
         {
             int i = 0;
             return new LetterBitmap(bitmap).Letters.Select(letr =>
             {
-                var collection = new LetterCollection()
+                var collection = new WallLetterCollection()
                 {
                     Walls = new WallImage(letr, settings).Walls,
                     Character = Enum.Parse<alphabet>(((alphabetOrder)i).ToString()),
@@ -77,10 +84,16 @@ namespace ModChart.Wall
                 return collection;
             }).ToArray();
         }
-        public BeatMap.Obstacle[] PlaceAt(Vector2 pos)
+        public IEnumerable<BeatMap.Obstacle> PlaceAt(Vector2 pos)
         {
-            return this.DeepClone().Set_Position(pos);
+           return this.DeepClone().Set_Position(pos);
         }
+    }
+    interface IPlaceableLetterWallCollection
+    {
+        public IEnumerable<BeatMap.Obstacle> PlaceAt(Vector2 pos);
+        public alphabet Character { get; set; }
+        public Vector2 Dimensions { get; set; }
     }
     class LetterBitmap
     {
@@ -123,12 +136,14 @@ namespace ModChart.Wall
 
     public class TextSettings
     {
-        public string ImagePath { get; set; }
+        public bool ModelEnabled { get; set; }
+        public string Path { get; set; }
         public string[] Text { get; set; }
         public bool Centered { get; set; }
         public float Letting { get; set; }
         public float Leading { get; set; }
         public ImageSettings ImageSettings { get; set; }
+        public ModelSettings ModelSettings { get; set; }
 
     }
     public static class TextHelper
@@ -146,7 +161,7 @@ namespace ModChart.Wall
                 return wall;
             }).ToArray();
         }
-        public static BeatMap.Obstacle[] Set_Position(this LetterCollection walltext, Vector2 Pos)
+        public static BeatMap.Obstacle[] Set_Position(this WallLetterCollection walltext, Vector2 Pos)
         {
             return walltext.Walls.Select(wall =>
             {

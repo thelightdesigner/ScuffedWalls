@@ -1,8 +1,5 @@
 ﻿using ModChart;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ScuffedWalls
 {
@@ -15,7 +12,6 @@ namespace ScuffedWalls
         {
             public string Name { get; set; }
             public int Number { get; set; }
-            public Parameter[] Parameters { get; set; } = new Parameter[] { };
             public FunctionRequest[] FunctionRequests { get; set; } = new FunctionRequest[] { };
             public VariableRequest[] VariableRequests { get; set; } = new VariableRequest[] { };
             public class FunctionRequest
@@ -46,27 +42,50 @@ namespace ScuffedWalls
             {
                 if (line.Type == ParamType.Workspace)
                 {
+                    //add last funcs/variables to last workspace
+                    if (CurrentFunction != null) CurrentWorkspace.FunctionRequests = CurrentWorkspace.FunctionRequests.Append(CurrentFunction).ToArray();
+                    if (CurrentVariable != null) CurrentWorkspace.VariableRequests = CurrentWorkspace.VariableRequests.Append(CurrentVariable).ToArray();
+                    CurrentFunction = null;
+                    CurrentVariable = null;
+
+                    //add last workspace
                     if (CurrentWorkspace != null) WorkspaceRequests = WorkspaceRequests.Append(CurrentWorkspace).ToArray();
+
+                    //create new workspace
                     CurrentWorkspace = new WorkspaceRequest() { Name = line.Data, Number = WorkspaceRequests.Length };
+
+                    CurrentInternal = ParamType.Workspace;
+
                 }
                 else if (line.Type == ParamType.Function && CurrentWorkspace != null)
                 {
-                    CurrentWorkspace.Parameters = CurrentWorkspace.Parameters.Append(line).ToArray();
+
+
+                    //add last function
                     if (CurrentFunction != null) CurrentWorkspace.FunctionRequests = CurrentWorkspace.FunctionRequests.Append(CurrentFunction).ToArray();
+
+                    //create new function
                     CurrentFunction = new WorkspaceRequest.FunctionRequest() { Name = line.Data, Time = line.Name.toFloat() };
+
                     CurrentInternal = ParamType.Function;
                 }
                 else if (line.Type == ParamType.Variable && CurrentWorkspace != null)
                 {
-                    CurrentWorkspace.Parameters = CurrentWorkspace.Parameters.Append(line).ToArray();
+
+
+                    //add last variable
                     if (CurrentVariable != null) CurrentWorkspace.VariableRequests = CurrentWorkspace.VariableRequests.Append(CurrentVariable).ToArray();
+
+                    //create new variable
                     CurrentVariable = new WorkspaceRequest.VariableRequest() { Name = line.Data };
+
+
                     CurrentInternal = ParamType.Variable;
                 }
                 else if (line.Type == ParamType.Parameter && CurrentWorkspace != null)
                 {
 
-                    CurrentWorkspace.Parameters = CurrentWorkspace.Parameters.Append(line).ToArray();
+                    //add line to current func/var
                     if (CurrentInternal == ParamType.Function) CurrentFunction.Parameters = CurrentFunction.Parameters.Append(line).ToArray();
                     else if (CurrentInternal == ParamType.Variable) CurrentVariable.Parameters = CurrentVariable.Parameters.Append(line).ToArray();
                 }

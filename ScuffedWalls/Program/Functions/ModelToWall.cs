@@ -20,8 +20,8 @@ namespace ScuffedWalls.Functions
         public void Run()
         {
             SetParameters();
-            var customdata = Parameters.CustomDataParse();
-            var isNjs = customdata != null && customdata._noteJumpStartBeatOffset != null;
+            var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
+            var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null;
 
             int repeatcount =       GetParam("repeat", DefaultValue: 1, p => int.Parse(p));
             float repeataddtime =   GetParam("repeataddtime", DefaultValue: 0, p => float.Parse(p));
@@ -29,7 +29,7 @@ namespace ScuffedWalls.Functions
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
             int normal =            GetParam("normal", DefaultValue: 0, p => Convert.ToInt32(bool.Parse(p)));
             bool tracks =           GetParam("createtracks", DefaultValue: true, p => bool.Parse(p));
-            float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
+            
             bool preserveTime =     GetParam("preservetime", DefaultValue: false, p => bool.Parse(p));
             bool hasanimation =     GetParam("hasanimation", DefaultValue: true, p => bool.Parse(p));
             bool assigncamtotrack=  GetParam("cameratoplayer", DefaultValue: true, p => bool.Parse(p));
@@ -40,28 +40,31 @@ namespace ScuffedWalls.Functions
             .TypeOverride tpye =    GetParam("type", DefaultValue: ModelSettings.TypeOverride.ModelDefined, p => (ModelSettings.TypeOverride)int.Parse(p));
             float? alpha =          GetParam("alpha", DefaultValue: null, p => (float?)float.Parse(p));
             float? thicc =          GetParam("thicc", DefaultValue: null, p => (float?)float.Parse(p));
+            bool setdeltapos =      GetParam("setdeltaposition", false, p => bool.Parse(p));
+            bool setdeltascale =    GetParam("setdeltascale", false, p => bool.Parse(p));
+            float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             duration =              GetParam("definiteduration", duration, p =>
             {
-                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), customdata._noteJumpStartBeatOffset.toFloat());
+                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
                 else return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
             });
             Time =                  GetParam("definitetime", Time, p =>
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Time, customdata._noteJumpStartBeatOffset.toFloat());
+                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
                     else return Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), customdata._noteJumpStartBeatOffset.toFloat());
+                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
                     else return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
                 }
                 return Time;
             });
             duration =              GetParam("definitedurationseconds", duration, p =>
             {
-                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()), customdata._noteJumpStartBeatOffset.toFloat());
+                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
                 return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()));
             });
 
@@ -97,12 +100,13 @@ namespace ScuffedWalls.Functions
                     BPM = MapBpm,
                     NJS = MapNjs,
                     Offset = Startup.bpmAdjuster.StartBeatOffset,
-                    Wall = new BeatMap.Obstacle()
+                    SetDeltaScale = setdeltascale,
+                    SetDeltaPos = setdeltapos,
+                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
                     {
                         _time = Time + (i.toFloat() * repeataddtime),
-                        _duration = duration,
-                        _customData = Parameters.CustomDataParse()
-                    }
+                        _duration = duration
+                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendTechnique.Overwrites)
                 };
                 var model = new WallModel(settings);
 

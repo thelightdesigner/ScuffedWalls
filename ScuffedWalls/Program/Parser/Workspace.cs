@@ -42,7 +42,7 @@ namespace ScuffedWalls
                 _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToArray(),
                 _events = events.ToArray().OrderBy(o => o.GetTime()).ToArray(),
                 _waypoints = new object[] { },
-                _customData = new BeatMap.CustomData() { _customEvents = customEvents.ToArray().OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = pointDefinitions.ToArray() }
+                _customData = new BeatMap.CustomData() { _environment = new BeatMap.CustomData.Environment[] { }, _customEvents = customEvents.ToArray().OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = pointDefinitions.ToArray() }
             };
         }
         public static BeatMap toBeatMap(this Workspace workspace)
@@ -54,7 +54,7 @@ namespace ScuffedWalls
                 _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToArray(),
                 _events = workspace.Lights.OrderBy(o => o.GetTime()).ToArray(),
                 _waypoints = new object[] { },
-                _customData = new BeatMap.CustomData() { _customEvents = workspace.CustomEvents.OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = workspace.PointDefinitions.ToArray() }
+                _customData = new BeatMap.CustomData() { _environment = new BeatMap.CustomData.Environment[] { }, _customEvents = workspace.CustomEvents.OrderBy(o => float.Parse(o._time.ToString())).ToArray(), _pointDefinitions = workspace.PointDefinitions.ToArray() }
             };
         }
     }

@@ -13,47 +13,23 @@ namespace ModChart.Wall
     public class Model
     {
         public Cube[] Cubes { get; set; }
-        public Cube[] OffsetCorrectedCubes { get; set; }
 
-        ColladaXML model;
+        Collada model;
 
         public Model(string path)
         {
-            model = (ColladaXML)Converters.DeserializeXML<ColladaXML>(path);
+            model = (Collada)Converters.DeserializeXML<Collada>(path);
             SetCubes();
+            foreach (var cube in Cubes) cube.SetOffset();
             foreach (var cube in Cubes) cube.Decompose();
-            SetOffset();
-            foreach (var cube in OffsetCorrectedCubes) cube.Decompose();
         }
-
-
-        void SetOffset()
+        public Model(Cube[] Cubes)
         {
-            OffsetCorrectedCubes = Cubes.Select(c => c.Clone()).Select(cube =>
-            {
-                if (cube.Frames != null && cube.Frames.Any() && cube.Frames.All(f => f.Matrix.HasValue && f.Transformation != null))
-                {
-                    cube.Frames = cube.Frames.Select(frame =>
-                    {
-                        frame.Matrix = frame.Matrix.Value.TransformLoc(new Vector3(0, -1, -1)); //compensate pivot difference
-
-                        var mat = frame.Matrix.Value;
-                        mat.Translation = mat.Translation + new Vector3(cube.Transformation.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
-                        frame.Matrix = mat;
-
-                        return frame;
-                    }).ToArray();
-                }
-                cube.Matrix = cube.Matrix.Value.TransformLoc(new Vector3(0, -1, -1));//compensate pivot difference
-
-                var mat = cube.Matrix.Value;
-                mat.Translation = mat.Translation + new Vector3(cube.Transformation.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
-                cube.Matrix = mat;
-
-                return cube;
-
-            }).ToArray();
+            this.Cubes = Cubes;
+            //lmao
         }
+
+
         
         void SetCubes()
         {
@@ -88,7 +64,7 @@ namespace ModChart.Wall
                     //library_animations
                     if (model.library_animations != null && model.library_animations.animation.Any(a => a.name == node.name))
                     {
-                        ColladaXML.Library_Animations.Animations cubeAnimationsContainer = model.library_animations.animation.Where(a => a.name == node.name).First();
+                        Collada.Library_Animations.Animations cubeAnimationsContainer = model.library_animations.animation.Where(a => a.name == node.name).First();
 
                         if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("transform")))
                         {

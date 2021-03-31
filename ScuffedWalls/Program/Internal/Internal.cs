@@ -16,6 +16,7 @@ namespace ScuffedWalls
             List<T> list = new List<T>();
             list.AddRange(first);
             foreach (var array in arrays) if(array != null) list.AddRange(array);
+
             return list.ToArray();
         }
         public static string Remove(this string str, char ch)

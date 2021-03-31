@@ -42,64 +42,8 @@ namespace ModChart.Wall
             return Convert.ToSingle(Wall._time.ToString());
         }
 
-        public static BeatMap.Obstacle Append(this BeatMap.Obstacle CurrentWall, BeatMap.CustomData CustomData, AppendTechnique Type)
-        {
-            CurrentWall._customData ??= new BeatMap.CustomData();
-            CurrentWall._customData._animation ??= new BeatMap.CustomData.Animation();
-            CustomData ??= new BeatMap.CustomData();
-            CustomData._animation ??= new BeatMap.CustomData.Animation();
-            PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
-            PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
-           
-            if (Type == AppendTechnique.NoOverwrites)
-            {
-                foreach (PropertyInfo property in propertiesCustomData)
-                {
-                    if (property.GetValue(CurrentWall._customData) == null)
-                    {
-                        property.SetValue(CurrentWall._customData, property.GetValue(CustomData));
-                    }
-
-                }
-                foreach (PropertyInfo property in propertiesCustomDataAnimation)
-                {
-                    if (property.GetValue(CurrentWall._customData._animation) == null)
-                    {
-                        property.SetValue(CurrentWall._customData._animation, property.GetValue(CustomData._animation));
-                    }
-
-                }
-                return CurrentWall;
-            }
-            // append technique 1 adds on customdata, overwrites
-            else if (Type == AppendTechnique.Overwrites)
-            {
-
-                foreach (PropertyInfo property in propertiesCustomData)
-                {
-                    if (property.GetValue(CustomData) != null && property.Name != "_animation")
-                    {
-                        property.SetValue(CurrentWall._customData, property.GetValue(CustomData));
-                    }
-
-                }
-                foreach (PropertyInfo property in propertiesCustomDataAnimation)
-                {
-                    if (property.GetValue(CustomData._animation) != null)
-                    {
-                        property.SetValue(CurrentWall._customData._animation, property.GetValue(CustomData._animation));
-
-                    }
-
-                }
-                return CurrentWall;
-            }
-            else
-            {
-                CurrentWall._customData = CustomData;
-                return CurrentWall;
-            }
-        }
+        
+        
     }
     
 

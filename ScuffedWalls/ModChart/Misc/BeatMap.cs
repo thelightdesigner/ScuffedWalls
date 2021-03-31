@@ -1,18 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 
 
 
 namespace ModChart
 {
-
-
+    public interface IMapObject
+    {
+        public object _time { get; set; }
+        public BeatMap.CustomData _customData { get; set; }
+    }
 
     public class BeatMap
     {
-        public static BeatMap Empty { get { return new BeatMap { _version = "2.2.0", _events = new Event[] { }, _notes = new Note[] { }, _obstacles = new Obstacle[] { }, _waypoints = new object[] { }, _customData = new CustomData() { _customEvents = new CustomData.CustomEvents[] { }, _pointDefinitions = new CustomData.PointDefinition[] { } } }; } }
+        public static BeatMap Empty
+        {
+            get
+            {
+                return new BeatMap
+                {
+                    _version = "2.2.0",
+                    _events = new Event[] { },
+                    _notes = new Note[] { },
+                    _obstacles = new Obstacle[] { },
+                    _waypoints = new object[] { },
+                    _customData = new CustomData()
+                    {
+                        _customEvents = new CustomData.CustomEvents[] { },
+                        _pointDefinitions = new CustomData.PointDefinition[] { },
+                        _environment = new CustomData.Environment[] { },
+                        _bookmarks = new CustomData.Bookmark[] { },
+                        _BPMChanges = new CustomData.BPMChanges[] { }
+                    }
+                };
+            }
+        }
         public string _version { get; set; }
         public CustomData _customData { get; set; }
         public Event[] _events { get; set; }
@@ -20,14 +41,15 @@ namespace ModChart
         public Obstacle[] _obstacles { get; set; }
         public object[] _waypoints { get; set; }
 
-        public class Event
+
+        public class Event : IMapObject
         {
             public object _time { get; set; }
             public object _type { get; set; }
             public object _value { get; set; }
             public CustomData _customData { get; set; }
         }
-        public class Note
+        public class Note : IMapObject
         {
             public object _time { get; set; }
             public object _lineIndex { get; set; }
@@ -36,7 +58,7 @@ namespace ModChart
             public object _cutDirection { get; set; }
             public CustomData _customData { get; set; }
         }
-        public class Obstacle
+        public class Obstacle : IMapObject
         {
             public object _time { get; set; }
             public object _lineIndex { get; set; }
@@ -141,28 +163,26 @@ namespace ModChart
                     public dynamic _time { get; set; }
                     public dynamic _interactable { get; set; }
 
-
-                    /// <summary>
-                    /// wip mod dont touch
-                    /// </summary>
-                    public Shader[] _shaders { get; set; }
-                    public class Shader
+                }
+                /// <summary>
+                /// wip mod dont touch
+                /// </summary>
+                public Shader[] _shaders { get; set; }
+                public class Shader
+                {
+                    public object _id { get; set; }
+                    public object _ref { get; set; }
+                    public object _clearAfterDone { get; set; }
+                    public object _clearID { get; set; }
+                    public Prop[] _props { get; set; }
+                    public class Prop
                     {
-                        public object _id { get; set; }
-                        public object _ref { get; set; }
-                        public object _clearAfterDone { get; set; }
-                        public object _clearID { get; set; }
-                        public Prop[] _props { get; set; }
-                        public class Prop
-                        {
-                            public object _prop { get; set; }
-                            public object _duration { get; set; }
-                            public object _easing { get; set; }
-                            public dynamic _value { get; set; }
-                                
-                        }
-                    }
+                        public object _prop { get; set; }
+                        public object _duration { get; set; }
+                        public object _easing { get; set; }
+                        public dynamic _value { get; set; }
 
+                    }
                 }
             }
             public PointDefinition[] _pointDefinitions { get; set; }
@@ -179,7 +199,16 @@ namespace ModChart
                 public object _time { get; set; } //float
                 public object _name { get; set; } //string
             }
-
+            public Environment[] _environment { get; set; }
+            public class Environment
+            {
+                public object _id { get; set; }
+                public object _lookupMethod { get; set; }
+                public object _hide { get; set; }
+                public object _track { get; set; }
+            }
         }
     }
+    
+    
 }

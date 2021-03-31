@@ -41,6 +41,11 @@ namespace ModChart
         {
             return beat + GetJumps(NjsOffset,Njs,Bpm);
         }
+        /// <summary>
+        /// gets a duration that makes the wall stay around for this exactly long
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <returns></returns>
         public float GetDefiniteDurationBeats(float duration)
         {
             return duration - (2f * HalfJumpBeats);
@@ -56,8 +61,14 @@ namespace ModChart
         /// <returns></returns>
         public float GetDefiniteNjsOffsetBeats(float duration)
         {
-            return ((duration/2) - (GetJumps(0,Njs,Bpm)*2f/*get whole jump duration*/)/ 2f);
+            return ((duration/2) - (GetJumps(0,Njs,Bpm)*2f)/ 2f);
         }
+        /// <summary>
+        /// gets the amount of beats that the map object will stay around for
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="NjsOffset"></param>
+        /// <returns></returns>
         public float GetRealDuration(float duration, float NjsOffset)
         {
             return duration + (2 * GetJumps(NjsOffset,Njs,Bpm));

@@ -52,19 +52,6 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         }
         public int X { get; set; }
         public int Y { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            return obj is IntVector2 vector &&
-                   X == vector.X &&
-                   Y == vector.Y;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(X, Y);
-        }
-
         public override string ToString()
         {
             return $"{X},{Y}";
@@ -104,99 +91,12 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
             }
             return array1;
         }
-        public static string ToBetterString(this Matrix4x4 m, int spaces = 15)
-        {
-
-
-            return $@"
-{m.M11}{space(m.M11)} {m.M12}{space(m.M12)} {m.M13}{space(m.M13)} {m.M14}{space(m.M14)}
-
-{m.M21}{space(m.M21)} {m.M22}{space(m.M22)} {m.M23}{space(m.M23)} {m.M24}{space(m.M24)}
-
-{m.M31}{space(m.M31)} {m.M32}{space(m.M32)} {m.M33}{space(m.M33)} {m.M34}{space(m.M34)}
-
-{m.M41}{space(m.M41)} {m.M42}{space(m.M42)} {m.M43}{space(m.M43)} {m.M44}{space(m.M44)}
-";
-
-            string space(float matval)
-            {
-                return new string(' ', spaces - matval.ToString().Length);
-            }
-        }
-        public static Matrix4x4 TransformLoc(this Matrix4x4 matrix, Vector3 trans)
-        {
-            var dec = Transformation.fromMatrix(matrix);
-
-            var difference = Matrix4x4.CreateTranslation(trans * dec.Scale);
-            var compensation = Matrix4x4.Transform(difference, dec.RotationQuat);
-            matrix.Translation = matrix.Translation + compensation.Translation;
-            return matrix;
-        }
         /// <summary>
         /// Returns a scale vector with dimensions equal to the bounding box of the matrix
         /// </summary>
         /// <param name="m"></param>
         /// <returns></returns>
-        public static ValuePair<Transformation, Vector3[]> GetBoundingBox(this Matrix4x4 m)
-        {
-            List<Vector3> corners = new List<Vector3>();
-            corners.Add(m.TransformLoc(new Vector3(-1, -1, -1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(1, -1, -1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(-1, 1, -1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(1, 1, -1)).Translation);
-
-            corners.Add(m.TransformLoc(new Vector3(-1, -1, 1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(1, -1, 1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(-1, 1, 1)).Translation);
-            corners.Add(m.TransformLoc(new Vector3(1, 1, 1)).Translation);
-
-            var orderedbyX = corners.OrderBy(p => p.X);
-            var orderedbyY = corners.OrderBy(p => p.Y);
-            var orderedbyZ = corners.OrderBy(p => p.Z);
-
-            return new ValuePair<Transformation, Vector3[]>()
-            {
-                Main = new Transformation()
-                {
-                    Scale = new Vector3(
-                    orderedbyX.Last().X - orderedbyX.First().X,
-                    orderedbyY.Last().Y - orderedbyY.First().Y,
-                    orderedbyZ.Last().Z - orderedbyZ.First().Z),
-                    Position = new Vector3(
-                        (orderedbyX.Last().X + orderedbyX.First().X) / 2f,
-                        (orderedbyY.Last().Y + orderedbyY.First().Y) / 2f,
-                        (orderedbyZ.Last().Z + orderedbyZ.First().Z) / 2f),
-                    RotationEul = new Vector3()
-                },
-                Extra = corners.ToArray()
-            };
-        }
-        public static ValuePair<Transformation, Vector3[]> GetBoundingBox(this Matrix4x4[] ms, Vector3 PosOffset)
-        {
-            List<Vector3> corners = new List<Vector3>();
-            foreach (var matrix in ms) corners.AddRange(matrix.GetBoundingBox().Extra);
-
-            var orderedbyX = corners.OrderBy(p => p.X);
-            var orderedbyY = corners.OrderBy(p => p.Y);
-            var orderedbyZ = corners.OrderBy(p => p.Z);
-
-            return new ValuePair<Transformation, Vector3[]>()
-            {
-                Main = new Transformation()
-                {
-                    Scale = new Vector3(
-                    orderedbyX.Last().X - orderedbyX.First().X,
-                    orderedbyY.Last().Y - orderedbyY.First().Y,
-                    orderedbyZ.Last().Z - orderedbyZ.First().Z),
-                    Position = new Vector3(
-                        (orderedbyX.Last().X + orderedbyX.First().X) / 2f + PosOffset.X,
-                        (orderedbyY.Last().Y + orderedbyY.First().Y) / 2f + PosOffset.Y,
-                        (orderedbyZ.Last().Z + orderedbyZ.First().Z) / 2f + PosOffset.Z),
-                    RotationEul = new Vector3()
-                },
-                Extra = corners.ToArray()
-            };
-        }
+        
         public static float toFloat(this object v)
         {
             //try { return Convert.ToSingle(v); } catch { }

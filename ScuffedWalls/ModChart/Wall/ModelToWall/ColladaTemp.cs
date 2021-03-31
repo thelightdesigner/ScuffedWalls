@@ -9,7 +9,7 @@ namespace ModChart.Wall
     /// A basic schema structure of a collada file. Made specifically for blender, idk how other modeling programs will export.
     /// </summary>
     [Serializable, XmlRoot(Namespace = "http://www.collada.org/2005/11/COLLADASchema", ElementName = "COLLADA")]
-    public class ColladaXML
+    public class Collada
     {
         //base transformation
         [XmlElement(ElementName = "library_visual_scenes")]

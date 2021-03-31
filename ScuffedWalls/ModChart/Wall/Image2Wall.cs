@@ -72,9 +72,9 @@ namespace ModChart.Wall
                             _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
                         }
                     }
-                }.Append(_Settings.Wall._customData, AppendTechnique.NoOverwrites);
+                }.Append(_Settings.Wall, AppendTechnique.NoOverwrites);
 
-            }).ToArray();
+            }).Cast<BeatMap.Obstacle>().ToArray();
         }
 
         public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary)
