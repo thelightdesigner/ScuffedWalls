@@ -1,6 +1,5 @@
 ## Functions
-
-Functions are defined by a number followed with a colon and the function name (i.e  5:function). Every line beneath the function will apply to that function. All the available functions that can be used are the following.
+Functions are defined by a time and a name.
 
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
@@ -18,6 +17,9 @@ Functions are defined by a number followed with a colon and the function name (i
 - [`AssignPlayerToTrack`](#AssignPlayerToTrack)
 - [`ParentTrack`](#ParentTrack)
 - [`PointDefinition`](#PointDefinition)
+
+
+
 
 
 ## CustomData
@@ -50,6 +52,23 @@ generic customdata that can be parsed as a parameter on most functions
 - LocalRotation: \[x,y,z]
 - CutDirection: float
 - NoSpawnEffect: bool
+ - CPropID: int
+ - CLightID: int
+ - CGradientDuration: float
+ - CgradientStartColor: \[r,g,b,a?]
+ - CgradientEndColor: \[r,g,b,a?]
+ - CgradientEasing: string
+ - CLockPosition: bool
+ - CPreciseSpeed: float
+ - CDirection: int
+ - CNameFilter: string
+ - CReset: bool
+ - CStep: float
+ - CProp: float
+ - CSpeed: float
+ - CCounterSpin: bool
+ - Color: \[r,g,b,a] (0-1)
+ - RGBColor:\[r,g,b,a] (0-255)
 
 ## CustomEvent Data
 generic customdata for customevents
@@ -73,24 +92,43 @@ generic customdata for customevents
 - parentTrack: string
 - easing: string
 
-## Chroma CustomData : CustomData
- - CPropID: int
- - CLightID: int
- - CGradientDuration: float
- - CgradientStartColor: \[r,g,b,a?]
- - CgradientEndColor: \[r,g,b,a?]
- - CgradientEasing: string
- - CLockPosition: bool
- - CPreciseSpeed: float
- - CDirection: int
- - CNameFilter: string
- - CReset: bool
- - CStep: float
- - CProp: float
- - CSpeed: float
- - CCounterSpin: bool
- - Color: \[r,g,b,a] (0-1)
- - RGBColor:\[r,g,b,a] (0-255)
+ ## Variables
+Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
+
+```var:SomeVariableName
+  data:5
+  recompute:0
+
+0:Wall
+  NJS:SomeVariableName```
+
+  ```var:Grey
+  data:Random(0,1)
+  recompute:1
+
+  #Creates walls with random shades of grey
+0:Wall
+  color:\[Grey,Grey,Grey,1]
+  repeat:15```
+
+recompute:
+0 = recompute math, variables and random() for all references of the variable, 
+1 = recompute every repeat/function, 
+2 = compute once on creation
+defaults to 2
+
+# Internal Variables
+Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall as a variable.
+
+```0:Wall
+  repeat:60
+  repeataddtime:0.05
+  scale:\[0.25,0.25,0.25]
+  position:\[{repeat/8},{Sin(repeat/2)}]```
+
+\[insert pic here]
+
+
 
 # TextToWall
 uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
@@ -107,14 +145,18 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - size: float, scales the text. default: 1 (gigantic)
  - thicc: float, makes the edges of the walls fill more of the center
  - duration: float
+ - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
+ - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
+ - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
+ - all the other modeltowall params if your really interested
  - generic custom data
  
  Example
  ```
  5:TextToWall
-   Path:font.png
+   Path:font.dae
    line:a line of text!
    line:another line of text?
    letting:2
@@ -127,17 +169,35 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    animatedefiniteposition:[0,0,0,0]
  ```
 
-# ModelToWall
+# ModelToWall (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
  - path: string
  - fullpath string
- - hasAnimation: bool, tells the model parser to read animation. doesnt work with normal yet.
+ - hasAnimation: bool, tells the model parser to read animation. definite only
  - duration: float, controls the duration of the model. this affects the length of time it takes to play the model animation.
+ - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
+ - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
+ - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
  - spreadspawntime: float
  - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
+ - createtracks: bool
+ - preservetime: bool
+ - cameratoplayer: bool
+ - createnotes: bool
+ - spline: bool
+ - spreadspawntime: float
+ - type: 0, 1, 2 or 3
+ - alpha: float
+ - thicc: float
+ - deltaposition: \[x,y,z] offsets the model in 3d by this position vector
+ - deltarotation: \[x,y,z] rotates the model around the center of its bounding box
+ - deltascale: float, scales the model around the center of its bounding box
+ - setdeltaposition: bool
+ - setdeltascale: bool
+
  - generic custom data
  
   Example
@@ -161,7 +221,10 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - size: float, scales the image. default: 1
  - thicc: float, makes the edges of the walls fill more of the center
  - centered: bool, centers the x position. default: false
- - duration: float
+ - duration: float  
+ - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
+ - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
+ - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
  - spreadspawntime: float. default: 0
  - maxlinelength: int, the max line length. default: +infinity
  - shift: float, the difference in compression priorities between the inversed compression. default: 1
@@ -218,7 +281,7 @@ adds a single light off event at the beat number. why? because why not.
  ```
 
 # AppendToAllEventsBetween
-adds on custom chroma data to events/lights between the function time and endtime
+adds on custom chroma data to events/lights between the function time and endtime (toBeat)
 
  - toBeat: float
  - appendTechnique: int(0-2)
@@ -226,8 +289,6 @@ adds on custom chroma data to events/lights between the function time and endtim
  - lighttype: 0, 1, 2, 3; the type of the light
   
  ~special things~
- - converttoprops
- - propfactor
  - converttorainbow
  - rainbowfactor
 
@@ -237,17 +298,16 @@ adds on custom chroma data to events/lights between the function time and endtim
    toBeat:10
    appendTechnique:2
    lightType:1,3,0
-   converttoprops: true
-   propfactor: 1
    converttorainbow: true
    rainbowfactor:1
  ```
 
 # AppendToAllWallsBetween
-adds on custom noodle data to walls between the function time and endtime
+adds on custom noodle data to walls between the function time and endtime (toBeat)
 
  - toBeat: float
  - appendTechnique: int(0-2)
+ - onTrack: string, only appends to notes on this track
  - generic custom data
  
   Example
@@ -259,11 +319,12 @@ adds on custom noodle data to walls between the function time and endtime
  ```
 
 # AppendToAllNotesBetween
-adds on custom noodle data to notes between the function time and endtime
+adds on custom noodle data to notes between the function time and endtime (toBeat)
 
  - toBeat: float
  - type: int,int,int (defaults to 0,1,2,3,4,5,6,7,8)
  - appendTechnique: int(0-2)
+ - onTrack: string, only appends to notes on this track
  - generic custom data
  
   Example
@@ -321,6 +382,9 @@ adds in map objects from other map.dat files
 makes a wall
 
 - duration: float
+- definitedurationbeats: float, makes the walls stay around for exactly this long in beats
+ - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
+ - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
 - generic custom data
@@ -456,5 +520,8 @@ makes a point definition
 ```
 
 # Uwu
+dont ever call this
+
 :)
+
 
