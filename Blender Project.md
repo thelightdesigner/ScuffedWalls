@@ -9,6 +9,14 @@ Any animation on position, rotation, scale, viewport color and viewport visibili
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
 
+## Animating Hide in Viewport & Color
+[pic]
+
+Animating this property will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then reenabled 3 times would add 3 seperate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
+
+Animating the viewport color will animate the color of the wall/note
+
+
 ## Material "Tags"
 
 Extra materials on objects are good for transfering arbitrary string data through a collada file.
@@ -16,6 +24,8 @@ Extra materials on objects are good for transfering arbitrary string data throug
 Adding an extra material to a cube and naming it "Note" will make the model converter add a note instead of a wall where the cube is. Size, position, color and all other animations will be preserved.
 
 This can also be used to create tracks. Adding an extra material to a cube and naming it anything other than Note will add that object onto a track with the name of the material.
+
+[Example]
 
 ## Bombs & Cameras
 
