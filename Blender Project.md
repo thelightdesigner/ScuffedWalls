@@ -1,8 +1,6 @@
 # Setting Up A Blender Project for Wall Conversion
 
-All modeling done for wall conversion must be made up exclusivly of 3d cubes (default cubes). Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation.
-
-It is important to note that changes are still being made to the model parser and this section will change in future updates.
+All modeling done for wall conversion must be made up exclusivly of 3d cubes (default cubes). Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. Each cube placed will be a wall
 
 ## Animating
 Any animation on position, rotation, scale, viewport color and viewport visibility to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
@@ -12,7 +10,7 @@ Any animation on position, rotation, scale, viewport color and viewport visibili
 ## Animating Hide in Viewport & Color
 [pic]
 
-Animating this property will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then reenabled 3 times would add 3 seperate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
+Animating Hide Viewport will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then reenabled 3 times would add 3 seperate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
 
 Animating the viewport color will animate the color of the wall/note
 
