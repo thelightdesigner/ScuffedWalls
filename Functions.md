@@ -95,7 +95,8 @@ generic customdata for customevents
  ## Variables
 Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
 
-```var:SomeVariableName
+```
+var:SomeVariableName
   data:5
   recompute:0
 
@@ -103,7 +104,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   NJS:SomeVariableName
   ```
 
-  ```var:Grey
+  ```
+  var:Grey
   data:Random(0,1)
   recompute:1
 
@@ -124,7 +126,8 @@ defaults to 2
 # Internal Variables
 Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
 
-```0:Wall
+```
+0:Wall
   repeat:60
   repeataddtime:0.05
   scale:\[0.25,0.25,0.25]
@@ -382,7 +385,8 @@ track:CameraMoveNotes
 
 multiplies all the note times by 2
 
-```0:AppendNotes
+```
+0:AppendNotes
    time:{_time * 2}
    appendtechnique:1```
 
