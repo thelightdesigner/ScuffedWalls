@@ -1,6 +1,6 @@
 # Setting Up A Blender Project for Wall Conversion
 
-All modeling done for wall conversion must be made up exclusivly of 3d cubes (default cubes). Editing the mesh in any way wont affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. Each cube placed will be a wall
+All modeling done for wall conversion must be made up exclusively of 3d cubes (default cubes). Editing the mesh in any way won't affect the converted walls. The model must be exported in the Collada (.dae) format with +Y up +Z forwards global orientation. Each cube placed will be a wall
 
 ## Animating
 Any animation on position, rotation, scale, viewport color and viewport visibility to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
@@ -8,9 +8,13 @@ Any animation on position, rotation, scale, viewport color and viewport visibili
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
 
 ## Animating Hide in Viewport & Color
-[pic]
 
-Animating Hide Viewport will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then reenabled 3 times would add 3 seperate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/viewport.jpg)
+
+Animating Hide Viewport will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then re enabled 3 times would add 3 separate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/animateview.gif)
+
 
 Animating the viewport color will animate the color of the wall/note
 
@@ -23,7 +27,7 @@ Adding an extra material to a cube and naming it "Note" will make the model conv
 
 This can also be used to create tracks. Adding an extra material to a cube and naming it anything other than Note will add that object onto a track with the name of the material.
 
-[Example]
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/tracc.jpg)
 
 ## Bombs & Cameras
 
@@ -35,15 +39,14 @@ Cameras will be converted to player tracks. Transform animations will be preserv
 ##  Parenting and Baking
 
 
-Parenting is a good way to get a collection of cubes in blender to all move togethor just by moving the reference object. In order to get scuffedwalls to pick up on the child cubes in your scene you must bake the childeren.
+Parenting is a good way to get a collection of cubes in blender to all move together just by moving the reference object. In order to get scuffedwalls to pick up on the child cubes in your scene you must bake the children.
 
-While selecting the childeren objects go to object, animation, bake action. Select visual keying and clear parents. This will automatically keyframe every child object to its visual position in the scene. It also clears all parents that the child objects may have had.
+While selecting the children objects go to object, animation, bake action. Select visual keying and clear parents. This will automatically keyframe every child object to its visual position in the scene. It also clears all parents that the child objects may have had.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake.png)
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake2.png)
 
 ## Exporting
-
 
 When going to export to collada hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards. check the global orientation box.
 
@@ -69,9 +72,4 @@ Normal: bool; makes the walls jump in and despawn as normal ne1.0 walls would. t
 Normal:true will result in this from a static model with no animations
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/normal.gif)
-
-
-
-
-
 
