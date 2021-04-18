@@ -92,6 +92,15 @@ generic customdata for customevents
 - parentTrack: string
 - easing: string
 
+## Math & Random
+Math expressions are computed inside of { } symbols. A random floating point number is yeilded from Random(val1,val2). A random integer is yeilded from RandomInt(val1,val2).
+
+```
+0:Wall
+  position:[{ 5+6 }, Random(1,5), { 5+6+Random(2,10) }]
+  scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
+  ```
+
  ## Variables
 Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
 
@@ -130,8 +139,8 @@ Variables that are autocreated and changed internally. All repeatable functions 
 0:Wall
   repeat:60
   repeataddtime:0.05
-  scale:\[0.25,0.25,0.25]
-  position:\[{repeat/8},{Sin(repeat/2)}]
+  scale:[0.25,0.25,0.25]
+  position:[{repeat/8},{Sin(repeat/2)}]
   ```
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
