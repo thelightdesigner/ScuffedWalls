@@ -71,7 +71,7 @@ generic customdata that can be parsed as a parameter on most functions
  - RGBColor:\[r,g,b,a] (0-255)
 
 ## CustomEvent Data
-generic customdata for customevents
+generic custom data for custom events
 "" = put in quotes, ? = optional
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
@@ -93,7 +93,7 @@ generic customdata for customevents
 - easing: string
 
 ## Math & Random
-Math expressions are computed inside of { } symbols. A random floating point number is yeilded from Random(val1,val2). A random integer is yeilded from RandomInt(val1,val2).
+Math expressions are computed inside of { } symbols. A random floating point number is yielded from Random(val1,val2). A random integer is yielded from RandomInt(val1,val2).
 
 ```
 0:Wall
@@ -133,7 +133,7 @@ recompute:
 defaults to 2
 
 # Internal Variables
-Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
+Variables that are auto created and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
 
 ```
 0:Wall
@@ -250,8 +250,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
  - spreadspawntime: float. default: 0
  - maxlinelength: int, the max line length. default: +infinity
- - shift: float, the difference in compression priorities between the inversed compression. default: 1
- - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1) default: 0
+ - shift: float, the difference in compression priorities between the inverted compression. default: 1
+ - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - generic custom data
  
@@ -275,8 +275,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
 clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
 
 - Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events & NOT point definitions
-- Index: int, the index of the workspace you want fo clone from. Its ethier one or the other.
-- Name:string, the name of the workspace you want to clone from. Its ethier one or the other.
+- Index: int, the index of the workspace you want to clone from. It's either one or the other.
+- Name:string, the name of the workspace you want to clone from. It's either one or the other.
 - addTime: float, shifts the cloned things by this amount.
 - toBeat: float, the beat where to stop cloning from.
 
@@ -408,9 +408,9 @@ multiplies all the definitepositions by 3 except for the time value
 
  ## AppendTechnique
 tells the append function how to add on your custom data properties to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Usefull for NJS and Offset fixing.
- - 1 = Overwrites the old custom data property for the new one. Usefull for most applications.
- - 2 = Nulls all old customdata properties and appends on new ones. Usefull for some internal stuff but not much else.
+ - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
+ - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
+ - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
 
 **default is always 0**
 
@@ -590,8 +590,6 @@ use this function by downloading the repo and navigating to ScuffedWalls>Program
 
 
 # Uwu
-dont ever call this
+don't ever call this
 
 :)
-
-
