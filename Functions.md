@@ -331,13 +331,15 @@ adds on custom noodle data to walls between the function time and endtime (toBea
 
 
 multiplies all the wall times by 2
-```0:AppendWalls
+```
+0:AppendWalls
    time:{_time * 2}
    appendtechnique:1
    ```
 
 multiplies all the definitepositions by 3 except for the time value
-```0:AppendWalls
+```
+0:AppendWalls
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
    ```
@@ -379,6 +381,7 @@ track:CameraMoveNotes
  ```
 
 multiplies all the note times by 2
+
 ```0:AppendNotes
    time:{_time * 2}
    appendtechnique:1```
