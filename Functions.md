@@ -71,7 +71,7 @@ generic customdata that can be parsed as a parameter on most functions
  - RGBColor:\[r,g,b,a] (0-255)
 
 ## CustomEvent Data
-generic customdata for customevents
+generic custom data for custom events
 "" = put in quotes, ? = optional
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
@@ -92,10 +92,20 @@ generic customdata for customevents
 - parentTrack: string
 - easing: string
 
+## Math & Random
+Math expressions are computed inside of { } symbols. A random floating point number is yielded from Random(val1,val2). A random integer is yielded from RandomInt(val1,val2).
+
+```
+0:Wall
+  position:[{ 5+6 }, Random(1,5), { 5+6+Random(2,10) }]
+  scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
+  ```
+
  ## Variables
 Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
 
-```var:SomeVariableName
+```
+var:SomeVariableName
   data:5
   recompute:0
 
@@ -103,7 +113,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   NJS:SomeVariableName
   ```
 
-  ```var:Grey
+  ```
+  var:Grey
   data:Random(0,1)
   recompute:1
 
@@ -112,6 +123,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   color:\[Grey,Grey,Grey,1]
   repeat:15
   ```
+  
+
 
 recompute:
 0 = recompute math, variables and random() for all references of the variable, 
@@ -120,18 +133,17 @@ recompute:
 defaults to 2
 
 # Internal Variables
-Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
+Variables that are auto created and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
 
-```0:Wall
+```
+0:Wall
   repeat:60
   repeataddtime:0.05
-  scale:\[0.25,0.25,0.25]
-  position:\[{repeat/8},{Sin(repeat/2)}]
+  scale:[0.25,0.25,0.25]
+  position:[{repeat/8},{Sin(repeat/2)}]
   ```
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 
 # TextToWall
@@ -238,8 +250,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
  - spreadspawntime: float. default: 0
  - maxlinelength: int, the max line length. default: +infinity
- - shift: float, the difference in compression priorities between the inversed compression. default: 1
- - compression: float, how much to compress the wall image, Not linear in the slightest. reccomended value(0-0.1) default: 0
+ - shift: float, the difference in compression priorities between the inverted compression. default: 1
+ - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - generic custom data
  
@@ -263,8 +275,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
 clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
 
 - Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events & NOT point definitions
-- Index: int, the index of the workspace you want fo clone from. Its ethier one or the other.
-- Name:string, the name of the workspace you want to clone from. Its ethier one or the other.
+- Index: int, the index of the workspace you want to clone from. It's either one or the other.
+- Name:string, the name of the workspace you want to clone from. It's either one or the other.
 - addTime: float, shifts the cloned things by this amount.
 - toBeat: float, the beat where to stop cloning from.
 
@@ -331,16 +343,23 @@ adds on custom noodle data to walls between the function time and endtime (toBea
 
 
 multiplies all the wall times by 2
-```0:AppendWalls
+```
+0:AppendWalls
    time:{_time * 2}
    appendtechnique:1
    ```
 
 multiplies all the definitepositions by 3 except for the time value
-```0:AppendWalls
+```
+0:AppendWalls
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
    ```
+   
+a very scuffed way to make a rainbow
+
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime (toBeat)
@@ -374,7 +393,9 @@ track:CameraMoveNotes
  ```
 
 multiplies all the note times by 2
-```0:AppendNotes
+
+```
+0:AppendNotes
    time:{_time * 2}
    appendtechnique:1```
 
@@ -387,9 +408,9 @@ multiplies all the definitepositions by 3 except for the time value
 
  ## AppendTechnique
 tells the append function how to add on your custom data properties to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Usefull for NJS and Offset fixing.
- - 1 = Overwrites the old custom data property for the new one. Usefull for most applications.
- - 2 = Nulls all old customdata properties and appends on new ones. Usefull for some internal stuff but not much else.
+ - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
+ - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
+ - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
 
 **default is always 0**
 
@@ -569,8 +590,6 @@ use this function by downloading the repo and navigating to ScuffedWalls>Program
 
 
 # Uwu
-dont ever call this
+don't ever call this
 
 :)
-
-
