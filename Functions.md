@@ -112,6 +112,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   color:\[Grey,Grey,Grey,1]
   repeat:15
   ```
+  
+
 
 recompute:
 0 = recompute math, variables and random() for all references of the variable, 
@@ -130,8 +132,6 @@ Variables that are autocreated and changed internally. All repeatable functions 
   ```
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 
 # TextToWall
@@ -341,6 +341,11 @@ multiplies all the definitepositions by 3 except for the time value
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
    ```
+   
+a very scuffed way to make a rainbow
+
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime (toBeat)
