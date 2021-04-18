@@ -100,7 +100,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   recompute:0
 
 0:Wall
-  NJS:SomeVariableName```
+  NJS:SomeVariableName
+  ```
 
   ```var:Grey
   data:Random(0,1)
@@ -109,7 +110,8 @@ Variables are containers for string/numerical data that can aid with some tasks,
   #Creates walls with random shades of grey
 0:Wall
   color:\[Grey,Grey,Grey,1]
-  repeat:15```
+  repeat:15
+  ```
 
 recompute:
 0 = recompute math, variables and random() for all references of the variable, 
@@ -124,9 +126,12 @@ Variables that are autocreated and changed internally. All repeatable functions 
   repeat:60
   repeataddtime:0.05
   scale:\[0.25,0.25,0.25]
-  position:\[{repeat/8},{Sin(repeat/2)}]```
+  position:\[{repeat/8},{Sin(repeat/2)}]
+  ```
 
-\[insert pic here]
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 
 # TextToWall
@@ -328,12 +333,14 @@ adds on custom noodle data to walls between the function time and endtime (toBea
 multiplies all the wall times by 2
 ```0:AppendWalls
    time:{_time * 2}
-   appendtechnique:1```
+   appendtechnique:1
+   ```
 
 multiplies all the definitepositions by 3 except for the time value
 ```0:AppendWalls
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1```
+   appendtechnique:1
+   ```
 
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime (toBeat)
@@ -374,7 +381,8 @@ multiplies all the note times by 2
 multiplies all the definitepositions by 3 except for the time value
 ```0:AppendNotes
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1```
+   appendtechnique:1
+   ```
 
 
  ## AppendTechnique
@@ -557,7 +565,7 @@ makes a point definition
 ```
 
 # Script
-use this function for custom C# scripting by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
+use this function by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
 
 
 # Uwu
