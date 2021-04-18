@@ -188,7 +188,8 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    definitetime:beats
  ```
 
-# ModelToWall (repeatable)
+# ModelToWall 
+(repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
@@ -435,6 +436,7 @@ adds in map objects from other map.dat files
 
 
 # Wall
+(repeatable)
 makes a wall
 
 - duration: float
@@ -475,6 +477,7 @@ makes a wall
 ```
 
 # Note
+(repeatable)
 makes a note
 
 - repeat: int, amount of times to repeat
@@ -512,6 +515,7 @@ these properties use _noteJumpStartBeatOffset to adjust the notes duration
 ```
 
 # AnimateTrack
+(repeatable)
 makes a custom event
 
  - customevent data
@@ -534,6 +538,7 @@ makes a custom event
 ```
 
 # AssignPathAnimation
+(repeatable)
 makes a custom event
 
  - customevent data
