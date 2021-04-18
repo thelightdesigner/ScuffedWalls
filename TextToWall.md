@@ -33,7 +33,7 @@ questionmark period exclamation apostrophe dash quotationmark greaterthan lessth
 
 All the letters should be roughly one blender unit tall in a line on the X axis.
 
-[example moment]
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/litefont.jpg)
 
 ```5:TextToWall
    line:oh fuck
@@ -51,9 +51,4 @@ All the letters should be roughly one blender unit tall in a line on the X axis.
    leading:1
    ```
 
-[example]
-   
-
-
-
-
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/fuck.jpg)
