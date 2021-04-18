@@ -118,7 +118,7 @@ recompute:
 defaults to 2
 
 # Internal Variables
-Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall as a variable.
+Variables that are autocreated and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
 
 ```0:Wall
   repeat:60
@@ -129,13 +129,12 @@ Variables that are autocreated and changed internally. All repeatable functions 
 \[insert pic here]
 
 
-
 # TextToWall
-uses imagetowall to procedurally create walltext from text (Constructs text out of walls)
+uses imagetowall or modeltowall to procedurally create walltext from text (Constructs text out of walls)
 
 Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
 
-see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images.
+see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images/models.
 
  - path: string
  - fullpath string
@@ -165,8 +164,11 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    spreadspawntime:1
    size:0.1
    position:[0,2]
-   duration:12
    animatedefiniteposition:[0,0,0,0]
+
+#makes the text jump in at beat 5 and exist for 7 beats exactly
+   definitedurationbeats:7
+   definitetime:beats
  ```
 
 # ModelToWall (repeatable)
@@ -208,6 +210,10 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
    spreadspawntime:1
    normal:true
    track:FurryTrack
+
+#makes the model jump in at beat 5 and last for 5.1276 seconds exactly
+   definitetime:beats
+   definitedurationseconds:5.1276
  ```
 
 # ImageToWall
@@ -318,6 +324,17 @@ adds on custom noodle data to walls between the function time and endtime (toBea
    appendTechnique:1
  ```
 
+
+multiplies all the wall times by 2
+```0:AppendWalls
+   time:{_time * 2}
+   appendtechnique:1```
+
+multiplies all the definitepositions by 3 except for the time value
+```0:AppendWalls
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1```
+
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime (toBeat)
 
@@ -349,6 +366,17 @@ AnimateDissolveArrow: [0,0],[0,1]
 track:CameraMoveNotes
  ```
 
+multiplies all the note times by 2
+```0:AppendNotes
+   time:{_time * 2}
+   appendtechnique:1```
+
+multiplies all the definitepositions by 3 except for the time value
+```0:AppendNotes
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1```
+
+
  ## AppendTechnique
 tells the append function how to add on your custom data properties to other map object custom data.
  - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Usefull for NJS and Offset fixing.
@@ -364,15 +392,14 @@ adds in map objects from other map.dat files
  - path: string
  - fullpath string
  - type:int,int,int (defaults to 0,1,2,3) what to import where 0 = walls, 1 = notes, 2 = lights, 3 = customevents & point definitions
- - fromBeat: float
+ - addtime:float
  - toBeat: float
  
-  Example
+  Example: adds lights from EasyStandard.dat from beat 15 to beat 180
   ```
- 5:Import
+ 15:Import
    fullpath:E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test\EasyStandard.dat
    type:2
-   fromBeat:15
    toBeat:180
  ```
 
@@ -424,6 +451,16 @@ makes a note
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
 - generic custom data
+- type:int
+- cutDirection:int
+
+
+
+these properties use _noteJumpStartBeatOffset to adjust the notes duration
+
+- definitedurationbeats: float, makes the note stay around for exactly this long in beats
+ - definitedurationseconds: float, makes the note stay around for exactly this long in seconds
+ - definitetime: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
 
  Example
 ```
@@ -518,6 +555,10 @@ makes a point definition
   15:Wall
     DefineAnimateDefinitePosition:UpDownPoints
 ```
+
+# Script
+use this function for custom C# scripting by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
+
 
 # Uwu
 dont ever call this
