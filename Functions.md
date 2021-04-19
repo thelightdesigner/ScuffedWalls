@@ -400,7 +400,8 @@ multiplies all the note times by 2
 ```
 0:AppendNotes
    time:{_time * 2}
-   appendtechnique:1```
+   appendtechnique:1
+   ```
 
 multiplies all the definitepositions by 3 except for the time value
 ```0:AppendNotes
