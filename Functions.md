@@ -194,8 +194,9 @@ constructs a model out of walls. see [here](https://github.com/thelightdesigner/
 
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
+
  - path: string
- - fullpath string
+ - fullpath: string
  - hasAnimation: bool, tells the model parser to read animation. definite only
  - duration: float, controls the duration of the model. this affects the length of time it takes to play the model animation.
  - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
@@ -217,8 +218,8 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
-
  - generic custom data
+ 
  
   Example
   ```
