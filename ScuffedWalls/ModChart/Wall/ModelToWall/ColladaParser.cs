@@ -8,43 +8,30 @@ using System.Numerics;
 using System.Xml;
 using System.Xml.Serialization;
 
+using static ScuffedWalls.ScuffedLogger;
+
 namespace ModChart.Wall
 {
     public class Model
     {
-        public Cube[] Cubes { get; private set; }
-        public Cube[] OffsetCorrectedCubes { get; private set; }
+        public Cube[] Cubes { get; set; }
 
-        ColladaXML model;
+        Collada model;
 
         public Model(string path)
         {
-            model = (ColladaXML)Converters.DeserializeXML<ColladaXML>(path);
+            model = (Collada)Converters.DeserializeXML<Collada>(path);
             SetCubes();
+            foreach (var cube in Cubes) cube.SetOffset();
             foreach (var cube in Cubes) cube.Decompose();
-            SetOffset();
-            foreach (var cube in OffsetCorrectedCubes) cube.Decompose();
         }
-
-
-        void SetOffset()
+        public Model(Cube[] Cubes)
         {
-            OffsetCorrectedCubes = Cubes.Select(cube =>
-            {
-                if (cube.Frames != null && cube.Frames.Any() && cube.Frames.All(f => f.Matrix.HasValue && f.Transformation != null))
-                {
-                    cube.Frames = cube.Frames.Select(frame =>
-                    {
-                        frame.Matrix = frame.Matrix.Value.TransformLoc(new Vector3(0, -1, -1)) + (Matrix4x4.CreateTranslation(new Vector3(cube.Frames.First().Transformation.Scale.X - 2, 0, 0)) - Matrix4x4.CreateScale(new Vector3(1, 1, 1))); //¯\_(ツ)_/¯
-                        return frame;
-                    }).ToArray();
-                }
-                cube.Matrix = cube.Matrix.Value.TransformLoc( new Vector3(0, -1, -1));
-                return cube;
-
-            }).ToArray();
-
+            this.Cubes = Cubes;
+            //lmao
         }
+
+
         
         void SetCubes()
         {
@@ -79,9 +66,9 @@ namespace ModChart.Wall
                     //library_animations
                     if (model.library_animations != null && model.library_animations.animation.Any(a => a.name == node.name))
                     {
-                        ColladaXML.Library_Animations.Animations cubeAnimationsContainer = model.library_animations.animation.Where(a => a.name == node.name).First();
+                        Collada.Library_Animations.Animations cubeAnimationsContainer = model.library_animations.animation.Where(a => a.name == node.name).First();
 
-                        if (cubeAnimationsContainer.animation.Any(a => a.id.Contains("transform")))
+                        if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("transform")))
                         {
                             var source = cubeAnimationsContainer.animation
                             .Where(a => a.id.Contains("transform"))
@@ -100,7 +87,7 @@ namespace ModChart.Wall
                                 cube.Frames[frame].Number = frame;
                             }
                         }
-                        if (cubeAnimationsContainer.animation.Any(a => a.id.Contains("color")))
+                        if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("color")))
                         {
 
                             float?[] Red = null;
@@ -154,7 +141,7 @@ namespace ModChart.Wall
                             }
 
                         }
-                        if (cubeAnimationsContainer.animation.Any(a => a.id.Contains("hide_viewport")))
+                        if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("hide_viewport")))
                         {
                             var source = cubeAnimationsContainer.animation
                             .Where(a => a.id.Contains("hide_viewport"))
@@ -169,12 +156,11 @@ namespace ModChart.Wall
                             for (int frame = 0; frame < cube.Count; frame++)
                             {
                                 if (cube.Frames[frame] == null) cube.Frames[frame] = new Cube.Frame();
-                                cube.Frames[frame].Active = Convert.ToBoolean(visible[frame]);
+                                cube.Frames[frame].Active = !Convert.ToBoolean(visible[frame]);
                                 cube.Frames[frame].Number = frame;
                             }
 
                         }
-
                     }
 
                     if (node.instance_cam != null)
@@ -183,6 +169,7 @@ namespace ModChart.Wall
                         cubes.Add(cube);
                         continue;
                     }
+
                     if(node.instance_geometry != null && node.instance_geometry.url.ToLower().Contains("sphere"))
                     {
                         cube.isBomb = true;
@@ -195,12 +182,14 @@ namespace ModChart.Wall
                     //library_effects
                     if (model.library_effects != null)
                     {
+
                         if(cube.Material != null && cube.Material.Any())
                         {
-                            var effectcontainer = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));
-                            var correcteffect = effectcontainer.Where(e => e.id.Contains(cube.Material[0])).First();
+                            var effectcontainer/* = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));*/ = model.library_effects.effect;
+                            var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0]).First();
 
-                            if (correcteffect.profile.technique.lambert.diffuse == null) { Console.ForegroundColor = ConsoleColor.Yellow; Console.WriteLine($"[Warning] ColladaParser - {correcteffect.id} diffuse is nulled! skipping"); Console.ResetColor(); continue; }
+
+                            if (correcteffect.profile.technique.lambert.diffuse == null) Warning.Log($"{cube.Name} diffuse is nulled! skipping");
 
                             float[] colorArray = correcteffect.profile.technique.lambert.diffuse.color.ParseToFloatArray();
                             cube.Color = new Color() { R = colorArray[0], G = colorArray[1], B = colorArray[2], A = colorArray[3] };
@@ -208,6 +197,9 @@ namespace ModChart.Wall
 
                     }
 
+                    if (cube.Material != null && cube.Material.Any(m => m.ToLower().Contains("note"))) cube.isNote = true;
+                    if (cube.Material != null && cube.Material.Where(m => !m.ToLower().Contains("note")).Count() > 1) cube.Track = cube.Material.Where(m => !m.ToLower().Contains("note")).Last();
+                    
                     cubes.Add(cube);
                 }
             }

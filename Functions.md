@@ -255,6 +255,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - shift: float, the difference in compression priorities between the inverted compression. default: 1
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
+ - Alpha: the alpha value
  - generic custom data
  
   Example

@@ -35,11 +35,11 @@ namespace ScuffedWalls
                 SetProperties();
             }
         }
-        public Variable[] Properties { get; set; }
+        public Parameter[] Properties { get; set; }
         string[] ExcludedProps = { "_customData", "_animation" };
         public void SetProperties()
         {
-            List<Variable> propVars = new List<Variable>(0);
+            List<Parameter> propVars = new List<Parameter>(0);
 
             dynamic mapobj = _wall;
             if(_note != null) mapobj = _note;
@@ -52,7 +52,7 @@ namespace ScuffedWalls
                     object value = baseProp.GetValue(mapobj);
                     if (value != null)
                     {
-                        propVars.Add(new Variable(baseProp.Name,value.ToString()));
+                        propVars.Add(new Parameter(baseProp.Name,value.ToString()));
                     }
                 }
                 if(mapobj._customData != null)
@@ -82,26 +82,26 @@ namespace ScuffedWalls
 
             Properties = propVars.ToArray();
         }
-        public Variable[] EachToVar(object[] array, string outerPropName)
+        public Parameter[] EachToVar(object[] array, string outerPropName)
         {
-            List<Variable> vars = new List<Variable>();
+            List<Parameter> vars = new List<Parameter>();
             for(int i = 0; i < array.Length; i++)
             {
-                vars.Add(new Variable($"{outerPropName}({i})",array[i].ToString()));
+                vars.Add(new Parameter($"{outerPropName}({i})",array[i].ToString()));
                // Console.WriteLine(array[i]);
             }
             return vars.ToArray();
         }
-        public Variable[] EachToVar(object[][] array, string outerPropName)
+        public Parameter[] EachToVar(object[][] array, string outerPropName)
         {
-            List<Variable> vars = new List<Variable>();
+            List<Parameter> vars = new List<Parameter>();
             for(int i = 0; i < array.Length; i++)
             {
                 vars.AddRange(EachToVar(array[i],$"{outerPropName}({i})"));
             }
             return vars.ToArray();
         }
-        public Variable[] DynamicToVar(dynamic Dyno,string name)
+        public Parameter[] DynamicToVar(dynamic Dyno,string name)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace ScuffedWalls
                 return EachToVar(JsonSerializer.Deserialize<object[]>(JsonSerializer.Serialize((object)Dyno)), name);
             }
             catch { }
-            return new Variable[] { new Variable(name,((object)Dyno).ToString())  };
+            return new Parameter[] { new Parameter(name,((object)Dyno).ToString())  };
         }
     }
 }

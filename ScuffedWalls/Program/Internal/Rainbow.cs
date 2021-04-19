@@ -1,28 +1,35 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 
 namespace ScuffedWalls
 {
     class Rainbow
     {
-        int color;
+        readonly ConsoleColor[] colors = new ConsoleColor[]
+        {
+            ConsoleColor.Red,
+            ConsoleColor.Yellow,
+            ConsoleColor.Green,
+            ConsoleColor.Cyan,
+            ConsoleColor.Blue,
+            ConsoleColor.Magenta
+        };
+        IEnumerator colorenum; 
+        
         public Rainbow()
         {
-            color = 0;
+            colorenum = colors.GetEnumerator();
         }
         public void Next()
         {
-            Console.ForegroundColor = Rainbow.toConsoleColor((Color)color);
-            color++;
-            if (color == Enum.GetValues(typeof(Color)).Length) color = 0;
-        }
-        static ConsoleColor toConsoleColor(Color c)
-        {
-            foreach (var color in Enum.GetValues(typeof(ConsoleColor)))
+            if (!colorenum.MoveNext())
             {
-                if (color.ToString() == c.ToString()) return (ConsoleColor)color;
+                colorenum.Reset();
+                colorenum.MoveNext();
             }
-            return ConsoleColor.Red;
+
+            Console.ForegroundColor = (ConsoleColor)colorenum.Current;
         }
         public void PrintRainbow(string s)
         {
@@ -32,11 +39,8 @@ namespace ScuffedWalls
                 Console.Write(letter);
             }
             Console.Write("\n");
+            Console.ResetColor();
         }
-    }
-    enum Color
-    {
-        Red, Yellow, Green, Cyan, Blue, Magenta
     }
 
 

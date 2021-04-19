@@ -1,14 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace ModChart
 {
+    public class Transformation
+    {
+        public static Transformation fromMatrix(Matrix4x4 Matrix)
+        {
+            Vector3 pos;
+            Quaternion rot;
+            Vector3 sca;
+            Matrix4x4.Decompose(Matrix, out sca, out rot, out pos);
+            return new Transformation() { Position = pos, RotationEul = rot.ToEuler(), Scale = sca, RotationQuat = rot };
+        }
+        public Transformation Clone()
+        {
+            return new Transformation() { Position = Position, RotationEul = RotationEul, Scale = Scale, RotationQuat = RotationQuat };
+        }
+        public override string ToString()
+        {
+            return $@"
+Position: {{ X:{Position.X} Y:{Position.Y} Z:{Position.Z} }}
+Rotation (Euler): {{ X:{RotationEul.X} Y:{RotationEul.Y} Z:{RotationEul.Z} }}
+Rotation (Quaternion): {{ X:{RotationQuat.X} Y:{RotationQuat.Y} Z:{RotationQuat.Z} W:{RotationQuat.W}}}
+Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
+        }
+        
+        public Vector3 Position { get; set; }
+        public Quaternion RotationQuat { get; set; }
+        public Vector3 RotationEul { get; set; }
+        public Vector3 Scale { get; set; }
+    }
+    public struct ValuePair<F, S>
+    {
+        public F Main { get; set; }
+        public S Extra { get; set; }
+    }
     public struct Point
     {
         public double x { get; set; }
         public double y { get; set; }
+    }
+    public enum Axis
+    {
+        X,
+        Y,
+        Z
     }
     public struct IntVector2
     {
@@ -39,33 +78,35 @@ namespace ModChart
         }
         public DoubleInt Clone()
         {
-            return new DoubleInt(Val1,Val2);
+            return new DoubleInt(Val1, Val2);
         }
     }
     static class Maths
     {
+        public static Vector3 ToVector3(this float[] array)
+        {
+            return new Vector3(array[0], array[1], array[2]);
+        }
+        public static Vector2 ToVector2(this float[] array)
+        {
+            return new Vector2(array[0], array[1]);
+        }
         public static float[] Mult(this float[] array1, float[] array2)
         {
             if (array1.Length != array2.Length) throw new ArgumentOutOfRangeException("Mult() array1 length does not equal array2 length");
 
-            for(int index = 0; index < array1.Length; index++)
+            for (int index = 0; index < array1.Length; index++)
             {
                 array1[index] = array1[index] * array2[index];
             }
             return array1;
         }
-        public static Matrix4x4 TransformLoc(this Matrix4x4 m, Vector3 trans)
-        {
-            var matrix = m;
-            Vector3 pos;
-            Vector3 scale;
-            Quaternion rotquat;
-            Matrix4x4.Decompose(matrix, out scale, out rotquat, out pos);
-
-            var difference = Matrix4x4.CreateTranslation(new Vector3(0, -1, -1) * scale) - Matrix4x4.CreateScale(new Vector3(1, 1, 1)); //i guess this works
-            var compensation = Matrix4x4.Transform(difference, rotquat);
-            return matrix + compensation;
-        }
+        /// <summary>
+        /// Returns a scale vector with dimensions equal to the bounding box of the matrix
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        
         public static float toFloat(this object v)
         {
             //try { return Convert.ToSingle(v); } catch { }
@@ -81,7 +122,7 @@ namespace ModChart
         }
         public static object[] FromVector2(this Vector2 vector)
         {
-            return new object[] { vector.X, vector.Y};
+            return new object[] { vector.X, vector.Y };
         }
         public static Vector3 ToVector3(this object[] array)
         {
@@ -91,13 +132,13 @@ namespace ModChart
         {
             return new object[] { vector.X, vector.Y, vector.Z };
         }
-        
+
         public static Vector2 PolarToCartesian(float angle, float radius)
         {
             float angleRad = (Math.PI.toFloat() / 180f) * (angle - 90f);
             float x = radius * Math.Cos(angleRad).toFloat();
             float y = radius * Math.Sin(angleRad).toFloat();
-            return new Vector2(x,y);
+            return new Vector2(x, y);
         }
 
         public static float Coterminal(this float angle)
@@ -111,7 +152,7 @@ namespace ModChart
 
         public static Vector3 ToEuler(this Quaternion q)
         {
-            
+
             Vector3 euler;
 
             // if the input quaternion is normalized, this is exactly one. Otherwise, this acts as a correction factor for the quaternion's not-normalizedness

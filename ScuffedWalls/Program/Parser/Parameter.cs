@@ -7,60 +7,116 @@ using System.Linq;
 
 namespace ScuffedWalls
 {
-    public class Parameter
+    public class Parameter : INameStringDataPair
     {
-        public Variable[] InternalVariables { get; set; } = new Variable[] { };
-        public Variable[] ExternalVariables { get; set; } = new Variable[] { };
-        public Parameter()
+        public static void UnUseAll(Parameter[] parameters)
+        {
+            foreach (var p in parameters) p.WasUsed = false;    
+        }
+        public static void Check(Parameter[] parameters)
+        {
+            foreach (var p in parameters) if (!p.WasUsed) ScuffedLogger.Warning.Log($"Unused Parameter {p.Name} at line {p.GlobalIndex}! (Mispelled?)");
+        }
+        public bool WasUsed { get; set; }
+        public Parameter[] InternalVariables { get; set; } = new Parameter[] { };
+        public static Parameter[] ExternalVariables { get; set; } = new Parameter[] { };
+        public Parameter(VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
         {
             SetRaw();
             SetType();
             SetNameAndData();
+            SetInstance();
+            VariableComputeSettings = RecomputeSettings;
         }
-        public Parameter(string line)
+        public Parameter(string line, VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
         {
             Line = line;
             SetRaw();
             SetType();
             SetNameAndData();
+            SetInstance();
+            VariableComputeSettings = RecomputeSettings;
         }
-        public Parameter(string line, int index)
+        public Parameter(string line, int index, VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
         {
             Line = line;
             GlobalIndex = index;
             SetRaw();
             SetType();
             SetNameAndData();
+            SetInstance();
+            VariableComputeSettings = RecomputeSettings;
+        }
+        /// <summary>
+        /// This constructor should be used if this parameter is used like a Variable
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="data"></param>
+        /// <param name="RecomputeSettings"></param>
+        public Parameter(string name, string data, VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.OnCreationOnly)
+        {
+            Raw = new Variable(name,data);
+            VariableComputeSettings = RecomputeSettings;
+            Type = ParamType.VariableContainer;
+            Internal = Raw;
+            SetInstance();
         }
         public void SetRaw()
         {
             string[] split = Line.Split(':', 2);
             Raw.Name = split[0];
-            if (split.Length > 1) Raw.Data = split[1];
+            if (split.Length > 1) Raw.StringData = split[1];
         }
-
-        public void SetNameAndData()
+        /// <summary>
+        /// Recomputes the internal variables if Recompute Settings is set to do so.
+        /// </summary>
+        public void Refresh()
         {
-            Internal.Name = Line.removeWhiteSpace().ToLower().Split(':', 2)[0];
-
-            if (Raw.Data != null)
+            if (VariableComputeSettings == VariableRecomputeSettings.AllRefreshes)
             {
-                if (Type == ParamType.Function) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace().ToLower(); //function names are lower and without whitespace
-                else if (Type == ParamType.Variable) Internal.Data = Line.Split(':', 2)[1].removeWhiteSpace(); //variable names can have casing but no space
-                else if (Type == ParamType.Workspace || Type == ParamType.Parameter) Internal.Data = Line.Split(':', 2)[1]; 
+                SetInstance();
+            }
+        }
+        void SetNameAndData()
+        {
+            Internal.Name = Line.RemoveWhiteSpace().ToLower().Split(':', 2)[0];
+
+            if (Raw.StringData != null)
+            {
+                if (Type == ParamType.Function) Internal.StringData = Line.Split(':', 2)[1].RemoveWhiteSpace().ToLower(); //function names are lower and without whitespace
+                else if (Type == ParamType.Variable) Internal.StringData = Line.Split(':', 2)[1].RemoveWhiteSpace(); //variable names can have casing but no space
+                else if (Type == ParamType.Workspace || Type == ParamType.Parameter) Internal.StringData = Line.Split(':', 2)[1]; //parameters are totaly raw
+                else if (Type == ParamType.VariableContainer)
+                {
+                    Internal = Raw;
+                }
             }
 
         }
+        private void SetInstance()
+        {
+            Instance = new Variable(Internal.Name,ParseAllNonsense(Internal.StringData ?? ""));
+        }
         public void SetType()
         {
-            if (char.IsDigit(Raw.Name.ToLower().removeWhiteSpace()[0])) Type = ParamType.Function;
-            else if (Raw.Name.ToLower().removeWhiteSpace() == "workspace") Type = ParamType.Workspace;
-            else if (Raw.Name.ToLower().removeWhiteSpace() == "var") Type = ParamType.Variable;
+            string parsedname = ParseAllNonsense(Raw.Name);
+
+            if (char.IsDigit(parsedname.ToLower().RemoveWhiteSpace()[0])) Type = ParamType.Function;
+            else if (parsedname.ToLower().RemoveWhiteSpace() == "workspace") Type = ParamType.Workspace;
+            else if (parsedname.ToLower().RemoveWhiteSpace() == "var") Type = ParamType.Variable;
             else Type = ParamType.Parameter;
         }
 
+        string ParseAllNonsense(string s)
+        {
+            return ParseMath(
+                        ParseRandom(
+                            ParseVar(
+                                s.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables))));
+        }
+
         //replaces Random(v1,v2) with a random single precision floating point number
-        public string ParseRandom(string s)
+        public static string ParseRandom(string s)
         {
             Random rnd = new Random();
             try
@@ -69,45 +125,65 @@ namespace ScuffedWalls
                 {
                     //Console.WriteLine("wow");
                     string[] asplit = s.Split("Random(", 2);
-                    string[] randomparams = asplit[1].Split(',',2);
+                    string[] randomparams = asplit[1].Split(',', 2);
                     float first = randomparams[0].toFloat();
                     float last = randomparams[1].Split(")")[0].toFloat();
+
+                    if (last < first)
+                    {
+                        float f = first;
+                        float l = last;
+                        first = l;
+                        last = f;
+                    }
+
                     double random = rnd.NextDouble() * (last - first) + first;
                     s = asplit[0] + random + asplit[1].Split(')', 2)[1];
 
                 }
+                while (s.Contains("RandomInt("))
+                {
+                    //Console.WriteLine("wow");
+                    string[] asplit = s.Split("RandomInt(", 2);
+                    string[] randomparams = asplit[1].Split(',', 2);
+                    int first = int.Parse(randomparams[0]);
+                    int last = int.Parse(randomparams[1].Split(")")[0]);
 
+                    if (last < first)
+                    {
+                        int f = first;
+                        int l = last;
+                        first = l;
+                        last = f;
+                    }
+
+                    int random = rnd.Next(first, last);
+                    s = asplit[0] + random + asplit[1].Split(')', 2)[1];
+
+                }
             }
-            catch { throw new ScuffedException($"Unable to parse Random() Line:{s}"); }
+            catch { throw new FormatException($"Unable to parse Random() Line:{s}"); }
 
             return s;
         }
         //replaces a variable name with a number
-        public string ParseVar(string s)
+        public static string ParseVar(string s, IEnumerable<INameStringDataPair> Variables)
         {
-            foreach (var v in ExternalVariables)
+            foreach (var v in Variables)
             {
                 while (s.Contains(v.Name))
                 {
                     string[] split = s.Split(v.Name, 2);
-                    s = split[0] + v.Data + split[1];
-                }
-            }
-            foreach (var v in InternalVariables)
-            {
-                while (s.Contains(v.Name))
-                {
-                    string[] split = s.Split(v.Name, 2);
-                    s = split[0] + v.Data + split[1];
+                    s = split[0] + v.StringData + split[1];
                 }
             }
             return s;
         }
         //computes things in {} i guess
-        public string ParseMath(string s)
+        public static string ParseMath(string s)
         {
-           // try
-           // {
+            try
+            {
                 while (s.ToLower().Contains("{"))
                 {
                     string[] asplit = s.Split("{", 2);
@@ -116,14 +192,16 @@ namespace ScuffedWalls
 
                     s = asplit[0] + e.Evaluate().ToString() + endsplit[1];
                 }
-           // }
-           // catch { throw new ScuffedException($"Unable to parse Math {{}} Line:{s}"); }
+            }
+            catch { throw new FormatException($"Unable to parse Math {{}} Line:{s}"); }
 
             return s;
         }
 
         Variable Internal { get; set; } = new Variable();
+        Variable Instance { get; set; } = new Variable();
         public Variable Raw { get; set; } = new Variable();
+        public VariableRecomputeSettings VariableComputeSettings { get; set; } = VariableRecomputeSettings.AllReferences;
         public int GlobalIndex { get; set; }
         public string Line { get; set; }
         public ParamType Type { get; private set; } = ParamType.Parameter;
@@ -131,59 +209,135 @@ namespace ScuffedWalls
         {
             get
             {
+
                 return Internal.Name
                             .Clone()
                             .ToString();
+
+            }
+            set 
+            {
+                Internal.Name = value;
             }
         }
 
-        public string Data
+        public string StringData
         {
             get
             {
-                if (Internal.Data == null) return Internal.Data;
-                return ParseMath(
-                    ParseRandom(
-                        ParseVar(
-                            Internal.Data
-                            .Clone()
-                            .ToString())));
+                if (VariableComputeSettings == VariableRecomputeSettings.AllReferences)
+                {
+                    if (Internal.StringData == null) return null;
+                    return ParseAllNonsense(Internal.StringData);
+                }
+                else
+                {
+                    if (Instance == null || Instance.StringData == null) return null;
+                    return Instance.StringData;
+                }
             }
+            set 
+            {
+                Internal.StringData = value;
+                SetInstance();
+            }
+        }
+        public override string ToString()
+        {
+            return $@"Raw:{{ Name:{Raw.Name} Data:{Raw.StringData} }}
+Internal:{{ Name:{Internal.Name} Data:{Internal.StringData} }} (private)
+Instance:{{ Name:{Instance.Name} Data:{Instance.StringData} }} (private)
+Output {{ Name:{Name} Data:{StringData} }}";
         }
     }
     public static class ParameterHelper
     {
-        public static Parameter[] AddVariables(this Parameter[] parameters, Variable[] var)
+        
+        public static void SetInteralVariables(this Parameter[] parameters, Parameter[] variables)
         {
-            return parameters.Select(p =>
+            foreach(var p in parameters)
             {
-                p.ExternalVariables = p.ExternalVariables.CombineWith(var);
-                return p;
-            }).ToArray();
+                p.InternalVariables = variables;
+            }
+        }
+        
+        public static void RefreshAllParameters(this Parameter[] ps)
+        {
+            foreach (var p in ps) p.Refresh();
         }
     }
 
+    public class ParameterChecker
+    {
+        public bool WasParameterUsed { get; private set; } = false;
+        public void UseParameter() => WasParameterUsed = true;
+    }
 
-    public class Variable
+    /*
+    /// <summary>
+    /// Represents a function call from a string, Gets the constructor
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="P"></typeparam>
+    public class StringFunction<T,P>
+    {
+        public string Name { get; set; }
+        public T Constructor { get; set; }
+        public string ConstructorRaw { get; set; }
+        public P Result { get; set; }
+        public Func<string, P> Converter { get; set; }
+        public StringFunction(string data,Func<string,P> converter)
+        {
+            Raw = data.Clone().ToString();
+
+        }
+        public static bool ContainsFunc(string data, string name)
+        {
+            if (!data.ToLower().RemoveWhiteSpace().Contains(name)) return false;
+
+            //do more magic here
+
+            return true;
+        }
+    }
+    */
+
+
+    public enum VariableRecomputeSettings
+    {
+        AllReferences,
+        AllRefreshes,
+        OnCreationOnly
+    }
+    /// <summary>
+    /// The base container for simple name and string data pairing
+    /// </summary>
+    public class Variable : INameStringDataPair
     {
         public Variable() { }
         public Variable(string name, string data)
         {
             Name = name;
-            Data = data;
+            StringData = data;
         }
         public string Name { get; set; }
-        public string Data { get; set; }
+        public string StringData { get; set; }
         public override string ToString()
         {
-            return $"Name:{Name} Data:{Data}";
+            return $"Name:{Name} Data:{StringData}";
         }
+    }
+    public interface INameStringDataPair
+    {
+        public string Name { get; set; }
+        public string StringData { get; set; }
     }
     public enum ParamType
     {
         Workspace,
         Function,
         Parameter,
-        Variable
+        Variable,
+        VariableContainer
     }
 }

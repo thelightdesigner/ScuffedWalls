@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace ModChart.Wall
 {
@@ -76,12 +75,22 @@ namespace ModChart.Wall
         /// <summary>
         /// The static decomposed transformation of this cube
         /// </summary>
-        public Decomposition Transformation { get; set; }
+        public Transformation Transformation { get; set; }
 
         /// <summary>
         /// The static matrix transformation of this cube
         /// </summary>
         public Matrix4x4? Matrix { get; set; }
+
+        /// <summary>
+        /// The static decomposed transformation of this cube
+        /// </summary>
+        public Transformation OffsetTransformation { get; set; }
+
+        /// <summary>
+        /// The static matrix transformation of this cube
+        /// </summary>
+        public Matrix4x4? OffsetMatrix { get; set; }
 
         /// <summary>
         /// who left the camera in the scene *BARF*
@@ -92,6 +101,8 @@ namespace ModChart.Wall
         /// shpere
         /// </summary>
         public bool isBomb { get; set; }
+
+        public string Track { get; set; }
 
 
         /// <summary>
@@ -128,8 +139,10 @@ namespace ModChart.Wall
         public class Frame
         {
             public int Number { get; set; }
-            public Decomposition Transformation { get; set; }
+            public Transformation Transformation { get; set; }
             public Matrix4x4? Matrix { get; set; }
+            public Transformation OffsetTransformation { get; set; }
+            public Matrix4x4? OffsetMatrix { get; set; }
             public float? Dissolve { get; set; }
             public Color Color { get; set; }
 
@@ -153,60 +166,80 @@ namespace ModChart.Wall
             }
 
         }
-        public class Decomposition
-        {
-            public Decomposition Clone()
-            {
-                return new Decomposition() { Position = Position, Rotation = Rotation, Scale = Scale };
-            }
-            public Vector3 Position { get; set; }
-            public Vector3 Rotation { get; set; }
-            public Vector3 Scale { get; set; }
-        }
         public void Decompose()
         {
             if ((Matrix.HasValue))
             {
-                Vector3 pos;
-                Quaternion rot;
-                Vector3 sca;
-                Matrix4x4.Decompose(Matrix.Value, out sca, out rot, out pos);
-                Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+                Transformation = Transformation.fromMatrix(Matrix.Value);
+            }
+            if ((OffsetMatrix.HasValue))
+            {
+                OffsetTransformation = Transformation.fromMatrix(OffsetMatrix.Value);
             }
             if (Frames != null && Frames.All(f => f.Matrix.HasValue))
             {
                 Frames = Frames.Select(frame =>
                 {
-                    Vector3 pos;
-                    Quaternion rot;
-                    Vector3 sca;
-                    Matrix4x4.Decompose(frame.Matrix.Value, out sca, out rot, out pos);
-                    frame.Transformation = new Decomposition() { Position = pos, Rotation = rot.ToEuler(), Scale = sca };
+                    frame.Transformation = Transformation.fromMatrix(frame.Matrix.Value);
                     return frame;
                 }).ToArray();
+                Transformation = Frames.First().Transformation;
+                Matrix = Frames.First().Matrix;
+            }
+            if (Frames != null && Frames.All(f => f.OffsetMatrix.HasValue))
+            {
+                Frames = Frames.Select(frame =>
+                {
+                    frame.OffsetTransformation = Transformation.fromMatrix(frame.OffsetMatrix.Value);
+                    return frame;
+                }).ToArray();
+                OffsetTransformation = Frames.First().Transformation;
+                OffsetMatrix = Frames.First().Matrix;
             }
         }
         public Cube[] InstantiateMultiples()
         {
             if (Frames != null && Frames.Any(f => f.Active != Frames.First().Active))
             {
+                //Console.WriteLine(this.Name);
                 List<DoubleInt> framespan = new List<DoubleInt>();
-                DoubleInt current = null;
+                KeyValuePair<bool,DoubleInt>? current = null;
                 bool? lastactive = null;
                 for (int i = 0; i < Frames.Length; i++)
                 {
-                    if (lastactive.HasValue && current != null && lastactive.Value == Frames[i].Active.Value)
+                    if (lastactive.HasValue && current.HasValue && lastactive.Value == Frames[i].Active.Value)
                     {
-                        current.Val2++;
+                        current.Value //nullable value
+                            .Value //key value (DoubleInt)
+                            .Val2++; //second number of DoubleInt
                     }
                     else
                     {
-                        if (current != null && lastactive == false) framespan.Add(current);
-                        current = new DoubleInt(i, i + 1);
+                        //Console.WriteLine($"Current Has Value?: {current.HasValue}");
+                        if (current.HasValue && current.Value.Key)
+                        {
+                            //Console.WriteLine("Current Added");
+                            framespan.Add(current.Value.Value);
+                        }
+
+                        current = new KeyValuePair<bool, DoubleInt>(Frames[i].Active.Value, new DoubleInt(i, i + 1));
+
+                        //Console.WriteLine($"Current Set To: {current.ToString()}");
                     }
                     lastactive = Frames[i].Active.Value;
+
                 }
-                Console.WriteLine();
+                if (current.HasValue && current.Value.Key)
+                {
+                    //Console.WriteLine("Current Added");
+                    framespan.Add(current.Value.Value);
+                }
+
+                SetOffset();
+
+               // Console.WriteLine(string.Join(" ",
+                //        Frames.Select(f => f.Active.Value)
+                //        ));
 
                 return framespan.Select(f =>
                 {
@@ -224,10 +257,16 @@ namespace ModChart.Wall
             {
                 Count = Count,
                 IOR = IOR,
+                isBomb = isBomb,
+                isNote = isNote,
+                Track = Track,
+                Name = Name,
                 isCamera = isCamera,
-                Matrix = Matrix
+                Matrix = Matrix.Value,
+                OffsetMatrix = OffsetMatrix.Value
             };
             if (Transformation != null) newCube.Transformation = Transformation.Clone();
+            if (OffsetTransformation != null) newCube.OffsetTransformation = OffsetTransformation.Clone();
             if (Frames != null && Frames.Any()) newCube.Frames = Frames.Select(f => f.Clone()).ToArray();
             if (Color != null) newCube.Color = Color.Clone();
             if (FrameSpan != null) newCube.FrameSpan = FrameSpan.Clone();
@@ -235,7 +274,124 @@ namespace ModChart.Wall
 
             return newCube;
         }
+        public void SetOffset()
+        {
+
+            if (Frames != null && Frames.Any() && Frames.All(f => f.Matrix.HasValue && f.Transformation != null))
+            {
+                Frames = Frames.Select(frame =>
+                {
+                    var trans = Transformation.fromMatrix(frame.Matrix.Value);
+                    var mat = frame.Matrix.Value;
+                    mat = mat.TransformLoc(new Vector3(0, -1, -1)); //compensate pivot difference
+
+                    mat.Translation = mat.Translation + new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+                    frame.OffsetMatrix = mat;
+
+                    return frame;
+                }).ToArray();
+            }
+            var trans = Transformation.fromMatrix(Matrix.Value);
+            var mat = Matrix.Value;
+            mat = mat.TransformLoc(new Vector3(0, -1, -1));//compensate pivot difference
+
+            mat.Translation = mat.Translation + new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+            OffsetMatrix = mat;
+
+        }
+
+        /// <summary>
+        /// Transforms a collection of cubes around the center of their bounding box.
+        /// </summary>
+        /// <param name="cubes"></param>
+        /// <param name="Position"></param>
+        /// <param name="Rotation"></param>
+        /// <param name="Scale"></param>
+        /// <param name="SetPos"></param>
+        /// <param name="SetScale"></param>
+        /// <param name="SetScaleAxis"></param>
+        /// <returns>
+        /// A deep copy of the collection
+        /// </returns>
+        public static IEnumerable<Cube> TransformCollection(DeltaTransformOptions Options)
+        {
+            Cube[] newCubes = Options.cubes.Select(c => c.Clone()).ToArray();
+
+            Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox().Main;
+
+            Vector3 Offset = boundingbox.Position;
+            if (Options.TransformOrigin == DeltaTransformOptions.TransformOptions.FrontBottomLeft) Offset = boundingbox.Position - (boundingbox.Scale / 2f);
+            if (Options.TransformOrigin == DeltaTransformOptions.TransformOptions.WorldOrigin) Offset = new Vector3(0);
+
+            //center
+            newCubes = newCubes.Select(c =>
+            {
+                var mat = c.Matrix.Value;
+                mat.Translation = mat.Translation - Offset;
+                c.Matrix = mat;
+                return c;
+            }).ToArray();
+
+
+            //scale
+            if (Options.SetScale)
+            {
+                if (Options.SetScaleAxis == Axis.X) Options.Scale /= boundingbox.Scale.X;
+                else if (Options.SetScaleAxis == Axis.Y) Options.Scale /= boundingbox.Scale.Y;
+                else if (Options.SetScaleAxis == Axis.Z) Options.Scale /= boundingbox.Scale.Z;
+            }
+
+            newCubes = newCubes.Select(cube =>
+            {
+                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value, Matrix4x4.CreateScale(Options.Scale));
+                return cube;
+            }).ToArray();
+
+
+            //rotate
+            newCubes = newCubes.Select(c =>
+            {
+                c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Options.Rotation.ToQuaternion());
+                return c;
+            }).ToArray();
+
+
+            //translate
+            var ReLoc = Offset;
+            if (Options.SetPos) ReLoc = new Vector3(0);
+
+
+            newCubes = newCubes.Select(c =>
+            {
+                var mat = c.Matrix.Value;
+                mat.Translation = mat.Translation + ReLoc + Options.Position;
+                c.Matrix = mat;
+                return c;
+            }).ToArray();
+
+            //decompose
+            foreach (var c in newCubes) c.SetOffset();
+            foreach (var c in newCubes) c.Decompose();
+
+            return newCubes;
+        }
     }
+    public class DeltaTransformOptions
+    {
+        public IEnumerable<Cube> cubes { get; set; }
+        public Vector3 Position { get; set; } = new Vector3(0);
+        public Vector3 Rotation { get; set; } = new Vector3(0);
+        public float Scale { get; set; } = 1;
+        public bool SetPos { get; set; } = false;
+        public bool SetScale { get; set; } = false;
+        public TransformOptions TransformOrigin { get; set; } = TransformOptions.Center;
+        public Axis SetScaleAxis { get; set; } = Axis.X;
 
-
+        public enum TransformOptions
+        {
+            Center,
+            FrontBottomLeft,
+            WorldOrigin
+        }
+    }
 }

@@ -9,21 +9,9 @@ namespace ScuffedWalls.Functions
     {
         public void Run()
         {
-            string name = null;
-            object[][] points = null;
-            foreach (var p in Parameters)
-            {
-                switch (p.Name)
-                {
-                    case "name":
-                        name = p.Data;
-                        break;
-                    case "points":
-                        points = JsonSerializer.Deserialize<object[][]>($"[{p.Data}]");
-                        break;
-                }
-            }
-
+            string name = GetParam("name", "unimplemented_pointdefinition", p => p);
+            object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
+            
             InstanceWorkspace.PointDefinitions.Add(new BeatMap.CustomData.PointDefinition()
             {
                 _name = name,
@@ -31,74 +19,69 @@ namespace ScuffedWalls.Functions
             });
 
             ConsoleOut("PointDefinition", 1, Time, "PointDefinition");
+
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
     [ScuffedFunction("AnimateTrack")]
     class CustomEventAnimateTrack : SFunction
     {
-        public Variable Repeat;
-        public Variable Beat;
+        public Parameter Repeat;
+        public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Variable { Name = "repeat", Data = "1" };
-            Beat = new Variable { Name = "time", Data = Time.ToString() };
-            Parameters = Parameters.AddVariables(new Variable[] { Repeat, Beat });
+            Repeat = new Parameter("repeat", "1");
+            Beat = new Parameter("time", Time.ToString());
+            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public void Run()
         {
             SetParameters();
-            int repeatcount = 1;
-            float repeatTime = 0;
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
-                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
-            }
+            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
+            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
-                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
                 {
                     _time = Time + (i * repeatTime),
                     _type = "AnimateTrack",
                     _data = Parameters.CustomEventsDataParse()
                 });
-                Repeat.Data = i.ToString();
-                Beat.Data = (Time + (i * repeatTime)).ToString();
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeatTime)).ToString();
+                Parameter.ExternalVariables.RefreshAllParameters();
             }
             ConsoleOut("AnimateTrack", repeatcount, Time, "CustomEvent");
+
         }
     }
     [ScuffedFunction("AssignPathAnimation")]
     class CustomEventAssignpath : SFunction
     {
-        public Variable Repeat;
-        public Variable Beat;
+        public Parameter Repeat;
+        public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Variable { Name = "repeat", Data = "1" };
-            Beat = new Variable { Name = "time", Data = Time.ToString() };
-            Parameters = Parameters.AddVariables(new Variable[] { Repeat, Beat });
+            Repeat = new Parameter("repeat", "1");
+            Beat = new Parameter("time", Time.ToString());
+            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public void Run()
         {
             SetParameters();
-            int repeatcount = 1;
-            float repeatTime = 0;
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "repeat") repeatcount = Convert.ToInt32(p.Data);
-                else if (p.Name == "repeataddtime") repeatTime = Convert.ToSingle(p.Data);
-            }
+            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
+            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
-                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
                 {
                     _time = Time + (i * repeatTime),
                     _type = "AssignPathAnimation",
                     _data = Parameters.CustomEventsDataParse()
                 });
-                Repeat.Data = i.ToString();
-                Beat.Data = (Time + (i * repeatTime)).ToString();
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeatTime)).ToString();
+                Parameter.ExternalVariables.RefreshAllParameters();
             }
             ConsoleOut("AssignPathAnimation", repeatcount, Time, "CustomEvent");
         }
@@ -108,13 +91,14 @@ namespace ScuffedWalls.Functions
     {
         public void Run()
         {
-            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
             {
                 _time = Time,
                 _type = "AssignPlayerToTrack",
                 _data = Parameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignPlayerToTrack", 1, Time, "CustomEvent");
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
     
@@ -123,13 +107,14 @@ namespace ScuffedWalls.Functions
     {
         public void Run()
         {
-            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvents()
+            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
             {
                 _time = Time,
                 _type = "AssignTrackParent",
                 _data = Parameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignTrackParent", 1, Time, "CustomEvent");
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
 

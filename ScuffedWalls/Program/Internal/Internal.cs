@@ -11,12 +11,18 @@ namespace ScuffedWalls
 
     static class Internal
     {
-        public static T[] CombineWith<T>(this T[] first, params T[][] arrays)
+        public static IEnumerable<T> CombineWith<T>(this IEnumerable<T> first, params IEnumerable<T>[] arrays)
         {
             List<T> list = new List<T>();
             list.AddRange(first);
             foreach (var array in arrays) if(array != null) list.AddRange(array);
+
             return list.ToArray();
+        }
+        public static T Switch<T>(this T Default, T Secondary, bool BiasToSecondary)
+        {
+            if(BiasToSecondary) return Secondary;
+            return Default;
         }
         public static string Remove(this string str, char ch)
         {
@@ -26,9 +32,9 @@ namespace ScuffedWalls
         {
             return string.Join("", str.Split(ch));
         }
-        public static T[] GetAllBetween<T>(this T[] mapObjects, float starttime, float endtime)
+        public static IEnumerable<ITimeable> GetAllBetween(this IEnumerable<ITimeable> mapObjects, float starttime, float endtime)
         {
-            return mapObjects.Where(obj => (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) >= starttime) && (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) <= endtime)).ToArray();
+            return mapObjects.Where(obj => obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime).ToArray();
         }
         static public bool MethodExists<t>(this string methodname, Type attribute)
         {
@@ -73,6 +79,7 @@ namespace ScuffedWalls
             return false;
 
         }
+        
         public static int getCountByID(this int type)
         {
             if (type == 0 || type == 2 || type == 3) return 5;
@@ -94,9 +101,14 @@ namespace ScuffedWalls
             return $"Backup - {time.ToFileTime()}";
         }
 
-        public static string removeWhiteSpace(this string WhiteSpace)
+        public static string RemoveWhiteSpace(this string WhiteSpace)
         {
             return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
+        }
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> Array)
+        {
+            Random rnd = new Random();
+            return Array.OrderBy(x => rnd.Next());
         }
     }
 
@@ -142,7 +154,7 @@ namespace ScuffedWalls
     {
         public DateTime StartTime;
         public void Start() => StartTime = DateTime.Now;
-        public void Complete() =>  ScuffedLogger.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
+        public void Complete() =>  ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
     }
 
 

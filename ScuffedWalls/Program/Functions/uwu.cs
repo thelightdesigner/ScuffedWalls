@@ -15,7 +15,8 @@ namespace ScuffedWalls.Functions
             string OWO;
 
 
-            Console.WriteLine("uuuuuuuuWuuuuuuuu");
+            Console.WriteLine("uuuuuuuuWuuuuuuuu (say OWO plz)");
+
 
             OWO = Console.ReadLine();
 

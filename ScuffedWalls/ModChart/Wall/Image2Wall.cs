@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ScuffedWalls;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
 
@@ -29,7 +31,7 @@ namespace ModChart.Wall
         public void Run()
         {
             FloatingPixel[] Pixels =
-                AnalyzeImage()
+                AnalyzeImage().Values.ToArray()
                 .Select(p =>
                 {
                     return p
@@ -52,8 +54,25 @@ namespace ModChart.Wall
             Random rnd = new Random();
             Walls = Pixels.Select(p =>
             {
-                p = p.Transform(new Vector2() { X = (p.Scale.X / 2f) - (1f / _Settings.thicc * 2f), Y = 0 }); //thicc offseter
-                float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.spread;
+                object[] scale = null;
+                BeatMap.CustomData.Animation animatedscale = null;
+                if (_Settings.thicc.HasValue) 
+                {
+                    p = p.Transform(new Vector2() { X = ((p.Scale.X / 2f) - (1f / _Settings.thicc.Value * 2f)), Y = 0 });
+                    scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc };
+                    animatedscale = new BeatMap.CustomData.Animation()
+                    {
+                        _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
+                    };
+                } //thicc offseter 
+                else
+                {
+                    scale = new object[] { p.Scale.X, p.Scale.Y, _Settings.scale };
+                }
+
+                float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.PCOptimizerPro;
+
+
                 return new BeatMap.Obstacle()
                 {
                     _time = _Settings.Wall._time.toFloat() + spread,
@@ -64,61 +83,72 @@ namespace ModChart.Wall
                     _customData = new BeatMap.CustomData()
                     {
                         _position = new object[] { p.Position.X, p.Position.Y },
-                        _scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc },
+                        _scale = scale,
                         _color = p.Color.ToObjArray(_Settings.alfa),
-                        _animation = new BeatMap.CustomData.Animation()
-                        {
-                            _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
-                        }
+                        _animation = animatedscale
                     }
-                }.Append(_Settings.Wall._customData, AppendTechnique.NoOverwrites);
+                }.Append(_Settings.Wall, AppendTechnique.NoOverwrites);
 
-            }).ToArray();
+            }).Cast<BeatMap.Obstacle>().ToArray();
         }
 
-        Pixel[] AnalyzeImage()
+        public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary) //gross
         {
-            return
-                CompressPixels(
-                CompressPixels(GetAllPixels(), _Settings.tolerance / _Settings.shift)
-                .Select(p => { return p.Inverse(); }).ToArray(), _Settings.tolerance * _Settings.shift)
-                .Select(p => { return p.Inverse(); }).ToArray();
+            return "{" + string.Join(",", dictionary.Select(kv => kv.Key + "=" + kv.Value).ToArray()) + "}";
+        }
+
+        Dictionary<IntVector2, Pixel> AnalyzeImage() //even grosser
+        {
+
+            var Pixels = CompressPixels(GetAllPixels(), _Settings.tolerance / _Settings.shift);
+
+            var InverseContainer = new Dictionary<IntVector2, Pixel>();
+            foreach (var a in Pixels.Keys) InverseContainer[new IntVector2(a.Y, a.X)] = Pixels[a].Inverse();
+            
+            Pixels  = CompressPixels(InverseContainer, _Settings.tolerance * _Settings.shift);
+
+            InverseContainer.Clear();
+            foreach (var a in Pixels.Keys) InverseContainer[new IntVector2(a.Y, a.X)] = Pixels[a].Inverse();
+            
+            return InverseContainer;
 
 
-            Pixel[] GetAllPixels()
+
+            Dictionary<IntVector2, Pixel> GetAllPixels() //truely shame
             {
-                List<Pixel> pixels = new List<Pixel>();
+                Dictionary<IntVector2, Pixel> pixels = new Dictionary<IntVector2, Pixel>();
                 IntVector2 Pos = new IntVector2();
                 for (Pos.Y = 0; Pos.Y < _Bitmap.Height; Pos.Y++)
                 {
                     for (Pos.X = 0; Pos.X < _Bitmap.Width; Pos.X++)
                     {
-                        pixels.Add(_Bitmap.ToPixel(Pos));
+                        pixels.Add(Pos, _Bitmap.ToPixel(Pos));
 
                     }
                 }
-                return pixels.ToArray();
+                return pixels;
             }
 
-            Pixel[] CompressPixels(Pixel[] pixels, float tolerance)
+            Dictionary<IntVector2, Pixel> CompressPixels(Dictionary<IntVector2, Pixel> pixels, float tolerance) //just stop
             {
                 IntVector2 Pos = new IntVector2();
-                IntVector2 Dimensions = pixels.GetDimensions();
-                List<Pixel> CompressedPixels = new List<Pixel>(pixels.Length);
+                IntVector2 Dimensions = pixels.Values.ToArray().GetDimensions();
+                Dictionary<IntVector2, Pixel> CompressedPixels = new Dictionary<IntVector2, Pixel>();
 
-                int i = 0;
                 Pixel CurrentPixel = null;
                 for (Pos.X = 0; Pos.X < Dimensions.X; Pos.X++)
                 {
                     for (Pos.Y = 0; Pos.Y < Dimensions.Y; Pos.Y++)
                     {
-                        Pixel Current = pixels.GetCurrent(Pos);
-
+                        Pixel Current = null;
+                        pixels.TryGetValue(Pos, out Current);
+                        Pixel temp = null;
+                        bool exists = pixels.TryGetValue(Pos.Transform(new IntVector2(0, -1)), out temp);
                         bool CountPixel =
                             Current != null && //this pixel has to exist
-                            Current.Equals(pixels.GetCurrent(Pos.Transform(new IntVector2() { X = 0, Y = -1 })), tolerance) && // the last one has to exist and be the same
+                            Current.Equals(exists ? pixels[Pos.Transform(new IntVector2(0, -1))] : null, tolerance) && // the last one has to exist and be the same
                             Current.Color.Equals(CurrentPixel.Color, tolerance) &&
-                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly cunt
+                            !(_Settings.isBlackEmpty && Current.Color.isBlackOrEmpty(0.05f)) &&  //stop immediatly
                             (CurrentPixel.Scale.Y < _Settings.maxPixelLength); //hehe
 
                         if (CountPixel) //this vs last, color, width, existance
@@ -128,14 +158,15 @@ namespace ModChart.Wall
                         else
                         {
                             //add and reset
-                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
+                            if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel.Position, CurrentPixel);
 
                             CurrentPixel = Current;
                         }
+
                     }
                 }
-                if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f))) CompressedPixels.Add(CurrentPixel);
-                return CompressedPixels.ToArray();
+                if (CurrentPixel != null && !(_Settings.isBlackEmpty && CurrentPixel.Color.isBlackOrEmpty(0.05f)) && !CompressedPixels.ContainsKey(CurrentPixel.Position)) CompressedPixels.Add(CurrentPixel.Position, CurrentPixel);
+                return CompressedPixels;
             }
 
         }
@@ -149,7 +180,7 @@ namespace ModChart.Wall
             this.scale = scale;
             this.thicc = thicc;
             this.centered = centered;
-            this.spread = spread;
+            this.PCOptimizerPro = spread;
             this.alfa = alfa;
             this.Wall = baseWall;
         }
@@ -157,10 +188,10 @@ namespace ModChart.Wall
 
         public bool isBlackEmpty { get; set; }
         public float scale { get; set; }
-        public float thicc { get; set; }
+        public float? thicc { get; set; }
         public int maxPixelLength { get; set; }
         public bool centered { get; set; }
-        public float spread { get; set; }
+        public float PCOptimizerPro { get; set; }
         public float alfa { get; set; }
         public float shift { get; set; }
         public float tolerance { get; set; }
@@ -259,15 +290,77 @@ namespace ModChart.Wall
 
     public static class BitmapHelper
     {
+        /*
         public static Bitmap Crop(this Bitmap b, Pixel r)
         {
-            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y);
+            Console.WriteLine($"pixel {r.Position.X}, {r.Scale.X}");
+            
+            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y, PixelFormat.Format24bppRgb);
+            
             using (Graphics g = Graphics.FromImage(nb))
             {
                 g.DrawImage(b, -r.Position.X, r.Position.Y);
+                //nb.SetResolution(r.Scale.X, r.Scale.Y);
                 return nb;
             }
         }
+        */
+        /*
+        public static Bitmap Crop(this Bitmap b, Pixel r)
+        {
+            Bitmap src = b;
+            Bitmap target = new Bitmap(r.Scale.X, r.Scale.Y);
+
+            using (Graphics g = Graphics.FromImage(target))
+            {
+                g.DrawImage(src, new Rectangle(0, 0, target.Width, target.Height),
+                                 target,
+                                 GraphicsUnit.Pixel);
+            }
+        }
+        */
+        public static Bitmap Crop(this Bitmap img, Pixel p)
+        {
+            // try
+            // {
+            Bitmap bmpImage = new Bitmap(img);
+            Rectangle cropArea = new Rectangle(p.Position.X, p.Position.Y, p.Scale.X, p.Scale.Y);
+
+            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+            //  }
+            //  catch
+            //  {
+            //      return null;
+            //  }
+        }
+        /*
+        public Bitmap Crop(Bitmap m, int width, int height, int x, int y)
+        {
+            try
+            {
+                Image image = m;
+                Bitmap bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                bmp.SetResolution(80, 60);
+
+                Graphics gfx = Graphics.FromImage(bmp);
+                gfx.SmoothingMode = SmoothingMode.AntiAlias;
+                gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gfx.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gfx.DrawImage(image, new Rectangle(0, 0, width, height), x, y, width, height, GraphicsUnit.Pixel);
+                // Dispose to free up resources
+                image.Dispose();
+                bmp.Dispose();
+                gfx.Dispose();
+
+                return bmp;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+        */
         public static Pixel GetCurrent(this Pixel[] pixels, IntVector2 pos)
         {
             if (!pixels.Any(p => p.Position.X == pos.X && p.Position.Y == pos.Y)) return null; //if it dont exist
@@ -309,7 +402,7 @@ namespace ModChart.Wall
             };
 
         }
-        public static Vector2 GetDimensions(this BeatMap.Obstacle[] walls)
+        public static Vector2 GetDimensions(this ICustomDataMapObject[] walls)
         {
             if (walls.Length == 0) return new Vector2() { X = 0, Y = 0 };
             var SortedY = walls.OrderBy(p => p._customData._position[1].toFloat()).ToArray();
