@@ -2,13 +2,13 @@
 A command line tool for making NE 2.0 beat saber maps & modcharts. It provides an alternative to direct scripting and comes with some extra features which can aid in creation like Model, Image, and Text to wall converters.
 
 Features:
- - No code
- - Create custom events
- - Import/combine map objects from other map files
- - Append custom data to map objects
- - Simple 3d model to wall with animation & color
+ - Create custom events.
+ - Import/Combine map objects from other map files
+ - Append custom noodle data to map objects
+ - Work without code
+ - 3d model to wall/note/bomb converter with animation & color
  - Image to wall w/ compression
- - Text to wall
+ - Text to Wall (using models & images)
  
  Usage:
   - Drag the map folder onto the program
@@ -18,6 +18,8 @@ Features:
   - Type in the generated SW file, saving refreshes the program automatically. Or hitting R in the console window.
   
 *Windows will probably bother you about this being malware. If you dont trust it clone the repo and build it yourself.*
+
+If everything doesnt work and your in a country that uses , as the decimal symbol, changing regional settings is a common fix.
 
 More info on Functions & Practical usage can be found [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
 
