@@ -25,7 +25,7 @@ if you generate and all the text is the wrong character, check your font.png fil
 
 
 ## Font Model
-Scuffedwalls can use a 3d model to create wall text, see here for more information on 3d modeling for wall conversion. Groups of cubes can be assigned as a letter by having a material named one of the letters from the character list below. example: Letter_a, Letter_b...Letter_A... Letter_quotationmark, Letter_apostrophe...
+Scuffedwalls can use a 3d model to create wall text, see [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more information on 3d modeling for wall conversion. Groups of cubes can be assigned as a letter by having a material named one of the letters from the character list below. example: Letter_a, Letter_b...Letter_A... Letter_quotationmark, Letter_apostrophe...
 
 a b c d e f g h i j k l m n o p q r s t u v w x y z
 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
@@ -35,11 +35,10 @@ All the letters should be roughly one blender unit tall in a line on the X axis.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/litefont.jpg)
 
-[litefont.blend](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)
+[`litefont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)      [`litefont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
 
-[litefont.dae](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
-
-```5:TextToWall
+```
+5:TextToWall
    line:oh god
    line:oh fuck
    line:Aero trapped me in beat saber
