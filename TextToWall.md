@@ -35,20 +35,23 @@ All the letters should be roughly one blender unit tall in a line on the X axis.
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/litefont.jpg)
 
+[litefont.blend](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)
+
+[litefont.dae](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
+
 ```5:TextToWall
+   line:oh god
    line:oh fuck
-   line:oh no
    line:Aero trapped me in beat saber
-   path:font.dae
+   path:litefont.dae
    size:0.1
    thicc:12
    animatedefiniteposition:[0,0,0,0]
-   position:[0,5]
   definitedurationbeats:10
    definitetime:beats
    alpha:0.5
-   letting:1
-   leading:1
+   letting:0.25
+   leading:1.1
    ```
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/fuck.jpg)
