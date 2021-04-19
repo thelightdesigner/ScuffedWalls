@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ScuffedWalls
 {
-    class Startup
+    class Utils
     {
         private string[] args;
 
@@ -30,11 +30,11 @@ namespace ScuffedWalls
 # Using this tool requires an understanding of Noodle Extensions.
 # https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md
 
-# Playtest.
+# Playtest your maps
 
-Workspace";
+Workspace:Default";
 
-        public Startup(string[] args)
+        public Utils(string[] args)
         {
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             this.args = args;
@@ -43,16 +43,17 @@ Workspace";
             ScuffedConfig = GetConfig();
             Info = GetInfo();
             InfoDifficulty = Info._difficultyBeatmapSets
-                        .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name))
+                        .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name))
                         .First()._difficultyBeatmaps
-                        .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Startup.ScuffedConfig.MapFilePath).Name).First();
+                        .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
 
             bpmAdjuster = new BpmAdjuster(Info._beatsPerMinute.toFloat(), InfoDifficulty._noteJumpMovementSpeed.toFloat(), InfoDifficulty._noteJumpStartBeatOffset.toFloat());
             VerifyOld();
             VerifySW();
             VerifyBackups();
-            ScuffedLogger.BpmAdjuster.Log($"Njs: {bpmAdjuster.Njs} Offset: {bpmAdjuster.StartBeatOffset} HalfJump: {bpmAdjuster.HalfJumpBeats}");
-            _ = CheckReleases();
+            ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {bpmAdjuster.Njs} Offset: {bpmAdjuster.StartBeatOffset} HalfJump: {bpmAdjuster.HalfJumpBeats}");
+            var releasething = CheckReleases();
+            
         }
 
         void BackupMap()
@@ -62,17 +63,24 @@ Workspace";
 
         public void Check(BeatMap map)
         {
-            if (InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
+            try
             {
-                ScuffedLogger.ScuffedMapWriter.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
+                if (InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
+                {
+                    ScuffedLogger.Warning.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
+                }
+                if (!InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
+                {
+                    ScuffedLogger.Warning.Log("Info.dat does not contain required field Noodle Extensions");
+                }
+                if (!(InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Chroma") || InfoDifficulty._customData._suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
+                {
+                    ScuffedLogger.Warning.Log("Info.dat does not contain required/suggested field Chroma");
+                }
             }
-            if (!InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
+            catch
             {
-                ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required field Noodle Extensions");
-            }
-            if (!(InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Chroma") || InfoDifficulty._customData._suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
-            {
-                ScuffedLogger.ScuffedMapWriter.Log("Info.dat does not contain required/suggested field Chroma");
+                //void
             }
         }
         void VerifyBackups()
@@ -126,7 +134,7 @@ Workspace";
             var latest = releases.OrderByDescending(r => r.PublishedAt).First();
             if (latest.TagName != ScuffedWalls.ver)
             {
-                ScuffedLogger.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
+                ScuffedLogger.Default.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
             }
         }
         public Info GetInfo()
@@ -145,7 +153,7 @@ Workspace";
                 {
                     file.Write(File.ReadAllText(ScuffedConfig.MapFilePath));
                 }
-                ScuffedLogger.Log("Created New Old Map File");
+                ScuffedLogger.Default.Log("Created New Old Map File");
             }
         }
         public void VerifyConfig()
@@ -200,16 +208,16 @@ Workspace";
                 j++;
             }
 
-            Console.Write($"Difficulty To Work On (Will overwrite everything in this difficulty file) ({string.Join(",",indexoption)}):");
+            Console.Write($"Difficulty To Work On (overwrites everything in this difficulty) ({string.Join(",",indexoption)}):");
             int option = Convert.ToInt32(Console.ReadLine());
 
-            Console.Write("AutoImport Map? (Creates a backup of the difficulty file and writes an import statement to bring back original map objects) (y/n):");
+            Console.Write("AutoImport Map? (writes an import statement for created backup file) (y/n):");
             {
                 char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'y') config.IsAutoImportEnabled = true;
             }
 
-            Console.Write("Create a Backup of SW History? (Creates a backup of SW file on each save) (y/n):");
+            Console.Write("Create a Backup of SW History? (backs up .SW file on each save) (y/n):");
             {
                 char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'n') config.IsBackupEnabled = false;

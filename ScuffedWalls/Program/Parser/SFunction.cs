@@ -20,7 +20,7 @@ namespace ScuffedWalls
             Console.ForegroundColor = ConsoleColor.White;
             string s = string.Empty;
             if (Amount != 1) s = "s";
-            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Type}{s})");
+            ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Type}{s})");
             Console.ResetColor();
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)
@@ -28,7 +28,9 @@ namespace ScuffedWalls
             var filteredparams = Parameters.Where(p => p.Name.ToLower() == Name.ToLower());
             if (filteredparams != null && filteredparams.Any())
             {
-                return Converter(filteredparams.First().Data);
+                var converted = Converter(filteredparams.First().StringData);
+                filteredparams.First().WasUsed = true;
+                return converted;
             }
             else return DefaultValue;
         }

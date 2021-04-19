@@ -1,31 +1,32 @@
-﻿using ModChart;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+
+using static ScuffedWalls.ScuffedLogger.Default;
+
+
 
 namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v1.0.0-unreleased";
+        public static string ver = "v1.0.0";
         static void Main(string[] args)
         {
-            var helper = new Startup(args);
+            var helper = new Utils(args);
 
-            ScuffedLogger.Log($"ScuffedWalls {ver}");
+            Log($"ScuffedWalls {ver}");
             var rpc = new RPC();
-            var rainbow = new Rainbow();
             var Ts = new TimeKeeper();
-            var scuffedFile = new ScuffedWallFile(Startup.ScuffedConfig.SWFilePath);
+            var scuffedFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
             var change = new Change(scuffedFile);
 
-            ScuffedLogger.Log(Startup.ScuffedConfig.MapFolderPath);
+            Log(Utils.ScuffedConfig.MapFolderPath);
 
-            do
+            while (true)
             {
-                ScuffedLogger.Log("Changes detected, running...");
+               Log("Changes detected, running...");
 
                 Ts.Start();
 
@@ -37,46 +38,41 @@ namespace ScuffedWalls
                 }
                 catch (Exception e)
                 {
-                    ConsoleErrorLogger.Log($"Error parsing ScuffedWall file ERR: {e.InnerException.Message}");
+                    ScuffedLogger.Error.Log($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}");
                 }
 
                 //Do request
                 FunctionParser Parser = null;
-             //   try
-            //    {
+                try
+                {
                     Parser = new FunctionParser(Request);
-             //   }
-            //    catch (Exception e)
-              //  {
-               //     ConsoleErrorLogger.Log($"Error executing ScuffedRequest ERR: {e.InnerException.Message}");
-             //   }
+                }
+                catch (Exception e)
+                {
+                    ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
+                }
 
                 //write to json file
-                ScuffedLogger.ScuffedMapWriter.Log($"Writing to {new FileInfo(Startup.ScuffedConfig.MapFilePath).Name}");
-                File.WriteAllText(Startup.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Startup.ScuffedConfig.PrettyPrintJson }));
+                ScuffedMapWriter.Log($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+                File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
 
                 Ts.Complete();
 
                 rpc.currentMap = Parser.BeatMap;
                 rpc.workspace = FunctionParser.Workspaces.Count();
 
-                //collect the trash
+                //om nom nom
                 GC.Collect();
 
                 //Warn the user
                 helper.Check(Parser.BeatMap);
-                
+
                 //Wait for changes
-                ScuffedLogger.Log($"Waiting for changes to {new FileInfo(Startup.ScuffedConfig.SWFilePath).Name}");
+                Log($"Waiting for changes to {new FileInfo(Utils.ScuffedConfig.SWFilePath).Name}");
                 change.Detect();
 
-            } while (true);
-
+            }
         }
 
     }
-
-
-
-
 }

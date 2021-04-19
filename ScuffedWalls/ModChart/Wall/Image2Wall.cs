@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScuffedWalls;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -53,8 +54,25 @@ namespace ModChart.Wall
             Random rnd = new Random();
             Walls = Pixels.Select(p =>
             {
-                p = p.Transform(new Vector2() { X = (p.Scale.X / 2f) - (1f / _Settings.thicc * 2f), Y = 0 }); //thicc offseter
+                object[] scale = null;
+                BeatMap.CustomData.Animation animatedscale = null;
+                if (_Settings.thicc.HasValue) 
+                {
+                    p = p.Transform(new Vector2() { X = ((p.Scale.X / 2f) - (1f / _Settings.thicc.Value * 2f)), Y = 0 });
+                    scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc };
+                    animatedscale = new BeatMap.CustomData.Animation()
+                    {
+                        _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
+                    };
+                } //thicc offseter 
+                else
+                {
+                    scale = new object[] { p.Scale.X, p.Scale.Y, _Settings.scale };
+                }
+
                 float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.PCOptimizerPro;
+
+
                 return new BeatMap.Obstacle()
                 {
                     _time = _Settings.Wall._time.toFloat() + spread,
@@ -65,50 +83,38 @@ namespace ModChart.Wall
                     _customData = new BeatMap.CustomData()
                     {
                         _position = new object[] { p.Position.X, p.Position.Y },
-                        _scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc },
+                        _scale = scale,
                         _color = p.Color.ToObjArray(_Settings.alfa),
-                        _animation = new BeatMap.CustomData.Animation()
-                        {
-                            _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
-                        }
+                        _animation = animatedscale
                     }
                 }.Append(_Settings.Wall, AppendTechnique.NoOverwrites);
 
             }).Cast<BeatMap.Obstacle>().ToArray();
         }
 
-        public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary)
+        public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary) //gross
         {
             return "{" + string.Join(",", dictionary.Select(kv => kv.Key + "=" + kv.Value).ToArray()) + "}";
         }
 
-        Dictionary<IntVector2, Pixel> AnalyzeImage()
+        Dictionary<IntVector2, Pixel> AnalyzeImage() //even grosser
         {
 
-            var pixels = GetAllPixels();
-            var one = CompressPixels(pixels, _Settings.tolerance / _Settings.shift);
-            var originalKeysOne = one.Keys.ToList();
-            var oneInv = new Dictionary<IntVector2, Pixel>();
-            foreach (var a in originalKeysOne)
-            {
-                oneInv.Add(new IntVector2(a.Y, a.X), one[a].Inverse());
-                one.Remove(a);
-            }
-            one.Clear();
-            var two = CompressPixels(oneInv, _Settings.tolerance * _Settings.shift);
-            var twoInv = new Dictionary<IntVector2, Pixel>();
-            var originalKeysTwo = two.Keys.ToList();
-            foreach (var a in originalKeysTwo)
-            {
-                twoInv.Add(new IntVector2(a.Y, a.X), two[a].Inverse());
-                two.Remove(a);
-            }
-            two.Clear();
-            return twoInv;
+            var Pixels = CompressPixels(GetAllPixels(), _Settings.tolerance / _Settings.shift);
+
+            var InverseContainer = new Dictionary<IntVector2, Pixel>();
+            foreach (var a in Pixels.Keys) InverseContainer[new IntVector2(a.Y, a.X)] = Pixels[a].Inverse();
+            
+            Pixels  = CompressPixels(InverseContainer, _Settings.tolerance * _Settings.shift);
+
+            InverseContainer.Clear();
+            foreach (var a in Pixels.Keys) InverseContainer[new IntVector2(a.Y, a.X)] = Pixels[a].Inverse();
+            
+            return InverseContainer;
 
 
 
-            Dictionary<IntVector2, Pixel> GetAllPixels()
+            Dictionary<IntVector2, Pixel> GetAllPixels() //truely shame
             {
                 Dictionary<IntVector2, Pixel> pixels = new Dictionary<IntVector2, Pixel>();
                 IntVector2 Pos = new IntVector2();
@@ -123,7 +129,7 @@ namespace ModChart.Wall
                 return pixels;
             }
 
-            Dictionary<IntVector2, Pixel> CompressPixels(Dictionary<IntVector2, Pixel> pixels, float tolerance)
+            Dictionary<IntVector2, Pixel> CompressPixels(Dictionary<IntVector2, Pixel> pixels, float tolerance) //just stop
             {
                 IntVector2 Pos = new IntVector2();
                 IntVector2 Dimensions = pixels.Values.ToArray().GetDimensions();
@@ -182,7 +188,7 @@ namespace ModChart.Wall
 
         public bool isBlackEmpty { get; set; }
         public float scale { get; set; }
-        public float thicc { get; set; }
+        public float? thicc { get; set; }
         public int maxPixelLength { get; set; }
         public bool centered { get; set; }
         public float PCOptimizerPro { get; set; }
@@ -396,7 +402,7 @@ namespace ModChart.Wall
             };
 
         }
-        public static Vector2 GetDimensions(this BeatMap.Obstacle[] walls)
+        public static Vector2 GetDimensions(this ICustomDataMapObject[] walls)
         {
             if (walls.Length == 0) return new Vector2() { X = 0, Y = 0 };
             var SortedY = walls.OrderBy(p => p._customData._position[1].toFloat()).ToArray();

@@ -9,23 +9,24 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("ModelToWall", "ModelToNote", "ModelToBomb", "Model")]
     class ModelToWall : SFunction
     {
-        public Variable Repeat;
-        public Variable Beat;
+        public Parameter Repeat;
+        public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Variable { Name = "repeat", Data = "1" };
-            Beat = new Variable { Name = "time", Data = Time.ToString() };
-            Parameters = Parameters.AddVariables(new Variable[] { Repeat, Beat });
+            Repeat = new Parameter("repeat","1");
+            Beat = new Parameter ("time",Time.ToString());
+            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public void Run()
         {
             SetParameters();
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null;
+            var isNjspeed = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpMovementSpeed != null;
 
             int repeatcount =       GetParam("repeat", DefaultValue: 1, p => int.Parse(p));
             float repeataddtime =   GetParam("repeataddtime", DefaultValue: 0, p => float.Parse(p));
-            string Path =           GetParam("path", DefaultValue: string.Empty, p => Startup.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
+            string Path =           GetParam("path", DefaultValue: string.Empty, p => Utils.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
             int normal =            GetParam("normal", DefaultValue: 0, p => Convert.ToInt32(bool.Parse(p)));
             bool tracks =           GetParam("createtracks", DefaultValue: true, p => bool.Parse(p));
@@ -43,34 +44,39 @@ namespace ScuffedWalls.Functions
             bool setdeltapos =      GetParam("setdeltaposition", false, p => bool.Parse(p));
             bool setdeltascale =    GetParam("setdeltascale", false, p => bool.Parse(p));
             float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
-            duration =              GetParam("definiteduration", duration, p =>
-            {
-                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                else return Startup.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
-            });
             Time =                  GetParam("definitetime", Time, p =>
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                    else return Startup.bpmAdjuster.GetPlaceTimeBeats(Time);
+                    if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                    else return Utils.bpmAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                    else return Startup.bpmAdjuster.GetPlaceTimeBeats(Startup.bpmAdjuster.ToBeat(Time));
+                    if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                    else return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time));
                 }
                 return Time;
             });
             duration =              GetParam("definitedurationseconds", duration, p =>
             {
-                if (isNjs) return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                return Startup.bpmAdjuster.GetDefiniteDurationBeats(Startup.bpmAdjuster.ToBeat(p.toFloat()));
+                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()));
+            });
+            duration = GetParam("definitedurationbeats", duration, p =>
+            {
+                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
             });
 
 
-            float MapBpm = Startup.Info._beatsPerMinute.toFloat();
-            float MapNjs = Startup.InfoDifficulty._noteJumpMovementSpeed.toFloat();
+            float MapBpm = Utils.Info._beatsPerMinute.toFloat();
+            float MapNjs = Utils.InfoDifficulty._noteJumpMovementSpeed.toFloat();
+            float MapOffset = Utils.InfoDifficulty._noteJumpStartBeatOffset.toFloat();
+
+            if (isNjs) MapOffset = parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat();
+            if (isNjspeed) MapNjs = parsedcustomstuff._customData._noteJumpMovementSpeed.toFloat();
+
 
             int walls = 0;
             int notes = 0;
@@ -99,9 +105,10 @@ namespace ScuffedWalls.Functions
                     ObjectOverride = tpye,
                     BPM = MapBpm,
                     NJS = MapNjs,
-                    Offset = Startup.bpmAdjuster.StartBeatOffset,
+                    Offset = MapOffset,
                     SetDeltaScale = setdeltascale,
                     SetDeltaPos = setdeltapos,
+                    ScaleDuration = true,
                     Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
                     {
                         _time = Time + (i.toFloat() * repeataddtime),
@@ -118,8 +125,9 @@ namespace ScuffedWalls.Functions
                 notes += model.Output._notes.Length;
                 customevents += model.Output._customData._customEvents.Length;
 
-                Repeat.Data = i.ToString();
-                Beat.Data = (Time + (i * repeataddtime)).ToString();
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeataddtime)).ToString();
+                Parameter.ExternalVariables.RefreshAllParameters();
             }
             if (walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");
             if (notes > 0) ConsoleOut("Note", notes, Time, "ModelToWall");

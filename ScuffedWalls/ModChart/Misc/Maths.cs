@@ -43,6 +43,12 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         public double x { get; set; }
         public double y { get; set; }
     }
+    public enum Axis
+    {
+        X,
+        Y,
+        Z
+    }
     public struct IntVector2
     {
         public IntVector2(int x, int y)
@@ -80,6 +86,10 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         public static Vector3 ToVector3(this float[] array)
         {
             return new Vector3(array[0], array[1], array[2]);
+        }
+        public static Vector2 ToVector2(this float[] array)
+        {
+            return new Vector2(array[0], array[1]);
         }
         public static float[] Mult(this float[] array1, float[] array2)
         {

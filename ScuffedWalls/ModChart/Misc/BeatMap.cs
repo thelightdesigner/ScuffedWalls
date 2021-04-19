@@ -4,12 +4,14 @@
 
 namespace ModChart
 {
-    public interface IMapObject
+    public interface ICustomDataMapObject : ITimeable
     {
-        public object _time { get; set; }
         public BeatMap.CustomData _customData { get; set; }
     }
-
+    public interface ITimeable
+    {
+        public object _time { get; set; }
+    }
     public class BeatMap
     {
         public static BeatMap Empty
@@ -25,7 +27,7 @@ namespace ModChart
                     _waypoints = new object[] { },
                     _customData = new CustomData()
                     {
-                        _customEvents = new CustomData.CustomEvents[] { },
+                        _customEvents = new CustomData.CustomEvent[] { },
                         _pointDefinitions = new CustomData.PointDefinition[] { },
                         _environment = new CustomData.Environment[] { },
                         _bookmarks = new CustomData.Bookmark[] { },
@@ -42,14 +44,14 @@ namespace ModChart
         public object[] _waypoints { get; set; }
 
 
-        public class Event : IMapObject
+        public class Event : ICustomDataMapObject
         {
             public object _time { get; set; }
             public object _type { get; set; }
             public object _value { get; set; }
             public CustomData _customData { get; set; }
         }
-        public class Note : IMapObject
+        public class Note : ICustomDataMapObject
         {
             public object _time { get; set; }
             public object _lineIndex { get; set; }
@@ -58,7 +60,7 @@ namespace ModChart
             public object _cutDirection { get; set; }
             public CustomData _customData { get; set; }
         }
-        public class Obstacle : IMapObject
+        public class Obstacle : ICustomDataMapObject
         {
             public object _time { get; set; }
             public object _lineIndex { get; set; }
@@ -69,8 +71,9 @@ namespace ModChart
         }
         public class CustomData
         {
-            //noodle
             public object _time { get; set; } //float
+
+            //noodle
             public object _track { get; set; } //string
             public object _cutDirection { get; set; } //int
             public object _noteJumpStartBeatOffset { get; set; } //float
@@ -97,6 +100,58 @@ namespace ModChart
                 public dynamic _color { get; set; }
                 public dynamic _time { get; set; }
                 public dynamic _interactable { get; set; }
+            }
+
+            public CustomEvent[] _customEvents { get; set; }
+
+            public class CustomEvent : ITimeable
+            {
+                public object _time { get; set; } //float
+                public object _type { get; set; } //string
+                public Data _data { get; set; }
+                public class Data
+                {
+                    public object _track { get; set; } //string
+                    public object _duration { get; set; }  //float
+                    public object _easing { get; set; } //string
+                    public object[] _childrenTracks { get; set; }
+                    public object _parentTrack { get; set; }
+                    public dynamic _position { get; set; }
+                    public dynamic _scale { get; set; }
+                    public dynamic _rotation { get; set; }
+                    public dynamic _localRotation { get; set; }
+                    public dynamic _dissolve { get; set; }
+                    public dynamic _dissolveArrow { get; set; }
+                    public dynamic _definitePosition { get; set; }
+                    public dynamic _color { get; set; }
+                    public dynamic _time { get; set; }
+                    public dynamic _interactable { get; set; }
+
+                }
+
+
+                /// <summary>
+                /// wip mod dont touch
+                /// </summary>
+                /*
+                public Shader[] _shaders { get; set; }
+                public class Shader
+                {
+                    public object _id { get; set; }
+                    public object _ref { get; set; }
+                    public object _clearAfterDone { get; set; }
+                    public object _clearID { get; set; }
+                    public Prop[] _props { get; set; }
+                    public class Prop
+                    {
+                        public object _prop { get; set; }
+                        public object _duration { get; set; }
+                        public object _easing { get; set; }
+                        public dynamic _value { get; set; }
+
+                    }
+                }
+                */
             }
 
             //chroma
@@ -137,54 +192,7 @@ namespace ModChart
                 public object _beatsPerBar { get; set; }
                 public object _metronomeOffset { get; set; }
             }
-            public CustomEvents[] _customEvents { get; set; }
-
-            public class CustomEvents
-            {
-                public object _time { get; set; } //float
-                public object _type { get; set; } //string
-                public Data _data { get; set; }
-
-                public class Data
-                {
-                    public object _track { get; set; } //string
-                    public object _duration { get; set; }  //float
-                    public object _easing { get; set; } //string
-                    public object[] _childrenTracks { get; set; }
-                    public object _parentTrack { get; set; }
-                    public dynamic _position { get; set; }
-                    public dynamic _scale { get; set; }
-                    public dynamic _rotation { get; set; }
-                    public dynamic _localRotation { get; set; }
-                    public dynamic _dissolve { get; set; }
-                    public dynamic _dissolveArrow { get; set; }
-                    public dynamic _definitePosition { get; set; }
-                    public dynamic _color { get; set; }
-                    public dynamic _time { get; set; }
-                    public dynamic _interactable { get; set; }
-
-                }
-                /// <summary>
-                /// wip mod dont touch
-                /// </summary>
-                public Shader[] _shaders { get; set; }
-                public class Shader
-                {
-                    public object _id { get; set; }
-                    public object _ref { get; set; }
-                    public object _clearAfterDone { get; set; }
-                    public object _clearID { get; set; }
-                    public Prop[] _props { get; set; }
-                    public class Prop
-                    {
-                        public object _prop { get; set; }
-                        public object _duration { get; set; }
-                        public object _easing { get; set; }
-                        public dynamic _value { get; set; }
-
-                    }
-                }
-            }
+            
             public PointDefinition[] _pointDefinitions { get; set; }
             public class PointDefinition
             {
@@ -194,7 +202,7 @@ namespace ModChart
             public Bookmark[] _bookmarks { get; set; }
 
             [Serializable]
-            public class Bookmark
+            public class Bookmark : ITimeable
             {
                 public object _time { get; set; } //float
                 public object _name { get; set; } //string
@@ -204,7 +212,13 @@ namespace ModChart
             {
                 public object _id { get; set; }
                 public object _lookupMethod { get; set; }
-                public object _hide { get; set; }
+                public object _duplicate { get; set; }
+                public object _active { get; set; }
+                public object[] _scale { get; set; }
+                public object[] _position { get; set; }
+                public object[] _localPosition { get; set; }
+                public object[] _rotation { get; set; }
+                public object[] _localRotation { get; set; }
                 public object _track { get; set; }
             }
         }

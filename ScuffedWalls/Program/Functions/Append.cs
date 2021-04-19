@@ -4,31 +4,29 @@ using ModChart.Note;
 using ModChart.Wall;
 using System;
 using System.Linq;
+using System.Text.Json;
+using static ScuffedWalls.ScuffedLogger.Default.ScuffedWorkspace.FunctionParser;
 
 namespace ScuffedWalls.Functions
 {
     [ScuffedFunction("AppendToAllWallsBetween","AppendWalls","AppendWall")]
     class AppendWalls : SFunction
     {
-        public Variable WallIndex;
+        public Parameter WallIndex;
+        Parameter[] ps;
         public void SetParameters()
         {
-            WallIndex = new Variable { Name = "index", Data = "1" };
-            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+            WallIndex = new Parameter("index","1");
+            ps = new Parameter[] { WallIndex };
         }
         public void Run()
         {
             SetParameters();
-            AppendTechnique type = 0;
+            AppendTechnique type = GetParam("appendtechnique", AppendTechnique.NoOverwrites, p => (AppendTechnique)int.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
             float starttime = Time;
-            float endtime = float.PositiveInfinity;
-
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "appendtechnique") type = (AppendTechnique)Convert.ToInt32(p.Data);
-                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); }
-            }
+            float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
+            string tracc = GetParam("ontrack", null, p => p);
 
             int i = 0;
             InstanceWorkspace.Walls = InstanceWorkspace.Walls.Select(obj =>
@@ -37,103 +35,77 @@ namespace ScuffedWalls.Functions
 
                 internalvars.CurrentWall = obj;
 
-                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
-
-                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime)
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+                
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData._track)))
                 {
-                    WallIndex.Data = i.ToString();
+                    WallIndex.StringData = i.ToString();
                     return obj.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), type);
                 }
                 else return obj;
 
             }).Cast<BeatMap.Obstacle>().ToList();
 
-            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} walls from beats {starttime} to {endtime}");
+            Log($"Appended {i} walls from beats {starttime} to {endtime}");
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
     [ScuffedFunction("AppendToAllNotesBetween", "AppendNotes", "AppendNote")]
     class AppendNotes : SFunction
     {
-        public Variable WallIndex;
+        public Parameter WallIndex;
+        Parameter[] ps;
         public void SetParameters()
         {
-            WallIndex = new Variable { Name = "index", Data = "1" };
-            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+            WallIndex = new Parameter("index", "1");
+            ps = new Parameter[] { WallIndex };
         }
         public void Run()
         {
             SetParameters();
-            int type = 0;
+            int type = GetParam("appendtechnique",(int) AppendTechnique.NoOverwrites, p => int.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
-            bool b = false;
             float starttime = Time;
-            float endtime = float.PositiveInfinity;
-            int[] notetype = { 0, 1, 2, 3 };
+            float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
+            string tracc = GetParam("ontrack", null, p => p);
+            int[] notetype = GetParam("notetype", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
 
-            foreach (var p in Parameters)
-            {
-                switch (p.Name)
-                {
-                    case "appendtechnique":
-                        type = Convert.ToInt32(p.Data);
-                        break;
-                    case "tobeat":
-                        endtime = Convert.ToSingle(p.Data); b = true;
-                        break;
-                    case "notecolor":
-                        if (p.Data == "red") notetype = new int[] { 0 };
-                        else if (p.Data == "blue") notetype = new int[] { 1 };
-                        else if (p.Data == "bomb") notetype = new int[] { 2 };
-                        else notetype = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
-                        break;
-                }
-            }
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
                 i++;
                 internalvars.CurrentNote = obj;
-                WallIndex.Data = i.ToString();
-                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
-                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), (AppendTechnique)type);
+                WallIndex.StringData = i.ToString();
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData._track))) return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), (AppendTechnique)type);
                 else return obj;
             }).Cast<BeatMap.Note>().ToList();
 
-            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} notes from beats {starttime} to {endtime}");
+            Log($"Appended {i} notes from beats {starttime} to {endtime}");
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
     [ScuffedFunction("AppendToAllEventsBetween","AppendLights","AppendEvent","AppendEvents")]
     class AppendEvents : SFunction
     {
-        public Variable WallIndex;
+        public Parameter WallIndex;
+        Parameter[] ps;
         public void SetParameters()
         {
-            WallIndex = new Variable { Name = "index", Data = "1" };
-            Parameters = Parameters.AddVariables(new Variable[] { WallIndex });
+            WallIndex = new Parameter("index", "1");
+            ps = new Parameter[] { WallIndex };
         }
         public void Run()
         {
             SetParameters();
-            int type = 0;
-            int[] lightypes = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            int type = GetParam("appendtechnique", (int)AppendTechnique.NoOverwrites, p => int.Parse(p));
+            int[] lightypes = GetParam("lighttype", new int[] { 0, 1, 2, 3,4,5,6,7,8 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float starttime = Time;
-            bool rainbow = false;
-            bool props = false;
+            bool rainbow = GetParam("converttorainbow",false,p => bool.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
-            float Rfactor = 1f;
-            float Pfactor = 1f;
-            float endtime = float.PositiveInfinity;
+            float Rfactor = GetParam("rainbowfactor", 1, p => float.Parse(p));
+            float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
 
-            foreach (var p in Parameters)
-            {
-                if (p.Name == "appendtechnique") type = Convert.ToInt32(p.Data);
-                else if (p.Name == "tobeat") { endtime = Convert.ToSingle(p.Data); }
-                else if (p.Name == "converttoprops") props = bool.Parse(p.Data);
-                else if (p.Name == "converttorainbow") rainbow = bool.Parse(p.Data);
-                else if (p.Name == "rainbowfactor") Rfactor = Convert.ToSingle(p.Data);
-                else if (p.Name == "propfactor") Pfactor = Convert.ToSingle(p.Data);
-                else if (p.Name == "lighttype") lightypes = p.Data.Split(",").Select(a => { return Convert.ToInt32(a); }).ToArray();
-            }
 
             if (rainbow)
             {
@@ -163,15 +135,15 @@ namespace ScuffedWalls.Functions
             {
                 i++;
                 internalvars.CurrentEvent = obj;
-                WallIndex.Data = i.ToString();
-                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties; return p; }).ToArray();
+                WallIndex.StringData = i.ToString();
+                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+                
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), (AppendTechnique)type);
                 else return obj;
             }).ToList();
 
-            ScuffedLogger.ScuffedWorkspace.FunctionParser.Log($"Appended {i} events from beats {starttime} to {endtime}");
+            Log($"Appended {i} events from beats {starttime} to {endtime}");
+            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
-
-
 }

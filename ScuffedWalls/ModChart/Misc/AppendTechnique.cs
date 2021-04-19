@@ -7,13 +7,13 @@ namespace ModChart
 {
     public static class AppendHelper
     {
-        public static IMapObject Append(this IMapObject MapObject, IMapObject AppendObject, AppendTechnique Type)
+        public static ICustomDataMapObject Append(this ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendTechnique Type)
         {
             MapObject._customData ??= new BeatMap.CustomData();
             MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
             AppendObject._customData ??= new BeatMap.CustomData();
             AppendObject._customData._animation ??= new BeatMap.CustomData.Animation();
-            PropertyInfo[] propertiesBaseWall = typeof(IMapObject).GetProperties();
+            PropertyInfo[] propertiesBaseWall = typeof(ICustomDataMapObject).GetProperties();
             PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
             PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
 

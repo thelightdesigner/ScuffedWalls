@@ -52,7 +52,7 @@ namespace ScuffedWalls
                     if (CurrentWorkspace != null) WorkspaceRequests = WorkspaceRequests.Append(CurrentWorkspace).ToArray();
 
                     //create new workspace
-                    CurrentWorkspace = new WorkspaceRequest() { Name = line.Data, Number = WorkspaceRequests.Length };
+                    CurrentWorkspace = new WorkspaceRequest() { Name = line.StringData, Number = WorkspaceRequests.Length };
 
                     CurrentInternal = ParamType.Workspace;
 
@@ -65,7 +65,7 @@ namespace ScuffedWalls
                     if (CurrentFunction != null) CurrentWorkspace.FunctionRequests = CurrentWorkspace.FunctionRequests.Append(CurrentFunction).ToArray();
 
                     //create new function
-                    CurrentFunction = new WorkspaceRequest.FunctionRequest() { Name = line.Data, Time = line.Name.toFloat() };
+                    CurrentFunction = new WorkspaceRequest.FunctionRequest() { Name = line.StringData, Time = line.Name.toFloat() };
 
                     CurrentInternal = ParamType.Function;
                 }
@@ -77,7 +77,7 @@ namespace ScuffedWalls
                     if (CurrentVariable != null) CurrentWorkspace.VariableRequests = CurrentWorkspace.VariableRequests.Append(CurrentVariable).ToArray();
 
                     //create new variable
-                    CurrentVariable = new WorkspaceRequest.VariableRequest() { Name = line.Data };
+                    CurrentVariable = new WorkspaceRequest.VariableRequest() { Name = line.Raw.StringData };
 
 
                     CurrentInternal = ParamType.Variable;

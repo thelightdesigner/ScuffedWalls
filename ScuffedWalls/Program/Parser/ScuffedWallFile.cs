@@ -9,8 +9,8 @@ namespace ScuffedWalls
     {
         public string Path;
         public Parameter[] Lines;
-        public string[] SWFileLines;
-        public string[] SWRaw;
+        public KeyValuePair<int, string>[] SWFileLines;
+        public KeyValuePair<int, string>[] SWRaw;
         public ScuffedWallFile(string path)
         {
             Path = path;
@@ -18,28 +18,31 @@ namespace ScuffedWalls
         }
         public void Refresh()
         {
+
             //get all new lines from file
-            List<string> lines = new List<string>();
-            List<string> raw = new List<string>();
+            List<KeyValuePair<int, string>> lines = new List<KeyValuePair<int, string>>();
+            List<KeyValuePair<int, string>> raw = new List<KeyValuePair<int, string>>();
             using (FileStream stream = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (StreamReader FileReader = new StreamReader(stream))
                 {
+                    int i = 1;
                     while (!FileReader.EndOfStream)
                     {
                         string line = FileReader.ReadLine();
-                        raw.Add(line);
-                        if (!string.IsNullOrEmpty(line.RemoveWhiteSpace()) && line.RemoveWhiteSpace()[0] != '#') lines.Add(line);
+                        raw.Add(new KeyValuePair<int, string>(i, line));
+                        if (!string.IsNullOrEmpty(line.RemoveWhiteSpace()) && line.RemoveWhiteSpace()[0] != '#') lines.Add(new KeyValuePair<int, string>(i, line));
+                        i++;
                     }
                 }
             }
             SWRaw = raw.ToArray();
             SWFileLines = lines.ToArray();
-            Lines = lines.Select(l => { return new Parameter(l); }).ToArray();
+            Lines = SWFileLines.Select(l => new Parameter(l.Value) { GlobalIndex = l.Key }).ToArray();
 
-            if (Startup.ScuffedConfig.IsBackupEnabled)
+            if (Utils.ScuffedConfig.IsBackupEnabled)
             {
-                File.Copy(Path,$"{Startup.ScuffedConfig.BackupPaths.BackupSWFolderPath}\\{DateTime.Now.ToFileString()}.sw");
+                File.Copy(Path, $"{Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath}\\{DateTime.Now.ToFileString()}.sw");
             }
         }
 

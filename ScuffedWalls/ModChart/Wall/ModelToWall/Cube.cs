@@ -201,23 +201,45 @@ namespace ModChart.Wall
         {
             if (Frames != null && Frames.Any(f => f.Active != Frames.First().Active))
             {
+                //Console.WriteLine(this.Name);
                 List<DoubleInt> framespan = new List<DoubleInt>();
-                DoubleInt current = null;
+                KeyValuePair<bool,DoubleInt>? current = null;
                 bool? lastactive = null;
                 for (int i = 0; i < Frames.Length; i++)
                 {
-                    if (lastactive.HasValue && current != null && lastactive.Value == Frames[i].Active.Value)
+                    if (lastactive.HasValue && current.HasValue && lastactive.Value == Frames[i].Active.Value)
                     {
-                        current.Val2++;
+                        current.Value //nullable value
+                            .Value //key value (DoubleInt)
+                            .Val2++; //second number of DoubleInt
                     }
                     else
                     {
-                        if (current != null && lastactive == false) framespan.Add(current);
-                        current = new DoubleInt(i, i + 1);
+                        //Console.WriteLine($"Current Has Value?: {current.HasValue}");
+                        if (current.HasValue && current.Value.Key)
+                        {
+                            //Console.WriteLine("Current Added");
+                            framespan.Add(current.Value.Value);
+                        }
+
+                        current = new KeyValuePair<bool, DoubleInt>(Frames[i].Active.Value, new DoubleInt(i, i + 1));
+
+                        //Console.WriteLine($"Current Set To: {current.ToString()}");
                     }
                     lastactive = Frames[i].Active.Value;
+
                 }
-                //Console.WriteLine();
+                if (current.HasValue && current.Value.Key)
+                {
+                    //Console.WriteLine("Current Added");
+                    framespan.Add(current.Value.Value);
+                }
+
+                SetOffset();
+
+               // Console.WriteLine(string.Join(" ",
+                //        Frames.Select(f => f.Active.Value)
+                //        ));
 
                 return framespan.Select(f =>
                 {
@@ -277,12 +299,7 @@ namespace ModChart.Wall
             OffsetMatrix = mat;
 
         }
-        public enum Axis
-        {
-            X,
-            Y,
-            Z
-        }
+
         /// <summary>
         /// Transforms a collection of cubes around the center of their bounding box.
         /// </summary>
@@ -296,40 +313,37 @@ namespace ModChart.Wall
         /// <returns>
         /// A deep copy of the collection
         /// </returns>
-        public static IEnumerable<Cube> TransformCollection(
-            IEnumerable<Cube> cubes,
-            Vector3 Position,
-            Vector3 Rotation,
-            float Scale,
-            bool SetPos = false,
-            bool SetScale = false,
-            Axis SetScaleAxis = Axis.X)
+        public static IEnumerable<Cube> TransformCollection(DeltaTransformOptions Options)
         {
-            Cube[] newCubes = cubes.Select(c => c.Clone()).ToArray();
+            Cube[] newCubes = Options.cubes.Select(c => c.Clone()).ToArray();
 
             Transformation boundingbox = newCubes.Select(n => n.Matrix.Value).ToArray().GetBoundingBox().Main;
+
+            Vector3 Offset = boundingbox.Position;
+            if (Options.TransformOrigin == DeltaTransformOptions.TransformOptions.FrontBottomLeft) Offset = boundingbox.Position - (boundingbox.Scale / 2f);
+            if (Options.TransformOrigin == DeltaTransformOptions.TransformOptions.WorldOrigin) Offset = new Vector3(0);
 
             //center
             newCubes = newCubes.Select(c =>
             {
                 var mat = c.Matrix.Value;
-                mat.Translation = mat.Translation - boundingbox.Position;
+                mat.Translation = mat.Translation - Offset;
                 c.Matrix = mat;
                 return c;
             }).ToArray();
 
 
             //scale
-            if (SetScale)
+            if (Options.SetScale)
             {
-                if(SetScaleAxis == Axis.X) Scale /= boundingbox.Scale.X;
-                else if (SetScaleAxis == Axis.Y) Scale /= boundingbox.Scale.Y;
-                else if(SetScaleAxis == Axis.Z) Scale /= boundingbox.Scale.Z;
+                if (Options.SetScaleAxis == Axis.X) Options.Scale /= boundingbox.Scale.X;
+                else if (Options.SetScaleAxis == Axis.Y) Options.Scale /= boundingbox.Scale.Y;
+                else if (Options.SetScaleAxis == Axis.Z) Options.Scale /= boundingbox.Scale.Z;
             }
 
             newCubes = newCubes.Select(cube =>
             {
-                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value, Matrix4x4.CreateScale(Scale));
+                cube.Matrix = Matrix4x4.Multiply(cube.Matrix.Value, Matrix4x4.CreateScale(Options.Scale));
                 return cube;
             }).ToArray();
 
@@ -337,19 +351,20 @@ namespace ModChart.Wall
             //rotate
             newCubes = newCubes.Select(c =>
             {
-                c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Rotation.ToQuaternion());
+                c.Matrix = Matrix4x4.Transform(c.Matrix.Value, Options.Rotation.ToQuaternion());
                 return c;
             }).ToArray();
 
 
             //translate
-            var ReLoc = boundingbox.Position;
-            if (SetPos) ReLoc = new Vector3(0);
+            var ReLoc = Offset;
+            if (Options.SetPos) ReLoc = new Vector3(0);
+
 
             newCubes = newCubes.Select(c =>
             {
                 var mat = c.Matrix.Value;
-                mat.Translation = mat.Translation + ReLoc + Position;
+                mat.Translation = mat.Translation + ReLoc + Options.Position;
                 c.Matrix = mat;
                 return c;
             }).ToArray();
@@ -361,6 +376,22 @@ namespace ModChart.Wall
             return newCubes;
         }
     }
+    public class DeltaTransformOptions
+    {
+        public IEnumerable<Cube> cubes { get; set; }
+        public Vector3 Position { get; set; } = new Vector3(0);
+        public Vector3 Rotation { get; set; } = new Vector3(0);
+        public float Scale { get; set; } = 1;
+        public bool SetPos { get; set; } = false;
+        public bool SetScale { get; set; } = false;
+        public TransformOptions TransformOrigin { get; set; } = TransformOptions.Center;
+        public Axis SetScaleAxis { get; set; } = Axis.X;
 
-
+        public enum TransformOptions
+        {
+            Center,
+            FrontBottomLeft,
+            WorldOrigin
+        }
+    }
 }

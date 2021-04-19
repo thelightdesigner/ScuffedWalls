@@ -8,6 +8,8 @@ using System.Numerics;
 using System.Xml;
 using System.Xml.Serialization;
 
+using static ScuffedWalls.ScuffedLogger;
+
 namespace ModChart.Wall
 {
     public class Model
@@ -154,7 +156,7 @@ namespace ModChart.Wall
                             for (int frame = 0; frame < cube.Count; frame++)
                             {
                                 if (cube.Frames[frame] == null) cube.Frames[frame] = new Cube.Frame();
-                                cube.Frames[frame].Active = Convert.ToBoolean(visible[frame]);
+                                cube.Frames[frame].Active = !Convert.ToBoolean(visible[frame]);
                                 cube.Frames[frame].Number = frame;
                             }
 
@@ -183,10 +185,11 @@ namespace ModChart.Wall
 
                         if(cube.Material != null && cube.Material.Any())
                         {
-                            var effectcontainer = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));
-                            var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0] || e.id.Contains(cube.Material[0])).First();
+                            var effectcontainer/* = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));*/ = model.library_effects.effect;
+                            var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0]).First();
 
-                            if (correcteffect.profile.technique.lambert.diffuse == null) { Console.ForegroundColor = ConsoleColor.Yellow; Console.WriteLine($"[Warning] ColladaParser - {cube.Name} diffuse is nulled! skipping"); Console.ResetColor(); continue; }
+
+                            if (correcteffect.profile.technique.lambert.diffuse == null) Warning.Log($"{cube.Name} diffuse is nulled! skipping");
 
                             float[] colorArray = correcteffect.profile.technique.lambert.diffuse.color.ParseToFloatArray();
                             cube.Color = new Color() { R = colorArray[0], G = colorArray[1], B = colorArray[2], A = colorArray[3] };

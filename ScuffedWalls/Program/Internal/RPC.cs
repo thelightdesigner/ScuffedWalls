@@ -39,7 +39,7 @@ namespace ScuffedWalls
         {
             while (currentMap == null) await Task.Delay(500);
 
-            client.UpdateDetails(Startup.Info._songName.ToString());
+            client.UpdateDetails(Utils.Info._songName.ToString());
 
             while (true)
             {

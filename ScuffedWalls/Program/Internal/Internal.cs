@@ -19,6 +19,11 @@ namespace ScuffedWalls
 
             return list.ToArray();
         }
+        public static T Switch<T>(this T Default, T Secondary, bool BiasToSecondary)
+        {
+            if(BiasToSecondary) return Secondary;
+            return Default;
+        }
         public static string Remove(this string str, char ch)
         {
             return string.Join("", str.Split(ch));
@@ -27,9 +32,9 @@ namespace ScuffedWalls
         {
             return string.Join("", str.Split(ch));
         }
-        public static T[] GetAllBetween<T>(this T[] mapObjects, float starttime, float endtime)
+        public static IEnumerable<ITimeable> GetAllBetween(this IEnumerable<ITimeable> mapObjects, float starttime, float endtime)
         {
-            return mapObjects.Where(obj => (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) >= starttime) && (Convert.ToSingle(typeof(T).GetProperty("_time").GetValue(obj, null).ToString()) <= endtime)).ToArray();
+            return mapObjects.Where(obj => obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime).ToArray();
         }
         static public bool MethodExists<t>(this string methodname, Type attribute)
         {
@@ -149,7 +154,7 @@ namespace ScuffedWalls
     {
         public DateTime StartTime;
         public void Start() => StartTime = DateTime.Now;
-        public void Complete() =>  ScuffedLogger.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
+        public void Complete() =>  ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
     }
 
 

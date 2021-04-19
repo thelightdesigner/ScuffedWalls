@@ -61,7 +61,7 @@ namespace ModChart
         /// <returns></returns>
         public float GetDefiniteNjsOffsetBeats(float duration)
         {
-            return ((duration/2) - (GetJumps(0,Njs,Bpm)*2f)/ 2f);
+            return (duration/2f) - GetJumps(0,Njs,Bpm);
         }
         /// <summary>
         /// gets the amount of beats that the map object will stay around for
