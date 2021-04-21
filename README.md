@@ -1,6 +1,8 @@
 # ScuffedWalls
 A command line tool for making NE 2.0 beat saber maps & modcharts. It provides an alternative to direct scripting and comes with some extra features which can aid in creation like Model, Image, and Text to wall converters.
 
+This tool does not do the same thing as beatwalls.
+
 Features:
  - Create custom events.
  - Import/Combine map objects from other map files

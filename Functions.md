@@ -400,10 +400,12 @@ multiplies all the note times by 2
 ```
 0:AppendNotes
    time:{_time * 2}
-   appendtechnique:1```
+   appendtechnique:1
+   ```
 
 multiplies all the definitepositions by 3 except for the time value
-```0:AppendNotes
+```
+0:AppendNotes
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
    ```
