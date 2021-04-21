@@ -37,7 +37,7 @@ namespace ScuffedWalls.Functions
                 else
                 {
                     Console.WriteLine("Thats so sad");
-                    Task.Delay(5000);
+                    Thread.Sleep(5000);
                     Environment.Exit(1);
                 }
             }
