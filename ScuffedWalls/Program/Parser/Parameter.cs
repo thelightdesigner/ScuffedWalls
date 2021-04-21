@@ -95,15 +95,15 @@ namespace ScuffedWalls
         }
         private void SetInstance()
         {
-            Instance = new Variable(Internal.Name,ParseAllNonsense(Internal.StringData ?? ""));
+            if (Type == ParamType.VariableContainer) Instance = new Variable(Internal.Name, ParseAllNonsense(Internal.StringData ?? ""));
+            else Instance = Internal;
         }
         public void SetType()
         {
-            string parsedname = ParseAllNonsense(Raw.Name);
 
-            if (char.IsDigit(parsedname.ToLower().RemoveWhiteSpace()[0])) Type = ParamType.Function;
-            else if (parsedname.ToLower().RemoveWhiteSpace() == "workspace") Type = ParamType.Workspace;
-            else if (parsedname.ToLower().RemoveWhiteSpace() == "var") Type = ParamType.Variable;
+            if (char.IsDigit(Raw.Name.ToLower().RemoveWhiteSpace()[0])) Type = ParamType.Function;
+            else if (Raw.Name.ToLower().RemoveWhiteSpace() == "workspace") Type = ParamType.Workspace;
+            else if (Raw.Name.ToLower().RemoveWhiteSpace() == "var") Type = ParamType.Variable;
             else Type = ParamType.Parameter;
         }
 
@@ -273,34 +273,6 @@ Output {{ Name:{Name} Data:{StringData} }}";
         public void UseParameter() => WasParameterUsed = true;
     }
 
-    /*
-    /// <summary>
-    /// Represents a function call from a string, Gets the constructor
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="P"></typeparam>
-    public class StringFunction<T,P>
-    {
-        public string Name { get; set; }
-        public T Constructor { get; set; }
-        public string ConstructorRaw { get; set; }
-        public P Result { get; set; }
-        public Func<string, P> Converter { get; set; }
-        public StringFunction(string data,Func<string,P> converter)
-        {
-            Raw = data.Clone().ToString();
-
-        }
-        public static bool ContainsFunc(string data, string name)
-        {
-            if (!data.ToLower().RemoveWhiteSpace().Contains(name)) return false;
-
-            //do more magic here
-
-            return true;
-        }
-    }
-    */
 
 
     public enum VariableRecomputeSettings

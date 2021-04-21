@@ -101,11 +101,6 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
             }
             return array1;
         }
-        /// <summary>
-        /// Returns a scale vector with dimensions equal to the bounding box of the matrix
-        /// </summary>
-        /// <param name="m"></param>
-        /// <returns></returns>
         
         public static float toFloat(this object v)
         {
