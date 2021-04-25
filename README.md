@@ -34,4 +34,6 @@ More info on TextToWall images can be found [`here`](https://github.com/thelight
 Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
 
 
- 
+## For Developers
+
+To create a function, clone the repo and navigate to ScuffedWalls -> Program -> Functions and create a new .cs file. All classes under the namespace ScuffedWalls.Functions that are decorated with the ScuffedFunction attribute will be populated as a function. The params string constructor is used to define the name or names of the function. Your class must inherit from SFunction which contains an array of parameters, the InstanceWorkspace and the GetParam method. If you use a parameter without calling GetParam you must mark the parameter as used by setting WasUsed to true. InstanceWorkspace contains lists of mapobjects.
