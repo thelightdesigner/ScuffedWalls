@@ -105,6 +105,8 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         public static float toFloat(this object v)
         {
             //try { return Convert.ToSingle(v); } catch { }
+
+            //Console.WriteLine(Environment.StackTrace);
             return Convert.ToSingle(v.ToString());
         }
         public static double toDouble(this object v)

@@ -123,7 +123,7 @@ Workspace:Default";
    Path:{new FileInfo(ScuffedConfig.OldMapPath).Name}");
                     }
                 }
-                Console.Write("[ConsoleLoggerDefault] Main: ");
+                Console.Write("[Default] Main: ");
                 new Rainbow().PrintRainbow("New Scuffed Wall File Created");
             }
         }

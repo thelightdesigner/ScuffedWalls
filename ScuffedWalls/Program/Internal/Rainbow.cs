@@ -15,7 +15,7 @@ namespace ScuffedWalls
             ConsoleColor.Blue,
             ConsoleColor.Magenta
         };
-        IEnumerator colorenum; 
+        readonly IEnumerator colorenum; 
         
         public Rainbow()
         {

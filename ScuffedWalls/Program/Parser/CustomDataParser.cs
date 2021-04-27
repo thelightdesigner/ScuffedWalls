@@ -36,6 +36,7 @@ namespace ScuffedWalls
                 _prop = GetParam("cprop", null, p => (object)float.Parse(p)),
                 _speed = GetParam("cspeed", null, p => (object)float.Parse(p)),
                 _counterSpin = GetParam("ccounterspin", null, p => (object)bool.Parse(p)),
+                _disableNoteLook = GetParam("disablenotelook", null,p => (object)bool.Parse(p))
             };
             var animation = new BeatMap.CustomData.Animation()
             {
@@ -108,7 +109,9 @@ namespace ScuffedWalls
                 _childrenTracks = GetParam("childtracks", null, p => JsonSerializer.Deserialize<object[]>(p)),
                 _duration = GetParam("duration", null, p => (object)float.Parse(p)),
                 _easing = GetParam("easing", null, p => (object)p),
-                _track = GetParam("track", null, p => p.TrimStart())
+                _track = GetParam("track", null, p => p.TrimStart()),
+                _localPosition = GetParam("animatelocalposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatelocalposition", null, p => (object)p),
+                _localScale = GetParam("animatelocalscale", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatelocalscale", null, p => (object)p)
             };
 
             return customdata;

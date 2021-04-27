@@ -9,68 +9,87 @@ namespace ModChart
     {
         public static ICustomDataMapObject Append(this ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendTechnique Type)
         {
-            MapObject._customData ??= new BeatMap.CustomData();
-            MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
-            AppendObject._customData ??= new BeatMap.CustomData();
-            AppendObject._customData._animation ??= new BeatMap.CustomData.Animation();
+            //MapObject._customData ??= new BeatMap.CustomData();
+            //MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
+            //AppendObject._customData ??= new BeatMap.CustomData();
+            //AppendObject._customData._animation ??= new BeatMap.CustomData.Animation();
             PropertyInfo[] propertiesBaseWall = typeof(ICustomDataMapObject).GetProperties();
             PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
             PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
 
             if (Type == AppendTechnique.NoOverwrites)
             {
-                foreach (PropertyInfo property in propertiesBaseWall)
+                if (MapObject != null && AppendObject != null)
                 {
-                    if (property.GetValue(MapObject) == null)
+                    foreach (PropertyInfo property in propertiesBaseWall)
                     {
-                        property.SetValue(MapObject, property.GetValue(AppendObject));
+                        if (property.GetValue(MapObject) == null)
+                        {
+                            property.SetValue(MapObject, property.GetValue(AppendObject));
+                        }
                     }
-                }
-                foreach (PropertyInfo property in propertiesCustomData)
-                {
-                    if (property.GetValue(MapObject._customData) == null)
+                    if (MapObject._customData != null && AppendObject._customData != null)
                     {
-                        property.SetValue(MapObject._customData, property.GetValue(AppendObject._customData));
-                    }
+                        foreach (PropertyInfo property in propertiesCustomData)
+                        {
+                            if (property.GetValue(MapObject._customData) == null)
+                            {
+                                property.SetValue(MapObject._customData, property.GetValue(AppendObject._customData));
+                            }
 
-                }
-                foreach (PropertyInfo property in propertiesCustomDataAnimation)
-                {
-                    if (property.GetValue(MapObject._customData._animation) == null)
-                    {
-                        property.SetValue(MapObject._customData._animation, property.GetValue(AppendObject._customData._animation));
+                        }
+                        if (MapObject._customData._animation != null && AppendObject._customData._animation != null)
+                        {
+                            foreach (PropertyInfo property in propertiesCustomDataAnimation)
+                            {
+                                if (property.GetValue(MapObject._customData._animation) == null)
+                                {
+                                    property.SetValue(MapObject._customData._animation, property.GetValue(AppendObject._customData._animation));
+                                }
+                            }
+                        }
                     }
-
                 }
                 return MapObject;
             }
             // append technique 1 adds on customdata, overwrites
             else if (Type == AppendTechnique.Overwrites)
             {
-                foreach (PropertyInfo property in propertiesBaseWall)
+                if (MapObject != null && AppendObject != null)
                 {
-                    if (property.GetValue(AppendObject) != null && property.Name != "_customData")
+                    foreach (PropertyInfo property in propertiesBaseWall)
                     {
-                        property.SetValue(MapObject._customData, property.GetValue(AppendObject));
+                        if (property.GetValue(AppendObject) != null && property.Name != "_customData")
+                        {
+                            property.SetValue(MapObject._customData, property.GetValue(AppendObject));
+                        }
+                    }
+                    if (MapObject._customData != null && AppendObject._customData != null)
+                    {
+                        foreach (PropertyInfo property in propertiesCustomData)
+                        {
+                            if (property.GetValue(AppendObject._customData) != null && property.Name != "_animation")
+                            {
+                                property.SetValue(MapObject._customData, property.GetValue(AppendObject._customData));
+                            }
+
+                        }
+                        if (MapObject._customData._animation != null && AppendObject._customData._animation != null)
+                        {
+                            foreach (PropertyInfo property in propertiesCustomDataAnimation)
+                            {
+                                if (property.GetValue(AppendObject._customData._animation) != null)
+                                {
+                                    property.SetValue(MapObject._customData._animation, property.GetValue(AppendObject._customData._animation));
+
+                                }
+
+                            }
+                        }
                     }
                 }
-                foreach (PropertyInfo property in propertiesCustomData)
-                {
-                    if (property.GetValue(AppendObject._customData) != null && property.Name != "_animation")
-                    {
-                        property.SetValue(MapObject._customData, property.GetValue(AppendObject._customData));
-                    }
-
-                }
-                foreach (PropertyInfo property in propertiesCustomDataAnimation)
-                {
-                    if (property.GetValue(AppendObject._customData._animation) != null)
-                    {
-                        property.SetValue(MapObject._customData._animation, property.GetValue(AppendObject._customData._animation));
-
-                    }
-
-                }
+                
+                
                 return MapObject;
             }
             else if (Type == AppendTechnique.DeleteOldCustomData)
@@ -80,7 +99,8 @@ namespace ModChart
             }
             else if (Type == AppendTechnique.DeleteOldAnimation)
             {
-                MapObject._customData._animation = AppendObject._customData._animation;
+                MapObject._customData ??= new BeatMap.CustomData();
+                if(AppendObject._customData != null && AppendObject._customData._animation != null) MapObject._customData._animation = AppendObject._customData._animation;
                 return MapObject;
             }
             else

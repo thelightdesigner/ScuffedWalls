@@ -51,6 +51,11 @@ namespace ScuffedWalls.Functions
                     InstanceWorkspace.PointDefinitions.AddRange(beatMap._customData._pointDefinitions);
                     ConsoleOut("PointDefinition", beatMap._customData._pointDefinitions.Length, Time, "Import");
                 }
+                if (beatMap._customData._environment != null)
+                {
+                    InstanceWorkspace.Environment.AddRange(beatMap._customData._environment);
+                    ConsoleOut("Environment", beatMap._customData._environment.Length, Time, "Import");
+                }
             }
             if (Type.Any(t => t == 4) && beatMap._customData != null && beatMap._customData._bookmarks != null)
             {

@@ -71,6 +71,20 @@ namespace ModChart
         }
         public class CustomData
         {
+            public Environment[] _environment { get; set; }
+            public class Environment
+            {
+                public object _id { get; set; }
+                public object _lookupMethod { get; set; }
+                public object _duplicate { get; set; }
+                public object _active { get; set; }
+                public object[] _scale { get; set; }
+                public object[] _position { get; set; }
+                public object[] _localPosition { get; set; }
+                public object[] _rotation { get; set; }
+                public object[] _localRotation { get; set; }
+                public object _track { get; set; }
+            }
             public object _time { get; set; } //float
 
             //noodle
@@ -86,6 +100,7 @@ namespace ModChart
             public object[] _flip { get; set; }
             public object _fake { get; set; } //bool
             public object _disableNoteGravity { get; set; } //bool
+            public object _disableNoteLook { get; set; } //bool
             public Animation _animation { get; set; }
 
             public class Animation
@@ -126,6 +141,8 @@ namespace ModChart
                     public dynamic _color { get; set; }
                     public dynamic _time { get; set; }
                     public dynamic _interactable { get; set; }
+                    public dynamic _localPosition { get; set; }
+                    public dynamic _localScale { get; set; }
 
                 }
 
@@ -207,20 +224,7 @@ namespace ModChart
                 public object _time { get; set; } //float
                 public object _name { get; set; } //string
             }
-            public Environment[] _environment { get; set; }
-            public class Environment
-            {
-                public object _id { get; set; }
-                public object _lookupMethod { get; set; }
-                public object _duplicate { get; set; }
-                public object _active { get; set; }
-                public object[] _scale { get; set; }
-                public object[] _position { get; set; }
-                public object[] _localPosition { get; set; }
-                public object[] _rotation { get; set; }
-                public object[] _localRotation { get; set; }
-                public object _track { get; set; }
-            }
+            
         }
     }
     
