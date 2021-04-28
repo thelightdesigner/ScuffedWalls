@@ -4,6 +4,7 @@ Functions are defined by a time and a name.
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`ImageToWall`](#ImageToWall)
+- [`Environment`](#Environment)
 - [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
@@ -273,6 +274,21 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
    duration:12
    animatedefiniteposition:[0,0,0,0]
  ```
+ 
+# Environment
+makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
+
+- id: string
+- track: string
+- lookupmethod: string
+- duplicate: int
+- active: bool
+- scale: \[x,y,z]
+- localposition: \[x,y,z]
+- localrotation: \[x,y,z]
+- position: \[x,y,z]
+- rotation: \[x,y,z]
+ 
  
 # CloneFromWorkspace
 clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
