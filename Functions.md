@@ -206,6 +206,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - spreadspawntime: float
  - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
  - createtracks: bool
+ - colormult: float, multiplies all the model color values by this amount
  - preservetime: bool
  - cameratoplayer: bool
  - createnotes: bool
