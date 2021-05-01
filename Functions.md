@@ -4,6 +4,7 @@ Functions are defined by a time and a name.
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`ImageToWall`](#ImageToWall)
+- [`Environment`](#Environment)
 - [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
 - [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
@@ -205,6 +206,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - spreadspawntime: float
  - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
  - createtracks: bool
+ - colormult: float, multiplies all the model color values by this amount
  - preservetime: bool
  - cameratoplayer: bool
  - createnotes: bool
@@ -273,6 +275,21 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
    duration:12
    animatedefiniteposition:[0,0,0,0]
  ```
+ 
+# Environment
+makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
+
+- id: string
+- track: string
+- lookupmethod: string
+- duplicate: int
+- active: bool
+- scale: \[x,y,z]
+- localposition: \[x,y,z]
+- localrotation: \[x,y,z]
+- position: \[x,y,z]
+- rotation: \[x,y,z]
+ 
  
 # CloneFromWorkspace
 clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
