@@ -111,7 +111,11 @@ String functions follow the same format that most c/c++/c#/java/js function cons
   scale:[0.1,1,1]
   color:HSLtoRGB({repeat/100},1,0.5)
   ```
-The example above uses the HSLtoRGB function to create a rainbow. The order of the constructor for this string function are HSLtoRGB(Hue,Saturation,Lightness,Alpha,Any extra values)
+  
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
+  
+  
+The example above uses the HSLtoRGB function to create a rainbow.
 
 The available string functions are:
  - Random(Val1,Val2) => returns a number
