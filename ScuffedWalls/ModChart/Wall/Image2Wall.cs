@@ -52,6 +52,7 @@ namespace ModChart.Wall
             if (_Settings.Wall._customData._color != null) Pixels = Pixels.Select(p => { p.Color = Color.ColorFromObjArray(_Settings.Wall._customData._color); return p; }).ToArray();
 
             Random rnd = new Random();
+
             Walls = Pixels.Select(p =>
             {
                 object[] scale = null;

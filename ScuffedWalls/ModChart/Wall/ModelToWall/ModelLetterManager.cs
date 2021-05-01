@@ -18,7 +18,7 @@ namespace ModChart.Wall
         public static IEnumerable<ModelLetterManager> CreateLetters(Model model, TextSettings Settings)
         {
             var letters = model.Cubes
-                .Where(c => c.Material.Any(s => s.ToLower().Contains("letter_")))
+                .Where(c => c.Material != null && c.Material.Any(s => s.ToLower().Contains("letter_")))
                 .GroupBy(c => Regex.Split(c.Material.Where(s => s.ToLower().Contains("letter_")).First(), "letter_", RegexOptions.IgnoreCase).Last());
             List<ModelLetterManager> Letters = new List<ModelLetterManager>();
             //Console.WriteLine(letters.Count());

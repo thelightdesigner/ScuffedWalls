@@ -64,7 +64,8 @@ namespace ScuffedWalls.Functions
                     Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
                     {
                         _time = Time,
-                        _duration = duration
+                        _duration = duration,
+                        _customData = new BeatMap.CustomData()
                     }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),  AppendTechnique.Overwrites)
                 });
             BeatMap.Obstacle[] image = converter.Walls;

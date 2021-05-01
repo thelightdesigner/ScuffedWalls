@@ -1,11 +1,12 @@
-﻿using ModChart;
-using NCalc;
+﻿using NCalc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ScuffedWalls
 {
+    /// <summary>
+    /// A more featured "Variable"
+    /// </summary>
     public class Parameter : INameStringDataPair
     {
         public static void UnUseAll(Parameter[] parameters)
@@ -14,12 +15,13 @@ namespace ScuffedWalls
         }
         public static void Check(Parameter[] parameters)
         {
-            foreach (var p in parameters) if (!p.WasUsed) ScuffedLogger.Warning.Log($"Unused Parameter {p.Name} at line {p.GlobalIndex}! (Mispelled?)");
+            foreach (var p in parameters) if (!p.WasUsed) ScuffedLogger.Warning.Log($"Parameter {p.Name} at line {p.GlobalIndex} may be unused (Mispelled?)");
         }
+
         public bool WasUsed { get; set; }
         public Parameter[] InternalVariables { get; set; } = new Parameter[] { };
         public static Parameter[] ExternalVariables { get; set; } = new Parameter[] { };
-        public static StringFunction[] InternalFunctions { get; set; } = new StringFunction[] { };
+        public static StringFunction[] StringFunctions { get; set; } = new StringFunction[] { };
         public Parameter(VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
         {
             SetRaw();
@@ -109,118 +111,167 @@ namespace ScuffedWalls
 
         string ParseAllNonsense(string s)
         {
-            return ParseMath(
-                        ParseRandom(
-                            ParseVar(
-                                s.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables))));
+            string LastAttempt = string.Empty;
+            string ThisAttempt = s.Clone().ToString();
+            Exception MostRecentError = null;
+            while (!LastAttempt.Equals(ThisAttempt))
+            {
+                LastAttempt = ThisAttempt.Clone().ToString();
+
+                try //Variables
+                {
+                    //Console.WriteLine("This attempt before entering variable block " + ThisAttempt.Clone().ToString());
+                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
+                    if (Modified.Key)
+                    {
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
+                    }
+                    //Console.WriteLine("Variable Insertion " + Modified.Key);
+                }
+                catch (Exception e) { MostRecentError = e; }
+
+                try //Math
+                {
+                    //Console.WriteLine("This attempt before entering math block " + ThisAttempt.Clone().ToString());
+                    KeyValuePair<bool, string> Modified = ParseMath(ThisAttempt.Clone().ToString());
+                    if (Modified.Key)
+                    {
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
+                    }
+                    //Console.WriteLine("Math Insertion " + Modified.Key);
+                }
+                catch (Exception e) { MostRecentError = e; }
+
+                try //Functions
+                {
+                    //Console.WriteLine("This attempt before entering random block " + ThisAttempt.Clone().ToString());
+                    KeyValuePair<bool, string> Modified = ParseFuncs(ThisAttempt.Clone().ToString());
+                    if (Modified.Key)
+                    {
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
+                    }
+                    //Console.WriteLine("Function Insertion " + Modified.Key);
+                }
+                catch (Exception e) { MostRecentError = e; }
+            }
+            if (MostRecentError != null) throw MostRecentError;
+
+            return ThisAttempt;
         }
 
-        //replaces Random(v1,v2) with a random single precision floating point number
-        public static string ParseRandom(string s)
+
+        //replaces a variable name with a different value
+
+        public static KeyValuePair<bool, string> ParseVar(string s, IEnumerable<INameStringDataPair> Variables)
         {
-            Random rnd = new Random();
+            string currentvar = "";
+            string BeforeModifications = s.Clone().ToString();
             try
             {
-                while (s.Contains("Random("))
+                foreach (var v in Variables)
                 {
-                    //Console.WriteLine("wow");
-                    string[] asplit = s.Split("Random(", 2);
-                    string[] randomparams = asplit[1].Split(',', 2);
-                    float first = randomparams[0].toFloat();
-                    float last = randomparams[1].Split(")")[0].toFloat();
-
-                    if (last < first)
+                    currentvar = v.Name;
+                    while (s.Contains(v.Name))
                     {
-                        float f = first;
-                        float l = last;
-                        first = l;
-                        last = f;
+                        string[] split = s.Split(v.Name, 2);
+                        s = split[0] + v.StringData + split[1];
                     }
-
-                    double random = rnd.NextDouble() * (last - first) + first;
-                    s = asplit[0] + random + asplit[1].Split(')', 2)[1];
-
-                }
-                while (s.Contains("RandomInt("))
-                {
-                    //Console.WriteLine("wow");
-                    string[] asplit = s.Split("RandomInt(", 2);
-                    string[] randomparams = asplit[1].Split(',', 2);
-                    int first = int.Parse(randomparams[0]);
-                    int last = int.Parse(randomparams[1].Split(")")[0]);
-
-                    if (last < first)
-                    {
-                        int f = first;
-                        int l = last;
-                        first = l;
-                        last = f;
-                    }
-
-                    int random = rnd.Next(first, last);
-                    s = asplit[0] + random + asplit[1].Split(')', 2)[1];
-
                 }
             }
-            catch { throw new FormatException($"Unable to parse Random() Line:{s}"); }
-
-            return s;
-        }
-        //replaces a variable name with a number
-        public static string ParseVar(string s, IEnumerable<INameStringDataPair> Variables)
-        {
-            foreach (var v in Variables)
+            catch (Exception e)
             {
-                while (s.Contains(v.Name))
-                {
-                    string[] split = s.Split(v.Name, 2);
-                    s = split[0] + v.StringData + split[1];
-                }
+                throw new Exception($"Error implimenting variable {currentvar} ERROR:{e.Message}");
             }
-            return s;
+            return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
         }
-        //computes things in {} i guess
-        public static string ParseMath(string s)
+
+        //computes things in {} i guess, uses recursion when appropriate to attempt to compute all possible usages
+        public static KeyValuePair<bool, string> ParseMath(string s)
         {
+            string BeforeModifications = s.Clone().ToString();
+            string MathStringContents = null;
+            BracketAnalyzer br = new BracketAnalyzer(s, '{', '}');
             try
             {
                 while (s.ToLower().Contains("{"))
                 {
-                    string[] asplit = s.Split("{", 2);
-                    string[] endsplit = asplit[1].Split('}', 2);
-                    Expression e = new Expression(endsplit[0]);
+                    br.FullLine = s;
+                    br.FocusFirst();
+                    MathStringContents = br.TextInsideOfBrackets;
+                    Expression e = new Expression(br.TextInsideOfBrackets);
 
-                    s = asplit[0] + e.Evaluate().ToString() + endsplit[1];
+                    s = br.TextBeforeFocused + e.Evaluate().ToString() + br.TextAfterFocused;
                 }
             }
-            catch { throw new FormatException($"Unable to parse Math {{}} Line:{s}"); }
-
-            return s;
-        }
-
-        public static string ParseFuncs(string s, IEnumerable<StringFunction> Funcs)
-        {
-            while (Funcs.Any(f => s.Contains(f.Name + "(")))
+            catch (Exception e)
             {
-                StringFunction currentFunc = null;
-                try
+                //if it already made a modification, return anyways
+                if (!BeforeModifications.Equals(s)) return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
+                else 
                 {
-                    foreach (var func in Funcs) if (s.Contains(func.Name)) currentFunc = func;
-
-                    string[] asplit = s.Split(currentFunc.Name + '(', 2); //before func
-                    string[] bsplit = asplit[1].Split(")", 2); //after func
-                    string[] paramss = bsplit[0].Split(',');
-                    string result = currentFunc.FunctionAction(paramss);
-
-                    s = asplit[0] + result + bsplit[1];
-                }
-                catch(Exception e)
-                {
-                    ScuffedLogger.Error.Log($"Error executing internal function {currentFunc.Name} ERROR:{e.Message}");
+                    //recursion to attempt to parse deeper math expressions, only if the first outer attempt failed
+                    try
+                    {
+                        KeyValuePair<bool, string> Attempt = ParseMath(MathStringContents);
+                        if (Attempt.Key) s = br.TextBeforeFocused + br.OpeningBracket + Attempt.Value + br.ClosingBracket + br.TextAfterFocused;
+                        else throw e;
+                    }
+                    catch
+                    {
+                        throw new FormatException($"Error parsing Math {{}} Line:{s} ERROR:{e.Message}");
+                    }
                 }
             }
-            return s;
+
+            return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
         }
+
+        public static KeyValuePair<bool, string> ParseFuncs(string s)
+        {
+            StringFunction currentFunc = null;
+            string BeforeModifications = s.Clone().ToString();
+            string FuncStringInternals = null;
+            BracketAnalyzer br = new BracketAnalyzer(s, '(', ')');
+            try
+            {
+                foreach (var func in StringFunctions)
+                {
+                    currentFunc = func;
+                    while (s.Contains(func.Name + "("))
+                    {
+                        br.FullLine = s;
+                        br.FocusFirst(func.Name + "(");
+                        FuncStringInternals = br.TextInsideOfBrackets;
+
+                        string[] paramss = br.TextInsideOfBrackets.Split(',');
+                        //Console.WriteLine("the s variable is now this " + s);
+                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(paramss) + br.TextAfterFocused;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (!BeforeModifications.Equals(s)) return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
+                else
+                {
+                    try
+                    {
+                        KeyValuePair<bool, string> Attempt = ParseFuncs(FuncStringInternals);
+                        if (Attempt.Key) s = br.TextBeforeFocused + br.OpeningBracket + Attempt.Value + br.ClosingBracket + br.TextAfterFocused;
+                        else throw e;
+                    }
+                    catch
+                    {
+                        throw new Exception($"Error executing internal function {currentFunc.Name} ERROR:{e.Message}");
+                    }
+                }
+            }
+            return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
+        }
+
 
         Variable Internal { get; set; } = new Variable();
         Variable Instance { get; set; } = new Variable();
@@ -284,7 +335,6 @@ Output {{ Name:{Name} Data:{StringData} }}";
                 p.InternalVariables = variables;
             }
         }
-
         public static void RefreshAllParameters(this Parameter[] ps)
         {
             foreach (var p in ps) p.Refresh();
@@ -296,7 +346,56 @@ Output {{ Name:{Name} Data:{StringData} }}";
     public class StringFunction
     {
         public string Name { get; set; } //name of the func
-        public Func<string[],string> FunctionAction { get; set; } //convert from params to output string
+        public Func<string[], string> FunctionAction { get; set; } //convert from params to output string
+    }
+    public class BracketAnalyzer
+    {
+        public string TextBeforeFocused;
+        public string TextAfterFocused;
+        public string TextInsideOfBrackets;
+        public string TextInsideWithBrackets;
+        public char OpeningBracket;
+        public char ClosingBracket;
+        public string FullLine;
+
+        public BracketAnalyzer(string Line, char Opening, char Closing)
+        {
+            FullLine = TextInsideOfBrackets = TextInsideWithBrackets = Line;
+            OpeningBracket = Opening;
+            ClosingBracket = Closing;
+        }
+        public void Focus(int Index)
+        {
+            int closing = GetPosOfClosingSymbol(Index);
+            var splits = SplitAt2(FullLine, Index, closing);
+            TextInsideWithBrackets = splits[1];
+            TextInsideOfBrackets = TextInsideWithBrackets.Substring(1, TextInsideWithBrackets.Length - 2);
+            TextBeforeFocused = splits[0];
+            TextAfterFocused = splits[2];
+        }
+        public void FocusFirst()
+        {
+            Focus(FullLine.IndexOf(OpeningBracket));
+        }
+        public void FocusFirst(string Name)
+        {
+            Focus(FullLine.IndexOf(Name) + (Name.Length - 1));
+        }
+
+        public int GetPosOfClosingSymbol(int indexofparenthesis)
+        {
+            char[] characters = FullLine.ToCharArray();
+            int depth = 0;
+            for (int i = indexofparenthesis; i < characters.Length; i++)
+            {
+                if (characters[i] == OpeningBracket) depth++;
+                else if (characters[i] == ClosingBracket) depth--;
+
+                if (depth == 0) return i;
+            }
+            throw new Exception("No closing of brackets/paranthesis!");
+        }
+        public static string[] SplitAt2(string s, int argpos, int argpos2) => new string[] { s.Substring(0, argpos), s.Substring(argpos, argpos2 - argpos + 1), s.Substring(argpos2 + 1) };
     }
 
     public enum VariableRecomputeSettings

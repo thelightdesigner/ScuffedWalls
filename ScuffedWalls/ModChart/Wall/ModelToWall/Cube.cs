@@ -9,6 +9,39 @@ namespace ModChart.Wall
     //good color
     public class Color
     {
+        public static Color HslToRGB(float h, float s, float l)
+        {
+            //Console.WriteLine($"{h} {s} {l}");
+            Color rgb;
+            if (s == 0) rgb = new Color() { R = l, A = l, B = l, G = l};
+            else
+            {
+                rgb = new Color();
+
+                float q = 
+                    l < 0.5 
+                    ? ( l * (1 + s) )
+                    : ( l + s - l * s);
+
+                float p = 2 * l - q;
+
+                rgb.R = Hue2rgb(p, q, h + 1 / 3);
+                rgb.G = Hue2rgb(p, q, h);
+                rgb.B = Hue2rgb(p, q, h - 1 / 3);
+
+                float Hue2rgb(float p2, float q2, float t)
+                {
+                    while (t < 0) t += 1;
+                    while (t > 1) t -= 1;
+                    if (t < 1 / 6) return p2 + (q2 - p2) * 6 * t;
+                    if (t < 1 / 2) return q2;
+                    if (t < 2 / 3) return p2 + (q2 - p2) * (2 / 3 - t) * 6;
+                    return p2;
+                }
+
+            } return rgb;
+        }
+        
         public float R { get; set; }
         public float G { get; set; }
         public float B { get; set; }
@@ -38,6 +71,16 @@ namespace ModChart.Wall
                 G = G,
                 B = B,
                 A = A
+            };
+        }
+        public static Color operator *(Color color, float val)
+        {
+            return new Color()
+            {
+                R = color.R * val,
+                A = color.A * val,
+                B = color.B * val,
+                G = color.G * val
             };
         }
         public static Color ColorFromObjArray(object[] array)
@@ -203,7 +246,7 @@ namespace ModChart.Wall
             {
                 //Console.WriteLine(this.Name);
                 List<DoubleInt> framespan = new List<DoubleInt>();
-                KeyValuePair<bool,DoubleInt>? current = null;
+                KeyValuePair<bool, DoubleInt>? current = null;
                 bool? lastactive = null;
                 for (int i = 0; i < Frames.Length; i++)
                 {
@@ -237,7 +280,7 @@ namespace ModChart.Wall
 
                 SetOffset();
 
-               // Console.WriteLine(string.Join(" ",
+                // Console.WriteLine(string.Join(" ",
                 //        Frames.Select(f => f.Active.Value)
                 //        ));
 

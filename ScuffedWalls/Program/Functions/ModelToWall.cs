@@ -34,6 +34,7 @@ namespace ScuffedWalls.Functions
             bool preserveTime =     GetParam("preservetime", DefaultValue: false, p => bool.Parse(p));
             bool hasanimation =     GetParam("hasanimation", DefaultValue: true, p => bool.Parse(p));
             bool assigncamtotrack=  GetParam("cameratoplayer", DefaultValue: true, p => bool.Parse(p));
+            float colormult =       GetParam("colormult",1,p => float.Parse(p));
             bool Notes =            GetParam("createnotes", DefaultValue: true, p => bool.Parse(p));
             bool spline =           GetParam("spline", DefaultValue: false, p => bool.Parse(p));
             float smooth =          GetParam("spreadspawntime", DefaultValue: 0, p => float.Parse(p));
@@ -101,6 +102,7 @@ namespace ScuffedWalls.Functions
                     AssignCameraToPlayerTrack = assigncamtotrack,
                     CreateTracks = tracks,
                     Spline = spline,
+                    ColorMult = colormult,
                     HasAnimation = hasanimation,
                     ObjectOverride = tpye,
                     BPM = MapBpm,

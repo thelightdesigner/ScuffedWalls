@@ -101,7 +101,8 @@ namespace ScuffedWalls.Functions
                     Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
                     {
                         _time = Time,
-                        _duration = duration
+                        _duration = duration,
+                        _customData = new BeatMap.CustomData()
                     }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendTechnique.Overwrites)
                 },
                 ModelSettings = new ModelSettings()
@@ -126,7 +127,8 @@ namespace ScuffedWalls.Functions
                     Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
                     {
                         _time = Time,
-                        _duration = duration
+                        _duration = duration,
+                        _customData = new BeatMap.CustomData()
                     }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendTechnique.Overwrites)
                 }
             });

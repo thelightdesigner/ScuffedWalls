@@ -1,5 +1,6 @@
 ﻿//classes that provide additional features to modcharting
 using ModChart;
+using ModChart.Wall;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,62 @@ namespace ScuffedWalls
         }
         void RunRequest()
         {
+            Parameter.StringFunctions = new StringFunction[]
+            {
+                new StringFunction()
+                {
+                    Name = "HSLtoRGB",
+                    FunctionAction = InputArgs =>
+                    {
+                        if(InputArgs.Length < 3) throw new IndexOutOfRangeException("Not enough values in HSLtoRGB internal function constructor (requires 3)");
+
+                        Color p = Color.HslToRGB(InputArgs[0].toFloat(),InputArgs[1].toFloat(),InputArgs[2].toFloat());
+
+                        return $"[{p.R},{p.G},{p.B},{p.A}]";
+                    }
+                },
+                new StringFunction()
+                {
+                    Name = "Random",
+                    FunctionAction = InputArgs =>
+                    {
+
+                         Random rnd = new Random();
+                         float first = InputArgs[0].toFloat();
+                         float last = InputArgs[1].toFloat();
+                         if (last < first)
+                         {
+                             float f = first;
+                             float l = last;
+                             first = l;
+                             last = f;
+                         }
+
+                         return (rnd.NextDouble() * (last - first) + first).ToString();
+
+                    }
+                },
+                new StringFunction()
+                {
+                    Name = "RandomInt",
+                    FunctionAction = InputArgs =>
+                    {
+                        Random rnd = new Random();
+                        int first = int.Parse(InputArgs[0]);
+                        int last = int.Parse(InputArgs[1]);
+                        if (last < first)
+                        {
+                            int f = first;
+                            int l = last;
+                            first = l;
+                            last = f;
+                        }
+
+                        return rnd.Next(first,last).ToString();
+                    }
+                }
+            };
+
             Workspaces = new Workspace[] { };
             List<Parameter> globalvariables = new List<Parameter>();
             List<Workspace> workspaces = new List<Workspace>();
@@ -71,6 +128,7 @@ namespace ScuffedWalls
                 {
                     Parameter.UnUseAll(funcreq.Parameters);
 
+
                     if (!Functions.Any(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))))
                     {
                         ScuffedLogger.Warning.Log($"Function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} does NOT exist, skipping");
@@ -90,7 +148,7 @@ namespace ScuffedWalls
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace{ (' ' + '"' + workreq.Name + '"').Switch("",string.IsNullOrEmpty(workreq.Name))} [{workreq.Number}] ERROR:{e.InnerException.Message}");
+                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{e.InnerException.Message}");
                     }
 
                     Parameter.Check(funcreq.Parameters);

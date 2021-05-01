@@ -28,8 +28,9 @@ namespace ModChart
                             property.SetValue(MapObject, property.GetValue(AppendObject));
                         }
                     }
-                    if (MapObject._customData != null && AppendObject._customData != null)
+                    if (AppendObject._customData != null)
                     {
+                        MapObject._customData ??= new BeatMap.CustomData();
                         foreach (PropertyInfo property in propertiesCustomData)
                         {
                             if (property.GetValue(MapObject._customData) == null)
@@ -38,8 +39,9 @@ namespace ModChart
                             }
 
                         }
-                        if (MapObject._customData._animation != null && AppendObject._customData._animation != null)
+                        if (AppendObject._customData._animation != null)
                         {
+                            MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
                             foreach (PropertyInfo property in propertiesCustomDataAnimation)
                             {
                                 if (property.GetValue(MapObject._customData._animation) == null)
@@ -64,8 +66,9 @@ namespace ModChart
                             property.SetValue(MapObject._customData, property.GetValue(AppendObject));
                         }
                     }
-                    if (MapObject._customData != null && AppendObject._customData != null)
+                    if (AppendObject._customData != null)
                     {
+                        MapObject._customData ??= new BeatMap.CustomData();
                         foreach (PropertyInfo property in propertiesCustomData)
                         {
                             if (property.GetValue(AppendObject._customData) != null && property.Name != "_animation")
@@ -74,8 +77,9 @@ namespace ModChart
                             }
 
                         }
-                        if (MapObject._customData._animation != null && AppendObject._customData._animation != null)
+                        if (AppendObject._customData._animation != null)
                         {
+                            MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
                             foreach (PropertyInfo property in propertiesCustomDataAnimation)
                             {
                                 if (property.GetValue(AppendObject._customData._animation) != null)
@@ -100,7 +104,7 @@ namespace ModChart
             else if (Type == AppendTechnique.DeleteOldAnimation)
             {
                 MapObject._customData ??= new BeatMap.CustomData();
-                if(AppendObject._customData != null && AppendObject._customData._animation != null) MapObject._customData._animation = AppendObject._customData._animation;
+                if(AppendObject._customData._animation != null) MapObject._customData._animation = AppendObject._customData._animation;
                 return MapObject;
             }
             else

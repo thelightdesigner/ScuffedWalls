@@ -88,6 +88,8 @@ namespace ModChart.Wall
                 SetScale = _settings.SetDeltaScale
             }).ToArray();
 
+            if (_settings.ColorMult != 1f) foreach (var cube in Model.Cubes) cube.Color *= _settings.ColorMult;
+
             float realduration = BPMAdjuster.GetRealDuration(_settings.Wall._duration.toFloat());
             float realstarttime = BPMAdjuster.GetRealTime(_settings.Wall._time.toFloat());
 
@@ -98,7 +100,7 @@ namespace ModChart.Wall
                 var camera = Model.Cubes.Where(c => c.isCamera).First();
                 camera.Frames = camera.Frames.Select(f =>
                 {
-                    f.Matrix = f.Matrix.Value.TransformLoc(new System.Numerics.Vector3(0, -3, 0));
+                    f.Matrix = f.Matrix.Value.TransformLoc(new Vector3(0, -3, 0));
                     return f;
                 }).ToArray();
                 camera.Decompose();
@@ -388,6 +390,7 @@ namespace ModChart.Wall
         public float BPM { get; set; }
         public float Offset { get; set; }
         public float? Thicc { get; set; }
+        public float ColorMult { get; set; } = 1;
         public TypeOverride ObjectOverride { get; set; }
         public bool PreserveTime { get; set; }
         public Transformation DeltaTransformation { get; set; }
