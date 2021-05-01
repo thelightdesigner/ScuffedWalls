@@ -248,6 +248,8 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - setdeltaposition: bool
  - setdeltascale: bool
  - generic custom data
+ - repeat: int
+ - repeataddtime: float
  
  
   Example
@@ -407,6 +409,9 @@ a very scuffed way to make a rainbow
 
 
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
+
+
+[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
 
 # AppendToAllNotesBetween
 adds on custom noodle data to notes between the function time and endtime (toBeat)
