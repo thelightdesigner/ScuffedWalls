@@ -102,6 +102,33 @@ Math expressions are computed inside of { } symbols. A random floating point num
   scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
   ```
 
+## String Functions
+String functions follow the same format that most c/c++/c#/java/js function constructors do. They are function calls from within a line. Essentially they replace themselves and their constructor with their output in the line.
+
+```
+0:Wall
+  repeat:100
+  position:[{repeat/10},0,0]
+  scale:[0.1,1,1]
+  color:HSLtoRGB({repeat/100},1,0.5)
+  ```
+  
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
+  
+  
+The example above uses the HSLtoRGB function to create a rainbow.
+
+The available string functions are:
+ - Random(Val1,Val2) => returns a number
+ - RandomInt(Val1,Val2) => returns a number
+ - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
+ - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
+ - OrderPointDefinitions(PointDefinitions) => returns point definitions
+
+todo: add more string functions, dm me for suggestions or clone the repo and navigate to ScuffedWalls -> Program -> Parser -> StringFunc.cs and add a new StringFunction() to the array in void Populate(). When you're finished and it works feel free to make a pull request.
+
+
+
  ## Variables
 Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
 
