@@ -33,10 +33,10 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         public Vector3 RotationEul { get; set; }
         public Vector3 Scale { get; set; }
     }
-    public struct ValuePair<F, S>
+    public struct ValuePair<M, E>
     {
-        public F Main { get; set; }
-        public S Extra { get; set; }
+        public M Main { get; set; }
+        public E Extra { get; set; }
     }
     public struct Point
     {

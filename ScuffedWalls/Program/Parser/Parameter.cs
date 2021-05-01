@@ -114,48 +114,60 @@ namespace ScuffedWalls
             string LastAttempt = string.Empty;
             string ThisAttempt = s.Clone().ToString();
             Exception MostRecentError = null;
+
+            //efficiency maybe?
+            bool SkipVar = false;
+            bool SkipMath = false;
+            bool SkipFunc = false;
+
             while (!LastAttempt.Equals(ThisAttempt))
             {
                 LastAttempt = ThisAttempt.Clone().ToString();
 
-                try //Variables
+                if (!SkipVar) 
                 {
-                    //Console.WriteLine("This attempt before entering variable block " + ThisAttempt.Clone().ToString());
-                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
-                    if (Modified.Key)
+                    try //Variables
                     {
-                        ThisAttempt = Modified.Value;
-                        MostRecentError = null;
+                        KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
+                        if (Modified.Key)
+                        {
+                            ThisAttempt = Modified.Value;
+                            MostRecentError = null;
+                        }
+                        else SkipVar = true;
                     }
-                    //Console.WriteLine("Variable Insertion " + Modified.Key);
+                    catch (Exception e) { MostRecentError = e; }
                 }
-                catch (Exception e) { MostRecentError = e; }
 
-                try //Math
+                if (!SkipMath)
                 {
-                    //Console.WriteLine("This attempt before entering math block " + ThisAttempt.Clone().ToString());
-                    KeyValuePair<bool, string> Modified = ParseMath(ThisAttempt.Clone().ToString());
-                    if (Modified.Key)
+                    try //Math
                     {
-                        ThisAttempt = Modified.Value;
-                        MostRecentError = null;
+                        KeyValuePair<bool, string> Modified = ParseMath(ThisAttempt.Clone().ToString());
+                        if (Modified.Key)
+                        {
+                            ThisAttempt = Modified.Value;
+                            MostRecentError = null;
+                        }
+                        else SkipMath = true;
                     }
-                    //Console.WriteLine("Math Insertion " + Modified.Key);
+                    catch (Exception e) { MostRecentError = e; }
                 }
-                catch (Exception e) { MostRecentError = e; }
 
-                try //Functions
+                if (!SkipFunc)
                 {
-                    //Console.WriteLine("This attempt before entering random block " + ThisAttempt.Clone().ToString());
-                    KeyValuePair<bool, string> Modified = ParseFuncs(ThisAttempt.Clone().ToString());
-                    if (Modified.Key)
+                    try //Functions
                     {
-                        ThisAttempt = Modified.Value;
-                        MostRecentError = null;
+                        KeyValuePair<bool, string> Modified = ParseFuncs(ThisAttempt.Clone().ToString());
+                        if (Modified.Key)
+                        {
+                            ThisAttempt = Modified.Value;
+                            MostRecentError = null;
+                        }
+                        else SkipFunc = true;
                     }
-                    //Console.WriteLine("Function Insertion " + Modified.Key);
+                    catch (Exception e) { MostRecentError = e; }
                 }
-                catch (Exception e) { MostRecentError = e; }
             }
             if (MostRecentError != null) throw MostRecentError;
 
@@ -247,8 +259,7 @@ namespace ScuffedWalls
                         FuncStringInternals = br.TextInsideOfBrackets;
 
                         string[] paramss = br.TextInsideOfBrackets.Split(',');
-                        //Console.WriteLine("the s variable is now this " + s);
-                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(paramss) + br.TextAfterFocused;
+                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(new ModChart.ValuePair<string[], string>() { Main = paramss ,Extra = br.TextInsideOfBrackets }) + br.TextAfterFocused;
                     }
                 }
             }
@@ -343,60 +354,7 @@ Output {{ Name:{Name} Data:{StringData} }}";
     /// <summary>
     /// Holds instructions for parsing functions called from strings and replacing with values
     /// </summary>
-    public class StringFunction
-    {
-        public string Name { get; set; } //name of the func
-        public Func<string[], string> FunctionAction { get; set; } //convert from params to output string
-    }
-    public class BracketAnalyzer
-    {
-        public string TextBeforeFocused;
-        public string TextAfterFocused;
-        public string TextInsideOfBrackets;
-        public string TextInsideWithBrackets;
-        public char OpeningBracket;
-        public char ClosingBracket;
-        public string FullLine;
-
-        public BracketAnalyzer(string Line, char Opening, char Closing)
-        {
-            FullLine = TextInsideOfBrackets = TextInsideWithBrackets = Line;
-            OpeningBracket = Opening;
-            ClosingBracket = Closing;
-        }
-        public void Focus(int Index)
-        {
-            int closing = GetPosOfClosingSymbol(Index);
-            var splits = SplitAt2(FullLine, Index, closing);
-            TextInsideWithBrackets = splits[1];
-            TextInsideOfBrackets = TextInsideWithBrackets.Substring(1, TextInsideWithBrackets.Length - 2);
-            TextBeforeFocused = splits[0];
-            TextAfterFocused = splits[2];
-        }
-        public void FocusFirst()
-        {
-            Focus(FullLine.IndexOf(OpeningBracket));
-        }
-        public void FocusFirst(string Name)
-        {
-            Focus(FullLine.IndexOf(Name) + (Name.Length - 1));
-        }
-
-        public int GetPosOfClosingSymbol(int indexofparenthesis)
-        {
-            char[] characters = FullLine.ToCharArray();
-            int depth = 0;
-            for (int i = indexofparenthesis; i < characters.Length; i++)
-            {
-                if (characters[i] == OpeningBracket) depth++;
-                else if (characters[i] == ClosingBracket) depth--;
-
-                if (depth == 0) return i;
-            }
-            throw new Exception("No closing of brackets/paranthesis!");
-        }
-        public static string[] SplitAt2(string s, int argpos, int argpos2) => new string[] { s.Substring(0, argpos), s.Substring(argpos, argpos2 - argpos + 1), s.Substring(argpos2 + 1) };
-    }
+    
 
     public enum VariableRecomputeSettings
     {

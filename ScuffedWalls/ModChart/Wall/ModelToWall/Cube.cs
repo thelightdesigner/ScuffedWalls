@@ -12,6 +12,9 @@ namespace ModChart.Wall
         public static Color HslToRGB(float h, float s, float l)
         {
             //Console.WriteLine($"{h} {s} {l}");
+
+            while (h > 1f) h--;
+
             Color rgb;
             if (s == 0) rgb = new Color() { R = l, A = l, B = l, G = l};
             else
@@ -19,23 +22,23 @@ namespace ModChart.Wall
                 rgb = new Color();
 
                 float q = 
-                    l < 0.5 
-                    ? ( l * (1 + s) )
+                    l < 0.5f 
+                    ? ( l * (1f + s) )
                     : ( l + s - l * s);
 
                 float p = 2 * l - q;
 
-                rgb.R = Hue2rgb(p, q, h + 1 / 3);
+                rgb.R = Hue2rgb(p, q, h + 1f / 3f);
                 rgb.G = Hue2rgb(p, q, h);
-                rgb.B = Hue2rgb(p, q, h - 1 / 3);
+                rgb.B = Hue2rgb(p, q, h - 1f / 3f);
 
                 float Hue2rgb(float p2, float q2, float t)
                 {
-                    while (t < 0) t += 1;
-                    while (t > 1) t -= 1;
-                    if (t < 1 / 6) return p2 + (q2 - p2) * 6 * t;
-                    if (t < 1 / 2) return q2;
-                    if (t < 2 / 3) return p2 + (q2 - p2) * (2 / 3 - t) * 6;
+                    if (t < 0) t += 1f;
+                    if (t > 1f) t -= 1f;
+                    if (t < 1f / 6f) return p2 + (q2 - p2) * 6f * t;
+                    if (t < 1f / 2f) return q2;
+                    if (t < 2f / 3f) return p2 + (q2 - p2) * (2f / 3f - t) * 6f;
                     return p2;
                 }
 

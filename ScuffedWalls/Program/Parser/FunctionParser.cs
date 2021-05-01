@@ -31,61 +31,7 @@ namespace ScuffedWalls
         }
         void RunRequest()
         {
-            Parameter.StringFunctions = new StringFunction[]
-            {
-                new StringFunction()
-                {
-                    Name = "HSLtoRGB",
-                    FunctionAction = InputArgs =>
-                    {
-                        if(InputArgs.Length < 3) throw new IndexOutOfRangeException("Not enough values in HSLtoRGB internal function constructor (requires 3)");
-
-                        Color p = Color.HslToRGB(InputArgs[0].toFloat(),InputArgs[1].toFloat(),InputArgs[2].toFloat());
-
-                        return $"[{p.R},{p.G},{p.B},{p.A}]";
-                    }
-                },
-                new StringFunction()
-                {
-                    Name = "Random",
-                    FunctionAction = InputArgs =>
-                    {
-
-                         Random rnd = new Random();
-                         float first = InputArgs[0].toFloat();
-                         float last = InputArgs[1].toFloat();
-                         if (last < first)
-                         {
-                             float f = first;
-                             float l = last;
-                             first = l;
-                             last = f;
-                         }
-
-                         return (rnd.NextDouble() * (last - first) + first).ToString();
-
-                    }
-                },
-                new StringFunction()
-                {
-                    Name = "RandomInt",
-                    FunctionAction = InputArgs =>
-                    {
-                        Random rnd = new Random();
-                        int first = int.Parse(InputArgs[0]);
-                        int last = int.Parse(InputArgs[1]);
-                        if (last < first)
-                        {
-                            int f = first;
-                            int l = last;
-                            first = l;
-                            last = f;
-                        }
-
-                        return rnd.Next(first,last).ToString();
-                    }
-                }
-            };
+            StringFunction.Populate();
 
             Workspaces = new Workspace[] { };
             List<Parameter> globalvariables = new List<Parameter>();
