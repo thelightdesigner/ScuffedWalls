@@ -21,6 +21,21 @@ namespace ScuffedWalls
             {
                 new StringFunction()
                 {
+                    Name = "MultPointDefinition",
+                    FunctionAction = InputArgs =>
+                    {
+                        string[] spli = InputArgs.Extra.Split("],",2);
+                        string pd = spli[0] + "]";
+                        float val = spli[1].toFloat();
+
+                        object[] PointDefinition = JsonSerializer.Deserialize<object[]>(pd);
+                        for(int i = 0; i < PointDefinition.Length; i++) if(float.TryParse(PointDefinition[i].ToString(),out float result)) PointDefinition[i] = result * val;
+
+                        return JsonSerializer.Serialize(PointDefinition);
+                    }
+                },
+                new StringFunction()
+                {
                     Name = "HSLtoRGB",
                     FunctionAction = InputArgs =>
                     {
