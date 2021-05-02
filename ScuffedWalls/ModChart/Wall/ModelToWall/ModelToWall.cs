@@ -49,8 +49,13 @@ namespace ModChart.Wall
         {
             Random rnd = new Random();
 
-            if (_settings.Wall._customData._noteJumpMovementSpeed != null) NJS = _settings.Wall._customData._noteJumpMovementSpeed.toFloat();
-            if (_settings.Wall._customData._noteJumpStartBeatOffset != null) Offset = _settings.Wall._customData._noteJumpStartBeatOffset.toFloat();
+
+            _settings.Wall ??= new BeatMap.Obstacle();
+            _settings.Wall._customData ??= new BeatMap.CustomData();
+            _settings.Wall._customData._animation ??= new BeatMap.CustomData.Animation();
+
+            if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData._noteJumpMovementSpeed != null) NJS = _settings.Wall._customData._noteJumpMovementSpeed.toFloat();
+            if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData._noteJumpStartBeatOffset != null) Offset = _settings.Wall._customData._noteJumpStartBeatOffset.toFloat();
 
             if (_settings.ObjectOverride == ModelSettings.TypeOverride.AllWalls)
             {
@@ -258,12 +263,12 @@ namespace ModChart.Wall
                             if (!_settings.PreserveTime)
                             {
                                 wall._duration = (cube.OffsetTransformation.Scale.Z * 2f) / beatlength;
-                                wall._time = (cube.OffsetTransformation.Position.Z / beatlength) + _settings.Wall.GetTime();
+                                wall._time = (cube.OffsetTransformation.Position.Z / beatlength) + _settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _settings.PCOptimizerPro;
                             }
                             else
                             {
                                 wall._duration = cube.OffsetTransformation.Scale.Z * 2f;
-                                wall._time = cube.OffsetTransformation.Position.Z;
+                                wall._time = cube.OffsetTransformation.Position.Z + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _settings.PCOptimizerPro;
                             }
 
                             if(!_settings.ScaleDuration)
