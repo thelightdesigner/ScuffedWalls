@@ -52,7 +52,7 @@ generic customdata that can be parsed as a parameter on most functions
 - Rotation: \[x,y,z] or float
 - LocalRotation: \[x,y,z]
 - CutDirection: float
-- NoSpawnEffect: bool
+- DisableSpawnEffect: bool
  - CPropID: int
  - CLightID: int
  - CGradientDuration: float
