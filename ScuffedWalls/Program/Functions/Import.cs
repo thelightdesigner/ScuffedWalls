@@ -11,7 +11,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("Import")]
     class Import : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             string Path = GetParam("path", string.Empty, p => Utils.ScuffedConfig.MapFolderPath + @"\" + p);
             Path = GetParam("fullpath", DefaultValue: Path, p => p);

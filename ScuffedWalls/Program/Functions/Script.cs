@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("Script")]
     class Script : SFunction
     {
-        public void Run() 
+        public override void Run() 
         {
             //put scripts here
 

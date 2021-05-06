@@ -11,7 +11,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v1.1.1";
+        public static string ver = "v1.1.1-dev";
         static void Main(string[] args)
         {
             var helper = new Utils(args);

@@ -7,7 +7,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("PointDefinition")] 
     class PointDefinition : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             string name = GetParam("name", "unimplemented_pointdefinition", p => p);
             object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
@@ -34,7 +34,7 @@ namespace ScuffedWalls.Functions
             Beat = new Parameter("time", Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
@@ -66,7 +66,7 @@ namespace ScuffedWalls.Functions
             Beat = new Parameter("time", Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
@@ -89,7 +89,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("AssignPlayerToTrack")]
     public class CustomEventPlayerTrack : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
             {
@@ -105,7 +105,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("ParentTrack")]
     public class CustomEventParent : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
             {

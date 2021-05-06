@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("CloneFromWorkspace","CloneFromWorkspaceByIndex", "CloneWorkspace")]
     class CloneWorkspace : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             int[] Type =  GetParam("type", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             string name = GetParam("name", string.Empty, p => p);

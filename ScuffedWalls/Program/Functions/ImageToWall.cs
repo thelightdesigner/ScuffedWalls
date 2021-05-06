@@ -6,7 +6,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("ImageToWall","Image","RenderImage")]
     class ImageToWall : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null;

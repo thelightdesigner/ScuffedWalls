@@ -81,16 +81,15 @@ namespace ScuffedWalls
                         continue;
                     }
 
-                    Type func = Functions.Where(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))).First();
+                    Type func = Functions.Where(f => f.BaseType == typeof(SFunction) && f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))).First();
 
-                    var funcInstance = Activator.CreateInstance(func);
-                    func.GetMethod("InstantiateSFunction")
-                        .Invoke(funcInstance, new object[] { funcreq.Parameters, WorkspaceInstance, funcreq.Time });
+                    SFunction funcInstance = (SFunction)Activator.CreateInstance(func);
 
+                    funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time);
 
                     try
                     {
-                        func.GetMethod("Run").Invoke(funcInstance, new object[] { });
+                        funcInstance.Run();
                     }
                     catch (Exception e)
                     {

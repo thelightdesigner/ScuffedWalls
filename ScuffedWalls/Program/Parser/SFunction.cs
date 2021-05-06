@@ -9,6 +9,8 @@ namespace ScuffedWalls
         public Parameter[] Parameters;
         public float Time;
 
+        public virtual void Run() { }
+
         public void InstantiateSFunction(Parameter[] parameters, Workspace instance, float time)
         {
             Parameters = parameters;

@@ -19,7 +19,7 @@ namespace ScuffedWalls.Functions
             WallIndex = new Parameter("index","1");
             ps = new Parameter[] { WallIndex };
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             AppendTechnique type = GetParam("appendtechnique", AppendTechnique.NoOverwrites, p => (AppendTechnique)int.Parse(p));

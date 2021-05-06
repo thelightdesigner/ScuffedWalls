@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("Uwu")]
     class uwu : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             Console.Title = "Skynoot";
             string OWO;

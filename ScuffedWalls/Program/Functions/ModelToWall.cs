@@ -17,7 +17,7 @@ namespace ScuffedWalls.Functions
             Beat = new Parameter ("time",Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());

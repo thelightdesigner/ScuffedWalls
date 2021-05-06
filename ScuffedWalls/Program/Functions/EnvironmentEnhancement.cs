@@ -8,7 +8,7 @@ namespace ScuffedWalls.Functions
     [ScuffedFunction("Environment", "EnvironmentEnhancement")]
     class EnvironmentEnhancement : SFunction
     {
-        public void Run()
+        public override void Run()
         {
             InstanceWorkspace.Environment.Add( new ModChart.BeatMap.CustomData.Environment()
             {
