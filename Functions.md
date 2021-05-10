@@ -492,6 +492,8 @@ adds in map objects from other map.dat files
 (repeatable)
 makes a wall
 
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
+
 - duration: float
 - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
  - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
@@ -532,6 +534,8 @@ makes a wall
 # Note
 (repeatable)
 makes a note
+
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
