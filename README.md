@@ -1,5 +1,5 @@
 # ScuffedWalls
-A command line tool for making NE 2.0 beat saber maps & modcharts. It provides an alternative to direct scripting and comes with some extra features which can aid in creation like Model, Image, and Text to wall converters.
+A command line tool for making Noodle Extensions 2.0 beat saber maps & modcharts.
 
 This tool does not do the same thing as beatwalls.
 
@@ -36,4 +36,4 @@ Rizthesnuggie's full intro documentation can be found [`here`](https://drive.goo
 
 ## For Developers
 
-To create a function, clone the repo and navigate to ScuffedWalls -> Program -> Functions and create a new .cs file. All classes under the namespace ScuffedWalls.Functions that are decorated with the ScuffedFunction attribute will be populated as a function. The params string constructor is used to define the name or names of the function. Your class must inherit from SFunction which contains an array of parameters, the InstanceWorkspace and the GetParam method. If you use a parameter without calling GetParam you must mark the parameter as used by setting WasUsed to true. InstanceWorkspace contains lists of mapobjects.
+To create a function, clone the repo and navigate to ScuffedWalls -> Program -> Functions and create a new .cs file. All classes under the namespace ScuffedWalls.Functions that are decorated with the ScuffedFunction attribute will be populated as a function. The params string constructor is used to define the name or names of the function. Your class must inherit from SFunction which contains an array of parameters, the InstanceWorkspace and the GetParam method, and the virtual method "Run". The starting point for your code must be in an override of the virtual method "Run". If you use a parameter without calling GetParam you must mark the parameter as used by setting WasUsed to true. InstanceWorkspace contains the lists of mapobjects that will be combined on finish.
