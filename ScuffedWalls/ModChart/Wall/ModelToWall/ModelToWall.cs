@@ -173,7 +173,7 @@ namespace ModChart.Wall
                                 wall._customData._animation._scale = new object[][] { new object[] { 1, 1, 1, 0 } };
                             }
 
-                            wall._customData._animation._localRotation = new object[][] { new object[] { cube.OffsetTransformation.RotationEul.X, cube.OffsetTransformation.RotationEul.Y * -1, cube.OffsetTransformation.RotationEul.Z * -1, 0 } };
+                            wall._customData._localRotation = new object[] { cube.OffsetTransformation.RotationEul.X, cube.OffsetTransformation.RotationEul.Y * -1, cube.OffsetTransformation.RotationEul.Z * -1 };
 
                             if (_settings.HasAnimation && cube.Frames != null && cube.Frames.Any())
                             {

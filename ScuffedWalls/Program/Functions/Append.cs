@@ -31,7 +31,6 @@ namespace ScuffedWalls.Functions
             int i = 0;
             InstanceWorkspace.Walls = InstanceWorkspace.Walls.Select(obj =>
             {
-                i++;
 
                 internalvars.CurrentWall = obj;
 
@@ -39,6 +38,7 @@ namespace ScuffedWalls.Functions
                 
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData._track)))
                 {
+                    i++;
                     WallIndex.StringData = i.ToString();
                     return obj.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), type);
                 }
@@ -60,7 +60,7 @@ namespace ScuffedWalls.Functions
             WallIndex = new Parameter("index", "1");
             ps = new Parameter[] { WallIndex };
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             int type = GetParam("appendtechnique",(int) AppendTechnique.NoOverwrites, p => int.Parse(p));
@@ -73,11 +73,14 @@ namespace ScuffedWalls.Functions
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
-                i++;
                 internalvars.CurrentNote = obj;
                 WallIndex.StringData = i.ToString();
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
-                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData._track))) return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), (AppendTechnique)type);
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData._track)))
+                {
+                    i++;
+                    return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), (AppendTechnique)type);
+                }
                 else return obj;
             }).Cast<BeatMap.Note>().ToList();
 
@@ -95,7 +98,7 @@ namespace ScuffedWalls.Functions
             WallIndex = new Parameter("index", "1");
             ps = new Parameter[] { WallIndex };
         }
-        public void Run()
+        public override void Run()
         {
             SetParameters();
             int type = GetParam("appendtechnique", (int)AppendTechnique.NoOverwrites, p => int.Parse(p));
@@ -133,12 +136,15 @@ namespace ScuffedWalls.Functions
             int i = 0;
             InstanceWorkspace.Lights = InstanceWorkspace.Lights.Select(obj =>
             {
-                i++;
                 internalvars.CurrentEvent = obj;
                 WallIndex.StringData = i.ToString();
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
-                
-                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime) return (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), (AppendTechnique)type);
+
+                if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime)
+                {
+                    i++;
+                    return (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), (AppendTechnique)type);
+                }
                 else return obj;
             }).ToList();
 

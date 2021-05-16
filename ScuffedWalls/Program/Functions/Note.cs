@@ -25,35 +25,28 @@ namespace ScuffedWalls.Functions
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             int type = GetParam("type", 1, p => int.Parse(p));
             int cutdirection = GetParam("cutdirection", 0, p => int.Parse(p));
-            float? njsoffset = GetParam("definiteduration", null, p => (float?)Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat()));
-
-
-            var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
-            var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null && njsoffset != null;
+            float? njsoffset = GetParam("definitedurationseconds", null, p =>
+            {
+                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()));
+            });
+            njsoffset = GetParam("definitedurationbeats", njsoffset, p =>
+            {
+                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(p.toFloat());
+            });
 
             Time = GetParam("definitetime", Time, p =>
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat()) + (njsoffset ?? parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                    if (njsoffset.HasValue) return Utils.bpmAdjuster.GetPlaceTimeBeats(Time, njsoffset.Value);
                     else return Utils.bpmAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat()) + (njsoffset ?? parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                    if (njsoffset.HasValue) return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time), njsoffset.Value);
                     else return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time));
                 }
                 return Time;
-            });
-            njsoffset = GetParam("definitedurationseconds", njsoffset, p =>
-            {
-                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()));
-            });
-            njsoffset = GetParam("definitedurationbeats", njsoffset, p =>
-            {
-                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
             });
 
             //parse special parameters
@@ -65,7 +58,8 @@ namespace ScuffedWalls.Functions
                     _lineIndex = 0,
                     _lineLayer = 0,
                     _cutDirection = cutdirection,
-                    _type = type
+                    _type = type,
+                    _customData = njsoffset.HasValue ? new BeatMap.CustomData() { _noteJumpStartBeatOffset= njsoffset} : null
                 }.Append(Parameters.CustomDataParse(new BeatMap.Note()), AppendTechnique.Overwrites));
 
                 Repeat.StringData = i.ToString();

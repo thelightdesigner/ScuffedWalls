@@ -57,6 +57,7 @@ namespace ScuffedWalls.Functions
                 return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
             });
 
+            ModelSettings.Technique technique = parsedshit._customData != null && parsedshit._customData._animation != null && parsedshit._customData._animation._definitePosition != null ? ModelSettings.Technique.Definite : ModelSettings.Technique.Normal;
 
             float MapBpm = Utils.Info._beatsPerMinute.toFloat();
             float MapNjs = Utils.InfoDifficulty._noteJumpMovementSpeed.toFloat();
@@ -114,7 +115,7 @@ namespace ScuffedWalls.Functions
                     DeltaTransformation = null,
                     PreserveTime = false,
                     Alpha = alpha,
-                    technique = ModelSettings.Technique.Normal,
+                    technique = technique,
                     AssignCameraToPlayerTrack = false,
                     CreateTracks = false,
                     Spline = false,

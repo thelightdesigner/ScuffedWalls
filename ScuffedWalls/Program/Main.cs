@@ -11,7 +11,7 @@ namespace ScuffedWalls
 {
     static class ScuffedWalls
     {
-        public static string ver = "v1.1.1-dev";
+        public static string ver = "v1.2.0";
         static void Main(string[] args)
         {
             var helper = new Utils(args);
@@ -26,7 +26,8 @@ namespace ScuffedWalls
 
             while (true)
             {
-               Log("Changes detected, running...");
+                Log("Changes detected, running...");
+                Utils.InvokeOnChangeDetected();
 
                 Ts.Start();
 
@@ -66,6 +67,9 @@ namespace ScuffedWalls
 
                 //Warn the user
                 helper.Check(Parser.BeatMap);
+
+                Utils.InvokeOnProgramComplete();
+
 
                 //Wait for changes
                 Log($"Waiting for changes to {new FileInfo(Utils.ScuffedConfig.SWFilePath).Name}");

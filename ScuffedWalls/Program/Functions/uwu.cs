@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace ScuffedWalls.Functions
 {
-    //By rizthesnugie
+    #region rizthesnuggie
     [ScuffedFunction("Uwu")]
     class uwu : SFunction
     {
         public override void Run()
         {
+
+            
             Console.Title = "Skynoot";
             string OWO;
 
@@ -46,12 +48,13 @@ namespace ScuffedWalls.Functions
                 Console.WriteLine("you didn't say OWO");
             }
 
-            Console.ReadKey();
 
+            Console.ReadKey();
+            
         }
 
     }
-    //end rizthesnuggie
+#endregion
 
 
 

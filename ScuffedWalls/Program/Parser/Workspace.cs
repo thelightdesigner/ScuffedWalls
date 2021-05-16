@@ -18,6 +18,7 @@ namespace ScuffedWalls
         public List<BeatMap.CustomData.PointDefinition> PointDefinitions { get; set; } = new List<BeatMap.CustomData.PointDefinition>();
         public List<BeatMap.CustomData.Bookmark> Bookmarks { get; set; } = new List<BeatMap.CustomData.Bookmark>();
         public List<BeatMap.CustomData.Environment> Environment { get; set; } = new List<BeatMap.CustomData.Environment>();
+        public List<BeatMap.CustomData.BPMChanges> BPMChanges { get; set; } = new List<BeatMap.CustomData.BPMChanges>();
     }
     static class WorkspaceHelper
     {
@@ -29,6 +30,7 @@ namespace ScuffedWalls
             List<BeatMap.CustomData.CustomEvent> customEvents = new List<BeatMap.CustomData.CustomEvent>();
             List<BeatMap.CustomData.PointDefinition> pointDefinitions = new List<BeatMap.CustomData.PointDefinition>();
             List<BeatMap.CustomData.Environment> ev = new List<BeatMap.CustomData.Environment>();
+            List<BeatMap.CustomData.BPMChanges> bcc = new List<BeatMap.CustomData.BPMChanges>();
             foreach (var workspace in workspaces)
             {
                 customEvents.AddRange(workspace.CustomEvents);
@@ -49,7 +51,8 @@ namespace ScuffedWalls
                 {
                     _environment = ev.ToArray(),
                     _customEvents = customEvents.ToArray().OrderBy(o => float.Parse(o._time.ToString())).ToArray(),
-                    _pointDefinitions = pointDefinitions.ToArray()
+                    _pointDefinitions = pointDefinitions.ToArray(),
+                    _BPMChanges = bcc.ToArray()
                 }
             };
         }
@@ -66,7 +69,8 @@ namespace ScuffedWalls
                 {
                     _environment = workspace.Environment.ToArray(),
                     _customEvents = workspace.CustomEvents.OrderBy(o => float.Parse(o._time.ToString())).ToArray(),
-                    _pointDefinitions = workspace.PointDefinitions.ToArray()
+                    _pointDefinitions = workspace.PointDefinitions.ToArray(),
+                    _BPMChanges = workspace.BPMChanges.ToArray()
                 }
             };
         }

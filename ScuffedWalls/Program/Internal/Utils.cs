@@ -18,6 +18,16 @@ namespace ScuffedWalls
         public static Info Info { get; private set; }
         public static Info.DifficultySet.Difficulty InfoDifficulty { get; private set; }
         public static BpmAdjuster bpmAdjuster { get; private set; }
+        /// <summary>
+        /// These events are erased after a single invoke
+        /// </summary>
+
+        public static event Action OnProgramComplete;
+        /// <summary>
+        /// These events are erased after a single invoke
+        /// </summary>
+
+        public static event Action OnChangeDetected;
 
         static string SWText = 
 @$"# ScuffedWalls {ScuffedWalls.ver}
@@ -56,6 +66,24 @@ Workspace:Default";
             
         }
 
+        public static void InvokeOnProgramComplete() 
+        {
+            OnProgramComplete?.Invoke();
+            if (OnProgramComplete != null)
+            {
+                var subs = OnProgramComplete.GetInvocationList();
+                foreach (var sub in subs) OnProgramComplete -= (Action)sub;
+            }
+        }
+        public static void InvokeOnChangeDetected()
+        {
+            OnChangeDetected?.Invoke();
+            if (OnChangeDetected != null)
+            {
+                var subs = OnChangeDetected.GetInvocationList();
+                foreach (var sub in subs) OnChangeDetected -= (Action)sub;
+            }
+        }
         void BackupMap()
         {
             File.Copy(ScuffedConfig.MapFilePath, ScuffedConfig.BackupPaths.BackupMAPFolderPath + $"\\{DateTime.Now.ToFileString()}.dat");

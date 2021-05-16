@@ -93,7 +93,7 @@ namespace ScuffedWalls
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{e.InnerException.Message}");
+                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
                     }
 
                     Parameter.Check(funcreq.Parameters);

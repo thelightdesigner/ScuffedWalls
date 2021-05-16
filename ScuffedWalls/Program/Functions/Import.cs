@@ -15,7 +15,7 @@ namespace ScuffedWalls.Functions
         {
             string Path = GetParam("path", string.Empty, p => Utils.ScuffedConfig.MapFolderPath + @"\" + p);
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
-            int[] Type = GetParam("type", new int[] { 0, 1, 2, 3, 4 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
+            int[] Type = GetParam("type", new int[] { 0, 1, 2, 3, 4, 5 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float startbeat = Time;
             float addtime = GetParam("addtime", 0, p => float.Parse(p));
             float endbeat = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
@@ -61,6 +61,12 @@ namespace ScuffedWalls.Functions
             {
                 InstanceWorkspace.Bookmarks.AddRange(beatMap._customData._bookmarks);
                 ConsoleOut("Bookmark", beatMap._customData._bookmarks.Length, Time, "Import");
+
+            }
+            if (Type.Any(t => t == 5) && beatMap._customData != null && beatMap._customData._BPMChanges != null)
+            {
+                InstanceWorkspace.BPMChanges.AddRange(beatMap._customData._BPMChanges);
+                ConsoleOut("BpmChange", beatMap._customData._bookmarks.Length, Time, "Import");
             }
             Parameter.ExternalVariables.RefreshAllParameters();
         }
