@@ -27,7 +27,7 @@ namespace ScuffedWalls.Functions
             bool isblackempty =     GetParam("isblackempty", true, p => bool.Parse(p));
             float alpha =           GetParam("alpha", 1, p => float.Parse(p));
             float smooth =          GetParam("spreadspawntime", 0, p => float.Parse(p));
-            string Path =           GetParam("path", DefaultValue: string.Empty, p => Utils.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
+            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
             float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             ModelSettings

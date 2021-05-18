@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ScuffedWalls;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -9,14 +11,11 @@ namespace ModChart
     {
         public static ICustomDataMapObject Append(this ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendTechnique Type)
         {
-            //MapObject._customData ??= new BeatMap.CustomData();
-            //MapObject._customData._animation ??= new BeatMap.CustomData.Animation();
-            //AppendObject._customData ??= new BeatMap.CustomData();
-            //AppendObject._customData._animation ??= new BeatMap.CustomData.Animation();
             PropertyInfo[] propertiesBaseWall = typeof(ICustomDataMapObject).GetProperties();
             PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
             PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
 
+            if (AppendObject is BeatMap.Event) Console.WriteLine(string.Join(" ",propertiesBaseWall.Select(p => p.Name)));
             if (Type == AppendTechnique.NoOverwrites)
             {
                 if (MapObject != null && AppendObject != null)

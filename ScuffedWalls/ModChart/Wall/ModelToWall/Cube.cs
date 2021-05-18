@@ -11,8 +11,6 @@ namespace ModChart.Wall
     {
         public static Color HslToRGB(float h, float s, float l)
         {
-            //Console.WriteLine($"{h} {s} {l}");
-
             while (h > 1f) h--;
 
             Color rgb;

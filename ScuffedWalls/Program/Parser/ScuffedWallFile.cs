@@ -42,7 +42,7 @@ namespace ScuffedWalls
 
             if (Utils.ScuffedConfig.IsBackupEnabled)
             {
-                File.Copy(Path, $"{Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath}\\{DateTime.Now.ToFileString()}.sw");
+                File.Copy(Path, System.IO.Path.Combine(Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath, $"{DateTime.Now.ToFileString()}.sw"));
             }
         }
 

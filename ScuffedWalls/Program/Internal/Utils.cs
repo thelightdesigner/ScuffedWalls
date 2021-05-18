@@ -52,10 +52,14 @@ Workspace:Default";
             Console.WriteLine(ConfigFileName);
             ScuffedConfig = GetConfig();
             Info = GetInfo();
-            InfoDifficulty = Info._difficultyBeatmapSets
+            if(Info != null) InfoDifficulty = Info._difficultyBeatmapSets
                         .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name))
                         .First()._difficultyBeatmaps
                         .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+            else
+            {
+                ScuffedLogger.Warning.Log("No Info.dat found! functionality may be limited");
+            }
 
             bpmAdjuster = new BpmAdjuster(Info._beatsPerMinute.toFloat(), InfoDifficulty._noteJumpMovementSpeed.toFloat(), InfoDifficulty._noteJumpStartBeatOffset.toFloat());
             VerifyOld();
@@ -86,7 +90,7 @@ Workspace:Default";
         }
         void BackupMap()
         {
-            File.Copy(ScuffedConfig.MapFilePath, ScuffedConfig.BackupPaths.BackupMAPFolderPath + $"\\{DateTime.Now.ToFileString()}.dat");
+            File.Copy(ScuffedConfig.MapFilePath, Path.Combine(ScuffedConfig.BackupPaths.BackupMAPFolderPath, $"{DateTime.Now.ToFileString()}.dat"));
         }
 
         public void Check(BeatMap map)
@@ -252,9 +256,9 @@ Workspace:Default";
             }
 
             //path of the sw file by difficulty name
-            config.SWFilePath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw";
+            config.SWFilePath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
 
-            config.OldMapPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "_Old.dat";
+            config.OldMapPath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
 
             config.BackupPaths = new Config.Backup();
 
@@ -262,11 +266,11 @@ Workspace:Default";
 
             config.MapFolderPath = args[0];
 
-            config.BackupPaths.BackupFolderPath = mapFolder.FullName + @"\" + mapDataFiles[option].Name.Split('.')[0] + "Backup";
+            config.BackupPaths.BackupFolderPath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
 
-            config.BackupPaths.BackupSWFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "SW_History";
+            config.BackupPaths.BackupSWFolderPath = Path.Combine(config.BackupPaths.BackupFolderPath, "SW_History");
 
-            config.BackupPaths.BackupMAPFolderPath = config.BackupPaths.BackupFolderPath + @"\" + "Map_History";
+            config.BackupPaths.BackupMAPFolderPath = Path.Combine(config.BackupPaths.BackupFolderPath, "Map_History");
 
             config.IsAutoSimplifyPointDefinitionsEnabled = true;
 

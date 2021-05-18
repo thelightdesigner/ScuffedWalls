@@ -101,7 +101,7 @@ namespace ScuffedWalls.Functions
         public override void Run()
         {
             SetParameters();
-            int type = GetParam("appendtechnique", (int)AppendTechnique.NoOverwrites, p => int.Parse(p));
+            AppendTechnique type = GetParam("appendtechnique", AppendTechnique.NoOverwrites, p => (AppendTechnique)int.Parse(p));
             int[] lightypes = GetParam("lighttype", new int[] { 0, 1, 2, 3,4,5,6,7,8 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float starttime = Time;
             bool rainbow = GetParam("converttorainbow",false,p => bool.Parse(p));
@@ -143,7 +143,9 @@ namespace ScuffedWalls.Functions
                 if (obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime)
                 {
                     i++;
-                    return (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), (AppendTechnique)type);
+                    var s = (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), type);
+                    Console.WriteLine(type.ToString());
+                    return s;
                 }
                 else return obj;
             }).ToList();

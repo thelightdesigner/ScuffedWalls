@@ -11,7 +11,7 @@ namespace ScuffedWalls.Functions
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null;
 
-            string Path = GetParam("path", DefaultValue: string.Empty, p => Utils.ScuffedConfig.MapFolderPath + @"\" + p.RemoveWhiteSpace());
+            string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine( Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
             float duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             bool isBlackEmpty = GetParam("isblackempty", DefaultValue: true, p => bool.Parse(p));
