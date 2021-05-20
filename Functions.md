@@ -11,6 +11,7 @@ Functions are defined by a time and a name.
 - [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
 - [`AppendToAllEventsBetween`](#AppendToAllEventsBetween)
 - [`Import`](#Import)
+- [`Run`](#Run)
 - [`Wall`](#Wall)
 - [`Note`](#Note)
 - [`AnimateTrack`](#AnimateTrack)
@@ -351,6 +352,27 @@ adds a single light off event at the beat number. why? because why not.
   ```
  5:Blackout
  ```
+# Run
+calls the terminal/command prompt and runs the specified args after or before the programs runtime.
+
+also can run javascript files
+
+ - args:string, this is what will be put into the terminal
+ - runbefore:bool, (if true) will execute this function before SW begins to parse the .sw file, when false this function runs after SW finishes writing to the map file
+ - javascript:string, path to the .js file, will execute this file using the node command
+
+```
+0:Run
+  Javascript:CoolMapScript.js
+  RunBefore:false
+```
+note that in the above example, CoolMapScript.js is in the map folder
+
+```
+0:Run
+  Args:Start Notepad.exe
+  RunBefore:false
+```
 
 # AppendToAllEventsBetween
 adds on custom chroma data to events/lights between the function time and endtime (toBeat)
