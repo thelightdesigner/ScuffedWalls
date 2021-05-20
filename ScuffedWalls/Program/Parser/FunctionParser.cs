@@ -87,14 +87,14 @@ namespace ScuffedWalls
 
                     funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time);
 
-                    //try
-                   // {
+                    try
+                    {
                         funcInstance.Run();
-                   // }
-                   // catch (Exception e)
-                   // {
-                   //     ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
-                   // }
+                    }
+                    catch (Exception e)
+                    {
+                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
+                    }
 
                     Parameter.Check(funcreq.Parameters);
 

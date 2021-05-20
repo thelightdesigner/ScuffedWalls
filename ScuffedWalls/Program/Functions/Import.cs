@@ -66,7 +66,7 @@ namespace ScuffedWalls.Functions
             if (Type.Any(t => t == 5) && beatMap._customData != null && beatMap._customData._BPMChanges != null)
             {
                 InstanceWorkspace.BPMChanges.AddRange(beatMap._customData._BPMChanges);
-                ConsoleOut("BpmChange", beatMap._customData._bookmarks.Length, Time, "Import");
+                ConsoleOut("BpmChange", beatMap._customData._BPMChanges.Length, Time, "Import");
             }
             Parameter.ExternalVariables.RefreshAllParameters();
         }

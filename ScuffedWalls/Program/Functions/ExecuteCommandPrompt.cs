@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace ScuffedWalls.Functions
 {
@@ -8,10 +9,13 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
-            string InputArgs = GetParam("Args", "", p => p);
+            string JS = GetParam("Javascript", null, p => "node " + '"' + Path.Combine(Utils.ScuffedConfig.MapFolderPath, p) + '"');
             bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
+            
 
+            string InputArgs = JS != null ? JS : GetParam("Args", "", p => p);
 
+            Console.WriteLine(InputArgs);
             void Execute()
             {
                 Process cmd = new Process
@@ -27,6 +31,8 @@ namespace ScuffedWalls.Functions
                     }
                 };
                 cmd.Start();
+
+
 
                 cmd.StandardInput.WriteLine($"{InputArgs}");
                 cmd.StandardInput.Flush();
