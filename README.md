@@ -33,6 +33,16 @@ More info on TextToWall images can be found [`here`](https://github.com/thelight
 
 Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
 
+## Examples
+
+ - [`Illuminate`](https://www.youtube.com/watch?v=lFL3Gjy15oc&t=1s)
+ - [`Homesick`](https://www.youtube.com/watch?v=St3fSqj8SXc)
+ - [`Gamecube Intro`](https://www.youtube.com/watch?v=0SVRM0cmUVE)
+ - [`Try`](https://www.youtube.com/watch?v=fO4Z6OG5w_I)
+ - [`Real or Lie`](https://www.youtube.com/watch?v=59X3Qb78-Es)
+ - [`Exosphere`](https://www.youtube.com/watch?v=698L0vSI0no)
+
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
 ## For Developers
 
