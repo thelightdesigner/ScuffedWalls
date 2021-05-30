@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace ModChart
@@ -102,7 +100,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
             return array1;
         }
         
-        public static float toFloat(this object v)
+        public static float ToFloat(this object v)
         {
             //try { return Convert.ToSingle(v); } catch { }
 
@@ -115,7 +113,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         }
         public static Vector2 ToVector2(this object[] array)
         {
-            return new Vector2(array[0].toFloat(), array[1].toFloat());
+            return new Vector2(array[0].ToFloat(), array[1].ToFloat());
         }
         public static object[] FromVector2(this Vector2 vector)
         {
@@ -123,7 +121,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         }
         public static Vector3 ToVector3(this object[] array)
         {
-            return new Vector3(array[0].toFloat(), array[1].toFloat(), array[2].toFloat());
+            return new Vector3(array[0].ToFloat(), array[1].ToFloat(), array[2].ToFloat());
         }
         public static object[] FromVector3(this Vector3 vector)
         {
@@ -132,9 +130,9 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
 
         public static Vector2 PolarToCartesian(float angle, float radius)
         {
-            float angleRad = (Math.PI.toFloat() / 180f) * (angle - 90f);
-            float x = radius * Math.Cos(angleRad).toFloat();
-            float y = radius * Math.Sin(angleRad).toFloat();
+            float angleRad = (Math.PI.ToFloat() / 180f) * (angle - 90f);
+            float x = radius * Math.Cos(angleRad).ToFloat();
+            float y = radius * Math.Sin(angleRad).ToFloat();
             return new Vector2(x, y);
         }
 

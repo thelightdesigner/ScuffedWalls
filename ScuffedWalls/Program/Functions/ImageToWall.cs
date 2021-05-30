@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
         public override void Run()
         {
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
-            var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData._noteJumpStartBeatOffset != null;
+            var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
 
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine( Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
@@ -27,25 +27,25 @@ namespace ScuffedWalls.Functions
               {
                   if (p.ToLower().RemoveWhiteSpace() == "beats")
                   {
-                      if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                      if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
                       else return Utils.bpmAdjuster.GetPlaceTimeBeats(Time);
                   }
                   else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                   {
-                      if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
+                      if (isNjs) return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
                       else return Utils.bpmAdjuster.GetPlaceTimeBeats(Utils.bpmAdjuster.ToBeat(Time));
                   }
                   return Time;
               });
             duration = GetParam("definitedurationseconds",duration,p =>
             {
-                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()));
+                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.ToFloat()), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.bpmAdjuster.GetDefiniteDurationBeats(Utils.bpmAdjuster.ToBeat(p.ToFloat()));
             });
             duration = GetParam("definitedurationbeats", duration, p =>
             {
-                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat(), parsedcustomstuff._customData._noteJumpStartBeatOffset.toFloat());
-                return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.toFloat());
+                if (isNjs) return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.bpmAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
 
@@ -65,8 +65,8 @@ namespace ScuffedWalls.Functions
                     {
                         _time = Time,
                         _duration = duration,
-                        _customData = new BeatMap.CustomData()
-                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),  AppendTechnique.Overwrites)
+                        _customData = new TreeDictionary()
+                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),  AppendPriority.High)
                 });
             BeatMap.Obstacle[] image = converter.Walls;
             InstanceWorkspace.Walls.AddRange(image);

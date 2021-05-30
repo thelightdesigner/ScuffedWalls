@@ -1,16 +1,27 @@
 ﻿using ModChart;
-using ModChart.Wall;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 
 namespace ScuffedWalls
 {
-
     static class Internal
     {
+        /// <summary>
+        /// Attempts a deep clone of an array and all of the nested arrays, clones ICloneable
+        /// </summary>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        public static IEnumerable<object> CloneArray(this IEnumerable<object> Array)
+        {
+            return Array.Select(item =>
+            {
+                if (item is IEnumerable<object> nestedArray) return nestedArray.CloneArray();
+                else if (item is ICloneable cloneable) return cloneable.Clone();
+                else return item;
+            });
+        }
         public static IEnumerable<T> CombineWith<T>(this IEnumerable<T> first, params IEnumerable<T>[] arrays)
         {
             List<T> list = new List<T>();
@@ -19,11 +30,7 @@ namespace ScuffedWalls
 
             return list.ToArray();
         }
-        public static T Switch<T>(this T Default, T Secondary, bool BiasToSecondary)
-        {
-            if(BiasToSecondary) return Secondary;
-            return Default;
-        }
+        /*
         public static string Remove(this string str, char ch)
         {
             return string.Join("", str.Split(ch));
@@ -32,10 +39,12 @@ namespace ScuffedWalls
         {
             return string.Join("", str.Split(ch));
         }
+        */
         public static IEnumerable<ITimeable> GetAllBetween(this IEnumerable<ITimeable> mapObjects, float starttime, float endtime)
         {
-            return mapObjects.Where(obj => obj._time.toFloat() >= starttime && obj._time.toFloat() <= endtime).ToArray();
+            return mapObjects.Where(obj => obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime).ToArray();
         }
+        /*
         static public bool MethodExists<t>(this string methodname, Type attribute)
         {
             foreach (var methods in typeof(t).GetMethods().Where(m => m.GetCustomAttributes(attribute).Count() > 0))
@@ -52,34 +61,36 @@ namespace ScuffedWalls
             }
             return false;
         }
+        */
         public static bool needsNoodleExtensions(this BeatMap map)
         {
             //are there any custom events?
-            if (map._customData != null && map._customData._customEvents != null && map._customData._customEvents.Length > 0) return true;
+            if (map._customData != null && map._customData["_customEvents"] != null && map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0) return true;
 
             //do any notes have any noodle data other than color?
-            if (map._notes.Any(note => note._customData != null && (typeof(BeatMap.CustomData).GetProperties().Any(p => p.GetValue(note._customData) != null && p.Name != "_color")))) return true;
+            if (map._notes.Any(note => note._customData != null && note._customData.Any(p => p.Key != "_color"))) return true;
 
             //do any walls have any noodle data other than color?
-            if (map._obstacles.Any(wall => wall._customData != null && (typeof(BeatMap.CustomData).GetProperties().Any(p => p.GetValue(wall._customData) != null && p.Name != "_color")))) return true;
+            if (map._obstacles.Any(wall => wall._customData != null && wall._customData.Any(p => p.Key != "_color"))) return true;
 
             return false;
         }
         public static bool needsChroma(this BeatMap map)
         {
             //do light have color
-            if (map._events.Any(light => light._customData != null && light._customData._color != null)) return true;
+            if (map._events.Any(light => light._customData != null && light._customData["_color"] != null)) return true;
 
             //do wal have color or animate color
-            if (map._obstacles.Any(wall => wall._customData != null && (wall._customData._color != null || (wall._customData._animation != null && wall._customData._animation._color != null)))) return true;
+            if (map._obstacles.Any(wall => wall._customData != null && (wall._customData["_color"] != null || (wall._customData["_animation"] != null && wall._customData["_animation._color"] != null)))) return true;
 
             //do note have color or animate color
-            if (map._notes.Any(note => note._customData != null && (note._customData._color != null || (note._customData._animation != null && note._customData._animation._color != null)))) return true;
+            if (map._notes.Any(note => note._customData != null && (note._customData["_color"] != null || (note._customData["_animation"] != null && note._customData["_animation._color"] != null)))) return true;
 
             return false;
 
         }
-        
+
+        /*
         public static int getCountByID(this int type)
         {
             if (type == 0 || type == 2 || type == 3) return 5;
@@ -92,10 +103,12 @@ namespace ScuffedWalls
             if (value == 0) return 0;
             return 5;
         }
+        
         public static T DeepClone<T>(this T a)
         {
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(a));
         }
+        */
         public static string ToFileString(this DateTime time)
         {
             return $"Backup - {time.ToFileTime()}";
@@ -105,21 +118,23 @@ namespace ScuffedWalls
         {
             return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
+        /*
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> Array)
         {
             Random rnd = new Random();
             return Array.OrderBy(x => rnd.Next());
         }
+        */
     }
 
-    public class JsoValidator
+    public class JsonValidator
     {
         public dynamic Deserialized;
         public bool WasSuccess;
         public string Raw;
-        public static JsoValidator Check(string s)
+        public static JsonValidator Check(string s)
         {
-            var val = new JsoValidator() { Raw = s };
+            var val = new JsonValidator() { Raw = s };
 
             try
             {
@@ -133,9 +148,9 @@ namespace ScuffedWalls
 
             return val;
         }
-        public static JsoValidator Check<t>(string s)
+        public static JsonValidator Check<t>(string s)
         {
-            var val = new JsoValidator() { Raw = s };
+            var val = new JsonValidator() { Raw = s };
 
             try
             {
@@ -156,8 +171,4 @@ namespace ScuffedWalls
         public void Start() => StartTime = DateTime.Now;
         public void Complete() =>  ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
     }
-
-
-
-
 }

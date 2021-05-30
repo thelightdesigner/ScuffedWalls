@@ -1,74 +1,116 @@
 ﻿using System;
-
-
+using System.Text.Json.Serialization;
 
 namespace ModChart
 {
-    public interface ICustomDataMapObject : ITimeable
+    public interface ICustomDataMapObject : ITimeable, ICloneable
     {
-        public BeatMap.CustomData _customData { get; set; }
+        [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+        public TreeDictionary _customData { get; set; }
     }
     public interface ITimeable
     {
+        public float GetTime();
         public object _time { get; set; }
     }
     public class BeatMap
     {
-        public static BeatMap Empty
+        public void Prune()
         {
-            get
-            {
-                return new BeatMap
-                {
-                    _version = "2.2.0",
-                    _events = new Event[] { },
-                    _notes = new Note[] { },
-                    _obstacles = new Obstacle[] { },
-                    _waypoints = new object[] { },
-                    _customData = new CustomData()
-                    {
-                        _customEvents = new CustomData.CustomEvent[] { },
-                        _pointDefinitions = new CustomData.PointDefinition[] { },
-                        _environment = new CustomData.Environment[] { },
-                        _bookmarks = new CustomData.Bookmark[] { },
-                        _BPMChanges = new CustomData.BPMChanges[] { }
-                    }
-                };
-            }
+            _customData.DeleteNullValues();
+            foreach (var mapobj in _events) if (mapobj._customData != null) mapobj._customData.DeleteNullValues();
+            foreach (var mapobj in _notes) if (mapobj._customData != null) mapobj._customData.DeleteNullValues();
+            foreach (var mapobj in _obstacles) if(mapobj._customData != null) mapobj._customData.DeleteNullValues();
         }
+        public static BeatMap Empty => new BeatMap
+        {
+            _version = "2.2.0",
+            _events = new Event[] { },
+            _notes = new Note[] { },
+            _obstacles = new Obstacle[] { },
+            _waypoints = new object[] { },
+            _customData = new TreeDictionary()
+        };
+
+
         public string _version { get; set; }
-        public CustomData _customData { get; set; }
+        [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+        public TreeDictionary _customData { get; set; }
         public Event[] _events { get; set; }
         public Note[] _notes { get; set; }
         public Obstacle[] _obstacles { get; set; }
         public object[] _waypoints { get; set; }
 
 
-        public class Event : ICustomDataMapObject
+        public class Event : ICustomDataMapObject, ICloneable
         {
+            public float GetTime() => float.Parse(_time.ToString());
             public object _time { get; set; }
             public object _type { get; set; }
             public object _value { get; set; }
-            public CustomData _customData { get; set; }
+            [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+            public TreeDictionary _customData { get; set; }
+
+            public object Clone()
+            {
+                return new Event()
+                {
+                    _time = _time,
+                    _type = _type,
+                    _value = _value,
+                    _customData = (TreeDictionary)_customData.Clone()
+                };
+            }
         }
-        public class Note : ICustomDataMapObject
+        public class Note : ICustomDataMapObject, ICloneable
         {
+            public float GetTime() => float.Parse(_time.ToString());
             public object _time { get; set; }
             public object _lineIndex { get; set; }
             public object _lineLayer { get; set; }
             public object _type { get; set; }
             public object _cutDirection { get; set; }
-            public CustomData _customData { get; set; }
+            [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+            public TreeDictionary _customData { get; set; }
+
+            public object Clone()
+            {
+                return new Note()
+                {
+                    _time = _time,
+                    _lineIndex = _lineIndex,
+                    _type = _type,
+                    _cutDirection = _cutDirection,
+                    _lineLayer = _lineLayer,
+                    _customData = (TreeDictionary)_customData.Clone()
+                };
+            }
         }
-        public class Obstacle : ICustomDataMapObject
+        public class Obstacle : ICustomDataMapObject, ICloneable
         {
+            public float GetTime() => float.Parse(_time.ToString());
             public object _time { get; set; }
             public object _lineIndex { get; set; }
             public object _type { get; set; }
             public object _duration { get; set; }
             public object _width { get; set; }
-            public CustomData _customData { get; set; }
+            [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+            public TreeDictionary _customData { get; set; }
+
+            public object Clone()
+            {
+                return new Obstacle()
+                {
+                    _time = _time,
+                    _lineIndex = _lineIndex,
+                    _type = _type,
+                    _duration = _duration,
+                    _width = _width,
+                    _customData = (TreeDictionary)_customData.Clone()
+                };
+            }
         }
+        /*
         public class CustomData
         {
             public Environment[] _environment { get; set; }
@@ -168,7 +210,7 @@ namespace ModChart
 
                     }
                 }
-                */
+                
             }
 
             //chroma
@@ -209,7 +251,7 @@ namespace ModChart
                 public object _beatsPerBar { get; set; }
                 public object _metronomeOffset { get; set; }
             }
-            
+
             public PointDefinition[] _pointDefinitions { get; set; }
             public class PointDefinition
             {
@@ -224,9 +266,11 @@ namespace ModChart
                 public object _time { get; set; } //float
                 public object _name { get; set; } //string
             }
-            
+
+        
+
         }
+        */
     }
-    
-    
+
 }

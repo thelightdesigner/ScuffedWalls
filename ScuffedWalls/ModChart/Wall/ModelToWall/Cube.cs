@@ -86,7 +86,7 @@ namespace ModChart.Wall
         }
         public static Color ColorFromObjArray(object[] array)
         {
-            return new Color() { R = array[0].toFloat(), G = array[1].toFloat(), B = array[2].toFloat(), A = array[3].toFloat() };
+            return new Color() { R = array[0].ToFloat(), G = array[1].ToFloat(), B = array[2].ToFloat(), A = array[3].ToFloat() };
         }
         public bool isBlackOrEmpty(float tolerance)
         {
@@ -289,7 +289,7 @@ namespace ModChart.Wall
                 {
                     var Newcube = this.Clone();
                     Newcube.FrameSpan = f;
-                    Newcube.Frames = Newcube.Frames.Slice(f.Val1, f.Val2);
+                    Newcube.Frames = Newcube.Frames.Slice(f.Val1, f.Val2).ToArray();
                     return Newcube;
                 }).ToArray();
             }

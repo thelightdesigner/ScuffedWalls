@@ -1,5 +1,4 @@
 ﻿using ModChart;
-using System;
 using System.Text.Json;
 
 namespace ScuffedWalls.Functions
@@ -12,10 +11,10 @@ namespace ScuffedWalls.Functions
             string name = GetParam("name", "unimplemented_pointdefinition", p => p);
             object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
             
-            InstanceWorkspace.PointDefinitions.Add(new BeatMap.CustomData.PointDefinition()
+            InstanceWorkspace.PointDefinitions.Add(new TreeDictionary()
             {
-                _name = name,
-                _points = points
+                ["_name"] = name,
+                ["_points"] = points
             });
 
             ConsoleOut("PointDefinition", 1, Time, "PointDefinition");
@@ -41,11 +40,11 @@ namespace ScuffedWalls.Functions
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
-                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
+                InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
                 {
-                    _time = Time + (i * repeatTime),
-                    _type = "AnimateTrack",
-                    _data = Parameters.CustomEventsDataParse()
+                    ["_time"] = Time + (i * repeatTime),
+                    ["_type"] = "AnimateTrack",
+                    ["_data"] = Parameters.CustomEventsDataParse()
                 });
                 Repeat.StringData = i.ToString();
                 Beat.StringData = (Time + (i * repeatTime)).ToString();
@@ -73,11 +72,11 @@ namespace ScuffedWalls.Functions
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
-                InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
+                InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
                 {
-                    _time = Time + (i * repeatTime),
-                    _type = "AssignPathAnimation",
-                    _data = Parameters.CustomEventsDataParse()
+                    ["_time"] = Time + (i * repeatTime),
+                    ["_type"] = "AssignPathAnimation",
+                    ["_data"] = Parameters.CustomEventsDataParse()
                 });
                 Repeat.StringData = i.ToString();
                 Beat.StringData = (Time + (i * repeatTime)).ToString();
@@ -91,11 +90,11 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
-            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
-                _time = Time,
-                _type = "AssignPlayerToTrack",
-                _data = Parameters.CustomEventsDataParse()
+                ["_time"] = Time,
+                ["_type"] = "AssignPlayerToTrack",
+                ["_data"] = Parameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignPlayerToTrack", 1, Time, "CustomEvent");
             Parameter.ExternalVariables.RefreshAllParameters();
@@ -107,11 +106,11 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
-            InstanceWorkspace.CustomEvents.Add(new BeatMap.CustomData.CustomEvent()
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
-                _time = Time,
-                _type = "AssignTrackParent",
-                _data = Parameters.CustomEventsDataParse()
+                ["_time"] = Time,
+                ["_type"] = "AssignTrackParent",
+                ["_data"] = Parameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignTrackParent", 1, Time, "CustomEvent");
             Parameter.ExternalVariables.RefreshAllParameters();

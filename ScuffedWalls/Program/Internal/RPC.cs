@@ -1,8 +1,8 @@
 ﻿using DiscordRPC;
 using ModChart;
 using System;
-using System.IO;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ScuffedWalls
@@ -39,13 +39,13 @@ namespace ScuffedWalls
         {
             while (currentMap == null) await Task.Delay(500);
 
-            client.UpdateDetails(Utils.Info._songName.ToString());
+            client.UpdateDetails(Utils.Info["_songName"].ToString());
 
             while (true)
             {
                 string[] RPCMsg =
                 {
-                $"{currentMap._customData._customEvents.Length} CustomEvents",
+                $"{currentMap._customData.at<IEnumerable<object>>("_customEvents").Count()} CustomEvents",
                 $"{currentMap._events.Length} Lights",
                 $"{currentMap._notes.Length} Notes",
                 $"{currentMap._obstacles.Length} Walls",

@@ -1,23 +1,46 @@
-﻿using ScuffedWalls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace ModChart
+﻿namespace ModChart
 {
     public static class AppendHelper
     {
-        public static ICustomDataMapObject Append(this ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendTechnique Type)
+        /// <summary>
+        /// Merges _customData and _time
+        /// </summary>
+        /// <param name="MapObject"></param>
+        /// <param name="AppendObject"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static ICustomDataMapObject Append(this ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendPriority type)
         {
-            PropertyInfo[] propertiesBaseWall = typeof(ICustomDataMapObject).GetProperties();
-            PropertyInfo[] propertiesCustomData = typeof(BeatMap.CustomData).GetProperties();
-            PropertyInfo[] propertiesCustomDataAnimation = typeof(BeatMap.CustomData.Animation).GetProperties();
-
-            if (AppendObject is BeatMap.Event) Console.WriteLine(string.Join(" ",propertiesBaseWall.Select(p => p.Name)));
-            if (Type == AppendTechnique.NoOverwrites)
+            switch (type)
             {
+                case AppendPriority.Low:
+                    foreach (var property in MapObject.GetType().GetProperties()) if (property.GetValue(MapObject) == null) property.SetValue(MapObject, property.GetValue(AppendObject));
+                    if (AppendObject._customData != null)
+                    {
+                        MapObject._customData = (TreeDictionary)TreeDictionary.Merge(
+                            MapObject._customData, 
+                            AppendObject._customData,
+                            TreeDictionary.MergeType.Dictionaries | TreeDictionary.MergeType.Objects,
+                            TreeDictionary.MergeBindingFlags.HasValue);
+                    }
+                    return MapObject;
+                case AppendPriority.High:
+                    return AppendObject.Append(MapObject, AppendPriority.Low);
+                case AppendPriority.Complete:
+                    MapObject._time = AppendObject._time;
+                    MapObject._customData = AppendObject._customData;
+                    return MapObject;
+                default:
+                    return null;
+            }
+
+            #region old
+            /*
+            if (type == AppendTechnique.NoOverwrites)
+            {
+
+                #region old
+                /*
                 if (MapObject != null && AppendObject != null)
                 {
                     foreach (PropertyInfo property in propertiesBaseWall)
@@ -52,10 +75,15 @@ namespace ModChart
                     }
                 }
                 return MapObject;
+                
+                #endregion
             }
             // append technique 1 adds on customdata, overwrites
-            else if (Type == AppendTechnique.Overwrites)
+            else if (type == AppendTechnique.Overwrites)
             {
+
+                #region old
+                /*
                 if (MapObject != null && AppendObject != null)
                 {
                     foreach (PropertyInfo property in propertiesBaseWall)
@@ -94,32 +122,34 @@ namespace ModChart
                 
                 
                 return MapObject;
+                
+                #endregion
             }
-            else if (Type == AppendTechnique.DeleteOldCustomData)
+            else if (type == AppendTechnique.DeleteOldCustomData)
             {
                 MapObject._customData = AppendObject._customData;
                 return MapObject;
             }
-            else if (Type == AppendTechnique.DeleteOldAnimation)
+            else if (type == AppendTechnique.DeleteOldAnimation)
             {
                 MapObject._customData ??= new BeatMap.CustomData();
-                if(AppendObject._customData._animation != null) MapObject._customData._animation = AppendObject._customData._animation;
+                if (AppendObject._customData._animation != null) MapObject._customData._animation = AppendObject._customData._animation;
                 return MapObject;
             }
             else
             {
                 return AppendObject;
             }
+            */
+            #endregion
         }
     }
-    public enum AppendTechnique
+    public enum AppendPriority
     {
-        NoOverwrites,
-        Overwrites,
-        DeleteOldAnimation,
-        DeleteOldCustomData,
-        DeleteOldObject
+        Low,
+        High,
+        Complete
     }
 
-    
+
 }

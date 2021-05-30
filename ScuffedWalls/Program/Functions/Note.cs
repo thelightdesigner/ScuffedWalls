@@ -1,7 +1,4 @@
 ﻿using ModChart;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ScuffedWalls.Functions
 {
@@ -27,11 +24,11 @@ namespace ScuffedWalls.Functions
             int cutdirection = GetParam("cutdirection", 0, p => int.Parse(p));
             float? njsoffset = GetParam("definitedurationseconds", null, p =>
             {
-                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(Utils.bpmAdjuster.ToBeat(p.toFloat()));
+                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(Utils.bpmAdjuster.ToBeat(p.ToFloat()));
             });
             njsoffset = GetParam("definitedurationbeats", njsoffset, p =>
             {
-                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(p.toFloat());
+                return (float?)Utils.bpmAdjuster.GetDefiniteNjsOffsetBeats(p.ToFloat());
             });
 
             Time = GetParam("definitetime", Time, p =>
@@ -59,8 +56,8 @@ namespace ScuffedWalls.Functions
                     _lineLayer = 0,
                     _cutDirection = cutdirection,
                     _type = type,
-                    _customData = njsoffset.HasValue ? new BeatMap.CustomData() { _noteJumpStartBeatOffset= njsoffset} : null
-                }.Append(Parameters.CustomDataParse(new BeatMap.Note()), AppendTechnique.Overwrites));
+                    _customData = njsoffset.HasValue ? new TreeDictionary() { ["_noteJumpStartBeatOffset"] = njsoffset} : null
+                }.Append(Parameters.CustomDataParse(new BeatMap.Note()), AppendPriority.High));
 
                 Repeat.StringData = i.ToString();
                 Beat.StringData = (Time + (i * repeatTime)).ToString();

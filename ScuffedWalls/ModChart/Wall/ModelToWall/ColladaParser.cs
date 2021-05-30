@@ -1,11 +1,8 @@
-﻿using ModChart;
-using ScuffedWalls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Xml;
 using System.Xml.Serialization;
 
 using static ScuffedWalls.ScuffedLogger;
@@ -240,12 +237,12 @@ namespace ModChart.Wall
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static T[] Slice<T>(this T[] source, int start, int end)
+        public static IEnumerable<T> Slice<T>(this IEnumerable<T> source, int start, int end)
         {
             // Handles negative ends.
             if (end < 0)
             {
-                end = source.Length + end;
+                end = source.Count() + end;
             }
             int len = end - start;
 
@@ -253,7 +250,7 @@ namespace ModChart.Wall
             T[] res = new T[len];
             for (int i = 0; i < len; i++)
             {
-                res[i] = source[i + start];
+                res[i] = source.ElementAt(i + start);
             }
             return res;
         }
@@ -262,7 +259,7 @@ namespace ModChart.Wall
             List<Matrix4x4> Matricies = new List<Matrix4x4>();
             for (int i = 0; i < floatArray.Length; i += 16)
             {
-                Matricies.Add(floatArray.Slice(i, i + 16).toMatrix());
+                Matricies.Add(floatArray.Slice(i, i + 16).ToArray().toMatrix());
             }
             return Matricies.ToArray();
         }

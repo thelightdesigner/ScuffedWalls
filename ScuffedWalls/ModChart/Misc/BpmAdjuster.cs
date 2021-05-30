@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace ModChart
+﻿namespace ModChart
 {
     class BpmAdjuster
     {

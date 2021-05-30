@@ -68,7 +68,7 @@ namespace ModChart.Wall
         }
 
     }
-    public class WallLetterCollection : IPlaceableLetterWallCollection
+    public class WallLetterCollection : IPlaceableLetterWallCollection, ICloneable
     {
         public IEnumerable<BeatMap.Obstacle> Walls { get; set; }
         public alphabet Character { get; set; }
@@ -83,15 +83,25 @@ namespace ModChart.Wall
                 {
                     Walls = new WallImage(letr, settings).Walls,
                     Character = Enum.Parse<alphabet>(((alphabetOrder)i).ToString()),
-                    Dimensions = new Vector2(letr.Width.toFloat(), letr.Height.toFloat()) * settings.scale
+                    Dimensions = new Vector2(letr.Width.ToFloat(), letr.Height.ToFloat()) * settings.scale
                 };
                 i++;
                 return collection;
             }).ToArray();
         }
+        public object Clone()
+        {
+            return new WallLetterCollection()
+            {
+                Walls = Walls.CloneArray().Cast<BeatMap.Obstacle>().ToArray(),
+                Character = Character,
+                Dimensions = Dimensions
+            };
+        }
+
         public IEnumerable<ICustomDataMapObject> PlaceAt(Vector2 pos)
         {
-            return this.DeepClone().Set_Position(pos);
+            return ((WallLetterCollection)Clone()).Set_Position(pos);
         }
     }
     interface IPlaceableLetterWallCollection
@@ -156,13 +166,13 @@ namespace ModChart.Wall
         //sets the position of a collection of walls, account for thicc
         public static ICustomDataMapObject[] Set_Position(this ICustomDataMapObject[] walls, Vector2 Pos)
         {
-            float XCorner = walls.OrderBy(w => w._customData._position.ToVector2().X).First()._customData._position[0].toFloat();
-            float YCorner = walls.OrderBy(w => w._customData._position.ToVector2().Y).First()._customData._position[1].toFloat();
+            float XCorner = walls.OrderBy(w => w._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2().X).First()._customData.at<IEnumerable<object>>("_position").ElementAt(0).ToFloat();
+            float YCorner = walls.OrderBy(w => w._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2().Y).First()._customData.at<IEnumerable<object>>("_position").ElementAt(1).ToFloat();
 
             Vector2 difference = new Vector2(XCorner, YCorner) - Pos;
             return walls.Select(wall =>
             {
-                wall._customData._position = (wall._customData._position.ToVector2() - difference).FromVector2();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() - difference).FromVector2();
                 return wall;
             }).ToArray();
         }
@@ -170,7 +180,7 @@ namespace ModChart.Wall
         {
             return walltext.Walls.Select(wall =>
             {
-                wall._customData._position = (wall._customData._position.ToVector2() + Pos).FromVector2();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + Pos).FromVector2();
                 return wall;
             }).ToArray();
         }
@@ -178,7 +188,7 @@ namespace ModChart.Wall
         {
             return walls.Select(wall =>
             {
-                wall._customData._position = (wall._customData._position.ToVector2() + pos).FromVector2();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + pos).FromVector2();
                 return wall;
             }).ToArray();
         }

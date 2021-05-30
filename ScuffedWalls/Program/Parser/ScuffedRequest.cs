@@ -65,7 +65,7 @@ namespace ScuffedWalls
                     if (CurrentFunction != null) CurrentWorkspace.FunctionRequests = CurrentWorkspace.FunctionRequests.Append(CurrentFunction).ToArray();
 
                     //create new function
-                    CurrentFunction = new WorkspaceRequest.FunctionRequest() { Name = line.StringData, Time = line.Name.toFloat() };
+                    CurrentFunction = new WorkspaceRequest.FunctionRequest() { Name = line.StringData, Time = line.Name.ToFloat() };
 
                     CurrentInternal = ParamType.Function;
                 }

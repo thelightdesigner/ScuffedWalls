@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ScuffedWalls.Functions
 {
@@ -18,33 +17,31 @@ namespace ScuffedWalls.Functions
             float endbeat = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             float addtime = GetParam("addtime", 0, p => float.Parse(p));
 
-            BeatMap beatMap = null;
-            beatMap = FunctionParser.Workspaces[Index].DeepClone().toBeatMap();
+            Workspace cloned = null;
 
-            if (name != string.Empty)
-            {
-                beatMap = FunctionParser.Workspaces.Where(w => w.Name == name).First().DeepClone().toBeatMap();
-            }
-            beatMap._customData._customEvents ??= new BeatMap.CustomData.CustomEvent[] { };
+            cloned = (Workspace)FunctionParser.Workspaces[Index].Clone();
+            if (name != string.Empty) cloned = (Workspace)FunctionParser.Workspaces.Where(w => w.Name == name).First().Clone();
+            
             if (Type.Any(t => t == 0))
             {
-                InstanceWorkspace.Walls.AddRange(beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }).Cast<BeatMap.Obstacle>());
-                ConsoleOut("Wall", beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
+                InstanceWorkspace.Walls.AddRange(cloned.Walls.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Obstacle>());
+                ConsoleOut("_obstacle", cloned.Walls.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
             }
             if (Type.Any(t => t == 1))
             {
-                InstanceWorkspace.Notes.AddRange(beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }).Cast<BeatMap.Note>());
-                ConsoleOut("Note", beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
+                InstanceWorkspace.Notes.AddRange(cloned.Notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Note>());
+                ConsoleOut("_note", cloned.Notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
             }
             if (Type.Any(t => t == 2))
             {
-                InstanceWorkspace.Lights.AddRange(beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }).Cast<BeatMap.Event>());
-                ConsoleOut("Light", beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
+                InstanceWorkspace.Lights.AddRange(cloned.Lights.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Event>());
+                ConsoleOut("_event", cloned.Lights.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
             }
             if (Type.Any(t => t == 3))
             {
-                InstanceWorkspace.CustomEvents.AddRange(beatMap._customData._customEvents.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.toFloat() + addtime; return o; }).Cast<BeatMap.CustomData.CustomEvent>());
-                ConsoleOut("CustomEvent", beatMap._customData._customEvents.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Count(), Time, "CloneWorkspace");
+                InstanceWorkspace.CustomData = (TreeDictionary)TreeDictionary.Merge(InstanceWorkspace.CustomData, cloned.CustomData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
+                
+                foreach (var item in cloned.CustomData) if (item.Value is IEnumerable<object> array) ConsoleOut($"_customData.{item.Key}", array.Count(), Time, "CloneWorkspace");
             }
 
 

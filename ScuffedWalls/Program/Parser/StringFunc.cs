@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using ModChart;
 using ModChart.Wall;
@@ -26,7 +24,7 @@ namespace ScuffedWalls
                     {
                         string[] spli = InputArgs.Extra.Split("],",2);
                         string pd = spli[0] + "]";
-                        float val = spli[1].toFloat();
+                        float val = spli[1].ToFloat();
 
                         object[] PointDefinition = JsonSerializer.Deserialize<object[]>(pd);
                         for(int i = 0; i < PointDefinition.Length; i++) if(float.TryParse(PointDefinition[i].ToString(),out float result)) PointDefinition[i] = result * val;
@@ -39,10 +37,10 @@ namespace ScuffedWalls
                     Name = "HSLtoRGB",
                     FunctionAction = InputArgs =>
                     {
-                        float H = InputArgs.Main[0].toFloat();
-                        float S = InputArgs.Main.Length > 1 ? InputArgs.Main[1].toFloat() : 1f;
-                        float L = InputArgs.Main.Length > 2 ? InputArgs.Main[2].toFloat() : 0.5f;
-                        float A = InputArgs.Main.Length > 3 ? InputArgs.Main[3].toFloat() : 1f;
+                        float H = InputArgs.Main[0].ToFloat();
+                        float S = InputArgs.Main.Length > 1 ? InputArgs.Main[1].ToFloat() : 1f;
+                        float L = InputArgs.Main.Length > 2 ? InputArgs.Main[2].ToFloat() : 0.5f;
+                        float A = InputArgs.Main.Length > 3 ? InputArgs.Main[3].ToFloat() : 1f;
                         string AdditionalValues = InputArgs.Main.Length > 4 ? ","+ string.Join(',', InputArgs.Main.Slice(4,InputArgs.Main.Length)) : string.Empty;
 
                         Color p = Color.HslToRGB(H,S,L);
@@ -74,8 +72,8 @@ namespace ScuffedWalls
                     {
 
                          Random rnd = new Random();
-                         float first = InputArgs.Main[0].toFloat();
-                         float last = InputArgs.Main[1].toFloat();
+                         float first = InputArgs.Main[0].ToFloat();
+                         float last = InputArgs.Main[1].ToFloat();
                          if (last < first)
                          {
                              float f = first;

@@ -13,10 +13,11 @@ namespace ScuffedWalls
     {
         private string[] args;
 
+        public static JsonSerializerOptions DefaultJsonConverterSettings { get; private set; }
         public static string ConfigFileName { get; private set; }
         public static Config ScuffedConfig { get; private set; }
-        public static Info Info { get; private set; }
-        public static Info.DifficultySet.Difficulty InfoDifficulty { get; private set; }
+        public static TreeDictionary Info { get; private set; }
+        public static TreeDictionary InfoDifficulty { get; private set; }
         public static BpmAdjuster bpmAdjuster { get; private set; }
         /// <summary>
         /// These events are erased after a single invoke
@@ -29,7 +30,7 @@ namespace ScuffedWalls
 
         public static event Action OnChangeDetected;
 
-        static string SWText = 
+        static string SWText =
 @$"# ScuffedWalls {ScuffedWalls.ver}
 
 # Documentation on functions can be found at
@@ -46,31 +47,36 @@ Workspace:Default";
 
         public Utils(string[] args)
         {
+            JsonSerializerOptions SerializerOptions = new JsonSerializerOptions() { IgnoreNullValues = true };
+            SerializerOptions.Converters.Add(new TreeDictionaryJsonConverter());
+            DefaultJsonConverterSettings = SerializerOptions;
+
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             this.args = args;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
             ScuffedConfig = GetConfig();
             Info = GetInfo();
-            if(Info != null) InfoDifficulty = Info._difficultyBeatmapSets
-                        .Where(set => set._difficultyBeatmaps.Any(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name))
-                        .First()._difficultyBeatmaps
-                        .Where(dif => dif._beatmapFilename.ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+
+            if (Info != null) InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
+                         .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
+                         .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
+                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
             else
             {
                 ScuffedLogger.Warning.Log("No Info.dat found! functionality may be limited");
             }
 
-            bpmAdjuster = new BpmAdjuster(Info._beatsPerMinute.toFloat(), InfoDifficulty._noteJumpMovementSpeed.toFloat(), InfoDifficulty._noteJumpStartBeatOffset.toFloat());
+            bpmAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
             VerifyOld();
             VerifySW();
             VerifyBackups();
             ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {bpmAdjuster.Njs} Offset: {bpmAdjuster.StartBeatOffset} HalfJump: {bpmAdjuster.HalfJumpBeats}");
             var releasething = CheckReleases();
-            
+
         }
 
-        public static void InvokeOnProgramComplete() 
+        public static void InvokeOnProgramComplete()
         {
             OnProgramComplete?.Invoke();
             if (OnProgramComplete != null)
@@ -97,15 +103,18 @@ Workspace:Default";
         {
             try
             {
-                if (InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
+                var requirements = InfoDifficulty.at("_customData").at<IEnumerable<string>>("_requirements");
+                var suggestions = InfoDifficulty.at("_customData").at<IEnumerable<string>>("_suggestions");
+
+                if (requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
                 {
                     ScuffedLogger.Warning.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
                 }
-                if (!InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
+                if (!requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
                 {
                     ScuffedLogger.Warning.Log("Info.dat does not contain required field Noodle Extensions");
                 }
-                if (!(InfoDifficulty._customData._requirements.Any(r => r.ToString() == "Chroma") || InfoDifficulty._customData._suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
+                if (!(requirements.Any(r => r.ToString() == "Chroma") || suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
                 {
                     ScuffedLogger.Warning.Log("Info.dat does not contain required/suggested field Chroma");
                 }
@@ -137,7 +146,7 @@ Workspace:Default";
         public Config GetConfig()
         {
             VerifyConfig();
-            return JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigFileName));
+            return JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigFileName), DefaultJsonConverterSettings);
         }
         public void VerifySW()
         {
@@ -169,10 +178,10 @@ Workspace:Default";
                 ScuffedLogger.Default.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
             }
         }
-        public Info GetInfo()
+        public TreeDictionary GetInfo()
         {
-            Info info = null;
-            if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<Info>(File.ReadAllText(ScuffedConfig.InfoPath));
+            TreeDictionary info = null;
+            if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<TreeDictionary>(File.ReadAllText(ScuffedConfig.InfoPath), DefaultJsonConverterSettings);
             return info;
         }
         public void VerifyOld()
@@ -240,7 +249,7 @@ Workspace:Default";
                 j++;
             }
 
-            Console.Write($"Difficulty To Work On (overwrites everything in this difficulty) ({string.Join(",",indexoption)}):");
+            Console.Write($"Difficulty To Work On (overwrites everything in this difficulty) ({string.Join(",", indexoption)}):");
             int option = Convert.ToInt32(Console.ReadLine());
 
             Console.Write("AutoImport Map? (writes an import statement for created backup file) (y/n):");
@@ -256,9 +265,9 @@ Workspace:Default";
             }
 
             //path of the sw file by difficulty name
-            config.SWFilePath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
+            config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
 
-            config.OldMapPath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
+            config.OldMapPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
 
             config.BackupPaths = new Config.Backup();
 
@@ -266,7 +275,7 @@ Workspace:Default";
 
             config.MapFolderPath = args[0];
 
-            config.BackupPaths.BackupFolderPath = Path.Combine( mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
+            config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
 
             config.BackupPaths.BackupSWFolderPath = Path.Combine(config.BackupPaths.BackupFolderPath, "SW_History");
 

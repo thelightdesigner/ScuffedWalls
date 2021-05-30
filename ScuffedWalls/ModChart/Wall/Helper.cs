@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Text.Json;
 
 namespace ModChart.Wall
@@ -8,7 +7,7 @@ namespace ModChart.Wall
     static class Helper
     {
         //creates a wall object
-        public static BeatMap.Obstacle WallConstructor(float Time, float Duration, BeatMap.CustomData CustomData)
+        public static BeatMap.Obstacle WallConstructor(float Time, float Duration, TreeDictionary CustomData)
         {
             return new BeatMap.Obstacle()
             {
@@ -34,7 +33,7 @@ namespace ModChart.Wall
         // read all walls into array
         public static BeatMap.Obstacle[] ReadAllWalls(string MapPull)
         {
-            return JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(MapPull))._obstacles;
+            return JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(MapPull), ScuffedWalls.Utils.DefaultJsonConverterSettings)._obstacles;
         }
 
         public static float GetTime(this BeatMap.Obstacle Wall)

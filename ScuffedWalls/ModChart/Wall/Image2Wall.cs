@@ -1,10 +1,9 @@
-﻿using ScuffedWalls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
+using ObjEnumerable = System.Collections.Generic.IEnumerable<object>;
 
 namespace ModChart.Wall
 {
@@ -43,27 +42,27 @@ namespace ModChart.Wall
             // Console.WriteLine(_Settings.scale);
 
             //centered offseter
-            if (_Settings.centered) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = -(_Bitmap.Width.toFloat() * _Settings.scale / 2), Y = 0 }); }).ToArray();
+            if (_Settings.centered) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = -(_Bitmap.Width.ToFloat() * _Settings.scale / 2), Y = 0 }); }).ToArray();
 
             //position offseter
-            if (_Settings.Wall._customData._position != null) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = _Settings.Wall._customData._position[0].toFloat(), Y = _Settings.Wall._customData._position[1].toFloat() }); }).ToArray();
+            if (_Settings.Wall._customData["_position"] != null) Pixels = Pixels.Select(p => { return p.Transform(new Vector2() { X = _Settings.Wall._customData.at<ObjEnumerable>("_position").ElementAt(1).ToFloat(), Y = _Settings.Wall._customData.at<ObjEnumerable>("_position").ElementAt(1).ToFloat() }); }).ToArray();
 
             //color override
-            if (_Settings.Wall._customData._color != null) Pixels = Pixels.Select(p => { p.Color = Color.ColorFromObjArray(_Settings.Wall._customData._color); return p; }).ToArray();
+            if (_Settings.Wall._customData["_color"] != null) Pixels = Pixels.Select(p => { p.Color = Color.ColorFromObjArray(_Settings.Wall._customData.at<ObjEnumerable>("_color").ToArray()); return p; }).ToArray();
 
             Random rnd = new Random();
 
             Walls = Pixels.Select(p =>
             {
                 object[] scale = null;
-                BeatMap.CustomData.Animation animatedscale = null;
+                TreeDictionary animatedscale = null;
                 if (_Settings.thicc.HasValue) 
                 {
                     p = p.Transform(new Vector2() { X = ((p.Scale.X / 2f) - (1f / _Settings.thicc.Value * 2f)), Y = 0 });
                     scale = new object[] { 1f / _Settings.thicc, 1f / _Settings.thicc, 1f / _Settings.thicc };
-                    animatedscale = new BeatMap.CustomData.Animation()
+                    animatedscale = new TreeDictionary()
                     {
-                        _scale = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
+                        ["_scale"] = new object[][] { new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 0 }, new object[] { p.Scale.X * _Settings.thicc, p.Scale.Y * _Settings.thicc, _Settings.scale * _Settings.thicc, 1 } }
                     };
                 } //thicc offseter 
                 else
@@ -76,19 +75,19 @@ namespace ModChart.Wall
 
                 return new BeatMap.Obstacle()
                 {
-                    _time = _Settings.Wall._time.toFloat() + spread,
+                    _time = _Settings.Wall._time.ToFloat() + spread,
                     _duration = _Settings.Wall._duration,
                     _lineIndex = 0,
                     _type = 0,
                     _width = 0,
-                    _customData = new BeatMap.CustomData()
+                    _customData = new TreeDictionary()
                     {
-                        _position = new object[] { p.Position.X, p.Position.Y },
-                        _scale = scale,
-                        _color = p.Color.ToObjArray(_Settings.alfa),
-                        _animation = animatedscale
+                        ["_position"] = new object[] { p.Position.X, p.Position.Y },
+                        ["_scale"] = scale,
+                        ["_color"] = p.Color.ToObjArray(_Settings.alfa),
+                        ["_animation"] = animatedscale
                     }
-                }.Append(_Settings.Wall, AppendTechnique.NoOverwrites);
+                }.Append(_Settings.Wall, AppendPriority.Low);
 
             }).Cast<BeatMap.Obstacle>().ToArray();
         }
@@ -242,8 +241,8 @@ namespace ModChart.Wall
         {
             return new FloatingPixel()
             {
-                Position = new Vector2() { X = Position.X.toFloat(), Y = Position.Y.toFloat() },
-                Scale = new Vector2() { X = Scale.X.toFloat(), Y = Scale.Y.toFloat() },
+                Position = new Vector2() { X = Position.X.ToFloat(), Y = Position.Y.ToFloat() },
+                Scale = new Vector2() { X = Scale.X.ToFloat(), Y = Scale.Y.ToFloat() },
                 Color = Color
             };
         }
@@ -291,77 +290,20 @@ namespace ModChart.Wall
 
     public static class BitmapHelper
     {
-        /*
-        public static Bitmap Crop(this Bitmap b, Pixel r)
-        {
-            Console.WriteLine($"pixel {r.Position.X}, {r.Scale.X}");
-            
-            Bitmap nb = new Bitmap(r.Scale.X, r.Scale.Y, PixelFormat.Format24bppRgb);
-            
-            using (Graphics g = Graphics.FromImage(nb))
-            {
-                g.DrawImage(b, -r.Position.X, r.Position.Y);
-                //nb.SetResolution(r.Scale.X, r.Scale.Y);
-                return nb;
-            }
-        }
-        */
-        /*
-        public static Bitmap Crop(this Bitmap b, Pixel r)
-        {
-            Bitmap src = b;
-            Bitmap target = new Bitmap(r.Scale.X, r.Scale.Y);
-
-            using (Graphics g = Graphics.FromImage(target))
-            {
-                g.DrawImage(src, new Rectangle(0, 0, target.Width, target.Height),
-                                 target,
-                                 GraphicsUnit.Pixel);
-            }
-        }
-        */
         public static Bitmap Crop(this Bitmap img, Pixel p)
         {
-            // try
-            // {
+           //  try
+           //  {
             Bitmap bmpImage = new Bitmap(img);
             Rectangle cropArea = new Rectangle(p.Position.X, p.Position.Y, p.Scale.X, p.Scale.Y);
 
             return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
             //  }
             //  catch
-            //  {
+            // {
             //      return null;
             //  }
         }
-        /*
-        public Bitmap Crop(Bitmap m, int width, int height, int x, int y)
-        {
-            try
-            {
-                Image image = m;
-                Bitmap bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-                bmp.SetResolution(80, 60);
-
-                Graphics gfx = Graphics.FromImage(bmp);
-                gfx.SmoothingMode = SmoothingMode.AntiAlias;
-                gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                gfx.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                gfx.DrawImage(image, new Rectangle(0, 0, width, height), x, y, width, height, GraphicsUnit.Pixel);
-                // Dispose to free up resources
-                image.Dispose();
-                bmp.Dispose();
-                gfx.Dispose();
-
-                return bmp;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-        }
-        */
         public static Pixel GetCurrent(this Pixel[] pixels, IntVector2 pos)
         {
             if (!pixels.Any(p => p.Position.X == pos.X && p.Position.Y == pos.Y)) return null; //if it dont exist
@@ -406,12 +348,12 @@ namespace ModChart.Wall
         public static Vector2 GetDimensions(this ICustomDataMapObject[] walls)
         {
             if (walls.Length == 0) return new Vector2() { X = 0, Y = 0 };
-            var SortedY = walls.OrderBy(p => p._customData._position[1].toFloat()).ToArray();
-            var SortedX = walls.OrderBy(p => p._customData._position[0].toFloat()).ToArray();
+            var SortedY = walls.OrderBy(p => p._customData.at<ObjEnumerable>("_position").ElementAt(1).ToFloat()).ToArray();
+            var SortedX = walls.OrderBy(p => p._customData.at<ObjEnumerable>("_position").ElementAt(0).ToFloat()).ToArray();
             return new Vector2()
             {
-                X = SortedX.Last()._customData._position[0].toFloat() - SortedX.First()._customData._position[0].toFloat(),
-                Y = SortedY.Last()._customData._position[1].toFloat() - SortedY.First()._customData._position[1].toFloat(),
+                X = SortedX.Last()._customData.at<ObjEnumerable>("_position").ElementAt(0).ToFloat() - SortedX.First()._customData.at<ObjEnumerable>("_position").ElementAt(0).ToFloat(),
+                Y = SortedY.Last()._customData.at<ObjEnumerable>("_position").ElementAt(1).ToFloat() - SortedY.First()._customData.at<ObjEnumerable>("_position").ElementAt(1).ToFloat(),
             };
 
         }
@@ -432,7 +374,6 @@ namespace ModChart.Wall
             return true;
         }
 
-        //text to wall things
     }
 
 
