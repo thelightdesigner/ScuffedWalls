@@ -41,6 +41,7 @@ Rizthesnuggie's full intro documentation can be found [`here`](https://drive.goo
  - [`Try`](https://www.youtube.com/watch?v=fO4Z6OG5w_I)
  - [`Real or Lie`](https://www.youtube.com/watch?v=59X3Qb78-Es)
  - [`Exosphere`](https://www.youtube.com/watch?v=698L0vSI0no)
+ - [`Rare`](https://www.youtube.com/watch?v=fQpDYL0If7U)
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
