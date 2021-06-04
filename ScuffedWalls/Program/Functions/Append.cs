@@ -65,13 +65,17 @@ namespace ScuffedWalls.Functions
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string tracc = GetParam("ontrack", null, p => p);
             int[] notetype = GetParam("notetype", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
-
+            Console.WriteLine("run");
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
+                Console.WriteLine("note");
                 internalvars.CurrentNote = obj;
                 WallIndex.StringData = i.ToString();
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+
+                foreach (var prop in internalvars.Properties) Console.WriteLine(prop.Name + " " + prop.StringData);
+
                 if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData["_track"].ToString())))
                 {
                     i++;

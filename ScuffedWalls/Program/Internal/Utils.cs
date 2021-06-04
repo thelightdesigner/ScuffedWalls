@@ -11,14 +11,17 @@ namespace ScuffedWalls
 {
     class Utils
     {
-        private string[] args;
+        public static string[] args;
 
         public static JsonSerializerOptions DefaultJsonConverterSettings { get; private set; }
         public static string ConfigFileName { get; private set; }
         public static Config ScuffedConfig { get; private set; }
         public static TreeDictionary Info { get; private set; }
         public static TreeDictionary InfoDifficulty { get; private set; }
-        public static BpmAdjuster bpmAdjuster { get; private set; }
+        public static BpmAdjuster BPMAdjuster { get; private set; }
+        public static ScuffedWallFile ScuffedWallFile { get; private set; }
+        public static Change SWFileChangeDetector { get; private set; }
+        public static RPC DiscordRPCManager { get; private set; }
         /// <summary>
         /// These events are erased after a single invoke
         /// </summary>
@@ -30,7 +33,7 @@ namespace ScuffedWalls
 
         public static event Action OnChangeDetected;
 
-        static string SWText =
+        static string SWText =>
 @$"# ScuffedWalls {ScuffedWalls.ver}
 
 # Documentation on functions can be found at
@@ -45,33 +48,32 @@ namespace ScuffedWalls
 
 Workspace:Default";
 
-        public Utils(string[] args)
+        public static void Initialize(string[] argss)
         {
             JsonSerializerOptions SerializerOptions = new JsonSerializerOptions() { IgnoreNullValues = true };
             SerializerOptions.Converters.Add(new TreeDictionaryJsonConverter());
             DefaultJsonConverterSettings = SerializerOptions;
 
             Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
-            this.args = args;
+            args = argss;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
             ScuffedConfig = GetConfig();
+            ScuffedWallFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
+            SWFileChangeDetector = new Change(ScuffedWallFile);
             Info = GetInfo();
+            InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
+                     .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
+                     .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
+                     .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+            BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
 
-            if (Info != null) InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
-                         .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
-                         .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
-                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
-            else
-            {
-                ScuffedLogger.Warning.Log("No Info.dat found! functionality may be limited");
-            }
 
-            bpmAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
             VerifyOld();
             VerifySW();
             VerifyBackups();
-            ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {bpmAdjuster.Njs} Offset: {bpmAdjuster.StartBeatOffset} HalfJump: {bpmAdjuster.HalfJumpBeats}");
+            ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
+            DiscordRPCManager = new RPC();
             var releasething = CheckReleases();
 
         }
@@ -94,29 +96,34 @@ Workspace:Default";
                 foreach (var sub in subs) OnChangeDetected -= (Action)sub;
             }
         }
-        void BackupMap()
+        public static void BackupMap()
         {
             File.Copy(ScuffedConfig.MapFilePath, Path.Combine(ScuffedConfig.BackupPaths.BackupMAPFolderPath, $"{DateTime.Now.ToFileString()}.dat"));
         }
 
-        public void Check(BeatMap map)
+        public static void Check(BeatMap map)
         {
             try
             {
-                var requirements = InfoDifficulty.at("_customData").at<IEnumerable<string>>("_requirements");
-                var suggestions = InfoDifficulty.at("_customData").at<IEnumerable<string>>("_suggestions");
+                InfoDifficulty["_customData"] ??= new TreeDictionary();
+                InfoDifficulty["_customData._requirements"] ??= new List<object>();
+                InfoDifficulty["_customData._suggestions"] ??= new List<object>();
+
+                var requirements = (IList<object>)InfoDifficulty["_customData._requirements"];
+                var suggestions = (IList<object>)InfoDifficulty["_customData._suggestions"];
+
 
                 if (requirements.Any(r => r.ToString() == "Mapping Extensions") && map.needsNoodleExtensions())
                 {
-                    ScuffedLogger.Warning.Log("Info.dat CANNOT contain Mapping Extensions as a requirement if the map requires Noodle Extensions");
+                    requirements.Remove("Mapping Extensions");
                 }
                 if (!requirements.Any(r => r.ToString() == "Noodle Extensions") && map.needsNoodleExtensions())
                 {
-                    ScuffedLogger.Warning.Log("Info.dat does not contain required field Noodle Extensions");
+                    requirements.Add("Noodle Extensions");
                 }
                 if (!(requirements.Any(r => r.ToString() == "Chroma") || suggestions.Any(s => s.ToString() == "Chroma")) && map.needsChroma())
                 {
-                    ScuffedLogger.Warning.Log("Info.dat does not contain required/suggested field Chroma");
+                    requirements.Add("Chroma");
                 }
             }
             catch
@@ -124,7 +131,7 @@ Workspace:Default";
                 //void
             }
         }
-        void VerifyBackups()
+        public static void VerifyBackups()
         {
             if (!ScuffedConfig.IsBackupEnabled) return;
             //check for
@@ -143,12 +150,12 @@ Workspace:Default";
             BackupMap();
         }
 
-        public Config GetConfig()
+        public static Config GetConfig()
         {
             VerifyConfig();
             return JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigFileName), DefaultJsonConverterSettings);
         }
-        public void VerifySW()
+        public static void VerifySW()
         {
             if (!File.Exists(ScuffedConfig.SWFilePath))
             {
@@ -168,23 +175,35 @@ Workspace:Default";
                 new Rainbow().PrintRainbow("New Scuffed Wall File Created");
             }
         }
-        public async Task CheckReleases()
+        public static async Task CheckReleases()
         {
             GitHubClient client = new GitHubClient(new ProductHeaderValue("ScuffedWalls"));
             var releases = await client.Repository.Release.GetAll("thelightdesigner", "ScuffedWalls");
-            var latest = releases.OrderByDescending(r => r.PublishedAt).First();
+            var latest = releases.OrderBy(r => r.PublishedAt).Last();
             if (latest.TagName != ScuffedWalls.ver)
             {
-                ScuffedLogger.Default.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
+                ScuffedLogger.Warning.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
             }
         }
-        public TreeDictionary GetInfo()
+        public static TreeDictionary GetInfo()
         {
             TreeDictionary info = null;
             if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<TreeDictionary>(File.ReadAllText(ScuffedConfig.InfoPath), DefaultJsonConverterSettings);
+            else
+            {
+                Console.WriteLine("No Info.dat/info.dat found!");
+                Console.ReadLine();
+                Environment.Exit(1);
+            }
+            info["_customData"] ??= new TreeDictionary();
+            info["_customData._editors"] ??= new TreeDictionary();
+            info["_customData._editors._lastEditedBy"] = "ScuffedWalls";
+            info["_customData._editors.ScuffedWalls"] ??= new TreeDictionary();
+            info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.ver;
+
             return info;
         }
-        public void VerifyOld()
+        public static void VerifyOld()
         {
             if (!ScuffedConfig.IsAutoImportEnabled) return;
 
@@ -197,9 +216,9 @@ Workspace:Default";
                 ScuffedLogger.Default.Log("Created New Old Map File");
             }
         }
-        public void VerifyConfig()
+        public static void VerifyConfig()
         {
-            if (args.Length != 0 || !File.Exists(ConfigFileName))
+            if (args.Any() || !File.Exists(ConfigFileName))
             {
                 Config reConfig = ConfigureSW();
 
@@ -218,7 +237,7 @@ Workspace:Default";
 
 
 
-        Config ConfigureSW()
+        public static Config ConfigureSW()
         {
             Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
 

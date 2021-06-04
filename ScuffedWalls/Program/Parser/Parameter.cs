@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 namespace ScuffedWalls
 {
-    /// <summary>
-    /// A more featured "Variable"
-    /// </summary>
     public class Parameter : INameStringDataPair
     {
         public static void UnUseAll(Parameter[] parameters)

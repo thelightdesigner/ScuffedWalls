@@ -131,6 +131,7 @@ namespace ModChart.Wall
                     }
                 }).ToArray();
             }
+            Output._customData["_customEvents"] ??= new object[] { };
 
 
             //walls
@@ -290,20 +291,20 @@ namespace ModChart.Wall
                 walls.Add((BeatMap.Obstacle)wall.Append(_settings.Wall, AppendPriority.Low));
 
             }
-            Output._obstacles = walls.ToArray();
+            Output._obstacles = walls.ToList();
 
             //notes and bombs
             List<BeatMap.Note> notes = new List<BeatMap.Note>();
             foreach (var cube in Model.Cubes.Where(c => c.isBomb || c.isNote))
             {
-                int type = 0;
-                if (cube.isBomb) type = 3;
+                BeatMap.Note.NoteType type = BeatMap.Note.NoteType.Right;
+                if (cube.isBomb) type = BeatMap.Note.NoteType.Bomb;
 
                 var note = new BeatMap.Note()
                 {
                     _time = _settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _settings.PCOptimizerPro,
                     _lineIndex = 0,
-                    _cutDirection = 1,
+                    _cutDirection = BeatMap.Note.CutDirection.Down,
                     _lineLayer = 0,
                     _type = type,
                     _customData = new TreeDictionary()
@@ -376,7 +377,7 @@ namespace ModChart.Wall
 
                 notes.Add((BeatMap.Note)note.Append(_settings.Wall, AppendPriority.Low));
             }
-            Output._notes = notes.ToArray();
+            Output._notes = notes.ToList();
         }
     }
     public class ModelSettings

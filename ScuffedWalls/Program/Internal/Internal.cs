@@ -26,7 +26,7 @@ namespace ScuffedWalls
         {
             List<T> list = new List<T>();
             list.AddRange(first);
-            foreach (var array in arrays) if(array != null) list.AddRange(array);
+            foreach (var array in arrays) if (array != null) list.AddRange(array);
 
             return list.ToArray();
         }
@@ -68,10 +68,14 @@ namespace ScuffedWalls
             if (map._customData != null && map._customData["_customEvents"] != null && map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0) return true;
 
             //do any notes have any noodle data other than color?
-            if (map._notes.Any(note => note._customData != null && note._customData.Any(p => p.Key != "_color"))) return true;
+            if (map._notes.Any(note => note._customData != null && HasNoodleParams(note._customData))) return true;
 
             //do any walls have any noodle data other than color?
-            if (map._obstacles.Any(wall => wall._customData != null && wall._customData.Any(p => p.Key != "_color"))) return true;
+            if (map._obstacles.Any(wall => wall._customData != null && HasNoodleParams(wall._customData))) return true;
+
+            bool HasNoodleParams(TreeDictionary customData) => 
+                customData.Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key)) || //customData has one of the noodle properties listed
+                (customData["_animation"] != null && customData.at("_animation").Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key))); //animation exists in custom data and has noodle params
 
             return false;
         }
@@ -87,6 +91,20 @@ namespace ScuffedWalls
             if (map._notes.Any(note => note._customData != null && (note._customData["_color"] != null || (note._customData["_animation"] != null && note._customData["_animation._color"] != null)))) return true;
 
             return false;
+
+        }
+        public static string MakePlural(string s, int amount)
+        {
+            if (amount == 0)
+            {
+                if (s.ToLower().Last() == 's') return s.Substring(0, s.Length - 1);
+                else return s;
+            }
+            else
+            {
+                if (s.ToLower().Last() != 's') return s + "s";
+                else return s;
+            }
 
         }
 
@@ -169,6 +187,6 @@ namespace ScuffedWalls
     {
         public DateTime StartTime;
         public void Start() => StartTime = DateTime.Now;
-        public void Complete() =>  ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
+        public void Complete() => ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
     }
 }

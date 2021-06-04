@@ -7,10 +7,10 @@ namespace ScuffedWalls
 {
     class ScuffedWallFile
     {
-        public string Path;
-        public Parameter[] Lines;
-        public KeyValuePair<int, string>[] SWFileLines;
-        public KeyValuePair<int, string>[] SWRaw;
+        public string Path { get; private set; }
+        public Parameter[] Lines { get; private set; }
+        public KeyValuePair<int, string>[] SWFileLines { get; private set; }
+        public KeyValuePair<int, string>[] SWRaw { get; private set; }
         public ScuffedWallFile(string path)
         {
             Path = path;

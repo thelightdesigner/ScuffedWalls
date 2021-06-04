@@ -1,81 +1,71 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-
-using static ScuffedWalls.ScuffedLogger.Default;
-
-
-
-namespace ScuffedWalls
+﻿namespace ScuffedWalls
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text.Json;
+    using static ScuffedLogger.Default;
+
+
     static class ScuffedWalls
     {
         public static string ver = "v1.3.0-dev";
         static void Main(string[] args)
         {
-            var helper = new Utils(args);
+            Utils.Initialize(args);
 
             Log($"ScuffedWalls {ver}");
-            var rpc = new RPC();
-            var Ts = new TimeKeeper();
-            var scuffedFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
-            var change = new Change(scuffedFile);
-
             Log(Utils.ScuffedConfig.MapFolderPath);
 
             while (true)
             {
                 Log("Changes detected, running...");
+                var StartTime = DateTime.Now;
                 Utils.InvokeOnChangeDetected();
-
-                Ts.Start();
-
-                //Create request
-                ScuffedRequest Request = null;
-                try
-                {
-                    Request = new ScuffedRequest(scuffedFile.Lines);
-                }
-                catch (Exception e)
-                {
-                    ScuffedLogger.Error.Log($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}");
-                }
-
-                //Do request
-                FunctionParser Parser = null;
-                try
-                {
-                    Parser = new FunctionParser(Request);
-                }
-                catch (Exception e)
-                {
-                    ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
-                }
-
-                //write to json file
-                ScuffedMapWriter.Log($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
-                File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
-
-                Ts.Complete();
-
-                rpc.currentMap = Parser.BeatMap;
-                rpc.workspace = FunctionParser.Workspaces.Count();
-
-                //om nom nom
+                ExecuteRequest();
                 GC.Collect();
-
-                //Warn the user
-                helper.Check(Parser.BeatMap);
-
                 Utils.InvokeOnProgramComplete();
-
-
-                //Wait for changes
+                Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
                 Log($"Waiting for changes to {new FileInfo(Utils.ScuffedConfig.SWFilePath).Name}");
-                change.Detect();
-
+                Utils.SWFileChangeDetector.Detect();
             }
+        }
+        static void ExecuteRequest()
+        {
+            ScuffedRequest Request = null;
+            try
+            {
+                Request = new ScuffedRequest(Utils.ScuffedWallFile.Lines);
+            }
+            catch (Exception e)
+            {
+                ScuffedLogger.Error.Log($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}");
+            }
+
+            //Do request
+            FunctionParser Parser = null;
+         //   try
+         //   {
+                Parser = new FunctionParser(Request);
+        //    }
+         //   catch (Exception e)
+        //    {
+        //        ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
+        //    }
+
+            //write to json file
+            ScuffedMapWriter.Log($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+            File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
+
+            //add in requirements
+            Utils.Check(Parser.BeatMap);
+
+            ScuffedMapWriter.Log($"Writing to Info.dat");
+            File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
+
+
+            Utils.DiscordRPCManager.CurrentMap = Parser.BeatMap;
+            Utils.DiscordRPCManager.Workspaces = FunctionParser.Workspaces.Count();
         }
 
     }

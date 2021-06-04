@@ -12,11 +12,11 @@ namespace ScuffedWalls
     class FunctionParser
     {
         public static Rainbow rnb;
-        public BeatMap BeatMap;
+        public BeatMap BeatMap { get; private set; }
         public ScuffedRequest Request;
         static Type[] Functions;
 
-        public static Workspace[] Workspaces;
+        public static Workspace[] Workspaces { get; private set; }
         public FunctionParser(ScuffedRequest request)
         {
             if (rnb == null) rnb = new Rainbow();
@@ -33,10 +33,10 @@ namespace ScuffedWalls
             StringFunction.Populate();
 
             Workspaces = new Workspace[] { };
-            List<Parameter> globalvariables = new List<Parameter>();
             List<Workspace> workspaces = new List<Workspace>();
             foreach (var workreq in Request.WorkspaceRequests)
             {
+                List<Parameter> globalvariables = new List<Parameter>();
                 rnb.Next();
                 if (workreq.Name != null && workreq.Name != string.Empty) Log($"Workspace {workspaces.Count()} : \"{workreq.Name}\"");
                 else Log($"Workspace {workspaces.Count()}");
@@ -47,19 +47,18 @@ namespace ScuffedWalls
                 {
                     try
                     {
+                        Parameter.ExternalVariables = globalvariables.ToArray();
+                        foreach (var s in Parameter.ExternalVariables) Console.WriteLine(s.ToString());
+
                         Parameter variable = new Parameter(
                             varreq.Name,
-
                             varreq.Parameters.Where(p => p.Name == "data").First().Raw.StringData,
-
                             GetParam("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p), varreq.Parameters));
 
                         globalvariables.Add(variable);
 
                         ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
-                        //Console.WriteLine(variable.ToString());
 
-                        Parameter.ExternalVariables = globalvariables.ToArray();
                     }
                     catch (Exception e)
                     {
@@ -86,14 +85,14 @@ namespace ScuffedWalls
 
                     funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time);
 
-                    try
-                    {
+                   // try
+                  //  {
                         funcInstance.Run();
-                    }
-                    catch (Exception e)
-                    {
-                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
-                    }
+                   // }
+                   // catch (Exception e)
+                  //  {
+                  //      ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
+                  //  }
 
                     Parameter.Check(funcreq.Parameters);
 

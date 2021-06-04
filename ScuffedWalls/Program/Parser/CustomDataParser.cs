@@ -9,7 +9,7 @@ namespace ScuffedWalls
     {
         public static ICustomDataMapObject CustomDataParse(this Parameter[] CustomNoodleData, ICustomDataMapObject Instance)
         {
-            Instance._time = GetParam("time", null, p => (object)float.Parse(p));
+            Instance._time = GetParam("time", null, p => (float?)float.Parse(p));
             var customdata = new TreeDictionary
             {
                 ["_interactable"] = GetParam("interactable", null, p => (object)bool.Parse(p)),
@@ -64,9 +64,9 @@ namespace ScuffedWalls
             gradient.DeleteNullValues();
 
 
-            if (customdata.Any()) Instance._customData = customdata;
             if (animation.Any()) customdata["_animation"] = animation;
             if (gradient.Any()) customdata["_lightGradient"] = gradient;
+            if (customdata.Any()) Instance._customData = customdata;
 
 
             //Console.WriteLine(Instance._customData._animation._definitePosition);

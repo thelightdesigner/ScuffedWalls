@@ -69,21 +69,15 @@ namespace ModChart
                 else
                 {
                     if (Merged[Item.Key] is IDictionary<string, object> dictionary1 && Item.Value is IDictionary<string, object> dictionary2)
-                        if (mergeType.HasFlag(MergeType.Dictionaries))
-                            Merged[Item.Key] = Merge(dictionary1, dictionary2);
-                        else
-                            continue;
+                        if (mergeType.HasFlag(MergeType.Dictionaries)) Merged[Item.Key] = Merge(dictionary1, dictionary2, mergeType, mergeBindingFlags);
+                        else continue;
                     else if (Merged[Item.Key] is IList<object> List1 && Item.Value is IEnumerable<object> Array3)
-                        if (mergeType.HasFlag(MergeType.Arrays))
-                            foreach (var obj in Array3)
+                        if (mergeType.HasFlag(MergeType.Arrays)) foreach (var obj in Array3)
                                 List1.Add(obj);
-                        else
-                            continue;
+                        else continue;
                     else if (Merged[Item.Key] is IEnumerable<object> Array1 && Item.Value is IEnumerable<object> Array2)
-                        if (mergeType.HasFlag(MergeType.Arrays))
-                            Merged[Item.Key] = Array1.CombineWith(Array2);
-                        else
-                            continue;
+                        if (mergeType.HasFlag(MergeType.Arrays)) Merged[Item.Key] = Array1.CombineWith(Array2);
+                        else continue;
                 }
             }
             return Merged;
@@ -103,12 +97,14 @@ namespace ModChart
             }
 
         }
+        [Flags]
         public enum MergeType
         {
             Objects,
             Arrays,
             Dictionaries
         }
+        [Flags]
         public enum MergeBindingFlags
         {
             Exists,

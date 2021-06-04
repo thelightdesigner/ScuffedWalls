@@ -10,8 +10,8 @@ namespace ScuffedWalls
     class RPC
     {
         static DiscordRpcClient client;
-        public BeatMap currentMap { get; set; }
-        public int workspace { get; set; }
+        public BeatMap CurrentMap { get; set; }
+        public int Workspaces { get; set; }
         public RPC()
         {
             if (client == null)
@@ -37,20 +37,23 @@ namespace ScuffedWalls
         }
         async Task autoUpdateRPC()
         {
-            while (currentMap == null) await Task.Delay(500);
+            while (CurrentMap == null) await Task.Delay(500);
 
-            client.UpdateDetails(Utils.Info["_songName"].ToString());
+            if (!Utils.ScuffedConfig.HideMapInRPC) client.UpdateDetails(Utils.Info["_songName"].ToString());
 
             while (true)
             {
-                string[] RPCMsg =
+                List<string> RPCMsg = new List<string>()
                 {
-                $"{currentMap._customData.at<IEnumerable<object>>("_customEvents").Count()} CustomEvents",
-                $"{currentMap._events.Length} Lights",
-                $"{currentMap._notes.Length} Notes",
-                $"{currentMap._obstacles.Length} Walls",
-                $"{workspace} Workspaces"
+                $"{CurrentMap._events.Count} Lights",
+                $"{CurrentMap._notes.Count} Notes",
+                $"{CurrentMap._obstacles.Count} Walls",
+                $"{Workspaces} Workspaces"
                 };
+                if (CurrentMap._customData != null) 
+                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Count() > 0)) 
+                        RPCMsg.Add($"{((IEnumerable<object>)coolthing.Value).Count()} {coolthing.Key}");
+
                 foreach (string mesg in RPCMsg)
                 {
                     client.UpdateState(mesg);

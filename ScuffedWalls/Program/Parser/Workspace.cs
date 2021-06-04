@@ -20,11 +20,11 @@ namespace ScuffedWalls
         public List<BeatMap.Note> Notes { get; set; } = new List<BeatMap.Note>();
         public List<BeatMap.Event> Lights { get; set; } = new List<BeatMap.Event>();
         public List<BeatMap.Obstacle> Walls { get; set; } = new List<BeatMap.Obstacle>();
-        public List<TreeDictionary> CustomEvents { get; set; } = new List<TreeDictionary>();
-        public List<TreeDictionary> PointDefinitions { get; set; } = new List<TreeDictionary>();
-        public List<TreeDictionary> Bookmarks { get; set; } = new List<TreeDictionary>();
-        public List<TreeDictionary> Environment { get; set; } = new List<TreeDictionary>();
-        public List<TreeDictionary> BPMChanges { get; set; } = new List<TreeDictionary>();
+        public List<object> CustomEvents { get; set; } = new List<object>();
+        public List<object> PointDefinitions { get; set; } = new List<object>();
+        public List<object> Bookmarks { get; set; } = new List<object>();
+        public List<object> Environment { get; set; } = new List<object>();
+        public List<object> BPMChanges { get; set; } = new List<object>();
         /// <summary>
         /// All lists involving CustomData are referenced here
         /// </summary>
@@ -66,9 +66,9 @@ namespace ScuffedWalls
             return new BeatMap()
             {
                 _version = "2.2.0",
-                _notes = notes.ToArray().OrderBy(o => o.GetTime()).ToArray(),
-                _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToArray(),
-                _events = events.ToArray().OrderBy(o => o.GetTime()).ToArray(),
+                _notes = notes.ToArray().OrderBy(o => o.GetTime()).ToList(),
+                _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToList(),
+                _events = events.ToArray().OrderBy(o => o.GetTime()).ToList(),
                 _waypoints = new object[] { },
                 _customData = customdata
             };
@@ -78,9 +78,9 @@ namespace ScuffedWalls
             return new BeatMap()
             {
                 _version = "2.2.0",
-                _notes = workspace.Notes.OrderBy(o => o.GetTime()).ToArray(),
-                _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToArray(),
-                _events = workspace.Lights.OrderBy(o => o.GetTime()).ToArray(),
+                _notes = workspace.Notes.OrderBy(o => o.GetTime()).ToList(),
+                _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToList(),
+                _events = workspace.Lights.OrderBy(o => o.GetTime()).ToList(),
                 _waypoints = new object[] { },
                 _customData = workspace.CustomData
             };

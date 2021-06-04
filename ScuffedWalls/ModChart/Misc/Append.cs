@@ -1,4 +1,7 @@
-﻿namespace ModChart
+﻿using System;
+using System.Text.Json;
+
+namespace ModChart
 {
     public static class AppendHelper
     {
@@ -14,7 +17,10 @@
             switch (type)
             {
                 case AppendPriority.Low:
-                    foreach (var property in MapObject.GetType().GetProperties()) if (property.GetValue(MapObject) == null) property.SetValue(MapObject, property.GetValue(AppendObject));
+                    foreach (var property in MapObject.GetType().GetProperties()) 
+                        if (property.GetValue(MapObject) == null) 
+                            property.SetValue(MapObject, property.GetValue(AppendObject));
+
                     if (AppendObject._customData != null)
                     {
                         MapObject._customData = (TreeDictionary)TreeDictionary.Merge(

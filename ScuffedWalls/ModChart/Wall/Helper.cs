@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -31,7 +32,7 @@ namespace ModChart.Wall
             };
         }
         // read all walls into array
-        public static BeatMap.Obstacle[] ReadAllWalls(string MapPull)
+        public static List<BeatMap.Obstacle> ReadAllWalls(string MapPull)
         {
             return JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(MapPull), ScuffedWalls.Utils.DefaultJsonConverterSettings)._obstacles;
         }

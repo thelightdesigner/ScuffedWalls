@@ -2,6 +2,7 @@
 {
     public partial class Config
     {
+        public bool HideMapInRPC { get; set; }
         public string MapFolderPath { get; set; }
         public string SWFilePath { get; set; }
         public string InfoPath { get; set; }

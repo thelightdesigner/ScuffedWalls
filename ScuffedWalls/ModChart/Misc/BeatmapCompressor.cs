@@ -3,6 +3,7 @@ using ScuffedWalls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace ModChart
 {
@@ -15,7 +16,7 @@ namespace ModChart
             if (Map._customData != null && Map._customData["_customEvents"] != null && Map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0)
             {
                 
-                Map._customData["_customEvents"] = Map._customData.at<IEnumerable<TreeDictionary>>("_customEvents").Select(mapobj =>
+                Map._customData["_customEvents"] = Map._customData.at<IEnumerable<object>>("_customEvents").Cast<TreeDictionary>().Select(mapobj =>
                 {
                     try
                     {
@@ -33,7 +34,7 @@ namespace ModChart
 
 
             //simplify wall point definitions
-            if (Map._obstacles != null && Map._obstacles.Length > 0)
+            if (Map._obstacles != null && Map._obstacles.Count > 0)
             {
                 Map._obstacles = Map._obstacles.Select(mapobj =>
                 {
@@ -44,14 +45,14 @@ namespace ModChart
                     }
                     catch(Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error on _obstacle at beat {mapobj._time}");
+                        ScuffedLogger.Error.Log($"Error on _obstacle at beat {mapobj._time} {JsonSerializer.Serialize(mapobj)}");
                         throw e;
                     }
-                }).ToArray();
+                }).ToList();
             }
 
             //simplify note point definitions
-            if (Map._notes != null && Map._notes.Length > 0)
+            if (Map._notes != null && Map._notes.Count > 0)
             {
                 Map._notes = Map._notes.Select(mapobj =>
                 {
@@ -65,14 +66,14 @@ namespace ModChart
                         ScuffedLogger.Error.Log($"Error on _note at beat {mapobj._time}");
                         throw e;
                     }
-                }).ToArray();
+                }).ToList();
             }
 
             return Map;
         }
         public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string,int>()
         {
-            ["_color"] = 3, 
+            ["_color"] = 4, 
             ["_dissolve"] = 1, 
             ["_dissolveArrow"] = 1, 
             ["_definitePosition"] = 3,
@@ -140,6 +141,7 @@ namespace ModChart
             else if (NewPoints.Last().ElementAt(importantvalues).ToFloat() > 1f)
             {
                 ScuffedLogger.Warning.Log($"[Warning] Noodle Extensions point definitions don't end with values higher than 1");
+                throw new Exception(NewPoints.Last().ElementAt(importantvalues).ToFloat().ToString());
 
             }
             return NewPoints.ToArray();

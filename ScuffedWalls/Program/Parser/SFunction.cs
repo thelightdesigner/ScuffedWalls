@@ -9,7 +9,7 @@ namespace ScuffedWalls
         public Parameter[] Parameters;
         public float Time;
 
-        public virtual void Run() { }
+        public virtual void Run() => ScuffedLogger.Error.Log("Unimplimented Function");
 
         public void InstantiateSFunction(Parameter[] parameters, Workspace instance, float time)
         {
@@ -21,8 +21,7 @@ namespace ScuffedWalls
         {
             Console.ForegroundColor = ConsoleColor.White;
             string s = string.Empty;
-            if (Amount != 1) s = "s";
-            ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Type}{s})");
+            ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})");
             Console.ResetColor();
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)

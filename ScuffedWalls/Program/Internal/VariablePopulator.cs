@@ -1,4 +1,5 @@
 ﻿using ModChart;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,57 +43,27 @@ namespace ScuffedWalls
             if (_note != null) mapobj = _note;
             if (_event != null) mapobj = _event;
 
-            if (mapobj != null) PopulateParts(mapobj._customData);
-
-            void PopulateParts(TreeDictionary dict)
+            if (mapobj != null)
             {
-                foreach (KeyValuePair<string, object> Property in dict)
+                propVars.Add(new Parameter("_time", mapobj._time.ToString()));
+                if (mapobj._customData != null)
                 {
-                    if (Property.Value is TreeDictionary dictionary) PopulateParts(dictionary);
-                    else if (Property.Value is IEnumerable<object> Array) propVars.AddRange(GetArrayVars(Array, Property.Key));
-                    else propVars.Add(new Parameter(Property.Key, Property.Value.ToString()));
+                    mapobj._customData.DeleteNullValues();
+                    PopulateParts(mapobj._customData);
                 }
             }
 
+            void PopulateParts(TreeDictionary dict, string prefix = "")
+            {
+                foreach (KeyValuePair<string, object> Property in dict)
+                {
+                    if (Property.Value is TreeDictionary dictionary) PopulateParts(dictionary, Property.Key + ".");
+                    else if (Property.Value is IEnumerable<object> Array) propVars.AddRange(GetArrayVars(Array, prefix + Property.Key));
+                    else propVars.Add(new Parameter(Property.Key, prefix + Property.Value.ToString()));
+                }
+            }
             Properties = propVars.ToArray();
         }
-
-        //old
-        /*
-        public Parameter[] EachToVar(object[] array, string outerPropName)
-        {
-            List<Parameter> vars = new List<Parameter>();
-            for(int i = 0; i < array.Length; i++)
-            {
-                vars.Add(new Parameter($"{outerPropName}({i})",array[i].ToString()));
-            }
-            return vars.ToArray();
-        }
-        public Parameter[] EachToVar(object[][] array, string outerPropName)
-        {
-            List<Parameter> vars = new List<Parameter>();
-            for(int i = 0; i < array.Length; i++)
-            {
-                vars.AddRange(EachToVar(array[i],$"{outerPropName}({i})"));
-            }
-            return vars.ToArray();
-        }
-        public Parameter[] GetArrayVars(KeyValuePair<string, object> Item)
-        {
-            try
-            {
-                return EachToVar(JsonSerializer.Deserialize<object[][]>(JsonSerializer.Serialize(Item.Value)), Item.Key);
-            }
-            catch { }
-            try
-            {
-                return EachToVar(JsonSerializer.Deserialize<object[]>(JsonSerializer.Serialize(Item.Value)), Item.Key);
-            }
-            catch { }
-            return new Parameter[] { new Parameter(Item.Key, Item.Value.ToString())  };
-        }
-        */
-
         public Parameter[] GetArrayVars(IEnumerable<object> Array, string Name)
         {
             var Vars = new List<Parameter>();
@@ -107,8 +78,9 @@ namespace ScuffedWalls
 
                 else Vars.Add(
                     new Parameter(
-                        Array.ElementAt(Index).ToString(),
-                        $"{Name}({Index})"));
+                        $"{Name}({Index})",
+                        Array.ElementAt(Index).ToString()
+                        ));
             }
 
             return Vars.ToArray();

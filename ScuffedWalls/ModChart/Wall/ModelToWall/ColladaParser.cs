@@ -25,7 +25,6 @@ namespace ModChart.Wall
         public Model(Cube[] Cubes)
         {
             this.Cubes = Cubes;
-            //lmao
         }
 
 
