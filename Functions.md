@@ -439,7 +439,7 @@ a very scuffed way to make a rainbow
 adds on custom noodle data to notes between the function time and endtime (toBeat)
 
  - toBeat: float
- - type: int,int,int (defaults to 0,1,2,3,4,5,6,7,8)
+ - notetype: int,int,int (defaults to 0,1,2,3) see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
  - generic custom data
