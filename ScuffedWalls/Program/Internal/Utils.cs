@@ -59,6 +59,11 @@ Workspace:Default";
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
             ScuffedConfig = GetConfig();
+
+            VerifyOld();
+            VerifySW();
+            VerifyBackups();
+
             ScuffedWallFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
             SWFileChangeDetector = new Change(ScuffedWallFile);
             Info = GetInfo();
@@ -68,10 +73,6 @@ Workspace:Default";
                      .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
             BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
 
-
-            VerifyOld();
-            VerifySW();
-            VerifyBackups();
             ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
             DiscordRPCManager = new RPC();
             var releasething = CheckReleases();

@@ -48,7 +48,6 @@ namespace ScuffedWalls
                     try
                     {
                         Parameter.ExternalVariables = globalvariables.ToArray();
-                        foreach (var s in Parameter.ExternalVariables) Console.WriteLine(s.ToString());
 
                         Parameter variable = new Parameter(
                             varreq.Name,
@@ -65,8 +64,9 @@ namespace ScuffedWalls
                         ScuffedLogger.Error.Log($"Error adding global variable {varreq.Name} ERROR:{e.Message} ");
                     }
 
-
                 }
+
+                Parameter.ExternalVariables = globalvariables.ToArray();
 
                 foreach (var funcreq in workreq.FunctionRequests)
                 {
@@ -85,14 +85,14 @@ namespace ScuffedWalls
 
                     funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time);
 
-                   // try
-                  //  {
+                    try
+                    {
                         funcInstance.Run();
-                   // }
-                   // catch (Exception e)
-                  //  {
-                  //      ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
-                  //  }
+                    }
+                    catch (Exception e)
+                    {
+                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
+                    }
 
                     Parameter.Check(funcreq.Parameters);
 
@@ -101,7 +101,7 @@ namespace ScuffedWalls
                 Workspaces = workspaces.ToArray();
             }
             Workspaces = workspaces.ToArray();
-            BeatMap = Workspaces.toBeatMap();
+            BeatMap = Workspaces.ToBeatMap();
             BeatMap.Prune();
             if (Utils.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled)
             {

@@ -86,7 +86,7 @@ namespace ScuffedWalls
                 catch (Exception e)
                 {
                     ScuffedLogger.Error.Log($"{Name} Couldnt be parsed ERROR: {e.Message}");
-                    return DefaultValue;
+                   return DefaultValue;
                 }
             }
         }

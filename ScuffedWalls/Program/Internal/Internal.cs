@@ -93,19 +93,16 @@ namespace ScuffedWalls
             return false;
 
         }
-        public static string MakePlural(string s, int amount)
+        public static string MakePlural(this string s, int amount)
         {
-            if (amount == 0)
-            {
-                if (s.ToLower().Last() == 's') return s.Substring(0, s.Length - 1);
-                else return s;
-            }
-            else
-            {
-                if (s.ToLower().Last() != 's') return s + "s";
-                else return s;
-            }
+            if (amount == 0) return s.TrimEnd('s');
+            else return s.SetEnd('s');
+        }
 
+        public static string SetEnd(this string s, char character)
+        {
+            if (s.Last() == character) return s;
+            else return s + character;
         }
 
         /*

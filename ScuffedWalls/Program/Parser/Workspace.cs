@@ -45,7 +45,7 @@ namespace ScuffedWalls
     }
     static class WorkspaceHelper
     {
-        public static BeatMap toBeatMap(this Workspace[] workspaces)
+        public static BeatMap ToBeatMap(this Workspace[] workspaces)
         {
             List<BeatMap.Obstacle> obstacles = new List<BeatMap.Obstacle>();
             List<BeatMap.Note> notes = new List<BeatMap.Note>();
@@ -62,6 +62,10 @@ namespace ScuffedWalls
                     TreeDictionary.MergeType.Arrays | TreeDictionary.MergeType.Objects,
                     TreeDictionary.MergeBindingFlags.HasValue);
             }
+
+            //order point definitions
+
+            customdata.OrderListsBy_time();
 
             return new BeatMap()
             {
@@ -85,8 +89,17 @@ namespace ScuffedWalls
                 _customData = workspace.CustomData
             };
         }
+        public static void OrderListsBy_time(this IDictionary<string, object> _customData)
+        {
+            string[] Keys = _customData.Keys.ToArray();
+
+            foreach (string key in Keys)
+            {
+                if (_customData[key] is IList<object> array && array.All(arrayitem => arrayitem is IDictionary<string,object> dict && dict.ContainsKey("_time")))
+                {
+                    _customData[key] = array.OrderBy(obj => ((IDictionary<string, object>)obj)["_time"].ToFloat()).ToList();
+                }
+            }
+        }
     }
-
-
-
 }

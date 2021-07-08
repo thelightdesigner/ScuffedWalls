@@ -170,10 +170,8 @@ namespace ModChart.Wall
                             {
                                 wall._customData["_scale"] = new object[] { cube.OffsetTransformation.Scale.X * 2f, cube.OffsetTransformation.Scale.Y * 2f, cube.OffsetTransformation.Scale.Z * 2f };
                                 wall._customData["_animation._definitePosition"] = new object[][] { new object[] { cube.OffsetTransformation.Position.X * -1f, cube.OffsetTransformation.Position.Y, cube.OffsetTransformation.Position.Z, 0 } };
-                                wall._customData["_animation._scale"] = new object[][] { new object[] { 1, 1, 1, 0 } };
+                               // wall._customData["_animation._scale"] = new object[][] { new object[] { 1, 1, 1, 0 } };
                             }
-
-                            wall._customData["_localRotation"] = new object[] { cube.OffsetTransformation.RotationEul.X, cube.OffsetTransformation.RotationEul.Y * -1, cube.OffsetTransformation.RotationEul.Z * -1 };
 
                             if (_settings.HasAnimation && cube.Frames != null && cube.Frames.Any())
                             {
@@ -233,6 +231,10 @@ namespace ModChart.Wall
                                 if (rotationN.Any()) wall._customData["_animation._localRotation"] = rotationN.ToArray();
                                 if (scaleN.Any()) wall._customData["_animation._scale"] = scaleN.ToArray();
                                 if (colorN.Any()) wall._customData["_animation._color"] = colorN.ToArray();
+                            }
+                            else
+                            {
+                                wall._customData["_localRotation"] = new object[] { cube.OffsetTransformation.RotationEul.X, cube.OffsetTransformation.RotationEul.Y * -1, cube.OffsetTransformation.RotationEul.Z * -1 };
                             }
                         }
                         break;

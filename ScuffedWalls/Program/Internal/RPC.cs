@@ -45,13 +45,14 @@ namespace ScuffedWalls
             {
                 List<string> RPCMsg = new List<string>()
                 {
-                $"{CurrentMap._events.Count} Lights",
-                $"{CurrentMap._notes.Count} Notes",
-                $"{CurrentMap._obstacles.Count} Walls",
-                $"{Workspaces} Workspaces"
+                    $"{CurrentMap._events.Count} Lights",
+                    $"{CurrentMap._notes.Count} Notes",
+                    $"{CurrentMap._obstacles.Count} Walls",
+                    $"{Workspaces} Workspaces"
                 };
-                if (CurrentMap._customData != null) 
-                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Count() > 0)) 
+
+                if (CurrentMap._customData != null)
+                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Count() > 0))
                         RPCMsg.Add($"{((IEnumerable<object>)coolthing.Value).Count()} {coolthing.Key}");
 
                 foreach (string mesg in RPCMsg)

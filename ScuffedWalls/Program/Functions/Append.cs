@@ -76,7 +76,7 @@ namespace ScuffedWalls.Functions
 
                 foreach (var prop in internalvars.Properties) Console.WriteLine(prop.Name + " " + prop.StringData);
 
-                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData["_track"].ToString())))
+                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData["_track"].ToString())) && notetype.Any(t => t == (int)obj._type) )
                 {
                     i++;
                     return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), type);

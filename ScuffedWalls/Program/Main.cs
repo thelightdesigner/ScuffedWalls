@@ -9,7 +9,7 @@
 
     static class ScuffedWalls
     {
-        public static string ver = "v1.3.0-dev";
+        public static string ver = "v1.3.2";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
@@ -44,14 +44,14 @@
 
             //Do request
             FunctionParser Parser = null;
-         //   try
-         //   {
+            try
+            {
                 Parser = new FunctionParser(Request);
-        //    }
-         //   catch (Exception e)
-        //    {
-        //        ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
-        //    }
+            }
+            catch (Exception e)
+            {
+                ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
+            }
 
             //write to json file
             ScuffedMapWriter.Log($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
