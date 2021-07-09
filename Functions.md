@@ -149,7 +149,7 @@ var:SomeVariableName
 
   #Creates walls with random shades of grey
 0:Wall
-  color:\[Grey,Grey,Grey,1]
+  color:[Grey,Grey,Grey,1]
   repeat:15
   ```
   
@@ -439,7 +439,7 @@ a very scuffed way to make a rainbow
 adds on custom noodle data to notes between the function time and endtime (toBeat)
 
  - toBeat: float
- - notetype: int,int,int (defaults to 0,1,2,3) see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
  - generic custom data
@@ -456,12 +456,12 @@ tobeat:63
 Njsoffset:Random(1,3)
 AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
 AnimateDissolve:[0,0],[1,0.1],[1,1]
-NoSpawnEffect:true
+DisableSpawnEffect:true
 
 66:AppendToAllNotesBetween
 tobeat:99
 NJS:10
-NoSpawnEffect:true
+DisableSpawnEffect:true
 AnimateDissolveArrow: [0,0],[0,1]
 track:CameraMoveNotes
  ```
@@ -567,7 +567,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 
 
-these properties use _noteJumpStartBeatOffset to adjust the notes duration
+these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
 - definitedurationbeats: float, makes the note stay around for exactly this long in beats
  - definitedurationseconds: float, makes the note stay around for exactly this long in seconds
