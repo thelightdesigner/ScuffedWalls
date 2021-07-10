@@ -10,6 +10,10 @@ namespace ScuffedWalls
     class RPC
     {
         static DiscordRpcClient client;
+
+#pragma warning disable IDE0052 // Remove unread private members
+        static Task AutoUpdater;
+#pragma warning restore IDE0052 // Remove unread private members
         public BeatMap CurrentMap { get; set; }
         public int Workspaces { get; set; }
         public RPC()
@@ -33,7 +37,7 @@ namespace ScuffedWalls
                     }
                 });
             }
-            var autoUpdater = autoUpdateRPC();
+            AutoUpdater = autoUpdateRPC();
         }
         async Task autoUpdateRPC()
         {
@@ -52,8 +56,11 @@ namespace ScuffedWalls
                 };
 
                 if (CurrentMap._customData != null)
-                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Count() > 0))
-                        RPCMsg.Add($"{((IEnumerable<object>)coolthing.Value).Count()} {coolthing.Key}");
+                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Any()))
+                    {
+                        int count = ((IEnumerable<object>)coolthing.Value).Count();
+                        RPCMsg.Add($"{count} {coolthing.Key.MakePlural(count)}");
+                    }
 
                 foreach (string mesg in RPCMsg)
                 {

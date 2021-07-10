@@ -29,13 +29,11 @@ namespace ScuffedWalls.Functions
 
             if (Utils.InfoDifficulty["_customData._sounds"] is IList<object> _sounds)
             {
-                Console.WriteLine("if");
                 if (_sounds.All(s => s.ToString() != path)) _sounds.Add(path);
                 id = _sounds.IndexOf(path);
             }
             else
             {
-                Console.WriteLine("else");
                 var newList = new List<object>
                 {
                     path

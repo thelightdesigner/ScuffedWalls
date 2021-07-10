@@ -2,8 +2,10 @@
 using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -64,16 +66,19 @@ Workspace:Default";
             VerifySW();
             VerifyBackups();
 
-            ScuffedWallFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
-            SWFileChangeDetector = new Change(ScuffedWallFile);
+            
             Info = GetInfo();
             InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
                      .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
                      .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
                      .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
-            BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
 
+            BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
             ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
+
+            ScuffedWallFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
+            SWFileChangeDetector = new Change(ScuffedWallFile);
+
             DiscordRPCManager = new RPC();
             var releasething = CheckReleases();
 
@@ -242,16 +247,17 @@ Workspace:Default";
         {
             Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
 
-            if ((args.Length == 0 || args == null))
+            string mapfolderpath = args != null && args.Any() ? args[0] : new FileInfo(Process.GetCurrentProcess().MainModule.FileName).DirectoryName;
+            // get beatmap option
+            DirectoryInfo mapFolder = new DirectoryInfo(mapfolderpath);
+            FileInfo[] mapDataFiles = mapFolder.GetFiles("*.dat");
+
+            if(mapDataFiles.Count() < 1)
             {
-                Console.WriteLine("No file was dragged into the exe!");
+                Console.WriteLine("No map files (*.dat) detected!");
                 Console.ReadLine();
                 Environment.Exit(1);
             }
-
-            // get beatmap option
-            DirectoryInfo mapFolder = new DirectoryInfo(args[0]);
-            FileInfo[] mapDataFiles = mapFolder.GetFiles("*.dat");
 
             int j = 0;
             List<int> indexoption = new List<int>();
@@ -293,7 +299,7 @@ Workspace:Default";
 
             config.MapFilePath = mapDataFiles[option].FullName;
 
-            config.MapFolderPath = args[0];
+            config.MapFolderPath = mapfolderpath;
 
             config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
 

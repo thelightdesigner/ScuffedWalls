@@ -9,13 +9,14 @@
 
     static class ScuffedWalls
     {
-        public static string ver = "v1.3.2";
+        public static string ver => "v1.3.3";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
 
             Log($"ScuffedWalls {ver}");
             Log(Utils.ScuffedConfig.MapFolderPath);
+
 
             while (true)
             {

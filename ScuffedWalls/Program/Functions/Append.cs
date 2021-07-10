@@ -32,7 +32,7 @@ namespace ScuffedWalls.Functions
 
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
                 
-                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData["_track"].ToString())))
+                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && AppendNotes.isOnTrack(obj._customData, tracc))
                 {
                     i++;
                     WallIndex.StringData = i.ToString();
@@ -65,18 +65,15 @@ namespace ScuffedWalls.Functions
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string tracc = GetParam("ontrack", null, p => p);
             int[] notetype = GetParam("notetype", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
-            Console.WriteLine("run");
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
-                Console.WriteLine("note");
                 internalvars.CurrentNote = obj;
                 WallIndex.StringData = i.ToString();
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
 
-                foreach (var prop in internalvars.Properties) Console.WriteLine(prop.Name + " " + prop.StringData);
 
-                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && (tracc == null || tracc.Equals(obj._customData["_track"].ToString())) && notetype.Any(t => t == (int)obj._type) )
+                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && isOnTrack(obj._customData,tracc) && notetype.Any(t => t == (int)obj._type) )
                 {
                     i++;
                     return obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), type);
@@ -86,6 +83,12 @@ namespace ScuffedWalls.Functions
 
             Log($"Appended {i} notes from beats {starttime} to {endtime}");
             Parameter.ExternalVariables.RefreshAllParameters();
+        }
+
+        public static bool isOnTrack(TreeDictionary _customData, string track)
+        {
+            if (string.IsNullOrEmpty(track) || (_customData.ContainsKey("_track") && track.Equals(_customData["_track"]))) return true;
+            else return false;
         }
     }
     [ScuffedFunction("AppendToAllEventsBetween","AppendLights","AppendEvent","AppendEvents")]
@@ -144,7 +147,6 @@ namespace ScuffedWalls.Functions
                 {
                     i++;
                     var s = (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), type);
-                    Console.WriteLine(type.ToString());
                     return s;
                 }
                 else return obj;

@@ -15,7 +15,6 @@ namespace ScuffedWalls.Functions
 
             string InputArgs = JS != null ? JS : GetParam("Args", "", p => p);
 
-            Console.WriteLine(InputArgs);
             void Execute()
             {
                 Process cmd = new Process
