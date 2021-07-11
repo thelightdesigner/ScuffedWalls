@@ -1,15 +1,24 @@
 ## Functions
-Functions are defined by a time and a name.
+Functions are referenced in the \_SW.sw file.
 
+example:
+```
+0:Wall
+  color:[0,1,1,1]
+```
+makes a cyan wall
+
+All the available functions are listed below
+
+- [`AppendWalls`](#AppendWalls)
+- [`AppendNotes`](#AppendNotes)
+- [`AppendEvents`](#AppendEvents)
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
 - [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
-- [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
-- [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
-- [`AppendToAllEventsBetween`](#AppendToAllEventsBetween)
 - [`Import`](#Import)
 - [`Run`](#Run)
 - [`Wall`](#Wall)
@@ -25,8 +34,8 @@ Functions are defined by a time and a name.
 
 
 ## CustomData
-generic customdata that can be parsed as a parameter on most functions
-"" = put in quotes, ? = optional
+Noodle Extensions properties that can be used on most functions "" = put in quotes, ? = optional
+
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
 - AnimatePosition: \[x,y,z,t,"e"?]
@@ -73,8 +82,8 @@ generic customdata that can be parsed as a parameter on most functions
  - RGBColor:\[r,g,b,a] (0-255)
 
 ## CustomEvent Data
-generic custom data for custom events
-"" = put in quotes, ? = optional
+Noodle Extensions properties that are used on custom event functions (AnimateTrack, AssignPathAnimation...) "" = put in quotes, ? = optional
+
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
 - AnimatePosition: \[x,y,z,t,"e"?]
@@ -175,8 +184,139 @@ Variables that are auto created and changed internally. All repeatable functions
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
 
 
+# AppendEvents
+adds on custom chroma data to events/lights between the function time and endtime (toBeat)
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - chroma customdata
+ - lighttype: 0, 1, 2, 3; the type of the light
+  
+ ~special things~
+ - converttorainbow
+ - rainbowfactor
+
+ Example
+```
+ 5:AppendToAllEventsBetween
+   toBeat:10
+   appendTechnique:2
+   lightType:1,3,0
+   converttorainbow: true
+   rainbowfactor:1
+ ```
+
+# AppendWalls
+adds on custom noodle data to walls between the function time and endtime (toBeat)
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - onTrack: string, only appends to notes on this track
+ - generic custom data
+ 
+  Example
+ ```
+ 5:AppendToAllWallsBetween
+   toBeat:10
+   track: FurryTrack
+   appendTechnique:1
+ ```
+
+
+multiplies all the wall times by 2
+```
+0:AppendWalls
+   time:{_time * 2}
+   appendtechnique:1
+   ```
+
+multiplies all the definitepositions by 3 except for the time value
+```
+0:AppendWalls
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1
+   ```
+   
+a very scuffed way to make a rainbow
+
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
+
+
+[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
+
+# AppendNotes
+adds on custom noodle data to notes between the function time and endtime (toBeat)
+
+ - toBeat: float
+ - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - appendTechnique: int(0-2)
+ - onTrack: string, only appends to notes on this track
+ - generic custom data
+ 
+  Example
+  ```
+ 5:AppendToAllNotesBetween
+   toBeat:10
+   track: FurryTrack
+   appendTechnique:2
+
+60:AppendToAllNotesBetween
+tobeat:63
+Njsoffset:Random(1,3)
+AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
+AnimateDissolve:[0,0],[1,0.1],[1,1]
+DisableSpawnEffect:true
+
+66:AppendToAllNotesBetween
+tobeat:99
+NJS:10
+DisableSpawnEffect:true
+AnimateDissolveArrow: [0,0],[0,1]
+track:CameraMoveNotes
+ ```
+
+multiplies all the note times by 2
+
+```
+0:AppendNotes
+   time:{_time * 2}
+   appendtechnique:1
+   ```
+
+multiplies all the definitepositions by 3 except for the time value
+```
+0:AppendNotes
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1
+   ```
+
+
+ ## AppendTechnique
+tells the append function how to add on your custom data properties to other map object custom data.
+ - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
+ - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
+ - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
+
+**default is 0**
+
+## Append Function Internal Variables
+The append function runs through each object in a workspace and changes its data.
+
+In the example, `animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3}...]`
+
+`_animation._definitePosition(0)(0)` is a reference to an "internal" variable created by the append function. in the case of SW, indexers are represented with parenthesis.
+
+
+this example takes the value from the already existing  `_definitePosition` array, indexes in to the first array of the point definition, then indexes in again into the first value of the array, multiplies the resulting floating point number by 3, and then sets that.
+
+granted this only works if every object has a  `_definitePosition` with a value at the specified index
+
+confusing right?
+
+
 # TextToWall
-uses imagetowall or modeltowall to procedurally create walltext from text (Constructs text out of walls)
+Constructs text out of walls
 
 Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
 
@@ -373,123 +513,6 @@ note that in the above example, CoolMapScript.js is in the map folder
   Args:Start Notepad.exe
   RunBefore: false
 ```
-
-# AppendToAllEventsBetween
-adds on custom chroma data to events/lights between the function time and endtime (toBeat)
-
- - toBeat: float
- - appendTechnique: int(0-2)
- - chroma customdata
- - lighttype: 0, 1, 2, 3; the type of the light
-  
- ~special things~
- - converttorainbow
- - rainbowfactor
-
- Example
-```
- 5:AppendToAllEventsBetween
-   toBeat:10
-   appendTechnique:2
-   lightType:1,3,0
-   converttorainbow: true
-   rainbowfactor:1
- ```
-
-# AppendToAllWallsBetween
-adds on custom noodle data to walls between the function time and endtime (toBeat)
-
- - toBeat: float
- - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
- - generic custom data
- 
-  Example
- ```
- 5:AppendToAllWallsBetween
-   toBeat:10
-   track: FurryTrack
-   appendTechnique:1
- ```
-
-
-multiplies all the wall times by 2
-```
-0:AppendWalls
-   time:{_time * 2}
-   appendtechnique:1
-   ```
-
-multiplies all the definitepositions by 3 except for the time value
-```
-0:AppendWalls
-   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1
-   ```
-   
-a very scuffed way to make a rainbow
-
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
-
-
-[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
-
-# AppendToAllNotesBetween
-adds on custom noodle data to notes between the function time and endtime (toBeat)
-
- - toBeat: float
- - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
- - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
- - generic custom data
- 
-  Example
-  ```
- 5:AppendToAllNotesBetween
-   toBeat:10
-   track: FurryTrack
-   appendTechnique:2
-
-60:AppendToAllNotesBetween
-tobeat:63
-Njsoffset:Random(1,3)
-AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
-AnimateDissolve:[0,0],[1,0.1],[1,1]
-DisableSpawnEffect:true
-
-66:AppendToAllNotesBetween
-tobeat:99
-NJS:10
-DisableSpawnEffect:true
-AnimateDissolveArrow: [0,0],[0,1]
-track:CameraMoveNotes
- ```
-
-multiplies all the note times by 2
-
-```
-0:AppendNotes
-   time:{_time * 2}
-   appendtechnique:1
-   ```
-
-multiplies all the definitepositions by 3 except for the time value
-```
-0:AppendNotes
-   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1
-   ```
-
-
- ## AppendTechnique
-tells the append function how to add on your custom data properties to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
- - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
- - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
-
-**default is always 0**
-
  
 # Import
 adds in map objects from other map.dat files
