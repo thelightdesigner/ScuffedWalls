@@ -30,11 +30,15 @@ All the available functions are listed below
 - [`PointDefinition`](#PointDefinition)
 
 
+## Noodle Extensions/Chroma Properties Syntax
+Noodle Extensions/Chroma/Other properties that can be used on most functions 
 
+Most of these properties are directly connected to their corresponding Noodle/Chroma property. 
+[`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
+[`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
+[`Chroma documentation`](https://github.com/Aeroluna/Chroma)
 
-
-## CustomData
-Noodle Extensions properties that can be used on most functions "" = put in quotes, ? = optional
+"" = put in quotes, ? = optional
 
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
@@ -81,7 +85,7 @@ Noodle Extensions properties that can be used on most functions "" = put in quot
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
 
-## CustomEvent Data
+## CustomEvent Properties Syntax
 Noodle Extensions properties that are used on custom event functions (AnimateTrack, AssignPathAnimation...) "" = put in quotes, ? = optional
 
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
@@ -103,17 +107,14 @@ Noodle Extensions properties that are used on custom event functions (AnimateTra
 - parentTrack: string
 - easing: string
 
-## Math & Random
-Math expressions are computed inside of { } symbols. A random floating point number is yielded from Random(val1,val2). A random integer is yielded from RandomInt(val1,val2).
+## Math & LineFunctions
+Math expressions are computed inside of { } symbols. A random floating point number is yielded from the line function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
 ```
 0:Wall
   position:[{ 5+6 }, Random(1,5), { 5+6+Random(2,10) }]
   scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
   ```
-
-## String Functions
-String functions follow the same format that most c/c++/c#/java/js function constructors do. They are function calls from within a line. Essentially they replace themselves and their constructor with their output in the line.
 
 ```
 0:Wall
@@ -126,9 +127,9 @@ String functions follow the same format that most c/c++/c#/java/js function cons
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
   
   
-The example above uses the HSLtoRGB function to create a rainbow.
+The example above uses the HSLtoRGB line function to create a rainbow.
 
-The available string functions are:
+The available line functions are:
  - Random(Val1,Val2) => returns a number
  - RandomInt(Val1,Val2) => returns a number
  - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
@@ -140,9 +141,11 @@ todo: add more string functions, dm me for suggestions or clone the repo and nav
 
 
  ## Variables
-Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
+Variables are containers for string/numerical data.
 
 ```
+Workspace
+
 var:SomeVariableName
   data:5
   recompute:0
@@ -152,6 +155,8 @@ var:SomeVariableName
   ```
 
   ```
+Workspace
+
   var:Grey
   data:Random(0,1)
   recompute:1
@@ -162,7 +167,7 @@ var:SomeVariableName
   repeat:15
   ```
   
-
+Keep in mind: Variables are only accessable from the workspace they are defined in.
 
 recompute:
 0 = recompute math, variables and random() for all references of the variable, 
@@ -293,10 +298,10 @@ multiplies all the definitepositions by 3 except for the time value
 
 
  ## AppendTechnique
-tells the append function how to add on your custom data properties to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
- - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
- - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
+The merge priority of the values being appended
+ - 0 = Low Priority (Will not overwrite any property but can still append to nulled properties)
+ - 1 = High Priority (Can overwrite any property)
+ - 2~4 = ??? (Dont use these)
 
 **default is 0**
 
@@ -478,11 +483,16 @@ Workspace:wtf workspace
 Workspace:hahaball
 
 Workspace
+
+	#adds in one wall at beat 97, a copy of "wtf workspace" shifted up by 32 beats
+	#now in the map there will be a wall at 64 and a wall at 96
  25:CloneFromWorkspace
    Name:wtf workspace
    Type:0,1,2
    toBeat:125
    addTime:32
+   
+   
  ```
  
 # Blackout
@@ -492,6 +502,8 @@ adds a single light off event at the beat number. why? because why not.
   ```
  5:Blackout
  ```
+ 
+ 
 # Run
 calls the terminal/command prompt and runs the specified args after or before the programs runtime.
 
@@ -694,6 +706,8 @@ makes a point definition
 
 # Script
 use this function by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
+
+is this stupid? yes.
 
 
 # Uwu
