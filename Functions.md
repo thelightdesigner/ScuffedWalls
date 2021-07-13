@@ -1,12 +1,18 @@
 ## Functions
-Functions are referenced in the \_SW.sw file.
+Functions are referenced in the \_ScuffedWalls.sw file.
 
 example:
 ```
+#ScuffedWalls file
+
+Workspace
+
 0:Wall
   color:[0,1,1,1]
+  
+#End ScuffedWalls file
 ```
-makes a cyan wall
+makes a cyan wall (wow)
 
 All the available functions are listed below
 
@@ -34,9 +40,9 @@ All the available functions are listed below
 Noodle Extensions/Chroma/Other properties that can be used on most functions 
 
 Most of these properties are directly connected to their corresponding Noodle/Chroma property. 
-[`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
-[`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
-[`Chroma documentation`](https://github.com/Aeroluna/Chroma)
+ -  [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
+ - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
+ - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
 
 "" = put in quotes, ? = optional
 
@@ -85,30 +91,8 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
 
-## CustomEvent Properties Syntax
-Noodle Extensions properties that are used on custom event functions (AnimateTrack, AssignPathAnimation...) "" = put in quotes, ? = optional
-
-- AnimateDefinitePosition: \[x,y,z,t,"e"?]
-- DefineAnimateDefinitePosition:string
-- AnimatePosition: \[x,y,z,t,"e"?]
-- DefineAnimatePosition:string
-- Track: string
-- AnimateDissolve: \[d,t,"e"?]
-- DefineAnimateDissolve:string
-- AnimateColor: \[r,g,b,a,t,"e"?]
-- DefineAnimateColor:string
-- AnimateRotation: \[x,y,z,t,"e"?]
-- DefineAnimateRotation:string
-- AnimateLocalRotation: \[x,y,z,t,"e"?]
-- DefineAnimateLocalRotation:string
-- AnimateScale: \[x,y,z,t,"e"?]
-- DefineAnimateScale:string
-- childTracks:\["str","str"...]
-- parentTrack: string
-- easing: string
-
-## Math & LineFunctions
-Math expressions are computed inside of { } symbols. A random floating point number is yielded from the line function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
+## Math & Functions
+Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
 ```
 0:Wall
@@ -126,18 +110,14 @@ Math expressions are computed inside of { } symbols. A random floating point num
   
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
   
-  
-The example above uses the HSLtoRGB line function to create a rainbow.
+The example above uses the HSLtoRGB function to create a rainbow.
 
-The available line functions are:
+The available functions are:
  - Random(Val1,Val2) => returns a number
  - RandomInt(Val1,Val2) => returns a number
  - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
  - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
  - OrderPointDefinitions(PointDefinitions) => returns point definitions
-
-todo: add more string functions, dm me for suggestions or clone the repo and navigate to ScuffedWalls -> Program -> Parser -> StringFunc.cs and add a new StringFunction() to the array in void Populate(). When you're finished and it works feel free to make a pull request.
-
 
 
  ## Variables
@@ -167,12 +147,12 @@ Workspace
   repeat:15
   ```
   
-Keep in mind: Variables are only accessable from the workspace they are defined in.
+Variables are only accessable from the workspace they are defined in.
 
 recompute:
-0 = recompute math, variables and random() for all references of the variable, 
-1 = recompute every repeat/function, 
-2 = compute once on creation
+ - 0 = recompute math, variables and random() for all references of the variable, 
+ - 1 = recompute every repeat/function, 
+ - 2 = compute once on creation
 defaults to 2
 
 # Internal Variables
@@ -189,35 +169,16 @@ Variables that are auto created and changed internally. All repeatable functions
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
 
 
-# AppendEvents
-adds on custom chroma data to events/lights between the function time and endtime (toBeat)
 
- - toBeat: float
- - appendTechnique: int(0-2)
- - chroma customdata
- - lighttype: 0, 1, 2, 3; the type of the light
-  
- ~special things~
- - converttorainbow
- - rainbowfactor
-
- Example
-```
- 5:AppendToAllEventsBetween
-   toBeat:10
-   appendTechnique:2
-   lightType:1,3,0
-   converttorainbow: true
-   rainbowfactor:1
- ```
 
 # AppendWalls
-adds on custom noodle data to walls between the function time and endtime (toBeat)
+Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
- - toBeat: float
+ - Function Time => starting beat of selection (only append notes after...)
+ - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
- - generic custom data
+ - any of the noodle properties
  
   Example
  ```
@@ -251,13 +212,14 @@ a very scuffed way to make a rainbow
 [`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
 
 # AppendNotes
-adds on custom noodle data to notes between the function time and endtime (toBeat)
+adds on noodle/chroma data to notes between the function time and endtime (toBeat)
 
- - toBeat: float
+ - Function Time => starting beat of selection (only append notes after...)
+ - toBeat: float => ending beat of selection (only append notes before...)
  - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
- - generic custom data
+ - any of the noodle properties
  
   Example
   ```
@@ -296,6 +258,23 @@ multiplies all the definitepositions by 3 except for the time value
    appendtechnique:1
    ```
 
+# AppendEvents
+adds on custom chroma data to events/lights between the function time and endtime (toBeat)
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - any of the chroma properties
+ - lighttype: 0, 1, 2, 3; the type of the light to append to
+
+ Example
+```
+ 5:AppendToAllEventsBetween
+   toBeat:10
+   appendTechnique:2
+   lightType:1,3,0
+   converttorainbow: true
+   rainbowfactor:1
+ ```
 
  ## AppendTechnique
 The merge priority of the values being appended
@@ -341,7 +320,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
- - generic custom data
+ - any of the noodle properties
  
  Example
  ```
@@ -393,7 +372,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
- - generic custom data
+ - any of the noodle properties
  - repeat: int
  - repeataddtime: float
  
@@ -433,7 +412,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - Alpha: the alpha value
- - generic custom data
+ - any of the noodle properties
  
   Example
   ```
@@ -557,7 +536,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- generic custom data
+- any of the noodle properties
 
  Example
 ```
@@ -596,7 +575,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- generic custom data
+- any of the noodle properties
 - type:int
 - cutDirection:int
 
@@ -604,7 +583,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
-- definitedurationbeats: float, makes the note stay around for exactly this long in beats
+ - definitedurationbeats: float, makes the note stay around for exactly this long in beats
  - definitedurationseconds: float, makes the note stay around for exactly this long in seconds
  - definitetime: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
 
@@ -628,11 +607,14 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
   track: RandomShit
 ```
 
+
+
 # AnimateTrack
 (repeatable)
 makes a custom event
 
- - customevent data
+ - any of the noodle properties
+ - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
  
@@ -655,7 +637,9 @@ makes a custom event
 (repeatable)
 makes a custom event
 
- - customevent data
+ - any of the noodle animation properties
+ - track: string
+ - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
  
@@ -670,7 +654,9 @@ makes a custom event
 
 # AssignPlayerToTrack
 makes a custom event
- - customevent data
+ - any of the noodle animation properties
+ - track: string
+ - easing: string
  
   Example
  ```
@@ -680,7 +666,8 @@ makes a custom event
 
 # ParentTrack
 makes a custom event
- - customevent data
+ - childTracks:\["str","str"...]
+ - parentTrack: string
  
   Example
   ```
@@ -691,8 +678,8 @@ makes a custom event
 
 # PointDefinition
 makes a point definition
-  - name:string
-  - points:points
+  - name: string
+  - points: point definitions
 
   Example
 ```
