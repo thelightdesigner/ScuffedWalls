@@ -209,7 +209,7 @@ a very scuffed way to make a rainbow
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
 
 
-[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
+[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
 
 # AppendNotes
 adds on noodle/chroma data to notes between the function time and endtime (toBeat)
