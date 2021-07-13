@@ -1,15 +1,30 @@
 ## Functions
-Functions are defined by a time and a name.
+Functions are referenced in the \_ScuffedWalls.sw file.
 
+example:
+```
+#ScuffedWalls file
+
+Workspace
+
+0:Wall
+  color:[0,1,1,1]
+  
+#End ScuffedWalls file
+```
+makes a cyan wall (wow)
+
+All the available functions are listed below
+
+- [`AppendWalls`](#AppendWalls)
+- [`AppendNotes`](#AppendNotes)
+- [`AppendEvents`](#AppendEvents)
 - [`TextToWall`](#TextToWall)
 - [`ModelToWall`](#ModelToWall)
 - [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
 - [`CloneFromWorkspace`](#CloneFromWorkspace)
 - [`Blackout`](#Blackout)
-- [`AppendToAllWallsBetween`](#AppendToAllWallsBetween)
-- [`AppendToAllNotesBetween`](#AppendToAllNotesBetween)
-- [`AppendToAllEventsBetween`](#AppendToAllEventsBetween)
 - [`Import`](#Import)
 - [`Run`](#Run)
 - [`Wall`](#Wall)
@@ -21,12 +36,16 @@ Functions are defined by a time and a name.
 - [`PointDefinition`](#PointDefinition)
 
 
+## Noodle Extensions/Chroma Properties Syntax
+Noodle Extensions/Chroma/Other properties that can be used on most functions 
 
+Most of these properties are directly connected to their corresponding Noodle/Chroma property. 
+ -  [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
+ - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
+ - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
 
-
-## CustomData
-generic customdata that can be parsed as a parameter on most functions
 "" = put in quotes, ? = optional
+
 - AnimateDefinitePosition: \[x,y,z,t,"e"?]
 - DefineAnimateDefinitePosition:string
 - AnimatePosition: \[x,y,z,t,"e"?]
@@ -72,39 +91,14 @@ generic customdata that can be parsed as a parameter on most functions
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
 
-## CustomEvent Data
-generic custom data for custom events
-"" = put in quotes, ? = optional
-- AnimateDefinitePosition: \[x,y,z,t,"e"?]
-- DefineAnimateDefinitePosition:string
-- AnimatePosition: \[x,y,z,t,"e"?]
-- DefineAnimatePosition:string
-- Track: string
-- AnimateDissolve: \[d,t,"e"?]
-- DefineAnimateDissolve:string
-- AnimateColor: \[r,g,b,a,t,"e"?]
-- DefineAnimateColor:string
-- AnimateRotation: \[x,y,z,t,"e"?]
-- DefineAnimateRotation:string
-- AnimateLocalRotation: \[x,y,z,t,"e"?]
-- DefineAnimateLocalRotation:string
-- AnimateScale: \[x,y,z,t,"e"?]
-- DefineAnimateScale:string
-- childTracks:\["str","str"...]
-- parentTrack: string
-- easing: string
-
-## Math & Random
-Math expressions are computed inside of { } symbols. A random floating point number is yielded from Random(val1,val2). A random integer is yielded from RandomInt(val1,val2).
+## Math & Functions
+Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
 ```
 0:Wall
   position:[{ 5+6 }, Random(1,5), { 5+6+Random(2,10) }]
   scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
   ```
-
-## String Functions
-String functions follow the same format that most c/c++/c#/java/js function constructors do. They are function calls from within a line. Essentially they replace themselves and their constructor with their output in the line.
 
 ```
 0:Wall
@@ -116,24 +110,22 @@ String functions follow the same format that most c/c++/c#/java/js function cons
   
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
   
-  
 The example above uses the HSLtoRGB function to create a rainbow.
 
-The available string functions are:
+The available functions are:
  - Random(Val1,Val2) => returns a number
  - RandomInt(Val1,Val2) => returns a number
  - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
  - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
  - OrderPointDefinitions(PointDefinitions) => returns point definitions
 
-todo: add more string functions, dm me for suggestions or clone the repo and navigate to ScuffedWalls -> Program -> Parser -> StringFunc.cs and add a new StringFunction() to the array in void Populate(). When you're finished and it works feel free to make a pull request.
-
-
 
  ## Variables
-Variables are containers for string/numerical data that can aid with some tasks, defined by var and a name.
+Variables are containers for string/numerical data.
 
 ```
+Workspace
+
 var:SomeVariableName
   data:5
   recompute:0
@@ -143,6 +135,8 @@ var:SomeVariableName
   ```
 
   ```
+Workspace
+
   var:Grey
   data:Random(0,1)
   recompute:1
@@ -153,12 +147,12 @@ var:SomeVariableName
   repeat:15
   ```
   
-
+Variables are only accessable from the workspace they are defined in.
 
 recompute:
-0 = recompute math, variables and random() for all references of the variable, 
-1 = recompute every repeat/function, 
-2 = compute once on creation
+ - 0 = recompute math, variables and random() for all references of the variable, 
+ - 1 = recompute every repeat/function, 
+ - 2 = compute once on creation
 defaults to 2
 
 # Internal Variables
@@ -175,8 +169,138 @@ Variables that are auto created and changed internally. All repeatable functions
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
 
 
+
+
+# AppendWalls
+Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
+
+ - Function Time => starting beat of selection (only append notes after...)
+ - toBeat: float => ending beat of selection (only append notes before...)
+ - appendTechnique: int(0-2)
+ - onTrack: string, only appends to walls on this track
+ - any of the noodle properties
+ 
+  Example
+ ```
+ 5:AppendToAllWallsBetween
+   toBeat:10
+   track: FurryTrack
+   appendTechnique:1
+ ```
+
+
+multiplies all the wall times by 2
+```
+0:AppendWalls
+   time:{_time * 2}
+   appendtechnique:1
+   ```
+
+multiplies all the definitepositions by 3 except for the time value
+```
+0:AppendWalls
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1
+   ```
+   
+a very scuffed way to make a rainbow
+
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
+
+
+[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
+
+# AppendNotes
+adds on noodle/chroma data to notes between the function time and endtime (toBeat)
+
+ - Function Time => starting beat of selection (only append notes after...)
+ - toBeat: float => ending beat of selection (only append notes before...)
+ - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - appendTechnique: int(0-2)
+ - onTrack: string, only appends to notes on this track
+ - any of the noodle properties
+ 
+  Example
+  ```
+ 5:AppendToAllNotesBetween
+   toBeat:10
+   track: FurryTrack
+   appendTechnique:2
+
+60:AppendToAllNotesBetween
+tobeat:63
+Njsoffset:Random(1,3)
+AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
+AnimateDissolve:[0,0],[1,0.1],[1,1]
+DisableSpawnEffect:true
+
+66:AppendToAllNotesBetween
+tobeat:99
+NJS:10
+DisableSpawnEffect:true
+AnimateDissolveArrow: [0,0],[0,1]
+track:CameraMoveNotes
+ ```
+
+multiplies all the note times by 2
+
+```
+0:AppendNotes
+   time:{_time * 2}
+   appendtechnique:1
+   ```
+
+multiplies all the definitepositions by 3 except for the time value
+```
+0:AppendNotes
+   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
+   appendtechnique:1
+   ```
+
+# AppendEvents
+adds on custom chroma data to events/lights between the function time and endtime (toBeat)
+
+ - toBeat: float
+ - appendTechnique: int(0-2)
+ - any of the chroma properties
+ - lighttype: 0, 1, 2, 3; the type of the light to append to
+
+ Example
+```
+ 5:AppendToAllEventsBetween
+   toBeat:10
+   appendTechnique:2
+   lightType:1,3,0
+   converttorainbow: true
+   rainbowfactor:1
+ ```
+
+ ## AppendTechnique
+The merge priority of the values being appended
+ - 0 = Low Priority (Will not overwrite any property but can still append to nulled properties)
+ - 1 = High Priority (Can overwrite any property)
+ - 2~4 = ??? (Dont use these)
+
+**default is 0**
+
+## Append Function Internal Variables
+The append function runs through each object in a workspace and changes its data.
+
+In the example, `animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3}...]`
+
+`_animation._definitePosition(0)(0)` is a reference to an "internal" variable created by the append function. in the case of SW, indexers are represented with parenthesis.
+
+
+this example takes the value from the already existing  `_definitePosition` array, indexes in to the first array of the point definition, then indexes in again into the first value of the array, multiplies the resulting floating point number by 3, and then sets that.
+
+granted this only works if every object has a  `_definitePosition` with a value at the specified index
+
+confusing right?
+
+
 # TextToWall
-uses imagetowall or modeltowall to procedurally create walltext from text (Constructs text out of walls)
+Constructs text out of walls
 
 Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
 
@@ -196,7 +320,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
- - generic custom data
+ - any of the noodle properties
  
  Example
  ```
@@ -248,7 +372,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
- - generic custom data
+ - any of the noodle properties
  - repeat: int
  - repeataddtime: float
  
@@ -288,7 +412,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - Alpha: the alpha value
- - generic custom data
+ - any of the noodle properties
  
   Example
   ```
@@ -338,11 +462,16 @@ Workspace:wtf workspace
 Workspace:hahaball
 
 Workspace
+
+	#adds in one wall at beat 97, a copy of "wtf workspace" shifted up by 32 beats
+	#now in the map there will be a wall at 64 and a wall at 96
  25:CloneFromWorkspace
    Name:wtf workspace
    Type:0,1,2
    toBeat:125
    addTime:32
+   
+   
  ```
  
 # Blackout
@@ -352,6 +481,8 @@ adds a single light off event at the beat number. why? because why not.
   ```
  5:Blackout
  ```
+ 
+ 
 # Run
 calls the terminal/command prompt and runs the specified args after or before the programs runtime.
 
@@ -373,123 +504,6 @@ note that in the above example, CoolMapScript.js is in the map folder
   Args:Start Notepad.exe
   RunBefore: false
 ```
-
-# AppendToAllEventsBetween
-adds on custom chroma data to events/lights between the function time and endtime (toBeat)
-
- - toBeat: float
- - appendTechnique: int(0-2)
- - chroma customdata
- - lighttype: 0, 1, 2, 3; the type of the light
-  
- ~special things~
- - converttorainbow
- - rainbowfactor
-
- Example
-```
- 5:AppendToAllEventsBetween
-   toBeat:10
-   appendTechnique:2
-   lightType:1,3,0
-   converttorainbow: true
-   rainbowfactor:1
- ```
-
-# AppendToAllWallsBetween
-adds on custom noodle data to walls between the function time and endtime (toBeat)
-
- - toBeat: float
- - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
- - generic custom data
- 
-  Example
- ```
- 5:AppendToAllWallsBetween
-   toBeat:10
-   track: FurryTrack
-   appendTechnique:1
- ```
-
-
-multiplies all the wall times by 2
-```
-0:AppendWalls
-   time:{_time * 2}
-   appendtechnique:1
-   ```
-
-multiplies all the definitepositions by 3 except for the time value
-```
-0:AppendWalls
-   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1
-   ```
-   
-a very scuffed way to make a rainbow
-
-
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
-
-
-[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#string-functions)
-
-# AppendToAllNotesBetween
-adds on custom noodle data to notes between the function time and endtime (toBeat)
-
- - toBeat: float
- - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
- - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
- - generic custom data
- 
-  Example
-  ```
- 5:AppendToAllNotesBetween
-   toBeat:10
-   track: FurryTrack
-   appendTechnique:2
-
-60:AppendToAllNotesBetween
-tobeat:63
-Njsoffset:Random(1,3)
-AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
-AnimateDissolve:[0,0],[1,0.1],[1,1]
-DisableSpawnEffect:true
-
-66:AppendToAllNotesBetween
-tobeat:99
-NJS:10
-DisableSpawnEffect:true
-AnimateDissolveArrow: [0,0],[0,1]
-track:CameraMoveNotes
- ```
-
-multiplies all the note times by 2
-
-```
-0:AppendNotes
-   time:{_time * 2}
-   appendtechnique:1
-   ```
-
-multiplies all the definitepositions by 3 except for the time value
-```
-0:AppendNotes
-   animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
-   appendtechnique:1
-   ```
-
-
- ## AppendTechnique
-tells the append function how to add on your custom data properties to other map object custom data.
- - 0 = Will not overwrite any old custom data property but can still append to nulled properties. Useful for NJS and Offset fixing.
- - 1 = Overwrites the old custom data property for the new one. Useful for most applications.
- - 2 = Nulls all old customdata properties and appends on new ones. Useful for some internal stuff but not much else.
-
-**default is always 0**
-
  
 # Import
 adds in map objects from other map.dat files
@@ -522,7 +536,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- generic custom data
+- any of the noodle properties
 
  Example
 ```
@@ -561,7 +575,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- generic custom data
+- any of the noodle properties
 - type:int
 - cutDirection:int
 
@@ -569,7 +583,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
-- definitedurationbeats: float, makes the note stay around for exactly this long in beats
+ - definitedurationbeats: float, makes the note stay around for exactly this long in beats
  - definitedurationseconds: float, makes the note stay around for exactly this long in seconds
  - definitetime: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
 
@@ -593,11 +607,14 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
   track: RandomShit
 ```
 
+
+
 # AnimateTrack
 (repeatable)
 makes a custom event
 
- - customevent data
+ - any of the noodle properties
+ - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
  
@@ -620,7 +637,9 @@ makes a custom event
 (repeatable)
 makes a custom event
 
- - customevent data
+ - any of the noodle animation properties
+ - track: string
+ - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
  
@@ -635,7 +654,9 @@ makes a custom event
 
 # AssignPlayerToTrack
 makes a custom event
- - customevent data
+ - any of the noodle animation properties
+ - track: string
+ - easing: string
  
   Example
  ```
@@ -645,7 +666,8 @@ makes a custom event
 
 # ParentTrack
 makes a custom event
- - customevent data
+ - childTracks:\["str","str"...]
+ - parentTrack: string
  
   Example
   ```
@@ -656,8 +678,8 @@ makes a custom event
 
 # PointDefinition
 makes a point definition
-  - name:string
-  - points:points
+  - name: string
+  - points: point definitions
 
   Example
 ```
@@ -671,6 +693,8 @@ makes a point definition
 
 # Script
 use this function by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
+
+is this stupid? yes.
 
 
 # Uwu
