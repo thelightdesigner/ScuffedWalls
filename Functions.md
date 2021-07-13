@@ -177,7 +177,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
+ - onTrack: string, only appends to walls on this track
  - any of the noodle properties
  
   Example
