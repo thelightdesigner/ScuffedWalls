@@ -42,7 +42,13 @@ namespace ScuffedWalls.Functions
             }
             if (Type.Any(t => t == 3))
             {
-                InstanceWorkspace.CustomData = (TreeDictionary)TreeDictionary.Merge(InstanceWorkspace.CustomData, cloned.CustomData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
+                InstanceWorkspace.CustomData = (TreeDictionary)
+                    TreeDictionary.Merge(
+                    InstanceWorkspace.CustomData,
+                    cloned.CustomData,
+                    TreeDictionary.MergeType.Arrays,
+                    TreeDictionary.MergeBindingFlags.HasValue);
+                
 
                 foreach (var item in cloned.CustomData) if (item.Value is IEnumerable<object> array && array.Count() > 0) ConsoleOut($"_customData.{item.Key}", array.Count(), Time, "CloneWorkspace");
             }

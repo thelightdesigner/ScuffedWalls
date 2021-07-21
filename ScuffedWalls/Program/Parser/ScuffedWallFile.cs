@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -39,6 +40,13 @@ namespace ScuffedWalls
             SWRaw = raw.ToArray();
             SWFileLines = lines.ToArray();
             Lines = SWFileLines.Select(l => new Parameter(l.Value) { GlobalIndex = l.Key }).ToArray();
+
+            if (SWRaw.Any(line => line.Value.ToLower().Contains("rick roll")))
+            {
+                var process = new ProcessStartInfo() { FileName = "https://www.youtube.com/watch?v=xvFZjo5PgG0", UseShellExecute = true };
+                Process.Start(process);
+                Environment.Exit(1);
+            }
 
             if (Utils.ScuffedConfig.IsBackupEnabled)
             {
