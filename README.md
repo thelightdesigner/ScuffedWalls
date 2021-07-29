@@ -42,8 +42,20 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Real or Lie`](https://www.youtube.com/watch?v=59X3Qb78-Es)
  - [`Exosphere`](https://www.youtube.com/watch?v=698L0vSI0no)
  - [`Rare`](https://www.youtube.com/watch?v=fQpDYL0If7U)
+ - [`Wait`](https://www.youtube.com/watch?v=FLstEOwle08)
+ - [`Giant Enemy Spider`](https://www.youtube.com/watch?v=SntUgEmF9UQ)
+ - [`0108ROCKET`](https://www.youtube.com/watch?v=YtHnIqrLW1s)
+ - [`Dadadada`](https://www.youtube.com/watch?v=vJlGANqWn2U)
+ - [`Scary Garry`](https://www.youtube.com/results?search_query=scary+garry+beat+saber)
+ - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
+ - `Camellia - Crystallized (totallyballoon)`
+ - `Roth Bartlett - Off the World (wobbleorange)`
+ - `Amanda Marshall - Let it Rain (wobbleorange)`
+ - `Tiesto - Wasted (wobbleorange)`
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
+
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rocket.jpg" alt="Try" width="500"/>
 
 ## For Developers
 
