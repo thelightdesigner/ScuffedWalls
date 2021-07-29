@@ -126,18 +126,12 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
 - [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
 - [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
-- DefineAnimateDefinitePosition:string
-- DefineAnimatePosition:string
-- DefineAnimateDissolve:string
-- DefineAnimateColor:string
-- DefineAnimateRotation:string
-- DefineAnimateLocalRotation:string
-- DefineAnimateScale:string
-- DefineAnimateInteractable:string
-- DisableSpawnEffect: bool
 
 [`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
 
+ - Color: \[r,g,b,a] (0-1)
+ - RGBColor:\[r,g,b,a] (0-255)
+ - DisableSpawnEffect: bool
  - CPropID: int
  - CLightID: int
  - CGradientDuration: float
@@ -153,8 +147,6 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - CProp: float
  - CSpeed: float
  - CCounterSpin: bool
- - Color: \[r,g,b,a] (0-1)
- - RGBColor:\[r,g,b,a] (0-255)
 
 Usefull links:
  - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
