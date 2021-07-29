@@ -40,16 +40,16 @@ namespace ScuffedWalls
             };
             var animation = new TreeDictionary()
             {
-                ["_definitePosition"] = GetParam("animatedefiniteposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatedefiniteposition", null, p => (object)p),
-                ["_position"] = GetParam("animateposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateposition", null, p => (object)p),
-                ["_dissolve"] = GetParam("animatedissolve", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatedissolve", null, p => (object)p),
-                ["_dissolveArrow"] = GetParam("animatedissolvearrow", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatedissolvearrow", null, p => (object)p),
-                ["_color"] = GetParam("animatecolor", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatecolor", null, p => (object)p),
-                ["_rotation"] = GetParam("animaterotation", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimaterotation", null, p => (object)p),
-                ["_localRotation"] = GetParam("animatelocalrotation", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatelocalrotation", null, p => (object)p),
-                ["_scale"] = GetParam("animatescale", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatescale", null, p => (object)p),
-                ["_interactable"] = GetParam("animateinteractable", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateinteractable", null, p => (object)p),
-                ["_time"] = GetParam("animatetime", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatetime", null, p => (object)p)
+                ["_definitePosition"] = GetParam("animatedefiniteposition", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_position"] = GetParam("animateposition", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_dissolve"] = GetParam("animatedissolve", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_dissolveArrow"] = GetParam("animatedissolvearrow", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_color"] = GetParam("animatecolor", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_rotation"] = GetParam("animaterotation", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_localRotation"] = GetParam("animatelocalrotation", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_scale"] = GetParam("animatescale", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_interactable"] = GetParam("animateinteractable", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_time"] = GetParam("animatetime", null, p => DeserializeDefaultToString<object[][]>($"[{p}]"))
             };
             var gradient = new TreeDictionary()
             {
@@ -73,6 +73,21 @@ namespace ScuffedWalls
 
             return Instance;
 
+
+            object DeserializeDefaultToString<T>(string JSON)
+            {
+                char[] JSONChars = { ',' };
+                try
+                {
+                    return JsonSerializer.Deserialize<T>(JSON);
+                }
+                catch (Exception e)
+                {
+                    if (JSONChars.Any(j => JSON.Contains(j))) throw e;
+                    return JSON.TrimStart('[').TrimEnd(']');
+                }
+            }
+
             T GetParam<T>(string Name, T DefaultValue, Func<string, T> Converter)
             {
                 if (!CustomNoodleData.Any(p => p.Name.ToLower() == Name.ToLower())) return DefaultValue;
@@ -86,7 +101,7 @@ namespace ScuffedWalls
                 catch (Exception e)
                 {
                     ScuffedLogger.Error.Log($"{Name} Couldnt be parsed ERROR: {e.Message}");
-                   return DefaultValue;
+                    return DefaultValue;
                 }
             }
         }
