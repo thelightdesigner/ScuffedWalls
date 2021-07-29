@@ -35,44 +35,109 @@ All the available functions are listed below
 - [`ParentTrack`](#ParentTrack)
 - [`PointDefinition`](#PointDefinition)
 
+## Workspaces
+Generally, a function will only add or affect map objects (walls, notes, lights, ect) in its own workspace.
+
+Every workspace is combined when writing to the map file
+
+Workspaces are usefull for organization, cloning and appending
+
+Examples
+```
+Workspace: Workspace 1
+
+1:Note
+
+Workspace: A Different Workspace
+
+2:Note
+
+0:AppendNotes
+#Affects Note 2 but not Note 1
+```
+```
+Workspace: Workspace 1
+
+1:Note
+
+Workspace: A Different Workspace
+
+2:Note
+
+Workspace: Clone Workspace 1
+
+0:CloneWorkspace
+Name: Workspace 1
+
+#This workspace has a clone of Note 1 in it
+```
+```
+Workspace: Workspace 1
+
+var:Three
+  data:3
+  
+1:Note
+  NJS:Three
+  #This works because the variable is declared in this workspace
+
+Workspace: A Different Workspace
+
+2:Note
+  NJS:Three
+  #This will not work
+  
+```
+
+
 
 ## Noodle Extensions/Chroma Properties Syntax
-Noodle Extensions/Chroma/Other properties that can be used on most functions 
+Noodle Extensions/Chroma/Other properties that can be used on most functions
 
-Most of these properties are directly connected to their corresponding Noodle/Chroma property. 
- -  [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
- - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
- - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
+Most of these properties are directly connected to their corresponding Noodle/Chroma property written in JSON. 
 
-"" = put in quotes, ? = optional
+("" = put in quotes, ? = optional)
 
-- AnimateDefinitePosition: \[x,y,z,t,"e"?]
-- DefineAnimateDefinitePosition:string
-- AnimatePosition: \[x,y,z,t,"e"?]
-- DefineAnimatePosition:string
-- Scale: \[x,y?,z?]
-- Track: string
+[`Notes and Obstacles`](https://github.com/Aeroluna/NoodleExtensions#objects-notes-and-obstacles)
 - NJSOffset: float
 - NJS: float
-- AnimateDissolve: \[d,t,"e"?]
-- DefineAnimateDissolve:string
-- AnimateColor: \[r,g,b,a,t,"e"?]
-- DefineAnimateColor:string
-- AnimateRotation: \[x,y,z,t,"e"?]
-- DefineAnimateRotation:string
-- AnimateLocalRotation: \[x,y,z,t,"e"?]
-- DefineAnimateLocalRotation:string
-- AnimateScale: \[x,y,z,t,"e"?]
-- DefineAnimateScale:string
-- AnimateInteractable:\[i,t]
-- DefineAnimateInteractable:string
 - Interactable: bool
 - Fake: bool
 - Position: \[x,y]
 - Rotation: \[x,y,z] or float
 - LocalRotation: \[x,y,z]
+
+[`Notes`](https://github.com/Aeroluna/NoodleExtensions#notes)
 - CutDirection: float
+- DisableNoteGravity: bool
+- DisableNoteLook: bool
+
+[`Obstacles`](https://github.com/Aeroluna/NoodleExtensions#obstacles)
+- Scale: \[x,y?,z?]
+
+[`Tracks`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#tracks)
+
+- Track: string
+- [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
+- [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
+- [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
+- [`AnimateColor`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_color): \[r,g,b,a,t,"e"?]
+- [`AnimateRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_rotation): \[x,y,z,t,"e"?]
+- [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
+- [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
+- [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
+- DefineAnimateDefinitePosition:string
+- DefineAnimatePosition:string
+- DefineAnimateDissolve:string
+- DefineAnimateColor:string
+- DefineAnimateRotation:string
+- DefineAnimateLocalRotation:string
+- DefineAnimateScale:string
+- DefineAnimateInteractable:string
 - DisableSpawnEffect: bool
+
+[`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
+
  - CPropID: int
  - CLightID: int
  - CGradientDuration: float
@@ -90,6 +155,11 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - CCounterSpin: bool
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
+
+Usefull links:
+ - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
+ - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
+ - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
 
 ## Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
