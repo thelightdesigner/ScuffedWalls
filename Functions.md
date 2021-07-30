@@ -1,5 +1,6 @@
 ## Functions
 Functions are referenced in the \_ScuffedWalls.sw file.
+Alternate spellings if any are in block quotes under the function.
 
 example:
 ```
@@ -36,6 +37,8 @@ All the available functions are listed below
 - [`PointDefinition`](#PointDefinition)
 
 ## Workspaces
+> "CloneFromWorkspace", "CloneFromWorkspaceByIndex", "CloneWorkspace"
+
 Generally, a function will only add or affect map objects (walls, notes, lights, ect) in its own workspace.
 
 Every workspace is combined when writing to the map file
@@ -234,6 +237,8 @@ Variables that are auto created and changed internally. All repeatable functions
 
 
 # AppendWalls
+> "AppendToAllWallsBetween","AppendWalls","AppendWall"
+
 Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
  - Function Time => starting beat of selection (only append notes after...)
@@ -404,6 +409,8 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  ```
 
 # ModelToWall 
+> "ModelToWall", "ModelToNote", "ModelToBomb", "Model"
+
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
@@ -426,7 +433,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - createnotes: bool
  - spline: bool
  - spreadspawntime: float
- - type: 0, 1, 2 or 3
+ - type: 0, 1, 2 or 3, 0 = ModelDefined, 1 = AllWalls,  2 = AllBombs, 3 = AllNotes
  - alpha: float
  - thicc: float
  - deltaposition: \[x,y,z] offsets the model in 3d by this position vector
@@ -454,6 +461,8 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  ```
 
 # ImageToWall
+> "ImageToWall","Image","RenderImage"
+
 constructs an image out of walls as pixels
 
 Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
@@ -493,6 +502,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  ```
  
 # Environment
+> "Environment", "EnvironmentEnhancement"
+
 makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
 
 - id: string
@@ -546,6 +557,8 @@ adds a single light off event at the beat number. why? because why not.
  
  
 # Run
+> "Run", "cmd", "Terminal", "Execute"
+
 calls the terminal/command prompt and runs the specified args after or before the programs runtime.
 
 also can run javascript files
