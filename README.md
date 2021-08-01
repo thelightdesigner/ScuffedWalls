@@ -35,6 +35,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 
 ## Examples
 
+ - [`Shelter`](https://www.youtube.com/watch?v=a4zSCDYRwAQ)
  - [`Illuminate`](https://www.youtube.com/watch?v=lFL3Gjy15oc&t=1s)
  - [`Homesick`](https://www.youtube.com/watch?v=St3fSqj8SXc)
  - [`Gamecube Intro`](https://www.youtube.com/watch?v=0SVRM0cmUVE)
@@ -48,7 +49,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Dadadada`](https://www.youtube.com/watch?v=vJlGANqWn2U)
  - [`Scary Garry`](https://www.youtube.com/watch?v=Pw5GfyzEWNU)
  - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
- - `Camellia - Crystallized (totallyballoon)`
+ - [`Crystallized`](https://youtu.be/TnvvoApz4zg)
  - `Roth Bartlett - Off the World (wobbleorange)`
  - `Amanda Marshall - Let it Rain (wobbleorange)`
  - `Tiesto - Wasted (wobbleorange)`
@@ -56,6 +57,8 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rocket.jpg" alt="Try" width="500"/>
+
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/shelter.jpg" alt="Try" width="500"/>
 
 ## For Developers
 
