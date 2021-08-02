@@ -128,6 +128,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
 - [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
 - [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
+- [`AnimateTime`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_time):\[t,t,"e"?]
 
 [`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
 
