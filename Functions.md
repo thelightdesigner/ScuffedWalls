@@ -37,7 +37,6 @@ All the available functions are listed below
 - [`PointDefinition`](#PointDefinition)
 
 ## Workspaces
-> "CloneFromWorkspace", "CloneFromWorkspaceByIndex", "CloneWorkspace"
 
 Generally, a function will only add or affect map objects (walls, notes, lights, ect) in its own workspace.
 
@@ -237,7 +236,6 @@ Variables that are auto created and changed internally. All repeatable functions
 
 
 # AppendWalls
-> "AppendToAllWallsBetween","AppendWalls","AppendWall"
 
 Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
@@ -408,8 +406,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    definitetime:beats
  ```
 
-# ModelToWall 
-> "ModelToWall", "ModelToNote", "ModelToBomb", "Model"
+# ModelToWall
 
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
@@ -461,7 +458,6 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  ```
 
 # ImageToWall
-> "ImageToWall","Image","RenderImage"
 
 constructs an image out of walls as pixels
 
@@ -502,7 +498,6 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  ```
  
 # Environment
-> "Environment", "EnvironmentEnhancement"
 
 makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
 
@@ -686,7 +681,7 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
 # AnimateTrack
 (repeatable)
-makes a custom event
+makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
  - any of the noodle properties
  - easing: string
@@ -710,7 +705,7 @@ makes a custom event
 
 # AssignPathAnimation
 (repeatable)
-makes a custom event
+makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPathAnimation) custom event
 
  - any of the noodle animation properties
  - track: string
@@ -728,7 +723,7 @@ makes a custom event
 ```
 
 # AssignPlayerToTrack
-makes a custom event
+makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
  - any of the noodle animation properties
  - track: string
  - easing: string
@@ -740,7 +735,7 @@ makes a custom event
  ```
 
 # ParentTrack
-makes a custom event
+makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignTrackParent) custom event
  - childTracks:\["str","str"...]
  - parentTrack: string
  
@@ -752,7 +747,7 @@ makes a custom event
  ```
 
 # PointDefinition
-makes a point definition
+makes a point definition for use with custom events
   - name: string
   - points: point definitions
 
