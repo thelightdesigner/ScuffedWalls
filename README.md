@@ -50,9 +50,9 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Scary Garry`](https://www.youtube.com/watch?v=Pw5GfyzEWNU)
  - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
  - [`Crystallized`](https://youtu.be/TnvvoApz4zg)
+ - [`Wasted`](https://www.youtube.com/watch?v=TTqqOfxKLEI)
  - `Roth Bartlett - Off the World (wobbleorange)`
  - `Amanda Marshall - Let it Rain (wobbleorange)`
- - `Tiesto - Wasted (wobbleorange)`
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
