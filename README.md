@@ -48,6 +48,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`0108ROCKET`](https://www.youtube.com/watch?v=YtHnIqrLW1s)
  - [`Dadadada`](https://www.youtube.com/watch?v=vJlGANqWn2U)
  - [`Scary Garry`](https://www.youtube.com/watch?v=Pw5GfyzEWNU)
+ - [`Industry Baby`](https://www.youtube.com/watch?v=vtNGsJnHRD4)
  - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
  - [`Crystallized`](https://youtu.be/TnvvoApz4zg)
  - [`Wasted`](https://www.youtube.com/watch?v=TTqqOfxKLEI)
