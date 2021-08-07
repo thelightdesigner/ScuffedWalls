@@ -8,6 +8,8 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
             InstanceWorkspace.Environment.Add( new TreeDictionary()
             {
                 ["_id"] = GetParam("id",null,p => (object)p),

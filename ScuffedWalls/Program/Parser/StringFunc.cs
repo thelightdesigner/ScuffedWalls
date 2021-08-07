@@ -1,22 +1,45 @@
-﻿using System;
+﻿using ModChart;
+using ModChart.Wall;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using ModChart;
-using ModChart.Wall;
 
 namespace ScuffedWalls
 {
     public class StringFunction
     {
         public string Name { get; set; } //name of the func
-        public Func<ValuePair<string[],string>, string> FunctionAction { get; set; } //convert from params to output string
-        
+        public Func<ValuePair<string[], string>, string> FunctionAction { get; set; } //convert from params to output string
+
 
         //idk where to put this
         public static void Populate()
         {
             Parameter.StringFunctions = new StringFunction[]
             {
+                new StringFunction()
+                {
+                    Name = "RepeatPointDefinition",
+                    FunctionAction = InputArgs =>
+                    {
+                        string[] spli = InputArgs.Extra.Split("],",2);
+                        string pd = spli[0] + "]";
+                        int repcount = int.Parse(spli[1]);
+
+                        Parameter repeat = new Parameter("reppd", "1");
+                        Parameter[] internalvars = new Parameter[]{ repeat };
+
+                        List<string> points = new List<string>();
+                        for (int i = 0; i < repcount; i++)
+                        {
+                            points.Add(Parameter.ParseVarFuncMath(pd, internalvars, true));
+                            repeat.StringData = (i+2).ToString();
+                        }
+
+                        return string.Join(',',points);
+                    }
+                },
                 new StringFunction()
                 {
                     Name = "MultPointDefinition",

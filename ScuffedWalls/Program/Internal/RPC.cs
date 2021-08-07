@@ -11,9 +11,7 @@ namespace ScuffedWalls
     {
         static DiscordRpcClient client;
 
-#pragma warning disable IDE0052 // Remove unread private members
         static Task AutoUpdater;
-#pragma warning restore IDE0052 // Remove unread private members
         public BeatMap CurrentMap { get; set; }
         public int Workspaces { get; set; }
         public RPC()

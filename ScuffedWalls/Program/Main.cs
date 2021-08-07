@@ -6,10 +6,9 @@
     using System.Text.Json;
     using static ScuffedLogger.Default;
 
-
     static class ScuffedWalls
     {
-        public static string ver => "v1.3.5";
+        public static string ver => "v1.4.0";
         static void Main(string[] args)
         {
             Utils.Initialize(args);

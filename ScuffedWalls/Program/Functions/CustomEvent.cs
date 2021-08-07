@@ -8,6 +8,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             string name = GetParam("name", "unimplemented_pointdefinition", p => p);
             object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
             
@@ -29,7 +32,7 @@ namespace ScuffedWalls.Functions
         public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Parameter("repeat", "1");
+            Repeat = new Parameter("repeat", "0");
             Beat = new Parameter("time", Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
@@ -40,14 +43,18 @@ namespace ScuffedWalls.Functions
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeatTime)).ToString();
+
+                FunLog();
+
+
                 InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
                 {
                     ["_time"] = Time + (i * repeatTime),
                     ["_type"] = "AnimateTrack",
                     ["_data"] = Parameters.CustomEventsDataParse()
                 });
-                Repeat.StringData = i.ToString();
-                Beat.StringData = (Time + (i * repeatTime)).ToString();
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
             ConsoleOut("AnimateTrack", repeatcount, Time, "CustomEvent");
@@ -61,7 +68,7 @@ namespace ScuffedWalls.Functions
         public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Parameter("repeat", "1");
+            Repeat = new Parameter("repeat", "0");
             Beat = new Parameter("time", Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
@@ -72,14 +79,18 @@ namespace ScuffedWalls.Functions
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             for (float i = 0; i < repeatcount; i++)
             {
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeatTime)).ToString();
+
+                FunLog();
+
+
                 InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
                 {
                     ["_time"] = Time + (i * repeatTime),
                     ["_type"] = "AssignPathAnimation",
                     ["_data"] = Parameters.CustomEventsDataParse()
                 });
-                Repeat.StringData = i.ToString();
-                Beat.StringData = (Time + (i * repeatTime)).ToString();
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
             ConsoleOut("AssignPathAnimation", repeatcount, Time, "CustomEvent");
@@ -90,6 +101,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
@@ -106,6 +120,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,

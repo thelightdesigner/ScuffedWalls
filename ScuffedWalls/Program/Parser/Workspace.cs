@@ -9,40 +9,19 @@ namespace ScuffedWalls
     {
         public Workspace()
         {
-            CustomData = new TreeDictionary
-            {
-                ["_customEvents"] = CustomEvents,
-                ["_pointDefinitions"] = PointDefinitions,
-                ["_bookmarks"] = Bookmarks,
-                ["_environment"] = Environment,
-                ["_BPMChanges"] = BPMChanges
-            };
+            CustomData = new TreeDictionary();
         }
         public int Number { get; set; }
         public string Name { get; set; }
         public List<BeatMap.Note> Notes { get; set; } = new List<BeatMap.Note>();
         public List<BeatMap.Event> Lights { get; set; } = new List<BeatMap.Event>();
         public List<BeatMap.Obstacle> Walls { get; set; } = new List<BeatMap.Obstacle>();
-        public List<object> CustomEvents { get; set; } = new List<object>();
-        public List<object> PointDefinitions { get; set; } = new List<object>();
-        public List<object> Bookmarks { get; set; } = new List<object>();
-        public List<object> Environment { get; set; } = new List<object>();
-        public List<object> BPMChanges { get; set; } = new List<object>();
-        
-
-        private TreeDictionary _customData;
-        /// <summary>
-        /// All lists involving CustomData are referenced here, Setting this will overrite all values present in the extracted lists
-        /// </summary>
-        public TreeDictionary CustomData
-        {
-            get => _customData; 
-            set 
-            { 
-                _customData = value; 
-                ReferenceListsInCustomData(); 
-            }
-        }
+        public List<object> CustomEvents { get => CustomData.at<List<object>>("_customEvents"); set { CustomData["_customEvents"] = value; } } 
+        public List<object> PointDefinitions { get => CustomData.at<List<object>>("_pointDefinitions"); set { CustomData["_pointDefinitions"] = value; } }
+        public List<object> Bookmarks { get => CustomData.at<List<object>>("_bookmarks"); set { CustomData["_bookmarks"] = value; } }
+        public List<object> Environment { get => CustomData.at<List<object>>("_environment"); set { CustomData["_environment"] = value; } }
+        public List<object> BPMChanges { get => CustomData.at<List<object>>("_BPMChanges"); set { CustomData["_BPMChanges"] = value; } }
+        public TreeDictionary CustomData { get; set; }
 
         public object Clone()
         {
@@ -55,20 +34,6 @@ namespace ScuffedWalls
                 Walls = Walls.CloneArray().Cast<BeatMap.Obstacle>().ToList(),
                 CustomData = (TreeDictionary)CustomData.Clone()
             };
-        }
-        public void ReferenceListsInCustomData()
-        {
-            CustomEvents = GetList("_customEvents");
-            PointDefinitions = GetList("_pointDefinitions");
-            Bookmarks = GetList("_Bookmarks");
-            Environment = GetList("_environment");
-            BPMChanges = GetList("_BPMChanges");
-
-            List<object> GetList(string Name)
-            {
-                if (CustomData[Name] is List<object> list) return list;
-                else return new List<object>();
-            }
         }
     }
     static class WorkspaceHelper

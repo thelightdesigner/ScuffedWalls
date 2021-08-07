@@ -106,7 +106,7 @@ namespace ScuffedWalls
             else Type = ParamType.Parameter;
         }
 
-        string ParseAllNonsense(string s)
+        public static string ParseVarFuncMath(string s, Parameter[] InternalVariables, bool HandleExceptions = false)
         {
             string LastAttempt = string.Empty;
             string ThisAttempt = s.Clone().ToString();
@@ -117,23 +117,23 @@ namespace ScuffedWalls
             bool SkipMath = false;
             bool SkipFunc = false;
 
-            while (!LastAttempt.Equals(ThisAttempt))
+            while (!LastAttempt.Equals(ThisAttempt)) //if we break from this, nothing changed so there is nothing more to do
             {
                 LastAttempt = ThisAttempt.Clone().ToString();
 
-                if (!SkipVar) 
+                if (!SkipVar)
                 {
                     try //Variables
                     {
                         KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
-                        if (Modified.Key)
+                        if (Modified.Key) //CASE 1: string was modified with no error; last error doesnt count because it was resolved
                         {
                             ThisAttempt = Modified.Value;
                             MostRecentError = null;
                         }
-                        else SkipVar = true;
+                        else SkipVar = true; //CASE 2: string wasnt modified with no error; nothing left to change. we can skip this step from now on
                     }
-                    catch (Exception e) { MostRecentError = e; }
+                    catch (Exception e) { MostRecentError = e; } //CASE 3: string wasnt modified with an error; cache error, we try again later
                 }
 
                 if (!SkipMath)
@@ -166,14 +166,14 @@ namespace ScuffedWalls
                     catch (Exception e) { MostRecentError = e; }
                 }
             }
-            if (MostRecentError != null) throw MostRecentError;
+            if (MostRecentError != null && !HandleExceptions) throw MostRecentError; //if there is still an error, one of the steps couldnt ever continue 
 
             return ThisAttempt;
         }
 
+        string ParseAllNonsense(string s) => ParseVarFuncMath(s, InternalVariables);
 
         //replaces a variable name with a different value
-
         public static KeyValuePair<bool, string> ParseVar(string s, IEnumerable<INameStringDataPair> Variables)
         {
             string currentvar = "";
@@ -290,14 +290,7 @@ namespace ScuffedWalls
         public ParamType Type { get; private set; } = ParamType.Parameter;
         public string Name
         {
-            get
-            {
-
-                return Internal.Name
-                            .Clone()
-                            .ToString();
-
-            }
+            get => Internal.Name.Clone().ToString();
             set
             {
                 Internal.Name = value;
