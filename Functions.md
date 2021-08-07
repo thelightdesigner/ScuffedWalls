@@ -182,10 +182,63 @@ The available functions are:
  - RandomInt(Val1,Val2) => returns a number
  - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
  - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
+ - RepeatPointDefinition(PointDefinition,amount of times to repeat) => returns point definitions
  - OrderPointDefinitions(PointDefinitions) => returns point definitions
 
+## Random & RandomInt
+An inline function that returns a random number ranging from Val1 to Val2. RandomInt will return a random whole number.
 
- ## Variables
+Example:
+```
+0:wall
+  njs:Random(0,10)
+```
+
+## HSLtoRGB
+An inline function that returns a point definition representing a color.
+
+HSLtoRGB(Hue, Saturation, Value, Alpha?, Extra values to be added to the point defintion?)
+
+Examples:
+```
+0:Wall
+  color:HSLtoRGB(0.2,1,0.5,1)
+```
+```
+0:Wall
+  animatecolor:HSLtoRGB(0.2,1,0.5,1,0),HSLtoRGB(0.4,1,0.5,1,1,"easeInOutSine")
+  #			^   ^  ^  ^ ^   	 ^  ^  ^  ^ ^        ^
+  #		     hue,sat,val,alfa,time 	hue,sat,val,alfa,time,easing
+```
+
+## RepeatPointDefinition
+An inline function that returns a controllable amount of point definitions based on one or more point definitions.
+
+This function has an internal variable `reppd` (short for repeatpointdefinition) which ticks up every repeat.
+
+Example:
+```
+0:Note
+  animateposition:RepeatPointDefinition([Random(0,1),Random(0,1),Random(0,1),{reppd/9}],10)
+```
+
+## OrderPointDefinitions
+An inline function that returns point definitions ordered by their time value.
+
+```
+0:Wall
+  animatedissolve:OrderPointDefinitions([1,1],[1,0],[1,0.2],[1,0.8])
+```
+
+## MultPointDefinition
+An inline function that multiplies all numbers in a point definition by another number.
+
+```
+0:AppendWalls
+  color:MultPointDefinition([_color(0),_color(1),_color(2),_color(3)],2)
+```
+
+# Variables
 Variables are containers for string/numerical data.
 
 ```
