@@ -16,12 +16,22 @@ namespace ScuffedWalls
         public List<BeatMap.Note> Notes { get; set; } = new List<BeatMap.Note>();
         public List<BeatMap.Event> Lights { get; set; } = new List<BeatMap.Event>();
         public List<BeatMap.Obstacle> Walls { get; set; } = new List<BeatMap.Obstacle>();
-        public List<object> CustomEvents { get => CustomData.at<List<object>>("_customEvents"); set { CustomData["_customEvents"] = value; } } 
+        public List<object> CustomEvents { get => CustomData.at<List<object>>("_customEvents"); set { CustomData["_customEvents"] = value; } }
         public List<object> PointDefinitions { get => CustomData.at<List<object>>("_pointDefinitions"); set { CustomData["_pointDefinitions"] = value; } }
         public List<object> Bookmarks { get => CustomData.at<List<object>>("_bookmarks"); set { CustomData["_bookmarks"] = value; } }
         public List<object> Environment { get => CustomData.at<List<object>>("_environment"); set { CustomData["_environment"] = value; } }
         public List<object> BPMChanges { get => CustomData.at<List<object>>("_BPMChanges"); set { CustomData["_BPMChanges"] = value; } }
-        public TreeDictionary CustomData { get; set; }
+        private TreeDictionary _customData;
+        public TreeDictionary CustomData { get => _customData; set { _customData = value; AddProps(); } }
+
+        public void AddProps()
+        {
+            CustomData["_customEvents"] ??= new List<object>();
+            CustomData["_pointDefinitions"] ??= new List<object>();
+            CustomData["_bookmarks"] ??= new List<object>();
+            CustomData["_environment"] ??= new List<object>();
+            CustomData["_BPMChanges"] ??= new List<object>();
+        }
 
         public object Clone()
         {
