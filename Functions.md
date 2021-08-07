@@ -151,6 +151,9 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - CSpeed: float
  - CCounterSpin: bool
 
+`Other`
+ - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
+
 Usefull links:
  - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
  - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)

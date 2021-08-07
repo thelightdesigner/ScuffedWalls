@@ -52,8 +52,8 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
  - [`Crystallized`](https://youtu.be/TnvvoApz4zg)
  - [`Wasted`](https://www.youtube.com/watch?v=TTqqOfxKLEI)
- - `Roth Bartlett - Off the World (wobbleorange)`
- - `Amanda Marshall - Let it Rain (wobbleorange)`
+ - [`Off the World`](https://youtu.be/dIFqHdnWJsk)
+ - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
