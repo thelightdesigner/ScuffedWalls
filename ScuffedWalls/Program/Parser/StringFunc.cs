@@ -33,8 +33,9 @@ namespace ScuffedWalls
                         List<string> points = new List<string>();
                         for (int i = 0; i < repcount; i++)
                         {
+                            repeat.StringData = i.ToString();
                             points.Add(Parameter.ParseVarFuncMath(pd, internalvars, true));
-                            repeat.StringData = (i+2).ToString();
+                            
                         }
 
                         return string.Join(',',points);
