@@ -25,6 +25,7 @@ namespace ScuffedWalls.Functions
             float duration = GetParam("duration", 0, p => float.Parse(p));
             int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
             float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
+            int lineindex = GetParam("lineindex", 0, p => int.Parse(p));
             
 
             duration = GetParam("definiteduration", duration, p =>
@@ -68,7 +69,7 @@ namespace ScuffedWalls.Functions
                 {
                     _time = Time + (i * repeatTime),
                     _duration = duration,
-                    _lineIndex = 0,
+                    _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
                     _width = 0,
                     _type = 0
                 }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),AppendPriority.High));

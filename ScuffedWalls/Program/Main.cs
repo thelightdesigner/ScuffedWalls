@@ -8,7 +8,8 @@
 
     static class ScuffedWalls
     {
-        public static string ver => "v1.4.1";
+        
+        public static string ver => "v1.4.2";
         static void Main(string[] args)
         {
             Utils.Initialize(args);

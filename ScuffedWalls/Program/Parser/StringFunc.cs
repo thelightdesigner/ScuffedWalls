@@ -23,11 +23,13 @@ namespace ScuffedWalls
                     Name = "RepeatPointDefinition",
                     FunctionAction = InputArgs =>
                     {
-                        string[] spli = InputArgs.Extra.Split("],",2);
-                        string pd = spli[0] + "]";
-                        int repcount = int.Parse(spli[1]);
+                        int indexoflast = InputArgs.Extra.LastIndexOf("],") + 1;
 
-                        Parameter repeat = new Parameter("reppd", "1");
+                        string pd = InputArgs.Extra.Substring(0,indexoflast);
+
+                        int repcount = int.Parse(InputArgs.Extra.Substring(indexoflast + 1,InputArgs.Extra.Length - indexoflast - 1));
+
+                        Parameter repeat = new Parameter("reppd", "0");
                         Parameter[] internalvars = new Parameter[]{ repeat };
 
                         List<string> points = new List<string>();
@@ -35,7 +37,6 @@ namespace ScuffedWalls
                         {
                             repeat.StringData = i.ToString();
                             points.Add(Parameter.ParseVarFuncMath(pd, internalvars, true));
-                            
                         }
 
                         return string.Join(',',points);

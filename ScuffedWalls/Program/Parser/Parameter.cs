@@ -112,59 +112,43 @@ namespace ScuffedWalls
             string ThisAttempt = s.Clone().ToString();
             Exception MostRecentError = null;
 
-            //efficiency maybe?
-            bool SkipVar = false;
-            bool SkipMath = false;
-            bool SkipFunc = false;
-
             while (!LastAttempt.Equals(ThisAttempt)) //if we break from this, nothing changed so there is nothing more to do
             {
                 LastAttempt = ThisAttempt.Clone().ToString();
 
-                if (!SkipVar)
+                try //Variables
                 {
-                    try //Variables
+                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
+                    if (Modified.Key) //CASE 1: string was modified with no error; last error doesnt count because it was resolved
                     {
-                        KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), InternalVariables.CombineWith(ExternalVariables));
-                        if (Modified.Key) //CASE 1: string was modified with no error; last error doesnt count because it was resolved
-                        {
-                            ThisAttempt = Modified.Value;
-                            MostRecentError = null;
-                        }
-                        else SkipVar = true; //CASE 2: string wasnt modified with no error; nothing left to change. we can skip this step from now on
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
                     }
-                    catch (Exception e) { MostRecentError = e; } //CASE 3: string wasnt modified with an error; cache error, we try again later
                 }
+                catch (Exception e) { MostRecentError = e; } //CASE 3: string wasnt modified with an error; cache error, we try again later
 
-                if (!SkipMath)
+                try //Math
                 {
-                    try //Math
+                    KeyValuePair<bool, string> Modified = ParseMath(ThisAttempt.Clone().ToString());
+                    if (Modified.Key)
                     {
-                        KeyValuePair<bool, string> Modified = ParseMath(ThisAttempt.Clone().ToString());
-                        if (Modified.Key)
-                        {
-                            ThisAttempt = Modified.Value;
-                            MostRecentError = null;
-                        }
-                        else SkipMath = true;
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
                     }
-                    catch (Exception e) { MostRecentError = e; }
                 }
+                catch (Exception e) { MostRecentError = e; }
 
-                if (!SkipFunc)
+                try //Functions
                 {
-                    try //Functions
+                    KeyValuePair<bool, string> Modified = ParseFuncs(ThisAttempt.Clone().ToString());
+                    if (Modified.Key)
                     {
-                        KeyValuePair<bool, string> Modified = ParseFuncs(ThisAttempt.Clone().ToString());
-                        if (Modified.Key)
-                        {
-                            ThisAttempt = Modified.Value;
-                            MostRecentError = null;
-                        }
-                        else SkipFunc = true;
+                        ThisAttempt = Modified.Value;
+                        MostRecentError = null;
                     }
-                    catch (Exception e) { MostRecentError = e; }
                 }
+                catch (Exception e) { MostRecentError = e; }
+
             }
             if (MostRecentError != null && !HandleExceptions) throw MostRecentError; //if there is still an error, one of the steps couldnt ever continue 
 
@@ -219,7 +203,7 @@ namespace ScuffedWalls
             {
                 //if it already made a modification, return anyways
                 if (!BeforeModifications.Equals(s)) return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
-                else 
+                else
                 {
                     //recursion to attempt to parse deeper math expressions, only if the first outer attempt failed
                     try
@@ -256,7 +240,7 @@ namespace ScuffedWalls
                         FuncStringInternals = br.TextInsideOfBrackets;
 
                         string[] paramss = br.TextInsideOfBrackets.Split(',');
-                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(new ModChart.ValuePair<string[], string>() { Main = paramss ,Extra = br.TextInsideOfBrackets }) + br.TextAfterFocused;
+                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(new ModChart.ValuePair<string[], string>() { Main = paramss, Extra = br.TextInsideOfBrackets }) + br.TextAfterFocused;
                     }
                 }
             }
@@ -344,7 +328,7 @@ Output {{ Name:{Name} Data:{StringData} }}";
     /// <summary>
     /// Holds instructions for parsing functions called from strings and replacing with values
     /// </summary>
-    
+
 
     public enum VariableRecomputeSettings
     {

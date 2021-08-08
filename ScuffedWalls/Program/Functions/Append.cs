@@ -1,6 +1,7 @@
 ﻿using ModChart;
 using System;
 using System.Linq;
+using System.Text.Json;
 using static ScuffedWalls.ScuffedLogger.Default.ScuffedWorkspace.FunctionParser;
 
 namespace ScuffedWalls.Functions
@@ -24,6 +25,8 @@ namespace ScuffedWalls.Functions
             float starttime = Time;
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string tracc = GetParam("ontrack", null, p => p);
+            var lineindex = GetParam("selectlineindex", new int[] { 0, 1, 2, 3, 4 }, p => p.Split(',').Select(val => int.Parse(val)));
+            
 
             int i = 0;
             InstanceWorkspace.Walls = InstanceWorkspace.Walls.Select(obj =>
@@ -33,7 +36,8 @@ namespace ScuffedWalls.Functions
 
                 Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
 
-                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && AppendNotes.isOnTrack(obj._customData, tracc))
+
+                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && AppendNotes.isOnTrack(obj._customData, tracc) && lineindex.Any(num => num == obj._lineIndex.Value))
                 {
                     WallIndex.StringData = i.ToString();
 
@@ -69,7 +73,7 @@ namespace ScuffedWalls.Functions
             float starttime = Time;
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string tracc = GetParam("ontrack", null, p => p);
-            int[] notetype = GetParam("notetype", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
+            int[] notetype = GetParam("selecttype", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
@@ -114,7 +118,7 @@ namespace ScuffedWalls.Functions
         {
             SetParameters();
             AppendPriority type = GetParam("appendtechnique", AppendPriority.Low, p => (AppendPriority)int.Parse(p));
-            int[] lightypes = GetParam("lighttype", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
+            int[] lightypes = GetParam("selecttype", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float starttime = Time;
             bool rainbow = GetParam("converttorainbow", false, p => bool.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
