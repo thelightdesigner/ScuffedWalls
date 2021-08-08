@@ -300,6 +300,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to walls on this track
+ - selectlineindex: int,int,int (defaults to 0,1,2,3)
  - any of the noodle properties
  
   Example
@@ -338,7 +339,7 @@ adds on noodle/chroma data to notes between the function time and endtime (toBea
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
- - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
  - any of the noodle properties
@@ -386,7 +387,7 @@ adds on custom chroma data to events/lights between the function time and endtim
  - toBeat: float
  - appendTechnique: int(0-2)
  - any of the chroma properties
- - lighttype: 0, 1, 2, 3; the type of the light to append to
+ - selecttype: 0, 1, 2, 3; the type of the light to append to
 
  Example
 ```
