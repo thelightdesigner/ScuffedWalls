@@ -421,6 +421,12 @@ granted this only works if every object has a  `_definitePosition` with a value 
 confusing right?
 
 
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/internalvar.jpg)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/repeatvar.jpg)
+
+
+
 # TextToWall
 Constructs text out of walls
 
