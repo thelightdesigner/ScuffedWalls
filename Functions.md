@@ -300,7 +300,8 @@ Appending means to add on or to merge two sets of data. The append function will
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to walls on this track
- - any of the noodle properties
+ - selectlineindex: int,int,int (defaults to 0,1,2,3)
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
  ```
@@ -338,10 +339,10 @@ adds on noodle/chroma data to notes between the function time and endtime (toBea
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
- - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
   ```
@@ -385,8 +386,8 @@ adds on custom chroma data to events/lights between the function time and endtim
 
  - toBeat: float
  - appendTechnique: int(0-2)
- - any of the chroma properties
- - lighttype: 0, 1, 2, 3; the type of the light to append to
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - selecttype: 0, 1, 2, 3; the type of the light to append to
 
  Example
 ```
@@ -448,7 +449,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
  Example
  ```
@@ -501,7 +502,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - repeat: int
  - repeataddtime: float
  
@@ -542,7 +543,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - Alpha: the alpha value
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
   ```
@@ -669,7 +670,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
 
  Example
 ```
@@ -708,7 +709,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
 - type:int
 - cutDirection:int
 
@@ -746,7 +747,7 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 (repeatable)
 makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
@@ -770,7 +771,7 @@ makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/mast
 (repeatable)
 makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPathAnimation) custom event
 
- - any of the noodle animation properties
+ - any of [`these properties`](## Noodle Extensions/Chroma Properties Syntax)
  - track: string
  - easing: string
  - repeat: int, amount of times to repeat
@@ -787,7 +788,8 @@ makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/bl
 
 # AssignPlayerToTrack
 makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
- - any of the noodle animation properties
+
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - track: string
  - easing: string
  
@@ -799,6 +801,7 @@ makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/bl
 
 # ParentTrack
 makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignTrackParent) custom event
+
  - childTracks:\["str","str"...]
  - parentTrack: string
  
