@@ -37,7 +37,6 @@ All the available functions are listed below
 - [`PointDefinition`](#PointDefinition)
 
 ## Workspaces
-> "CloneFromWorkspace", "CloneFromWorkspaceByIndex", "CloneWorkspace"
 
 Generally, a function will only add or affect map objects (walls, notes, lights, ect) in its own workspace.
 
@@ -129,6 +128,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
 - [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
 - [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
+- [`AnimateTime`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_time):\[t,t,"e"?]
 
 [`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
 
@@ -150,6 +150,9 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - CProp: float
  - CSpeed: float
  - CCounterSpin: bool
+
+`Other`
+ - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
 
 Usefull links:
  - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
@@ -182,10 +185,63 @@ The available functions are:
  - RandomInt(Val1,Val2) => returns a number
  - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
  - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
+ - RepeatPointDefinition(PointDefinition,amount of times to repeat) => returns point definitions
  - OrderPointDefinitions(PointDefinitions) => returns point definitions
 
+## Random & RandomInt
+An inline function that returns a random number ranging from Val1 to Val2. RandomInt will return a random whole number.
 
- ## Variables
+Example:
+```
+0:wall
+  njs:Random(0,10)
+```
+
+## HSLtoRGB
+An inline function that returns a point definition representing a color.
+
+HSLtoRGB(Hue, Saturation, Value, Alpha?, Extra values to be added to the point defintion?)
+
+Examples:
+```
+0:Wall
+  color:HSLtoRGB(0.2,1,0.5,1)
+```
+```
+0:Wall
+  animatecolor:HSLtoRGB(0.2,1,0.5,1,0),HSLtoRGB(0.4,1,0.5,1,1,"easeInOutSine")
+  #			^   ^  ^  ^ ^   	 ^  ^  ^  ^ ^        ^
+  #		     hue,sat,val,alfa,time 	hue,sat,val,alfa,time,easing
+```
+
+## RepeatPointDefinition
+An inline function that returns a controllable amount of point definitions based on one or more point definitions.
+
+This function has an internal variable `reppd` (short for repeatpointdefinition) which ticks up every repeat.
+
+Example:
+```
+0:Note
+  animateposition:RepeatPointDefinition([Random(0,1),Random(0,1),Random(0,1),{reppd/9}],10)
+```
+
+## OrderPointDefinitions
+An inline function that returns point definitions ordered by their time value.
+
+```
+0:Wall
+  animatedissolve:OrderPointDefinitions([1,1],[1,0],[1,0.2],[1,0.8])
+```
+
+## MultPointDefinition
+An inline function that multiplies all numbers in a point definition by another number.
+
+```
+0:AppendWalls
+  color:MultPointDefinition([_color(0),_color(1),_color(2),_color(3)],2)
+```
+
+# Variables
 Variables are containers for string/numerical data.
 
 ```
@@ -237,7 +293,6 @@ Variables that are auto created and changed internally. All repeatable functions
 
 
 # AppendWalls
-> "AppendToAllWallsBetween","AppendWalls","AppendWall"
 
 Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
@@ -245,7 +300,8 @@ Appending means to add on or to merge two sets of data. The append function will
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to walls on this track
- - any of the noodle properties
+ - selectlineindex: int,int,int (defaults to 0,1,2,3)
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
  ```
@@ -283,10 +339,10 @@ adds on noodle/chroma data to notes between the function time and endtime (toBea
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
- - notetype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
+ - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
   ```
@@ -330,8 +386,8 @@ adds on custom chroma data to events/lights between the function time and endtim
 
  - toBeat: float
  - appendTechnique: int(0-2)
- - any of the chroma properties
- - lighttype: 0, 1, 2, 3; the type of the light to append to
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - selecttype: 0, 1, 2, 3; the type of the light to append to
 
  Example
 ```
@@ -366,6 +422,12 @@ granted this only works if every object has a  `_definitePosition` with a value 
 confusing right?
 
 
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/internalvar.jpg)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/repeatvar.jpg)
+
+
+
 # TextToWall
 Constructs text out of walls
 
@@ -387,7 +449,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
  Example
  ```
@@ -408,8 +470,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    definitetime:beats
  ```
 
-# ModelToWall 
-> "ModelToWall", "ModelToNote", "ModelToBomb", "Model"
+# ModelToWall
 
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
@@ -441,7 +502,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - repeat: int
  - repeataddtime: float
  
@@ -461,7 +522,6 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  ```
 
 # ImageToWall
-> "ImageToWall","Image","RenderImage"
 
 constructs an image out of walls as pixels
 
@@ -483,7 +543,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - Alpha: the alpha value
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
   ```
@@ -502,7 +562,6 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  ```
  
 # Environment
-> "Environment", "EnvironmentEnhancement"
 
 makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
 
@@ -611,7 +670,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
 
  Example
 ```
@@ -650,7 +709,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
-- any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
 - type:int
 - cutDirection:int
 
@@ -686,9 +745,9 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
 # AnimateTrack
 (repeatable)
-makes a custom event
+makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
- - any of the noodle properties
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
@@ -710,9 +769,9 @@ makes a custom event
 
 # AssignPathAnimation
 (repeatable)
-makes a custom event
+makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPathAnimation) custom event
 
- - any of the noodle animation properties
+ - any of [`these properties`](## Noodle Extensions/Chroma Properties Syntax)
  - track: string
  - easing: string
  - repeat: int, amount of times to repeat
@@ -728,8 +787,9 @@ makes a custom event
 ```
 
 # AssignPlayerToTrack
-makes a custom event
- - any of the noodle animation properties
+makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
+
+ - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - track: string
  - easing: string
  
@@ -740,7 +800,8 @@ makes a custom event
  ```
 
 # ParentTrack
-makes a custom event
+makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignTrackParent) custom event
+
  - childTracks:\["str","str"...]
  - parentTrack: string
  
@@ -752,7 +813,7 @@ makes a custom event
  ```
 
 # PointDefinition
-makes a point definition
+makes a point definition for use with custom events
   - name: string
   - points: point definitions
 

@@ -68,10 +68,19 @@ Workspace:Default";
 
             
             Info = GetInfo();
-            InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
-                     .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
-                     .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
-                     .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+            try
+            {
+                InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
+                         .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
+                         .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
+                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+            }
+            catch(Exception e)
+            {
+                ScuffedLogger.Error.Log($"Error in info.dat! {e}");
+                Console.ReadLine();
+                Environment.Exit(1);
+            }
 
             BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
             ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");

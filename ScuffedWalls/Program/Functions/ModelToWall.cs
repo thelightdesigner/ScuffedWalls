@@ -15,7 +15,7 @@ namespace ScuffedWalls.Functions
         public Parameter Beat;
         public void SetParameters()
         {
-            Repeat = new Parameter("repeat","1");
+            Repeat = new Parameter("repeat","0");
             Beat = new Parameter ("time",Time.ToString());
             Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
@@ -86,6 +86,14 @@ namespace ScuffedWalls.Functions
             int customevents = 0;
             for (int i = 0; i < repeatcount; i++)
             {
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeataddtime)).ToString();
+
+
+                FunLog();
+
+
+
                 Transformation Delta = new Transformation
                 {
                     Position = GetParam("deltaposition", DefaultValue: new Vector3(0, 0, 0), p => JsonSerializer.Deserialize<float[]>(p).ToVector3()),
@@ -131,8 +139,6 @@ namespace ScuffedWalls.Functions
                 notes += model.Output._notes.Count;
                 customevents += model.Output._customData.at<IEnumerable<object>>("_customEvents").Count();
 
-                Repeat.StringData = i.ToString();
-                Beat.StringData = (Time + (i * repeataddtime)).ToString();
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
             if (walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");

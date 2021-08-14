@@ -9,6 +9,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             string JS = GetParam("Javascript", null, p => "node " + '"' + Path.Combine(Utils.ScuffedConfig.MapFolderPath, p) + '"');
             bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
             

@@ -8,6 +8,8 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
             var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
 

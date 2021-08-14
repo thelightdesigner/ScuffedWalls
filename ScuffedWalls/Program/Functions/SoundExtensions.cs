@@ -12,6 +12,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             float[] Times = GetParam("times", Array.Empty<float>(), p => p.Split(',').Select(h => float.Parse(h)).ToArray());
             NoteType FilterType = GetParam("type", NoteType.Bomb | NoteType.Right | NoteType.Left, p => Enum.Parse<NoteType>(p));
             CutDirection FilterDirection = GetParam("direction",

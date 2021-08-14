@@ -17,10 +17,15 @@ namespace ScuffedWalls
             InstanceWorkspace = instance;
             Time = time;
         }
+        public void FunLog()
+        {
+            var param = GetParam("log", null, p => p);
+            if (param != null) Console.WriteLine($"Log: {param}");
+        }
+        
         public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            string s = string.Empty;
             ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})");
             Console.ResetColor();
         }

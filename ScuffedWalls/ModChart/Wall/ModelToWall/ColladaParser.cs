@@ -193,8 +193,12 @@ namespace ModChart.Wall
 
                     }
 
-                    if (cube.Material != null && cube.Material.Any(m => m.ToLower().Contains("note"))) cube.isNote = true;
-                    if (cube.Material != null && cube.Material.Where(m => !m.ToLower().Contains("note")).Count() > 1) cube.Track = cube.Material.Where(m => !m.ToLower().Contains("note")).Last();
+                    if (cube.Material != null) {
+                        if (cube.Material.Any(m => m.ToLower().Contains("note"))) cube.isNote = true;
+                        if (cube.Material.Any(m => m.ToLower().StartsWith("track_"))) cube.Track = cube.Material.Where(m => !m.ToLower().StartsWith("track_")).Last();
+                        else if (cube.Material.Length > 1) cube.Track = cube.Material.Last();
+                    }
+                    
                     
                     cubes.Add(cube);
                 }

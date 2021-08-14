@@ -26,10 +26,8 @@ namespace ModChart
 
             foreach (var Item in this)
             {
-                if (Item.Value is TreeDictionary tree) New[Item.Key] = tree;
+                if (Item.Value is ICloneable cloneable) New[Item.Key] = cloneable.Clone();
                 else if (Item.Value is IEnumerable<object> array) New[Item.Key] = array.CloneArray();
-                else if (Item.Value is IDictionary<string, object> dict) New[Item.Key] = Tree(dict);
-                else if (Item.Value is ICloneable cloneable) New[Item.Key] = cloneable.Clone();
                 else New[Item.Key] = Item.Value;
             }
 

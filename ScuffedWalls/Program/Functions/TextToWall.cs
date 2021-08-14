@@ -11,6 +11,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             var parsedshit = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedshit._customData != null && parsedshit._customData["_noteJumpMovementSpeed"] != null;

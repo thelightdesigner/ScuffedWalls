@@ -35,6 +35,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 
 ## Examples
 
+ - [`Shelter`](https://www.youtube.com/watch?v=a4zSCDYRwAQ)
  - [`Illuminate`](https://www.youtube.com/watch?v=lFL3Gjy15oc&t=1s)
  - [`Homesick`](https://www.youtube.com/watch?v=St3fSqj8SXc)
  - [`Gamecube Intro`](https://www.youtube.com/watch?v=0SVRM0cmUVE)
@@ -47,15 +48,20 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`0108ROCKET`](https://www.youtube.com/watch?v=YtHnIqrLW1s)
  - [`Dadadada`](https://www.youtube.com/watch?v=vJlGANqWn2U)
  - [`Scary Garry`](https://www.youtube.com/watch?v=Pw5GfyzEWNU)
+ - [`Industry Baby`](https://www.youtube.com/watch?v=vtNGsJnHRD4)
  - [`Last Christmas`](https://www.youtube.com/watch?v=kcKMgOnlyis)
- - [`Camellia - Crystallized`](https://youtu.be/TnvvoApz4zg)
- - `Roth Bartlett - Off the World (wobbleorange)`
- - `Amanda Marshall - Let it Rain (wobbleorange)`
- - `Tiesto - Wasted (wobbleorange)`
+ - [`Crystallized`](https://youtu.be/TnvvoApz4zg)
+ - [`Wasted`](https://www.youtube.com/watch?v=TTqqOfxKLEI)
+ - [`Don't Wanna Fall`](https://youtu.be/unjtFxjYHH4)
+ - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rocket.jpg" alt="Try" width="500"/>
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/orb.png" alt="Try" width="500"/>
+
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/shelter.jpg" alt="Try" width="500"/>
+
+<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/swifterilluminate.png" alt="Try" width="500"/>
 
 ## For Developers
 

@@ -10,6 +10,9 @@ namespace ScuffedWalls.Functions
     {
         public override void Run()
         {
+            FunLog();
+
+
             int[] Type = GetParam("type", new int[] { 0, 1, 2, 3 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             string name = GetParam("name", string.Empty, p => p);
             int Index = GetParam("index", 0, p => int.Parse(p));
