@@ -15,6 +15,7 @@ namespace ScuffedWalls.Functions
 
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine( Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
+            AddRefresh(Path);
             float duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             bool isBlackEmpty = GetParam("isblackempty", DefaultValue: true, p => bool.Parse(p));
             bool centered = GetParam("centered", DefaultValue: true, p => bool.Parse(p));

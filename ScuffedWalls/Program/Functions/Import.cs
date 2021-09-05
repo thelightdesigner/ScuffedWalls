@@ -17,6 +17,7 @@ namespace ScuffedWalls.Functions
 
             string Path = GetParam("path", string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
+            AddRefresh(Path);
             int[] Type = GetParam("type", new int[] { 0, 1, 2, 3, 4, 5 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float startbeat = Time;
             float addtime = GetParam("addtime", 0, p => float.Parse(p));
