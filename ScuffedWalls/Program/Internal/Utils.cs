@@ -22,7 +22,7 @@ namespace ScuffedWalls
         public static TreeDictionary InfoDifficulty { get; private set; }
         public static BpmAdjuster BPMAdjuster { get; private set; }
         public static ScuffedWallFile ScuffedWallFile { get; private set; }
-        public static Change SWFileChangeDetector { get; private set; }
+        public static List<FileChangeDetector> FilesToChange { get; set; }
         public static RPC DiscordRPCManager { get; private set; }
         /// <summary>
         /// These events are erased after a single invoke
@@ -49,7 +49,10 @@ namespace ScuffedWalls
 # Playtest your maps
 
 Workspace:Default";
-
+        public static void ResetAwaitingFiles()
+        {
+            FilesToChange = new List<FileChangeDetector>() { ScuffedWallFile.Detector };
+        }
         public static void Initialize(string[] argss)
         {
             JsonSerializerOptions SerializerOptions = new JsonSerializerOptions() { IgnoreNullValues = true };
@@ -85,8 +88,8 @@ Workspace:Default";
             BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
             ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
 
-            ScuffedWallFile = new ScuffedWallFile(Utils.ScuffedConfig.SWFilePath);
-            SWFileChangeDetector = new Change(ScuffedWallFile);
+            ScuffedWallFile = new ScuffedWallFile(ScuffedConfig.SWFilePath);
+            ResetAwaitingFiles();
 
             DiscordRPCManager = new RPC();
             var releasething = CheckReleases();

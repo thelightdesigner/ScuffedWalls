@@ -22,6 +22,15 @@ namespace ScuffedWalls
             var param = GetParam("log", null, p => p);
             if (param != null) Console.WriteLine($"Log: {param}");
         }
+
+        public void AddRefresh(string file)
+        {
+            if (GetParam("refreshonsave", false, p => bool.Parse(p)))
+            {
+                Utils.FilesToChange.Add(
+                    new FileChangeDetector(new System.IO.FileInfo(file)));
+            }
+        }
         
         public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {

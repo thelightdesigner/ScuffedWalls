@@ -1,45 +1,79 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace ScuffedWalls
+class FileChangeDetector
 {
-    class Change
+    public static string LatestMessage { get; private set; } = "Program opened";
+    public FileChangeDetector(FileInfo file)
     {
-        public Change(ScuffedWallFile file)
-        {
-            _LastModifiedTime = File.GetLastWriteTime(file.Path);
-            SWFile = file;
-        }
-        ScuffedWallFile SWFile;
-        public DateTime _LastModifiedTime { get; set; }
-        public void Detect()
-        {
-            while (File.GetLastWriteTime(Utils.ScuffedConfig.SWFilePath) == _LastModifiedTime) 
-            {
-                if (Console.KeyAvailable) if (Console.ReadKey().Key == ConsoleKey.R) break;
-                Task.Delay(20);
-            }
-            _LastModifiedTime = File.GetLastWriteTime(Utils.ScuffedConfig.SWFilePath);
+        File = file;
+        _lastModifiedTime = _currentModifiedTime;
+    }
+    public FileInfo File;
+    private DateTime _currentModifiedTime => System.IO.File.GetLastWriteTime(File.FullName);
+    private DateTime _lastModifiedTime { get; set; }
+    public bool HasChanged()
+    {
+        if (_currentModifiedTime.ToString() == _lastModifiedTime.ToString()) return false;
 
-            SWFile.Refresh();
-        }
-        public static bool isFileLocked(string path)
+        _lastModifiedTime = _currentModifiedTime;
+        LatestMessage = $"{File.Name} modified";
+        return true;
+    }
+    public void SetChanged()
+    {
+        File.Refresh();
+        _lastModifiedTime = File.LastWriteTime;
+    }
+    public static void WaitForChange(IEnumerable<FileChangeDetector> files)
+    {
+        FileChangeDetector changed = null;
+        while (!anyChanged(files, out changed) && !RefreshPressed())
         {
-            try
+            Task.Delay(20);
+        }
+        if (changed != null) changed.WaitForUnlock(); //fix vscode bug
+    }
+    private static bool anyChanged(IEnumerable<FileChangeDetector> files, out FileChangeDetector changed)
+    {
+        changed = null;
+        foreach (var file in files)
+        {
+            if (file.HasChanged())
             {
-                using (Stream stream = new FileStream("MyFilename.txt", FileMode.Open))
-                {
-                    //void
-                }
-                return false;
-            }
-            catch
-            {
+                changed = file;
                 return true;
             }
         }
+        return false;
     }
-
-
+    public static bool RefreshPressed()
+    {
+        if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.R)
+        {
+            LatestMessage = "Refreshed";
+            return true;
+        }
+        return false;
+    }
+    public bool IsLocked()
+    {
+        try
+        {
+            System.IO.File.ReadAllText(File.FullName);
+        }
+        catch
+        {
+            return true;
+        }
+        return false;
+    }
+    public void WaitForUnlock()
+    {
+        while (IsLocked()) { Thread.Sleep(100); }
+    }
 }

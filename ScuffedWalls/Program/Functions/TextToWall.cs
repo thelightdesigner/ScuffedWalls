@@ -31,6 +31,7 @@ namespace ScuffedWalls.Functions
             float smooth =          GetParam("spreadspawntime", 0, p => float.Parse(p));
             string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
+            AddRefresh(Path);
             float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             ModelSettings
             .TypeOverride tpye =    GetParam("type", DefaultValue: ModelSettings.TypeOverride.ModelDefined, p => (ModelSettings.TypeOverride)int.Parse(p));

@@ -9,12 +9,16 @@ namespace ScuffedWalls
     class ScuffedWallFile
     {
         public string Path { get; private set; }
+        public FileInfo File { get; private set; }
         public Parameter[] Lines { get; private set; }
+        public FileChangeDetector Detector { get; private set; }
         public KeyValuePair<int, string>[] SWFileLines { get; private set; }
         public KeyValuePair<int, string>[] SWRaw { get; private set; }
         public ScuffedWallFile(string path)
         {
             Path = path;
+            File = new FileInfo(path);
+            Detector = new FileChangeDetector(File);
             Refresh();
         }
         public void Refresh()
@@ -50,7 +54,7 @@ namespace ScuffedWalls
 
             if (Utils.ScuffedConfig.IsBackupEnabled)
             {
-                File.Copy(Path, System.IO.Path.Combine(Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath, $"{DateTime.Now.ToFileString()}.sw"));
+                System.IO.File.Copy(Path, System.IO.Path.Combine(Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath, $"{DateTime.Now.ToFileString()}.sw"));
             }
         }
 

@@ -12,11 +12,12 @@ namespace ScuffedWalls.Functions
             FunLog();
 
 
-            string JS = GetParam("Javascript", null, p => "node " + '"' + Path.Combine(Utils.ScuffedConfig.MapFolderPath, p) + '"');
+            string JSfile = GetParam("Javascript", null, p => Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
+            AddRefresh(JSfile);
             bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
             
 
-            string InputArgs = JS != null ? JS : GetParam("Args", "", p => p);
+            string InputArgs = JSfile != null ? $"node \"{JSfile}\"" : GetParam("Args", "", p => p);
 
             void Execute()
             {

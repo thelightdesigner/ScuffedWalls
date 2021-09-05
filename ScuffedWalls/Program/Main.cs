@@ -9,7 +9,7 @@
     static class ScuffedWalls
     {
         
-        public static string ver => "v1.4.2";
+        public static string ver => "v1.4.3";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
@@ -20,15 +20,17 @@
 
             while (true)
             {
-                Log("Changes detected, running...");
+                Utils.ScuffedWallFile.Refresh();
+                Log($"{FileChangeDetector.LatestMessage}, running...");
                 var StartTime = DateTime.Now;
                 Utils.InvokeOnChangeDetected();
                 ExecuteRequest();
                 GC.Collect();
                 Utils.InvokeOnProgramComplete();
                 Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
-                Log($"Waiting for changes to {new FileInfo(Utils.ScuffedConfig.SWFilePath).Name}");
-                Utils.SWFileChangeDetector.Detect();
+                Log($"Waiting for changes to {string.Join(", ", Utils.FilesToChange.Select(file => file.File.Name))}");
+                FileChangeDetector.WaitForChange(Utils.FilesToChange);
+                Utils.ResetAwaitingFiles();
             }
         }
         static void ExecuteRequest()
