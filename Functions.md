@@ -1,11 +1,11 @@
 ## Contents
  - [`Functions`](#Functions)
  - [`Workspaces`](#Workspaces)
- - [`Noodle Extensions/Chroma Properties Syntax`](#Noodle Extensions/Chroma Properties Syntax)
- - [`Math & Functions`](#Math & Functions)
+ - [`Noodle Extensions/Chroma Properties Syntax`](#noodle-extensionschroma-properties-syntax)
+ - [`Math & Functions`](#math--functions)
  - [`Variables`](#Variables)
- - [`Internal Variables`](Internal Variables)
- - [`Example Scripts`](Example Scripts)
+ - [`Internal Variables`](#internal-variables)
+ - [`Example Scripts`](#Example-Scripts)
 
 # Functions
 Functions are referenced in the \_ScuffedWalls.sw file.
