@@ -394,9 +394,8 @@ adds on custom chroma data to events/lights between the function time and endtim
  5:AppendToAllEventsBetween
    toBeat:10
    appendTechnique:2
-   lightType:1,3,0
-   converttorainbow: true
-   rainbowfactor:1
+   selectType:1,3,0
+   color:HSLtoRGB(time, 1, 0.5, 1)
  ```
 
  ## AppendTechnique
@@ -696,7 +695,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
   Njs:10
   NjsOffset:20
   position:[Random(0,80),Random(-100,100)]
-  color:[Random(0,20),Random(0,20),Random(0,20),20]
+  color:HSLtoRGB(Random(0,1),1,0.5,1)
   rotation:[Random(0,360),90,0]
 
 ```
@@ -737,7 +736,7 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
   NJS:10
   NJSOffset:4
   fake:true
-  isInteractable: false
+  Interactable: false
   track: RandomShit
 ```
 
