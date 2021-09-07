@@ -1,4 +1,13 @@
-## Functions
+## Contents
+ - [`Functions`](#Functions)
+ - [`Workspaces`](#Workspaces)
+ - [`Noodle Extensions/Chroma Properties Syntax`](#Noodle Extensions/Chroma Properties Syntax)
+ - [`Math & Functions`](#Math & Functions)
+ - [`Variables`](#Variables)
+ - [`Internal Variables`](Internal Variables)
+ - [`Example Scripts`](Example Scripts)
+
+# Functions
 Functions are referenced in the \_ScuffedWalls.sw file.
 Alternate spellings if any are in block quotes under the function.
 
@@ -36,7 +45,7 @@ All the available functions are listed below
 - [`ParentTrack`](#ParentTrack)
 - [`PointDefinition`](#PointDefinition)
 
-## Workspaces
+# Workspaces
 
 Generally, a function will only add or affect map objects (walls, notes, lights, ect) in its own workspace.
 
@@ -93,7 +102,7 @@ Workspace: A Different Workspace
 
 
 
-## Noodle Extensions/Chroma Properties Syntax
+# Noodle Extensions/Chroma Properties Syntax
 Noodle Extensions/Chroma/Other properties that can be used on most functions
 
 Most of these properties are directly connected to their corresponding Noodle/Chroma property written in JSON. 
@@ -159,7 +168,7 @@ Usefull links:
  - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
  - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
 
-## Math & Functions
+# Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
 ```
@@ -292,7 +301,7 @@ Variables that are auto created and changed internally. All repeatable functions
 
 
 
-# AppendWalls
+## AppendWalls
 
 Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
@@ -334,7 +343,7 @@ a very scuffed way to make a rainbow
 
 [`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
 
-# AppendNotes
+## AppendNotes
 adds on noodle/chroma data to notes between the function time and endtime (toBeat)
 
  - Function Time => starting beat of selection (only append notes after...)
@@ -381,7 +390,7 @@ multiplies all the definitepositions by 3 except for the time value
    appendtechnique:1
    ```
 
-# AppendEvents
+## AppendEvents
 adds on custom chroma data to events/lights between the function time and endtime (toBeat)
 
  - toBeat: float
@@ -427,7 +436,7 @@ confusing right?
 
 
 
-# TextToWall
+## TextToWall
 Constructs text out of walls
 
 Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
@@ -469,7 +478,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
    definitetime:beats
  ```
 
-# ModelToWall
+## ModelToWall
 
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
@@ -520,7 +529,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
    definitedurationseconds:5.1276
  ```
 
-# ImageToWall
+## ImageToWall
 
 constructs an image out of walls as pixels
 
@@ -560,7 +569,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
    animatedefiniteposition:[0,0,0,0]
  ```
  
-# Environment
+## Environment
 
 makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
 
@@ -605,7 +614,7 @@ Workspace
    
  ```
  
-# Blackout
+## Blackout
 adds a single light off event at the beat number. why? because why not.
 
  Example
@@ -638,7 +647,7 @@ note that in the above example, CoolMapScript.js is in the map folder
   RunBefore: false
 ```
  
-# Import
+## Import
 adds in map objects from other map.dat files
 
  - path: string
@@ -657,7 +666,7 @@ adds in map objects from other map.dat files
 
 
 
-# Wall
+## Wall
 (repeatable)
 makes a wall
 
@@ -700,7 +709,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 
 ```
 
-# Note
+## Note
 (repeatable)
 makes a note
 
@@ -742,7 +751,7 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
 
 
-# AnimateTrack
+## AnimateTrack
 (repeatable)
 makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
@@ -785,7 +794,7 @@ makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/bl
   easing:easeInOutSine
 ```
 
-# AssignPlayerToTrack
+## AssignPlayerToTrack
 makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
 
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
@@ -811,7 +820,7 @@ makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob
     ChildTracks:["rightnotes","leftnotes"]
  ```
 
-# PointDefinition
+## PointDefinition
 makes a point definition for use with custom events
   - name: string
   - points: point definitions
@@ -826,7 +835,7 @@ makes a point definition for use with custom events
     DefineAnimateDefinitePosition:UpDownPoints
 ```
 
-# Script
+## Script
 use this function by downloading the repo and navigating to ScuffedWalls>Program>Functions>Script.cs
 
 is this stupid? yes.
@@ -836,3 +845,77 @@ is this stupid? yes.
 don't ever call this
 
 :)
+
+# Example Scripts
+
+Polygon Creator - iswimfly
+```
+#CHANGEABLE!
+var:sides
+data:XXX
+
+var:yPos
+data:XXX
+
+var:xPos
+data:XXX
+
+var:radius
+data:XXX
+
+
+#dont touch
+var:LMAO
+data:repeat-1
+var:angles
+data:3.14*2/sides
+var:rot
+data:360/sides*repeat
+var:radians
+data:angles*LMAO
+var:width
+data:2*radius*Tan(3.14/sides)
+var:height
+data:2
+var:sx
+data:xPos+Cos(radians)*radius-width/2
+var:sy
+data:yPos+Sin(radians)*radius-height/2
+
+XXX: Wall
+    repeat:{sides+1}
+    localrotation:[0,0,{33.8+rot}]
+    position:[{sx},{sy}]
+    
+        # CHANGE ANYTHING BELOW HERE AS YOU PLEASE! DO NOT TOUCH THE ABOVE!
+    interactable: false
+    duration:10
+    scale:[6,1,1]
+    animatedefiniteposition:[0,0,5,0],[0,0,5,1]
+    animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
+ ```
+
+Notes "walk" on their back quarters. looks best on bottom notes (needs to be slow NJS) - wobbleorange
+ ```
+ XXX:AppendToAllNotesBetween
+tobeat:XXX
+AnimatePosition:[-0.16,-0.2,0,0],[0,0,0,0.025],[0.16,-0.2,0,0.05],[0,0,0,0.075],[-0.16,-0.2,0,0.1],[0,0,0,0.125],[0.16,-0.2,0,0.15],[0,0,0,0.175],[-0.16,-0.2,0,0.2],[0,0,0,0.225],[0.16,-0.2,0,0.25],[0,0,0,0.275],[-0.16,-0.2,0,0.3],[0,0,0,0.325],[0.08,-0.2,0,0.35],[0,0,0,0.375]
+AnimateLocalRotation:[18,15,8,0],[18,-15,-8,0.05],[18,15,8,0.1],[18,-15,-8,0.15],[18,15,8,0.2],[18,-15,-8,0.25],[18,15,8,0.3],[18,-15,-8,0.35],[0,0,0,0.4]
+NJS:13
+NJSOffset:3
+```
+
+Red bomb helix - totally balloon
+```XXX:note
+   repeat:120
+   repeataddtime:0.05
+   rotation:[0,0,{repeat*15}]
+   position:[0,4,0]
+   type:3
+   disableNoteGravity:true
+   disableNoteLook:true
+   fake:true
+   interactable:false
+   color:[1,0,0,1]
+   ```
+
