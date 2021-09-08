@@ -6,8 +6,8 @@ using System.Linq;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("TextToWall")]
-    class TextToWall : SFunction
+    [SFunction("TextToWall")]
+    class TextToWall : ScuffedFunction
     {
         public override void Run()
         {

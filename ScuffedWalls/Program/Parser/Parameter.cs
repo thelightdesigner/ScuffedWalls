@@ -1,31 +1,27 @@
 ﻿using NCalc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ScuffedWalls
 {
-    public class Parameter : INameStringDataPair
+    public class Parameter : INameStringDataPair, ICloneable
     {
-        public static void UnUseAll(Parameter[] parameters)
+        public static void UnUseAll(IEnumerable<Parameter> parameters)
         {
             foreach (var p in parameters) p.WasUsed = false;
         }
-        public static void Check(Parameter[] parameters)
+        public static void Check(IEnumerable<Parameter> parameters)
         {
-            foreach (var p in parameters) if (!p.WasUsed) ScuffedLogger.Warning.Log($"Parameter {p.Name} at line {p.GlobalIndex} may be unused (Mispelled?)");
+            foreach (var p in parameters) if (!p.WasUsed) ScuffedWalls.Print($"Parameter {p.Name} at line {p.GlobalIndex} may be unused (Mispelled?)", ScuffedWalls.LogSeverity.Warning);
         }
 
         public bool WasUsed { get; set; }
         public Parameter[] InternalVariables { get; set; } = new Parameter[] { };
         public static Parameter[] ExternalVariables { get; set; } = new Parameter[] { };
         public static StringFunction[] StringFunctions { get; set; } = new StringFunction[] { };
-        public Parameter(VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
+        public Parameter()
         {
-            SetRaw();
-            SetType();
-            SetNameAndData();
-            SetInstance();
-            VariableComputeSettings = RecomputeSettings;
         }
         public Parameter(string line, VariableRecomputeSettings RecomputeSettings = VariableRecomputeSettings.AllReferences)
         {
@@ -270,7 +266,7 @@ namespace ScuffedWalls
         public Variable Raw { get; set; } = new Variable();
         public VariableRecomputeSettings VariableComputeSettings { get; set; } = VariableRecomputeSettings.AllReferences;
         public int GlobalIndex { get; set; }
-        public string Line { get; set; }
+        public string Line { get; set; } = "";
         public ParamType Type { get; private set; } = ParamType.Parameter;
         public string Name
         {
@@ -307,20 +303,37 @@ namespace ScuffedWalls
             return $@"Raw:{{ Name:{Raw.Name} Data:{Raw.StringData} }}
 Internal:{{ Name:{Internal.Name} Data:{Internal.StringData} }} (private)
 Instance:{{ Name:{Instance.Name} Data:{Instance.StringData} }} (private)
-Output {{ Name:{Name} Data:{StringData} }}";
+Output: {{ Name:{Name} Data:{StringData} }}
+WasUsed: {WasUsed}";
+        }
+
+        public object Clone()
+        {
+            return new Parameter()
+            {
+                GlobalIndex = GlobalIndex,
+                VariableComputeSettings = VariableComputeSettings,
+                Line = Line,
+                Type = Type,
+                Raw = (Variable)Raw.Clone(),
+                WasUsed = WasUsed,
+                InternalVariables = InternalVariables.CloneArray().Cast<Parameter>().ToArray(),
+                Instance = (Variable)Instance.Clone(),
+                Internal = (Variable)Internal.Clone()
+            };
         }
     }
     public static class ParameterHelper
     {
 
-        public static void SetInteralVariables(this Parameter[] parameters, Parameter[] variables)
+        public static void SetInteralVariables(this IEnumerable<Parameter> parameters, Parameter[] variables)
         {
             foreach (var p in parameters)
             {
                 p.InternalVariables = variables;
             }
         }
-        public static void RefreshAllParameters(this Parameter[] ps)
+        public static void RefreshAllParameters(this IEnumerable<Parameter> ps)
         {
             foreach (var p in ps) p.Refresh();
         }
@@ -339,7 +352,7 @@ Output {{ Name:{Name} Data:{StringData} }}";
     /// <summary>
     /// The base container for simple name and string data pairing
     /// </summary>
-    public class Variable : INameStringDataPair
+    public class Variable : INameStringDataPair, ICloneable
     {
         public Variable() { }
         public Variable(string name, string data)
@@ -349,6 +362,12 @@ Output {{ Name:{Name} Data:{StringData} }}";
         }
         public string Name { get; set; }
         public string StringData { get; set; }
+
+        public object Clone()
+        {
+            return new Variable(Name, StringData);
+        }
+
         public override string ToString()
         {
             return $"Name:{Name} Data:{StringData}";

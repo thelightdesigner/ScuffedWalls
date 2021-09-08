@@ -14,7 +14,7 @@ namespace ScuffedWalls
     class Utils
     {
         public static string[] args;
-
+        
         public static JsonSerializerOptions DefaultJsonConverterSettings { get; private set; }
         public static string ConfigFileName { get; private set; }
         public static Config ScuffedConfig { get; private set; }
@@ -80,13 +80,13 @@ Workspace:Default";
             }
             catch(Exception e)
             {
-                ScuffedLogger.Error.Log($"Error in info.dat! {e}");
+                ScuffedWalls.Print($"Error in info.dat! {e}", ScuffedWalls.LogSeverity.Critical);
                 Console.ReadLine();
                 Environment.Exit(1);
             }
 
             BPMAdjuster = new BpmAdjuster(Info["_beatsPerMinute"].ToFloat(), InfoDifficulty["_noteJumpMovementSpeed"].ToFloat(), InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat());
-            ScuffedLogger.Default.BpmAdjuster.Log($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
+            ScuffedWalls.Print($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
 
             ScuffedWallFile = new ScuffedWallFile(ScuffedConfig.SWFilePath);
             ResetAwaitingFiles();
@@ -200,7 +200,7 @@ Workspace:Default";
             var latest = releases.OrderBy(r => r.PublishedAt).Last();
             if (latest.TagName != ScuffedWalls.ver)
             {
-                ScuffedLogger.Warning.Log($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})");
+                ScuffedWalls.Print($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})", ScuffedWalls.LogSeverity.Notice, ShowStackFrame: false);
             }
         }
         public static TreeDictionary GetInfo()
@@ -231,7 +231,7 @@ Workspace:Default";
                 {
                     file.Write(File.ReadAllText(ScuffedConfig.MapFilePath));
                 }
-                ScuffedLogger.Default.Log("Created New Old Map File");
+                ScuffedWalls.Print("Created New Old Map File");
             }
         }
         public static void VerifyConfig()
@@ -266,7 +266,7 @@ Workspace:Default";
 
             if(mapDataFiles.Count() < 1)
             {
-                Console.WriteLine("No map files (*.dat) detected!");
+                ScuffedWalls.Print("No map files (*.dat) detected!", ScuffedWalls.LogSeverity.Critical);
                 Console.ReadLine();
                 Environment.Exit(1);
             }
@@ -301,6 +301,12 @@ Workspace:Default";
                 char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'n') config.IsBackupEnabled = false;
             }
+            Console.Write("Clear Console on Refresh? (y/n):");
+            {
+                char answer = Convert.ToChar(Console.ReadLine().ToLower());
+                if (answer == 'y') config.ClearConsoleOnRefresh = true;
+            }
+
 
             //path of the sw file by difficulty name
             config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");

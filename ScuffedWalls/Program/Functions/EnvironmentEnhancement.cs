@@ -3,8 +3,8 @@ using ModChart;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Environment", "EnvironmentEnhancement")]
-    class EnvironmentEnhancement : SFunction
+    [SFunction("Environment", "EnvironmentEnhancement")]
+    class EnvironmentEnhancement : ScuffedFunction
     {
         public override void Run()
         {

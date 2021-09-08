@@ -8,6 +8,7 @@
         public string InfoPath { get; set; }
         public string MapFilePath { get; set; }
         public string OldMapPath { get; set; }
+        public bool ClearConsoleOnRefresh { get; set; }
         public bool IsAutoImportEnabled { get; set; }
         public bool IsBackupEnabled { get; set; }
         public bool IsAutoSimplifyPointDefinitionsEnabled { get; set; }

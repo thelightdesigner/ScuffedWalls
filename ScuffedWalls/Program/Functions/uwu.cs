@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 namespace ScuffedWalls.Functions
 {
     #region rizthesnuggie
-    [ScuffedFunction("Uwu")]
-    class uwu : SFunction
+    [SFunction("Uwu")]
+    class uwu : ScuffedFunction
     {
         public override void Run()
         {

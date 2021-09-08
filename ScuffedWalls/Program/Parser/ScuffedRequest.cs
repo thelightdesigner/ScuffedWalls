@@ -1,4 +1,5 @@
 ﻿using ModChart;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ScuffedWalls
@@ -18,12 +19,12 @@ namespace ScuffedWalls
             {
                 public string Name { get; set; }
                 public float Time { get; set; }
-                public Parameter[] Parameters { get; set; } = new Parameter[] { };
+                public List<Parameter> Parameters { get; } = new List<Parameter>();
             }
             public class VariableRequest
             {
                 public string Name { get; set; }
-                public Parameter[] Parameters { get; set; } = new Parameter[] { };
+                public List<Parameter> Parameters { get; } = new List<Parameter>();
             }
         }
         public ScuffedRequest(Parameter[] Lines)
@@ -84,10 +85,9 @@ namespace ScuffedWalls
                 }
                 else if (line.Type == ParamType.Parameter && CurrentWorkspace != null)
                 {
-
                     //add line to current func/var
-                    if (CurrentInternal == ParamType.Function) CurrentFunction.Parameters = CurrentFunction.Parameters.Append(line).ToArray();
-                    else if (CurrentInternal == ParamType.Variable) CurrentVariable.Parameters = CurrentVariable.Parameters.Append(line).ToArray();
+                    if (CurrentInternal == ParamType.Function) CurrentFunction.Parameters.Add(line);
+                    else if (CurrentInternal == ParamType.Variable) CurrentVariable.Parameters.Add(line);
                 }
             }
             if (CurrentVariable != null) CurrentWorkspace.VariableRequests = CurrentWorkspace.VariableRequests.Append(CurrentVariable).ToArray();

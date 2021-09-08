@@ -1,50 +1,48 @@
-﻿//classes that provide additional features to modcharting
-using ModChart;
+﻿using ModChart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static ScuffedWalls.ScuffedLogger.Default.ScuffedWorkspace;
-//functions
 
 namespace ScuffedWalls
 {
-    class FunctionParser
+    public class FunctionParser
     {
-        public static Rainbow rnb;
+        public static Rainbow WorkspaceRainbow = new Rainbow();
         public BeatMap BeatMap { get; private set; }
-        public ScuffedRequest Request;
-        static Type[] Functions;
+        public ScuffedRequest Request { get; private set; }
+        public ScuffedRequest.WorkspaceRequest CurrentWorkspaceRequest { get; private set; }
+        public ScuffedRequest.WorkspaceRequest.FunctionRequest CurrentFunctionRequest { get; private set; }
+        public ScuffedRequest.WorkspaceRequest.VariableRequest CurrentVariableRequest { get; private set; }
+        public List<Workspace> Workspaces { get; private set; } = new List<Workspace>();
 
-        public static Workspace[] Workspaces { get; private set; }
-        public FunctionParser(ScuffedRequest request)
-        {
-            if (rnb == null) rnb = new Rainbow();
-            Request = request;
-            if (Functions == null) Functions = Assembly
+        private static readonly Type[] _functions = Assembly
                  .GetExecutingAssembly()
                  .GetTypes()
-                 .Where(t => t.Namespace == "ScuffedWalls.Functions" && t.GetCustomAttributes<ScuffedFunctionAttribute>().Any())
+                 .Where(t => t.Namespace == "ScuffedWalls.Functions" && t.GetCustomAttributes<SFunctionAttribute>().Any())
                  .ToArray();
+        public FunctionParser(ScuffedRequest request)
+        {
+            Request = request;
             RunRequest();
         }
-        void RunRequest()
+
+        private void RunRequest()
         {
             StringFunction.Populate();
 
-            Workspaces = new Workspace[] { };
-            List<Workspace> workspaces = new List<Workspace>();
             foreach (var workreq in Request.WorkspaceRequests)
             {
+                CurrentWorkspaceRequest = workreq;
                 List<Parameter> globalvariables = new List<Parameter>();
-                rnb.Next();
-                if (workreq.Name != null && workreq.Name != string.Empty) Log($"Workspace {workspaces.Count()} : \"{workreq.Name}\"");
-                else Log($"Workspace {workspaces.Count()}");
+                if (workreq.Name != null && workreq.Name != string.Empty) ScuffedWalls.Print($"Workspace {Workspaces.Count()} : \"{workreq.Name}\"", Color: WorkspaceRainbow.Next());
+                else ScuffedWalls.Print($"Workspace {Workspaces.Count()}", Color: WorkspaceRainbow.Next());
                 Console.ResetColor();
 
-                Workspace WorkspaceInstance = new Workspace() { Name = workreq.Name, Number = workreq.Number };
+                Workspace WorkspaceInstance = new Workspace(BeatMap.Empty, workreq.Name);
                 foreach (var varreq in workreq.VariableRequests)
                 {
+                    CurrentVariableRequest = varreq;
                     try
                     {
                         Parameter.ExternalVariables = globalvariables.ToArray();
@@ -56,12 +54,12 @@ namespace ScuffedWalls
 
                         globalvariables.Add(variable);
 
-                        ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
+                        ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
 
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error adding global variable {varreq.Name} ERROR:{e.Message} ");
+                        ScuffedWalls.Print($"Error adding global variable {varreq.Name} ERROR:{e.Message} ", ScuffedWalls.LogSeverity.Error);
                     }
 
                 }
@@ -70,20 +68,21 @@ namespace ScuffedWalls
 
                 foreach (var funcreq in workreq.FunctionRequests)
                 {
+                    CurrentFunctionRequest = funcreq;
                     Parameter.UnUseAll(funcreq.Parameters);
 
 
-                    if (!Functions.Any(f => f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))))
+                    if (!_functions.Any(f => f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))))
                     {
-                        ScuffedLogger.Warning.Log($"Function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} does NOT exist, skipping");
+                        ScuffedWalls.Print($"Function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} does NOT exist, skipping", ScuffedWalls.LogSeverity.Warning);
                         continue;
                     }
 
-                    Type func = Functions.Where(f => f.BaseType == typeof(SFunction) && f.GetCustomAttributes<ScuffedFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))).First();
+                    Type func = _functions.Where(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == funcreq.Name))).First();
 
-                    SFunction funcInstance = (SFunction)Activator.CreateInstance(func);
+                    ScuffedFunction funcInstance = (ScuffedFunction)Activator.CreateInstance(func);
 
-                    funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time);
+                    funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time, this);
 
                     try
                     {
@@ -91,37 +90,35 @@ namespace ScuffedWalls
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}");
+                        ScuffedWalls.Print($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}", ScuffedWalls.LogSeverity.Error);
                     }
 
                     Parameter.Check(funcreq.Parameters);
 
                 }
-                workspaces.Add(WorkspaceInstance);
-                Workspaces = workspaces.ToArray();
+                Workspaces.Add(WorkspaceInstance);
             }
-            Workspaces = workspaces.ToArray();
-            BeatMap = Workspaces.ToBeatMap();
+            BeatMap = Workspace.GetBeatMap(Workspaces);
             BeatMap.Prune();
             if (Utils.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled)
             {
                 try
                 {
-                    Log("Simplifying Point Definitions...");
+                    ScuffedWalls.Print("Simplifying Point Definitions...");
                     BeatMap = BeatMap.SimplifyAllPointDefinitions();
                 }
                 catch (IndexOutOfRangeException e)
                 {
-                    ScuffedLogger.Error.Log($"Failed to simplify Point Definitions, A point definition may be missing a value? ERROR:{e.Message}");
+                    ScuffedWalls.Print($"Failed to simplify Point Definitions, A point definition may be missing a value? ERROR:{e.Message}", ScuffedWalls.LogSeverity.Warning);
                 }
                 catch (Exception e)
                 {
-                    ScuffedLogger.Error.Log($"Failed to simplify Point Definitions ERROR:{e.Message}");
+                    ScuffedWalls.Print($"Failed to simplify Point Definitions ERROR:{e.Message}", ScuffedWalls.LogSeverity.Warning);
                 }
             }
         }
 
-        public static T GetParam<T>(string name, T defaultval, Func<string, T> converter, Parameter[] parameters)
+        public static T GetParam<T>(string name, T defaultval, Func<string, T> converter, IEnumerable<Parameter> parameters)
         {
             if (!parameters.Any(p => p.Name.ToLower().RemoveWhiteSpace().Equals(name))) return defaultval;
             return converter(parameters.Where(p => p.Name.ToLower().RemoveWhiteSpace().Equals(name)).First().StringData);

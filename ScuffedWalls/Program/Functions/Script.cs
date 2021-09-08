@@ -1,7 +1,7 @@
 ﻿namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Script")]
-    class Script : SFunction
+    [SFunction("Script")]
+    class Script : ScuffedFunction
     {
         public override void Run()
         {

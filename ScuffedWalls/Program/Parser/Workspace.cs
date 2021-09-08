@@ -3,56 +3,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using static ModChart.BeatMap;
+
 namespace ScuffedWalls
 {
     public class Workspace : ICloneable
     {
         public Workspace()
         {
-            CustomData = new TreeDictionary();
         }
-        public int Number { get; set; }
-        public string Name { get; set; }
-        public List<BeatMap.Note> Notes { get; set; } = new List<BeatMap.Note>();
-        public List<BeatMap.Event> Lights { get; set; } = new List<BeatMap.Event>();
-        public List<BeatMap.Obstacle> Walls { get; set; } = new List<BeatMap.Obstacle>();
-        public List<object> CustomEvents { get => CustomData.at<List<object>>("_customEvents"); set { CustomData["_customEvents"] = value; } }
-        public List<object> PointDefinitions { get => CustomData.at<List<object>>("_pointDefinitions"); set { CustomData["_pointDefinitions"] = value; } }
-        public List<object> Bookmarks { get => CustomData.at<List<object>>("_bookmarks"); set { CustomData["_bookmarks"] = value; } }
-        public List<object> Environment { get => CustomData.at<List<object>>("_environment"); set { CustomData["_environment"] = value; } }
-        public List<object> BPMChanges { get => CustomData.at<List<object>>("_BPMChanges"); set { CustomData["_BPMChanges"] = value; } }
-        private TreeDictionary _customData;
-        public TreeDictionary CustomData { get => _customData; set { _customData = value; AddProps(); } }
-
-        public void AddProps()
+        public Workspace(BeatMap Map, string name = "")
         {
-            CustomData["_customEvents"] ??= new List<object>();
-            CustomData["_pointDefinitions"] ??= new List<object>();
-            CustomData["_bookmarks"] ??= new List<object>();
-            CustomData["_environment"] ??= new List<object>();
-            CustomData["_BPMChanges"] ??= new List<object>();
+            _beatMap = Map;
+            Name = name;
         }
+        private readonly BeatMap _beatMap = Empty;
+        public bool Enabled { get; set; }
+        public string Name { get; set; }
+        public BeatMap BeatMap
+        {
+            get
+            {
+                if (Enabled) return _beatMap;
+                else return Empty;
+            }
+        }
+        public TreeDictionary CustomData { get => BeatMap._customData; set { BeatMap._customData = value; } }
+        public List<Note> Notes { get => BeatMap._notes; set { BeatMap._notes = value; } }
+        public List<Event> Lights { get => BeatMap._events; set { BeatMap._events = value; } }
+        public List<Obstacle> Walls { get => BeatMap._obstacles; set { BeatMap._obstacles = value; } }
+        public List<object> CustomEvents => CustomData.at<List<object>>(_customEvents);
+        public List<object> PointDefinitions => CustomData.at<List<object>>(_pointDefinitions);
+        public List<object> Bookmarks => CustomData.at<List<object>>(_bookmarks);
+        public List<object> Environment => CustomData.at<List<object>>(_environment);
+        public List<object> BPMChanges => CustomData.at<List<object>>(_BPMChanges);
+
 
         public object Clone()
         {
-            return new Workspace()
-            {
-                Number = Number,
-                Name = Name,
-                Notes = Notes.CloneArray().Cast<BeatMap.Note>().ToList(),
-                Lights = Lights.CloneArray().Cast<BeatMap.Event>().ToList(),
-                Walls = Walls.CloneArray().Cast<BeatMap.Obstacle>().ToList(),
-                CustomData = (TreeDictionary)CustomData.Clone()
-            };
+            return new Workspace((BeatMap)BeatMap.Clone(), Name);
         }
-    }
-    static class WorkspaceHelper
-    {
-        public static BeatMap ToBeatMap(this Workspace[] workspaces)
+
+        public static BeatMap GetBeatMap(IEnumerable<Workspace> workspaces)
         {
-            List<BeatMap.Obstacle> obstacles = new List<BeatMap.Obstacle>();
-            List<BeatMap.Note> notes = new List<BeatMap.Note>();
-            List<BeatMap.Event> events = new List<BeatMap.Event>();
+            List<Obstacle> obstacles = new List<Obstacle>();
+            List<Note> notes = new List<Note>();
+            List<Event> events = new List<Event>();
             TreeDictionary customdata = new TreeDictionary();
             foreach (var workspace in workspaces)
             {
@@ -66,43 +62,16 @@ namespace ScuffedWalls
                     TreeDictionary.MergeBindingFlags.HasValue);
             }
 
-            //order point definitions
-
-            customdata.OrderListsBy_time();
-
-            return new BeatMap()
+            var beatMap = new BeatMap()
             {
-                _version = "2.2.0",
-                _notes = notes.ToArray().OrderBy(o => o.GetTime()).ToList(),
-                _obstacles = obstacles.ToArray().OrderBy(o => o.GetTime()).ToList(),
-                _events = events.ToArray().OrderBy(o => o.GetTime()).ToList(),
-                _waypoints = new object[] { },
+                _notes = notes.OrderBy(o => o.GetTime()).ToList(),
+                _obstacles = obstacles.OrderBy(o => o.GetTime()).ToList(),
+                _events = events.OrderBy(o => o.GetTime()).ToList(),
                 _customData = customdata
             };
-        }
-        public static BeatMap toBeatMap(this Workspace workspace)
-        {
-            return new BeatMap()
-            {
-                _version = "2.2.0",
-                _notes = workspace.Notes.OrderBy(o => o.GetTime()).ToList(),
-                _obstacles = workspace.Walls.OrderBy(o => o.GetTime()).ToList(),
-                _events = workspace.Lights.OrderBy(o => o.GetTime()).ToList(),
-                _waypoints = new object[] { },
-                _customData = workspace.CustomData
-            };
-        }
-        public static void OrderListsBy_time(this IDictionary<string, object> _customData)
-        {
-            string[] Keys = _customData.Keys.ToArray();
+            beatMap.OrderCustomEventLists();
 
-            foreach (string key in Keys)
-            {
-                if (_customData[key] is IList<object> array && array.All(arrayitem => arrayitem is IDictionary<string, object> dict && dict.ContainsKey("_time")))
-                {
-                    _customData[key] = array.OrderBy(obj => ((IDictionary<string, object>)obj)["_time"].ToFloat()).ToList();
-                }
-            }
+            return beatMap;
         }
     }
 }

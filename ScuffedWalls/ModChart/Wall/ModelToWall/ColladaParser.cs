@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Xml.Serialization;
-
-using static ScuffedWalls.ScuffedLogger;
+using ScuffedWalls;
 
 namespace ModChart.Wall
 {
@@ -185,7 +184,7 @@ namespace ModChart.Wall
                             var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0]).First();
 
 
-                            if (correcteffect.profile.technique.lambert.diffuse == null) Warning.Log($"{cube.Name} diffuse is nulled! skipping");
+                            if (correcteffect.profile.technique.lambert.diffuse == null) ScuffedWalls.ScuffedWalls.Print($"{cube.Name} diffuse is nulled! skipping", ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
 
                             float[] colorArray = correcteffect.profile.technique.lambert.diffuse.color.ParseToFloatArray();
                             cube.Color = new Color() { R = colorArray[0], G = colorArray[1], B = colorArray[2], A = colorArray[3] };

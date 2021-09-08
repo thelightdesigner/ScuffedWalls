@@ -17,6 +17,41 @@ namespace ModChart
     }
     public class BeatMap : ICloneable
     {
+        public string _version { get; set; } = "2.2.0";
+        [JsonConverter(typeof(TreeDictionaryJsonConverter))]
+        public TreeDictionary _customData { get; set; } = ImportantMapCustomDataFields;
+        public List<Event> _events { get; set; } = new List<Event>();
+        public List<Note> _notes { get; set; } = new List<Note>();
+        public List<Obstacle> _obstacles { get; set; } = new List<Obstacle>();
+        public object[] _waypoints { get; set; }
+
+        public const string
+               _position = "_position",
+               _localPosition = "_localPosition",
+               _scale = "_scale",
+               _localRotation = "_localRotation",
+               _rotation = "_rotation",
+               _definitePosition = "_definitePosition",
+               _dissolve = "_dissolve",
+               _dissolveArrow = "_dissolveArrow",
+               _time = "_time",
+               _track = "_track",
+               _color = "_color",
+               _id = "_id",
+               _data = "_data",
+               _active = "_active",
+               _lookupMethod = "_lookupMethod",
+               _animation = "_animation",
+               _duplicate = "_duplicate",
+               _customEvents = "_customEvents",
+               _pointDefinitions = "_pointDefinitions",
+               _bookmarks = "_bookmarks",
+               _environment = "_environment",
+               _BPMChanges = "_BPMChanges",
+               AnimateTrack = "AnimateTrack",
+               AssignPathAnimation = "AssignPathAnimation",
+               AssignPlayerToTrack = "AssignPlayerToTrack",
+               AssignTrackParent = "AssignTrackParent";
         public void Prune()
         {
             _customData.DeleteNullValues();
@@ -29,34 +64,67 @@ namespace ModChart
         {
             return new BeatMap()
             {
-                _notes = _notes.CloneArray().Cast<Note>().ToList(),
-                _events = _events.CloneArray().Cast<Event>().ToList(),
-                _obstacles = _obstacles.CloneArray().Cast<Obstacle>().ToList(),
+                _notes = _notes?.CloneArray().Cast<Note>().ToList(),
+                _events = _events?.CloneArray().Cast<Event>().ToList(),
+                _obstacles = _obstacles?.CloneArray().Cast<Obstacle>().ToList(),
                 _version = _version,
                 _waypoints = _waypoints,
-                _customData = (TreeDictionary)_customData.Clone()
+                _customData = (TreeDictionary)_customData?.Clone()
             };
         }
 
-        public static BeatMap Empty => new BeatMap
+        public static BeatMap Empty => new BeatMap();
+        public static TreeDictionary ImportantMapCustomDataFields => new TreeDictionary()
         {
-            _version = "2.2.0",
-            _events = new List<Event>(),
-            _notes = new List<Note>(),
-            _obstacles = new List<Obstacle>(),
-            _waypoints = new object[] { },
-            _customData = new TreeDictionary()
+            [_customEvents] = new List<object>(),
+            [_pointDefinitions] = new List<object>(),
+            [_bookmarks] = new List<object>(),
+            [_environment] = new List<object>(),
+            [_BPMChanges] = new List<object>()
         };
+        public bool needsNoodleExtensions()
+        {
+            //are there any custom events?
+            if (_customData != null && _customData["_customEvents"] != null && _customData.at<IEnumerable<object>>("_customEvents").Count() > 0) return true;
 
+            //do any notes have any noodle data other than color?
+            if (_notes.Any(note => note._customData != null && HasNoodleParams(note._customData))) return true;
 
-        public string _version { get; set; }
-        [JsonConverter(typeof(TreeDictionaryJsonConverter))]
-        public TreeDictionary _customData { get; set; }
-        public List<Event> _events { get; set; }
-        public List<Note> _notes { get; set; }
-        public List<Obstacle> _obstacles { get; set; }
-        public object[] _waypoints { get; set; }
+            //do any walls have any noodle data other than color?
+            if (_obstacles.Any(wall => wall._customData != null && HasNoodleParams(wall._customData))) return true;
 
+            bool HasNoodleParams(TreeDictionary customData) =>
+                customData.Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key)) || //customData has one of the noodle properties listed
+                (customData["_animation"] != null && customData.at("_animation").Any(p => NoodleExtensionsPropertyNames.Any(n => n == p.Key))); //animation exists in custom data and has noodle params
+
+            return false;
+        }
+        public bool needsChroma()
+        {
+            //do light have color
+            if (_events.Any(light => light._customData != null && light._customData["_color"] != null)) return true;
+
+            //do wal have color or animate color
+            if (_obstacles.Any(wall => wall._customData != null && (wall._customData["_color"] != null || (wall._customData["_animation"] != null && wall._customData["_animation._color"] != null)))) return true;
+
+            //do note have color or animate color
+            if (_notes.Any(note => note._customData != null && (note._customData["_color"] != null || (note._customData["_animation"] != null && note._customData["_animation._color"] != null)))) return true;
+
+            return false;
+
+        }
+        public void OrderCustomEventLists()
+        {
+            string[] Keys = _customData.Keys.ToArray();
+
+            foreach (string key in Keys)
+            {
+                if (_customData[key] is IList<object> array && array.All(arrayitem => arrayitem is IDictionary<string, object> dict && dict.ContainsKey("_time")))
+                {
+                    _customData[key] = array.OrderBy(obj => ((IDictionary<string, object>)obj)["_time"].ToFloat()).ToList();
+                }
+            }
+        }
 
         public class Event : ICustomDataMapObject, ICloneable
         {
@@ -100,7 +168,7 @@ namespace ModChart
                     _time = _time,
                     _type = _type,
                     _value = _value,
-                    _customData = (TreeDictionary)_customData.Clone()
+                    _customData = (TreeDictionary)_customData?.Clone()
                 };
             }
         }
@@ -142,7 +210,7 @@ namespace ModChart
                     _type = _type,
                     _cutDirection = _cutDirection,
                     _lineLayer = _lineLayer,
-                    _customData = (TreeDictionary)_customData.Clone()
+                    _customData = (TreeDictionary)_customData?.Clone()
                 };
             }
         }
@@ -171,20 +239,20 @@ namespace ModChart
                     _type = _type,
                     _duration = _duration,
                     _width = _width,
-                    _customData = (TreeDictionary)_customData.Clone()
+                    _customData = (TreeDictionary)_customData?.Clone()
                 };
             }
         }
         public static string[] NoodleExtensionsPropertyNames => new string[]
         {
-            "_position",
-            "_rotation",
-            "_scale",
-            "_localPosition",
-            "_localRotation",
-            "_dissolve",
-            "_dissolveArrow",
-            "_time"
+            _position,
+            _rotation,
+            _scale,
+            _localPosition,
+            _localRotation,
+            _dissolve,
+            _dissolveArrow,
+            _time
         };
     }
 

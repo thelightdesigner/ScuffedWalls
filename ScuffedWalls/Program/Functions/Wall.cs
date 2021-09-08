@@ -4,8 +4,8 @@ using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Wall")]
-    class Wall : SFunction
+    [SFunction("Wall")]
+    class Wall : ScuffedFunction
     {
         public Parameter Repeat; 
         public Parameter Beat;

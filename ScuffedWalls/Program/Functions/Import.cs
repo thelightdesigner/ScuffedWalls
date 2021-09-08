@@ -7,8 +7,8 @@ using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Import")]
-    class Import : SFunction
+    [SFunction("Import")]
+    class Import : ScuffedFunction
     {
         public override void Run()
         {

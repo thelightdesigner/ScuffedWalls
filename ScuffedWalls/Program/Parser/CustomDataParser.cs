@@ -1,5 +1,6 @@
 ﻿using ModChart;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
@@ -7,7 +8,13 @@ namespace ScuffedWalls
 {
     public static class CustomDataParser
     {
-        public static ICustomDataMapObject CustomDataParse(this Parameter[] CustomNoodleData, ICustomDataMapObject Instance)
+        public static Func<string, object> TrackConverter => track => DeserializeDefaultToString<object[]>(track);
+        public static Func<string, float> FloatConverter => val => float.Parse(val);
+        public static Func<string, bool> BoolConverter => val => bool.Parse(val);
+        public static Func<string, string> StringConverter => val => val;
+        public static Func<string, object> ArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
+        public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
+        public static ICustomDataMapObject CustomDataParse(this IEnumerable<Parameter> CustomNoodleData, ICustomDataMapObject Instance)
         {
             Instance._time = GetParam("time", null, p => (float?)float.Parse(p));
             var customdata = new TreeDictionary
@@ -17,7 +24,7 @@ namespace ScuffedWalls
                 ["_cutDirection"] = GetParam("cutdirection", null, p => (object)float.Parse(p)),
                 ["_noteJumpMovementSpeed"] = GetParam("njs", null, p => (object)float.Parse(p)),
                 ["_noteJumpStartBeatOffset"] = GetParam("njsoffset", null, p => (object)float.Parse(p)),
-                ["_track"] = GetParam("track", null, p => (object)p.TrimStart()),
+                ["_track"] = GetParam("track", null, TrackConverter),
                 ["_fake"] = GetParam("fake", null, p => (object)bool.Parse(p)),
                 ["_rotation"] = GetParam("rotation", null, p => JsonSerializer.Deserialize<object[]>(p)),
                 ["_localRotation"] = GetParam("localrotation", null, p => JsonSerializer.Deserialize<object[]>(p)),
@@ -74,19 +81,7 @@ namespace ScuffedWalls
             return Instance;
 
 
-            object DeserializeDefaultToString<T>(string JSON)
-            {
-                char[] JSONChars = { ',' };
-                try
-                {
-                    return JsonSerializer.Deserialize<T>(JSON);
-                }
-                catch (Exception e)
-                {
-                    if (JSONChars.Any(j => JSON.Contains(j))) throw e;
-                    return JSON.TrimStart('[').TrimEnd(']');
-                }
-            }
+            
 
             T GetParam<T>(string Name, T DefaultValue, Func<string, T> Converter)
             {
@@ -100,17 +95,26 @@ namespace ScuffedWalls
                 }
                 catch (Exception e)
                 {
-                    ScuffedLogger.Error.Log($"{Name} Couldnt be parsed ERROR: {e.Message}");
+                    ScuffedWalls.Print($"{Name} Couldnt be parsed ERROR: {e.Message}", ScuffedWalls.LogSeverity.Error);
                     return DefaultValue;
                 }
             }
         }
+        static object DeserializeDefaultToString<T>(string JSON)
+        {
+            char[] JSONChars = { ',' };
+            try
+            {
+                return JsonSerializer.Deserialize<T>(JSON);
+            }
+            catch (Exception e)
+            {
+                if (JSONChars.Any(j => JSON.Contains(j))) throw e;
+                return JSON.TrimStart('[').TrimEnd(']');
+            }
+        }
 
-
-
-
-        //adjust for lowercaseeaaa
-        public static TreeDictionary CustomEventsDataParse(this Parameter[] CustomNoodleData)
+        public static TreeDictionary CustomEventsDataParse(this IEnumerable<Parameter> CustomNoodleData)
         {
             var customdata = new TreeDictionary()
             {
@@ -147,7 +151,7 @@ namespace ScuffedWalls
                 }
                 catch (Exception e)
                 {
-                    ScuffedLogger.Error.Log($"{Name} Couldnt be parsed ERROR: {e.Message}");
+                    ScuffedWalls.Print($"{Name} Couldnt be parsed ERROR: {e.Message}", ScuffedWalls.LogSeverity.Error);
                     return DefaultValue;
                 }
             }

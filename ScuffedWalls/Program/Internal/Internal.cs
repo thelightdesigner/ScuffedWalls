@@ -180,10 +180,4 @@ namespace ScuffedWalls
             return val;
         }
     }
-    public class TimeKeeper
-    {
-        public DateTime StartTime;
-        public void Start() => StartTime = DateTime.Now;
-        public void Complete() => ScuffedLogger.Default.Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} seconds");
-    }
 }

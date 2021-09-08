@@ -2,8 +2,8 @@
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Blackout")]
-    class Blackout : SFunction
+    [SFunction("Blackout")]
+    class Blackout : ScuffedFunction
     {
         public override void Run()
         {

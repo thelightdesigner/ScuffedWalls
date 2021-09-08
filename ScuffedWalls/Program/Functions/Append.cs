@@ -2,12 +2,11 @@
 using System;
 using System.Linq;
 using System.Text.Json;
-using static ScuffedWalls.ScuffedLogger.Default.ScuffedWorkspace.FunctionParser;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("AppendToAllWallsBetween", "AppendWalls", "AppendWall")]
-    class AppendWalls : SFunction
+    [SFunction("AppendToAllWallsBetween", "AppendWalls", "AppendWall")]
+    class AppendWalls : ScuffedFunction
     {
         public Parameter WallIndex;
         Parameter[] ps;
@@ -34,8 +33,7 @@ namespace ScuffedWalls.Functions
 
                 internalvars.CurrentWall = obj;
 
-                Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
-
+                foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
 
                 if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && AppendNotes.isOnTrack(obj._customData, tracc) && lineindex.Any(num => num == obj._lineIndex.Value))
                 {
@@ -51,12 +49,12 @@ namespace ScuffedWalls.Functions
 
             }).Cast<BeatMap.Obstacle>().ToList();
 
-            Log($"Appended {i} walls from beats {starttime} to {endtime}");
+            ScuffedWalls.Print($"Appended {i} walls from beats {starttime} to {endtime}");
             Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
-    [ScuffedFunction("AppendToAllNotesBetween", "AppendNotes", "AppendNote")]
-    class AppendNotes : SFunction
+    [SFunction("AppendToAllNotesBetween", "AppendNotes", "AppendNote")]
+    class AppendNotes : ScuffedFunction
     {
         public Parameter WallIndex;
         Parameter[] ps;
@@ -83,7 +81,7 @@ namespace ScuffedWalls.Functions
                 {
                     WallIndex.StringData = i.ToString();
                     internalvars.CurrentNote = obj;
-                    Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+                    foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
 
                     FunLog();
 
@@ -94,7 +92,7 @@ namespace ScuffedWalls.Functions
                 else return obj;
             }).Cast<BeatMap.Note>().ToList();
 
-            Log($"Appended {i} notes from beats {starttime} to {endtime}");
+            ScuffedWalls.Print($"Appended {i} notes from beats {starttime} to {endtime}");
             Parameter.ExternalVariables.RefreshAllParameters();
         }
 
@@ -104,8 +102,8 @@ namespace ScuffedWalls.Functions
             else return false;
         }
     }
-    [ScuffedFunction("AppendToAllEventsBetween", "AppendLights", "AppendEvent", "AppendEvents")]
-    class AppendEvents : SFunction
+    [SFunction("AppendToAllEventsBetween", "AppendLights", "AppendEvent", "AppendEvents")]
+    class AppendEvents : ScuffedFunction
     {
         public Parameter WallIndex;
         Parameter[] ps;
@@ -158,12 +156,9 @@ namespace ScuffedWalls.Functions
                 {
                     internalvars.CurrentEvent = obj;
                     WallIndex.StringData = i.ToString();
-                    Parameters = Parameters.Select(p => { p.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray(); return p; }).ToArray();
+                    foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
 
                     FunLog();
-
-                    string log = GetParam("log", null, p => p);
-                    if (log != null) Log(log);
 
                     var r = (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), type);
                     i++;
@@ -172,7 +167,7 @@ namespace ScuffedWalls.Functions
                 else return obj;
             }).ToList();
 
-            Log($"Appended {i} events from beats {starttime} to {endtime}");
+            ScuffedWalls.Print($"Appended {i} events from beats {starttime} to {endtime}");
             Parameter.ExternalVariables.RefreshAllParameters();
         }
     }

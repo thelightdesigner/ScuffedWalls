@@ -5,8 +5,8 @@ using System.Linq;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("CloneFromWorkspace", "CloneFromWorkspaceByIndex", "CloneWorkspace")]
-    class CloneWorkspace : SFunction
+    [SFunction("CloneFromWorkspace", "CloneFromWorkspaceByIndex", "CloneWorkspace")]
+    class CloneWorkspace : ScuffedFunction
     {
         public override void Run()
         {
@@ -22,8 +22,8 @@ namespace ScuffedWalls.Functions
 
             Workspace cloned = null;
 
-            cloned = (Workspace)FunctionParser.Workspaces[Index].Clone();
-            if (name != string.Empty) cloned = (Workspace)FunctionParser.Workspaces.Where(w => w.Name == name).First().Clone();
+            cloned = (Workspace)InstanceParser.Workspaces[Index].Clone();
+            if (name != string.Empty) cloned = (Workspace)InstanceParser.Workspaces.Where(w => w.Name == name).First().Clone();
 
             if (Type.Any(t => t == 0))
             {

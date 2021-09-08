@@ -3,8 +3,8 @@ using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("PointDefinition")] 
-    class PointDefinition : SFunction
+    [SFunction("PointDefinition")] 
+    class PointDefinition : ScuffedFunction
     {
         public override void Run()
         {
@@ -25,8 +25,8 @@ namespace ScuffedWalls.Functions
             Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
-    [ScuffedFunction("AnimateTrack")]
-    class CustomEventAnimateTrack : SFunction
+    [SFunction("AnimateTrack")]
+    class CustomEventAnimateTrack : ScuffedFunction
     {
         public Parameter Repeat;
         public Parameter Beat;
@@ -61,8 +61,8 @@ namespace ScuffedWalls.Functions
 
         }
     }
-    [ScuffedFunction("AssignPathAnimation")]
-    class CustomEventAssignpath : SFunction
+    [SFunction("AssignPathAnimation")]
+    class CustomEventAssignpath : ScuffedFunction
     {
         public Parameter Repeat;
         public Parameter Beat;
@@ -96,8 +96,8 @@ namespace ScuffedWalls.Functions
             ConsoleOut("AssignPathAnimation", repeatcount, Time, "CustomEvent");
         }
     }
-    [ScuffedFunction("AssignPlayerToTrack")]
-    public class CustomEventPlayerTrack : SFunction
+    [SFunction("AssignPlayerToTrack")]
+    public class CustomEventPlayerTrack : ScuffedFunction
     {
         public override void Run()
         {
@@ -115,8 +115,8 @@ namespace ScuffedWalls.Functions
         }
     }
     
-    [ScuffedFunction("ParentTrack")]
-    public class CustomEventParent : SFunction
+    [SFunction("ParentTrack")]
+    public class CustomEventParent : ScuffedFunction
     {
         public override void Run()
         {

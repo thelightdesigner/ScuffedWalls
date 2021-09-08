@@ -8,8 +8,8 @@ using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("ModelToWall", "ModelToNote", "ModelToBomb", "Model")]
-    class ModelToWall : SFunction
+    [SFunction("ModelToWall", "ModelToNote", "ModelToBomb", "Model")]
+    class ModelToWall : ScuffedFunction
     {
         public Parameter Repeat;
         public Parameter Beat;
@@ -28,9 +28,7 @@ namespace ScuffedWalls.Functions
 
             int repeatcount =       GetParam("repeat", DefaultValue: 1, p => int.Parse(p));
             float repeataddtime =   GetParam("repeataddtime", DefaultValue: 0, p => float.Parse(p));
-            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine( Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
-            Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
-            AddRefresh(Path);
+            
             int normal =            GetParam("normal", DefaultValue: 0, p => Convert.ToInt32(bool.Parse(p)));
             bool tracks =           GetParam("createtracks", DefaultValue: true, p => bool.Parse(p));
             
@@ -92,6 +90,10 @@ namespace ScuffedWalls.Functions
 
 
                 FunLog();
+
+                string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
+                Path = GetParam("fullpath", DefaultValue: Path, p => p);
+                AddRefresh(Path);
 
 
 

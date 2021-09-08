@@ -7,8 +7,8 @@ using static ModChart.BeatMap.Note;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("AddSound")]
-    class SoundExtensions : SFunction
+    [SFunction("AddSound")]
+    class SoundExtensions : ScuffedFunction
     {
         public override void Run()
         {

@@ -25,7 +25,7 @@ namespace ModChart
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error on _customEvent at beat {mapobj["_time"]}");
+                        ScuffedWalls.ScuffedWalls.Print($"Error on _customEvent at beat {mapobj["_time"]}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
                     }
                 }).ToArray();
@@ -45,7 +45,7 @@ namespace ModChart
                     }
                     catch(Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error on _obstacle at beat {mapobj._time} {JsonSerializer.Serialize(mapobj)}");
+                        ScuffedWalls.ScuffedWalls.Print($"Error on _obstacle at beat {mapobj._time} {JsonSerializer.Serialize(mapobj)}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
                     }
                 }).ToList();
@@ -63,7 +63,7 @@ namespace ModChart
                     }
                     catch (Exception e)
                     {
-                        ScuffedLogger.Error.Log($"Error on _note at beat {mapobj._time}");
+                        ScuffedWalls.ScuffedWalls.Print($"Error on _note at beat {mapobj._time}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
                     }
                 }).ToList();
@@ -140,7 +140,7 @@ namespace ModChart
             }
             else if (NewPoints.Last().ElementAt(importantvalues).ToFloat() > 1f)
             {
-                ScuffedLogger.Warning.Log($"[Warning] Noodle Extensions point definitions don't end with values higher than 1");
+                ScuffedWalls.ScuffedWalls.Print($"Noodle Extensions point definitions don't end with values higher than 1", ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
                 throw new Exception(NewPoints.Last().ElementAt(importantvalues).ToFloat().ToString());
 
             }

@@ -1,34 +1,38 @@
 ﻿namespace ScuffedWalls
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text.Json;
-    using static ScuffedLogger.Default;
+    using System.Threading;
 
     static class ScuffedWalls
     {
-        
-        public static string ver => "v1.4.3";
+
+        public static string ver => "v1.5.0";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
 
-            Log($"ScuffedWalls {ver}");
-            Log(Utils.ScuffedConfig.MapFolderPath);
+            Print($"ScuffedWalls {ver}");
+            Print(Utils.ScuffedConfig.MapFolderPath);
 
 
             while (true)
             {
+                if (Utils.ScuffedConfig.ClearConsoleOnRefresh) Console.Clear();
                 Utils.ScuffedWallFile.Refresh();
-                Log($"{FileChangeDetector.LatestMessage}, running...");
+                Print($"{FileChangeDetector.LatestMessage}, running...");
                 var StartTime = DateTime.Now;
                 Utils.InvokeOnChangeDetected();
                 ExecuteRequest();
                 GC.Collect();
                 Utils.InvokeOnProgramComplete();
-                Log($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
-                Log($"Waiting for changes to {string.Join(", ", Utils.FilesToChange.Select(file => file.File.Name))}");
+                printStats();
+                Print($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
+                Print($"Waiting for changes to {string.Join(", ", Utils.FilesToChange.Select(file => file.File.Name))}");
                 FileChangeDetector.WaitForChange(Utils.FilesToChange);
                 Utils.ResetAwaitingFiles();
             }
@@ -42,7 +46,7 @@
             }
             catch (Exception e)
             {
-                ScuffedLogger.Error.Log($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}");
+                Print($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             }
 
             //Do request
@@ -53,23 +57,66 @@
             }
             catch (Exception e)
             {
-                ScuffedLogger.Error.Log($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}");
+                Print($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             }
 
             //write to json file
-            ScuffedMapWriter.Log($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+            Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
             File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
 
             //add in requirements
             Utils.Check(Parser.BeatMap);
 
-            ScuffedMapWriter.Log($"Writing to Info.dat");
+            Print($"Writing to Info.dat");
             File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
 
 
             Utils.DiscordRPCManager.CurrentMap = Parser.BeatMap;
-            Utils.DiscordRPCManager.Workspaces = FunctionParser.Workspaces.Count();
+            Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
         }
+        public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true)
+        {
+            if (Color.HasValue) Console.ForegroundColor = Color.Value;
+            else Console.ForegroundColor = sevColor[(int)Severity];
 
+            var methodInfo = (StackFrame ?? new StackTrace().GetFrame(1)).GetMethod();
+            string stack = methodInfo.DeclaringType.Name.Replace("ScuffedWalls", "Main");
+
+            Console.WriteLine($"[{Severity}]{(ShowStackFrame ? " " + stack : "")} - {Message}");
+
+            Console.ResetColor();
+
+            debugStats[(int)Severity]++;
+        }
+        public enum LogSeverity
+        {
+            Info, //Provide information about normal operations
+            Notice, //Provide information about the important
+            Warning, //Provide information about the unexpected
+            Error, //Provide information about a non-crucial failure
+            Critical //Provide information about a crucial failure
+        }
+        private static void printStats()
+        {
+            List<string> stat = new List<string>();
+            for (int i = 0; i < logSevCount; i++)
+            {
+                if (debugStats[i] > 0) stat.Add($"[{debugStats[i]} {((LogSeverity)i).ToString().MakePlural(debugStats[i])}]");
+                debugStats[i] = 0;
+            }
+            Print(string.Join(' ', stat));
+
+        }
+        private static readonly int logSevCount = Enum.GetNames(typeof(LogSeverity)).Length;
+
+        private static readonly ConsoleColor[] sevColor = new ConsoleColor[]
+        {
+            ConsoleColor.Gray,
+            ConsoleColor.Cyan,
+            ConsoleColor.Yellow,
+            ConsoleColor.Red,
+            ConsoleColor.Magenta
+        };
+        private static int[] debugStats = new int[5];
     }
 }

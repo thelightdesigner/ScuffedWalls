@@ -4,8 +4,8 @@ using System.IO;
 
 namespace ScuffedWalls.Functions
 {
-    [ScuffedFunction("Run", "cmd", "Terminal", "Execute")]
-    class ExecuteCommandPrompt : SFunction
+    [SFunction("Run", "cmd", "Terminal", "Execute")]
+    class ExecuteCommandPrompt : ScuffedFunction
     {
         public override void Run()
         {

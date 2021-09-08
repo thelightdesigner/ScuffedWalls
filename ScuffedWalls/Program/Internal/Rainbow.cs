@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace ScuffedWalls
 {
-    class Rainbow
+    public class Rainbow
     {
         readonly ConsoleColor[] colors = new ConsoleColor[]
         {
@@ -14,13 +14,13 @@ namespace ScuffedWalls
             ConsoleColor.Blue,
             ConsoleColor.Magenta
         };
-        readonly IEnumerator colorenum; 
-        
+        readonly IEnumerator colorenum;
+
         public Rainbow()
         {
             colorenum = colors.GetEnumerator();
         }
-        public void Next()
+        public ConsoleColor Next()
         {
             if (!colorenum.MoveNext())
             {
@@ -28,11 +28,11 @@ namespace ScuffedWalls
                 colorenum.MoveNext();
             }
 
-            Console.ForegroundColor = (ConsoleColor)colorenum.Current;
+            return (ConsoleColor)colorenum.Current;
         }
         public void PrintRainbow(string s)
         {
-            foreach(var letter in s)
+            foreach (var letter in s)
             {
                 Next();
                 Console.Write(letter);

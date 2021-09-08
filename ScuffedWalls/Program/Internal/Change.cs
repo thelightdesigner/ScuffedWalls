@@ -15,7 +15,7 @@ class FileChangeDetector
     }
     public FileInfo File;
     private DateTime _currentModifiedTime => System.IO.File.GetLastWriteTime(File.FullName);
-    private DateTime _lastModifiedTime { get; set; }
+    private DateTime _lastModifiedTime;
     public bool HasChanged()
     {
         if (_currentModifiedTime.ToString() == _lastModifiedTime.ToString()) return false;
@@ -32,9 +32,9 @@ class FileChangeDetector
     public static void WaitForChange(IEnumerable<FileChangeDetector> files)
     {
         FileChangeDetector changed = null;
-        while (!anyChanged(files, out changed) && !RefreshPressed())
+        while (!(anyChanged(files, out changed) || RefreshPressed()))
         {
-            Task.Delay(20);
+            Thread.Sleep(100);
         }
         if (changed != null) changed.WaitForUnlock(); //fix vscode bug
     }
@@ -64,7 +64,7 @@ class FileChangeDetector
     {
         try
         {
-            System.IO.File.ReadAllText(File.FullName);
+            System.IO.File.Open(File.FullName,FileMode.Open).Close();
         }
         catch
         {

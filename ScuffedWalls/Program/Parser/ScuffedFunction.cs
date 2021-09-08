@@ -1,21 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ScuffedWalls
 {
-    public class SFunction
+    public class ScuffedFunction
     {
-        public Workspace InstanceWorkspace;
-        public Parameter[] Parameters;
-        public float Time;
+        public Workspace InstanceWorkspace { get; private set; }
+        public FunctionParser InstanceParser { get; private set; }
+        public List<Parameter> Parameters { get; private set; }
+        public float Time { get; set; }
 
-        public virtual void Run() => ScuffedLogger.Error.Log("Unimplimented Function");
-
-        public void InstantiateSFunction(Parameter[] parameters, Workspace instance, float time)
+        public virtual void Run() => ScuffedWalls.Print("Unimplimented Function", ScuffedWalls.LogSeverity.Warning);
+        public virtual void Repeat() { }
+        
+        
+        public void InstantiateSFunction(List<Parameter> parameters, Workspace instance, float time, FunctionParser parser)
         {
             Parameters = parameters;
             InstanceWorkspace = instance;
             Time = time;
+            InstanceParser = parser;
         }
         public void FunLog()
         {
@@ -34,9 +39,7 @@ namespace ScuffedWalls
         
         public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {
-            Console.ForegroundColor = ConsoleColor.White;
-            ScuffedLogger.Default.ScuffedWorkspace.FunctionParser.Log($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})");
-            Console.ResetColor();
+            ScuffedWalls.Print($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})", Color: ConsoleColor.White);
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)
         {
