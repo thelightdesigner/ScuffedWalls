@@ -75,9 +75,7 @@ namespace ScuffedWalls.Functions
             int i = 0;
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
-
-
-                if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && isOnTrack(obj._customData, tracc) && notetype.Any(t => t == (int)obj._type))
+                if (obj._time.Value >= starttime && obj._time.Value <= endtime && isOnTrack(obj._customData, tracc) && notetype.Any(t => t == (int)obj._type))
                 {
                     WallIndex.StringData = i.ToString();
                     internalvars.CurrentNote = obj;

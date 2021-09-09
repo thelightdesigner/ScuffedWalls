@@ -18,7 +18,7 @@ namespace ScuffedWalls
             Name = name;
         }
         private readonly BeatMap _beatMap = Empty;
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public string Name { get; set; }
         public BeatMap BeatMap
         {
