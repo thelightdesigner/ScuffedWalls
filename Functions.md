@@ -938,6 +938,59 @@ XXX: Wall
     animatedefiniteposition:[0,0,5,0],[0,0,5,1]
     animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
  ```
+ 
+ Circle generator - iswimfly
+ ```
+ #The total amount of walls
+var:amount
+data:60
+
+var:RepeatA
+data:repeat-1
+
+#Change to whatever you want, this just puts it roughly at the center
+var:xPos
+data:0
+    
+#Change to whatever you want, this just puts it roughly at the center
+var:yPos
+data:3
+
+var:angle
+data:3.14*2/amount
+
+var:rot
+data:360/amount*RepeatA
+    
+var:radians
+data:angle*RepeatA
+
+#Change to whatever you want
+var:radius
+data:10
+
+var:width
+data:2*radius*Tan(3.14/amount)
+
+#Change to whatever you want, 2 is generally fine
+var:height
+data:2
+
+var:sx
+data:xPos+Cos(radians)*radius-width/2
+
+var:sy
+data:yPos+Sin(radians)*radius-height/2
+
+#Change the scale to get different sized walls, X can increase the length of the walls
+X: Wall
+    repeat:{amount}
+    interactable: false
+    duration:10
+    scale:[1,1,1]
+    localrotation:[0,0,{33.8+rot}]
+    position:[{sx},{sy}]
+  ```
 
 Notes "walk" on their back quarters. looks best on bottom notes (needs to be slow NJS) - wobbleorange
  ```
@@ -962,4 +1015,3 @@ Red bomb helix - totally balloon
    interactable:false
    color:[1,0,0,1]
    ```
-
