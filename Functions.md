@@ -133,7 +133,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 
 [`Tracks`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#tracks)
 
-- Track: string
+- Track: string, or \["t1","t2"...] for multiple tracks
 - [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
 - [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
 - [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
@@ -877,6 +877,20 @@ don't ever call this
 :)
 
 # Example Scripts
+
+Add more tracks to objects - theligtdesibegh r
+```
+0:AppendWalls
+  track:["_track","newTrackToBeAdded"]
+  appendtechnique:1
+  ```
+or
+  ```
+0:AppendWalls
+  track:["_track(0)","_track(1)","newTrackToBeAdded"]
+  appendtechnique:1
+  ```
+  
 
 Polygon Creator - iswimfly
 ```
