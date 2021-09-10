@@ -33,7 +33,7 @@ Get Started:
 
 If everything doesnt work and your in a country that uses , as the decimal symbol, [`changing regional settings`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/regional.png) is a common fix.
 
-## Examples
+## Example Maps
 
  - [`Shelter`](https://www.youtube.com/watch?v=a4zSCDYRwAQ)
  - [`Illuminate`](https://www.youtube.com/watch?v=lFL3Gjy15oc&t=1s)
@@ -65,4 +65,10 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 
 ## For Developers
 
-To create a function, clone the repo and navigate to ScuffedWalls -> Program -> Functions. Create a new .cs file. All classes under the namespace `ScuffedWalls.Functions` that are decorated with the `ScuffedFunction` attribute will be populated as a function. The params string constructor is used to define the name or names of the function. Your class must inherit from `SFunction` which contains an array of parameters, the `InstanceWorkspace`, the `GetParam` method, and the virtual method `Run`. The starting point for your code must be in an override of the virtual method `Run`. If you use a parameter without calling `GetParam` you must mark the parameter as used by setting `WasUsed` to true. `InstanceWorkspace` contains the lists of mapobjects that are present in the workspace that the function was called from.
+To create a function, 
+- clone the repo and navigate to ScuffedWalls -> Program -> Functions. 
+- Create a new .cs file. All classes under the namespace `ScuffedWalls.Functions` that are decorated with the `SFunction` attribute will be populated as a function. The params string constructor is used to define the name or names of the function. 
+- Your class must inherit from `ScuffedFunction` which contains an array of parameters, the `InstanceWorkspace`, the `InstanceParser`, the `GetParam` method, and the virtual method `Run`. 
+- The starting point for your code must be in an override of the virtual method `Run`.
+- If you use a parameter without calling `GetParam` you must mark the parameter as used by setting `WasUsed` to true. 
+- `InstanceWorkspace` contains the lists of mapobjects that are present in the workspace that the function was called from.
