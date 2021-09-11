@@ -1003,12 +1003,13 @@ NJSOffset:3
 ```
 
 Red bomb helix - totally balloon
-```XXX:note
+```
+XXX:note
    repeat:120
    repeataddtime:0.05
    rotation:[0,0,{repeat*15}]
    position:[0,4,0]
-   type:3
+   selecttype:3
    disableNoteGravity:true
    disableNoteLook:true
    fake:true
