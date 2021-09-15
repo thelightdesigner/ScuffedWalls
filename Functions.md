@@ -675,6 +675,8 @@ note that in the above example, CoolMapScript.js is in the map folder
   Args:Start Notepad.exe
   RunBefore: false
 ```
+
+Example js script for mapping -> [`here`](https://github.com/TzurS11/NoodleScript)
  
 ## Import
 adds in map objects from other map.dat files
