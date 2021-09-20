@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ScuffedWalls
@@ -12,9 +13,6 @@ namespace ScuffedWalls
         public float Time { get; set; }
 
         public virtual void Run() => ScuffedWalls.Print("Unimplimented Function", ScuffedWalls.LogSeverity.Warning);
-        public virtual void Repeat() { }
-        
-        
         public void InstantiateSFunction(List<Parameter> parameters, Workspace instance, float time, FunctionParser parser)
         {
             Parameters = parameters;
@@ -39,7 +37,7 @@ namespace ScuffedWalls
         
         public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
         {
-            ScuffedWalls.Print($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})", Color: ConsoleColor.White);
+            ScuffedWalls.Print($"Added {Purpose} at beat {Beat} ({Amount} {Internal.MakePlural(Type, Amount)})", Color: ConsoleColor.White, StackFrame: new StackTrace().GetFrame(1));
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)
         {

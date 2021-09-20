@@ -31,7 +31,7 @@ namespace ScuffedWalls.Functions
             
             int normal =            GetParam("normal", DefaultValue: 0, p => Convert.ToInt32(bool.Parse(p)));
             bool tracks =           GetParam("createtracks", DefaultValue: true, p => bool.Parse(p));
-            
+            string defaulttrack =    GetParam("defaulttrack", null, p => p);
             bool preserveTime =     GetParam("preservetime", DefaultValue: false, p => bool.Parse(p));
             bool hasanimation =     GetParam("hasanimation", DefaultValue: true, p => bool.Parse(p));
             bool assigncamtotrack=  GetParam("cameratoplayer", DefaultValue: true, p => bool.Parse(p));
@@ -106,6 +106,7 @@ namespace ScuffedWalls.Functions
 
                 ModelSettings settings = new ModelSettings()
                 {
+                    DefaultTrack = defaulttrack,
                     PCOptimizerPro = smooth,
                     Path = Path,
                     Thicc = thicc,

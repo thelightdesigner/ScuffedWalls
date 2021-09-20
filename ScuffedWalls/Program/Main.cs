@@ -6,12 +6,11 @@
     using System.IO;
     using System.Linq;
     using System.Text.Json;
-    using System.Threading;
 
     static class ScuffedWalls
     {
 
-        public static string ver => "v1.5.0";
+        public static string ver => "v1.5.2-dev";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
@@ -40,25 +39,23 @@
         static void ExecuteRequest()
         {
             ScuffedRequest Request = null;
-            try
+            Debug.TryAction(() => 
             {
                 Request = new ScuffedRequest(Utils.ScuffedWallFile.Lines);
-            }
-            catch (Exception e)
+            },e => 
             {
                 Print($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
-            }
+            });
 
             //Do request
             FunctionParser Parser = null;
-            try
+            Debug.TryAction(() => 
             {
                 Parser = new FunctionParser(Request);
-            }
-            catch (Exception e)
+            },e => 
             {
                 Print($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
-            }
+            });
 
             //write to json file
             Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
@@ -82,7 +79,7 @@
             var methodInfo = (StackFrame ?? new StackTrace().GetFrame(1)).GetMethod();
             string stack = methodInfo.DeclaringType.Name.Replace("ScuffedWalls", "Main");
 
-            Console.WriteLine($"[{Severity}]{(ShowStackFrame ? " " + stack : "")} - {Message}");
+            Console.WriteLine($"[{Severity}]{(ShowStackFrame && Severity != LogSeverity.Error ? " " + stack : "")} - {Message}");
 
             Console.ResetColor();
 
@@ -102,10 +99,19 @@
             for (int i = 0; i < logSevCount; i++)
             {
                 if (debugStats[i] > 0) stat.Add($"[{debugStats[i]} {((LogSeverity)i).ToString().MakePlural(debugStats[i])}]");
-                debugStats[i] = 0;
             }
-            Print(string.Join(' ', stat));
+            Print(string.Join(' ', stat), Color: getHighestSev());
+            debugStats = new int[logSevCount];
 
+            ConsoleColor getHighestSev()
+            {
+                LogSeverity highest = LogSeverity.Info;
+                for (int i = 0; i < logSevCount; i++)
+                {
+                    if (debugStats[i] > 0) highest = (LogSeverity)i;
+                }
+                return sevColor[(int)highest];
+            }
         }
         private static readonly int logSevCount = Enum.GetNames(typeof(LogSeverity)).Length;
 
@@ -117,6 +123,6 @@
             ConsoleColor.Red,
             ConsoleColor.Magenta
         };
-        private static int[] debugStats = new int[5];
+        private static int[] debugStats = new int[logSevCount];
     }
 }

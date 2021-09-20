@@ -29,7 +29,6 @@ namespace ScuffedWalls
 
         private void RunRequest()
         {
-            StringFunction.Populate();
 
             foreach (var workreq in Request.WorkspaceRequests)
             {
@@ -43,7 +42,7 @@ namespace ScuffedWalls
                 foreach (var varreq in workreq.VariableRequests)
                 {
                     CurrentVariableRequest = varreq;
-                    try
+                    Debug.TryAction(() =>
                     {
                         Parameter.ExternalVariables = globalvariables.ToArray();
 
@@ -55,12 +54,10 @@ namespace ScuffedWalls
                         globalvariables.Add(variable);
 
                         ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
-
-                    }
-                    catch (Exception e)
+                    }, e =>
                     {
                         ScuffedWalls.Print($"Error adding global variable {varreq.Name} ERROR:{e.Message} ", ScuffedWalls.LogSeverity.Error);
-                    }
+                    });
 
                 }
 
@@ -84,14 +81,13 @@ namespace ScuffedWalls
 
                     funcInstance.InstantiateSFunction(funcreq.Parameters, WorkspaceInstance, funcreq.Time, this);
 
-                    try
+                    Debug.TryAction(() =>
                     {
                         funcInstance.Run();
-                    }
-                    catch (Exception e)
+                    }, e => 
                     {
                         ScuffedWalls.Print($"Error executing function {funcreq.Name} at Beat {funcreq.Time} in Workspace {workreq.Name} {workreq.Number} ERROR:{(e.InnerException ?? e).Message}", ScuffedWalls.LogSeverity.Error);
-                    }
+                    });
 
                     Parameter.Check(funcreq.Parameters);
 

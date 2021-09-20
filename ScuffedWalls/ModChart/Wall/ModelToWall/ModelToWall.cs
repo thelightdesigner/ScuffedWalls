@@ -52,6 +52,7 @@ namespace ModChart.Wall
             _settings.Wall ??= new BeatMap.Obstacle();
             _settings.Wall._customData ??= new TreeDictionary();
             _settings.Wall._customData["_animation"] ??= new TreeDictionary();
+            Output._customData["_customEvents"] ??= new object[] { };
 
             if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData["_noteJumpMovementSpeed"] != null) NJS = _settings.Wall._customData["_noteJumpMovementSpeed"].ToFloat();
             if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData["_noteJumpStartBeatOffset"] != null) Offset = _settings.Wall._customData["_noteJumpStartBeatOffset"].ToFloat();
@@ -99,7 +100,7 @@ namespace ModChart.Wall
 
 
             //camera
-            if (_settings.AssignCameraToPlayerTrack && Model.Cubes.Any(c => c.isCamera))
+            if (_settings.AssignCameraToPlayerTrack && Model.Cubes.Any(c => c.isCamera && c.Frames != null))
             {
                 var camera = Model.Cubes.Where(c => c.isCamera).First();
                 camera.Frames = camera.Frames.Select(f =>
@@ -131,7 +132,6 @@ namespace ModChart.Wall
                     }
                 }).ToArray();
             }
-            Output._customData["_customEvents"] ??= new object[] { };
 
 
             //walls
@@ -290,6 +290,7 @@ namespace ModChart.Wall
                 }
                 if (_settings.Wall._customData["_color"] != null) wall._customData["_color"] = _settings.Wall._customData["_color"];
                 if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) wall._customData["_track"] = cube.Track;
+                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[BeatMap._track] = _settings.DefaultTrack; 
                 walls.Add((BeatMap.Obstacle)wall.Append(_settings.Wall, AppendPriority.Low));
 
             }
@@ -376,15 +377,16 @@ namespace ModChart.Wall
                 if (cube.Color != null) note._customData["_color"] = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, cube.Color.A };
                 if (_settings.Wall._customData["_color"] != null) note._customData["_color"] = _settings.Wall._customData["_color"];
                 if (_settings.CreateTracks && string.IsNullOrEmpty(cube.Track)) note._customData["_track"] = cube.Track;
+                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") note._customData[BeatMap._track] = _settings.DefaultTrack;
 
                 notes.Add((BeatMap.Note)note.Append(_settings.Wall, AppendPriority.Low));
             }
-            Output._notes = notes.ToList();
+            Output._notes = notes;
         }
     }
     public class ModelSettings
     {
-
+        public string DefaultTrack { get; set; }
         public string Path { get; set; }
         /// <summary>
         /// (spreadspawntime)

@@ -42,16 +42,20 @@ namespace ScuffedWalls
             ICustomDataMapObject mapobj = _wall;
             if (_note != null) mapobj = _note;
             if (_event != null) mapobj = _event;
+            if (mapobj == null) return;
 
-            if (mapobj != null)
+            foreach (var prop in mapobj.GetType().GetProperties())
             {
-                propVars.Add(new Parameter("_time", mapobj._time.ToString()));
-                if (mapobj._customData != null)
-                {
-                    mapobj._customData.DeleteNullValues();
-                    PopulateParts(mapobj._customData);
-                }
+                object val = prop.GetValue(mapobj);
+                if (val != null) propVars.Add(new Parameter(prop.Name, getNumberFromEnum(val).ToString()));
             }
+
+            if (mapobj._customData != null)
+            {
+                mapobj._customData.DeleteNullValues();
+                PopulateParts(mapobj._customData);
+            }
+
 
             void PopulateParts(TreeDictionary dict, string prefix = "")
             {
@@ -62,7 +66,14 @@ namespace ScuffedWalls
                     else propVars.Add(new Parameter(Property.Key, prefix + Property.Value.ToString()));
                 }
             }
+
             Properties = propVars.ToArray();
+            ScuffedWalls.Print(string.Join(',', Properties.Select(p => p.Name + " " + p.StringData)));
+        }
+        private object getNumberFromEnum(object val)
+        {
+            if (val is Enum) return (int)val;
+            else return val;
         }
         public Parameter[] GetArrayVars(IEnumerable<object> Array, string Name)
         {

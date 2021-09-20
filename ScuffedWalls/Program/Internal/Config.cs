@@ -11,6 +11,7 @@
         public bool ClearConsoleOnRefresh { get; set; }
         public bool IsAutoImportEnabled { get; set; }
         public bool IsBackupEnabled { get; set; }
+        public bool Debug { get; set; }
         public bool IsAutoSimplifyPointDefinitionsEnabled { get; set; }
         public bool PrettyPrintJson { get; set; }
         public Backup BackupPaths { get; set; }

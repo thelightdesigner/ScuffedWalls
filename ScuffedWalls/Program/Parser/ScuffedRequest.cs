@@ -5,6 +5,11 @@ using System.Linq;
 namespace ScuffedWalls
 {
     //the base class for scuffedwalls to do actions off of
+    public interface IRequest
+    {
+        public string Name { get; set; }
+        public List<Parameter> Parameters { get; }
+    }
     public class ScuffedRequest
     {
         public Parameter[] Parameters { get; set; } = new Parameter[] { };
@@ -15,13 +20,13 @@ namespace ScuffedWalls
             public int Number { get; set; }
             public FunctionRequest[] FunctionRequests { get; set; } = new FunctionRequest[] { };
             public VariableRequest[] VariableRequests { get; set; } = new VariableRequest[] { };
-            public class FunctionRequest
+            public class FunctionRequest : IRequest
             {
                 public string Name { get; set; }
                 public float Time { get; set; }
                 public List<Parameter> Parameters { get; } = new List<Parameter>();
             }
-            public class VariableRequest
+            public class VariableRequest : IRequest
             {
                 public string Name { get; set; }
                 public List<Parameter> Parameters { get; } = new List<Parameter>();
@@ -95,7 +100,4 @@ namespace ScuffedWalls
             if (CurrentWorkspace != null) WorkspaceRequests = WorkspaceRequests.Append(CurrentWorkspace).ToArray();
         }
     }
-
-
-
 }

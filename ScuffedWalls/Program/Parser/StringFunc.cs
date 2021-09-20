@@ -11,19 +11,16 @@ namespace ScuffedWalls
     {
         public string Name { get; set; } //name of the func
         public Func<ValuePair<string[], string>, string> FunctionAction { get; set; } //convert from params to output string
-
-
-        //idk where to put this
-        public static void Populate()
-        {
-            Parameter.StringFunctions = new StringFunction[]
+        public static StringFunction[] Functions => new StringFunction[]
             {
                 new StringFunction()
                 {
                     Name = "RepeatPointDefinition",
                     FunctionAction = InputArgs =>
                     {
-                        int indexoflast = InputArgs.Extra.LastIndexOf("],") + 1;
+
+
+                        int indexoflast = InputArgs.Extra.LastIndexOf(",");
 
                         string pd = InputArgs.Extra.Substring(0,indexoflast);
 
@@ -130,8 +127,8 @@ namespace ScuffedWalls
                         return rnd.Next(first,last).ToString();
                     }
                 }
-            };
-        }
+        };
+
     }
     public class BracketAnalyzer
     {

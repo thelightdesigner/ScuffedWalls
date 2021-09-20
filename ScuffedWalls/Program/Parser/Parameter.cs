@@ -19,7 +19,7 @@ namespace ScuffedWalls
         public bool WasUsed { get; set; }
         public Parameter[] InternalVariables { get; set; } = new Parameter[] { };
         public static Parameter[] ExternalVariables { get; set; } = new Parameter[] { };
-        public static StringFunction[] StringFunctions { get; set; } = new StringFunction[] { };
+        public static StringFunction[] StringFunctions { get; } = StringFunction.Functions;
         public Parameter()
         {
         }
@@ -242,7 +242,7 @@ namespace ScuffedWalls
             }
             catch (Exception e)
             {
-                if (!BeforeModifications.Equals(s)) return new KeyValuePair<bool, string>(!BeforeModifications.Equals(s), s);
+                if (!BeforeModifications.Equals(s)) return new KeyValuePair<bool, string>(true, s);
                 else
                 {
                     try

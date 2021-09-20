@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
-using ScuffedWalls;
 
 namespace ModChart.Wall
 {
@@ -12,11 +12,11 @@ namespace ModChart.Wall
     {
         public Cube[] Cubes { get; set; }
 
-        Collada model;
+        private Collada _model;
 
         public Model(string path)
         {
-            model = (Collada)Converters.DeserializeXML<Collada>(path);
+            _model = (Collada)Converters.DeserializeXML<Collada>(path);
             SetCubes();
             foreach (var cube in Cubes) cube.SetOffset();
             foreach (var cube in Cubes) cube.Decompose();
@@ -27,14 +27,14 @@ namespace ModChart.Wall
         }
 
 
-        
+
         void SetCubes()
         {
             List<Cube> cubes = new List<Cube>();
 
-            if (model.library_visual_scenes.visual_scene.node != null)
+            if (_model.library_visual_scenes.visual_scene.node != null)
             {
-                foreach (var node in model.library_visual_scenes.visual_scene.node)
+                foreach (var node in _model.library_visual_scenes.visual_scene.node)
                 {
                     //ignore the not cubes
                     if (!(node.instance_geometry != null || node.instance_cam != null)) continue;
@@ -49,7 +49,7 @@ namespace ModChart.Wall
                         if (cube.Count.HasValue && cube.Count != count) throw new Exception("please tell light about this 02");
                         if (!cube.Count.HasValue) cube.Count = count;
 
-                        if (cube.FrameSpan == null) cube.FrameSpan = new DoubleInt(0,count);
+                        if (cube.FrameSpan == null) cube.FrameSpan = new DoubleInt(0, count);
                     }
 
                     //base matrix
@@ -57,19 +57,19 @@ namespace ModChart.Wall
 
                     //name
                     cube.Name = node.name;
-                    
+
                     //library_animations
-                    if (model.library_animations != null && model.library_animations.animation.Any(a => a.name == node.name))
+                    if (_model.library_animations != null && _model.library_animations.animation.Any(a => a.name == node.name))
                     {
-                        Collada.Library_Animations.Animations cubeAnimationsContainer = model.library_animations.animation.Where(a => a.name == node.name).First();
+                        Collada.Library_Animations.Animations cubeAnimationsContainer = _model.library_animations.animation.Where(a => a.name == node.name).First();
 
                         if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("transform")))
                         {
                             var source = cubeAnimationsContainer.animation
-                            .Where(a => a.id.Contains("transform"))
-                            .First().sources.Where(a => a.id
-                            .Contains("-output"))
-                            .First();
+                            .First(a => a.id.Contains("transform"))
+                            .sources
+                            .First(a => a.id
+                            .Contains("-output"));
 
                             Matrix4x4[] matrices = source.float_array.values.ParseToFloatArray().to4x4Matricies();
 
@@ -77,7 +77,7 @@ namespace ModChart.Wall
 
                             for (int frame = 0; frame < cube.Count; frame++)
                             {
-                                if (cube.Frames[frame] == null) cube.Frames[frame] = new Cube.Frame();
+                                cube.Frames[frame] ??= new Cube.Frame();
                                 cube.Frames[frame].Matrix = matrices[frame];
                                 cube.Frames[frame].Number = frame;
                             }
@@ -85,41 +85,20 @@ namespace ModChart.Wall
                         if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("color")))
                         {
 
-                            float?[] Red = null;
-                            float?[] Green = null;
-                            float?[] Blu = null;
-                            float?[] Alpa = null;
+                            float?[] Red = getFloatAr("_color_R$");
+                            float?[] Green = getFloatAr("_color_G$");
+                            float?[] Blu = getFloatAr("_color_B$");
+                            float?[] Alpa = getFloatAr("_color$");
 
-                            var R = cubeAnimationsContainer.animation.Where(a => a.id.Contains("_R"));
-                            if (R != null && R.Any())
+                            float?[] getFloatAr(string regex)
                             {
-                                var source = R.First().sources.Where(s => s.id.Contains("-output")).First();
-                                doframes(int.Parse(source.float_array.count));
-                                Red = source.float_array.values.ParseToNullFloatArray();
-                            }
+                                var animation = cubeAnimationsContainer.animation;
+                                if (animation == null || !animation.Any()) return null;
 
-                            var G = cubeAnimationsContainer.animation.Where(a => a.id.Contains("_G"));
-                            if (G != null && G.Any())
-                            {
-                                var source = G.First().sources.Where(s => s.id.Contains("-output")).First();
+                                var source = animation.First(anim => Regex.IsMatch(anim.id, regex, RegexOptions.Multiline)).sources.Where(s => s.id.Contains("-output")).First();
                                 doframes(int.Parse(source.float_array.count));
-                                Green = source.float_array.values.ParseToNullFloatArray();
-                            }
+                                return source.float_array.values.ParseToNullFloatArray();
 
-                            var B = cubeAnimationsContainer.animation.Where(a => a.id.Contains("_B"));
-                            if (B != null && B.Any())
-                            {
-                                var source = B.First().sources.Where(s => s.id.Contains("-output")).First();
-                                doframes(int.Parse(source.float_array.count));
-                                Blu = source.float_array.values.ParseToNullFloatArray();
-                            }
-
-                            var A = cubeAnimationsContainer.animation.Where(a => a.id.Contains("_color") && !new string[] { "_R","_G","_B"}.Any(sigh => a.id.Contains(sigh)));
-                            if (A != null && A.Any())
-                            {
-                                var source = A.First().sources.Where(s => s.id.Contains("-output")).First();
-                                doframes(int.Parse(source.float_array.count));
-                                Alpa = source.float_array.values.ParseToNullFloatArray();
                             }
 
                             for (int frame = 0; frame < cube.Count; frame++)
@@ -130,7 +109,7 @@ namespace ModChart.Wall
                                 if (Blu != null && Blu.Length >= cube.Frames.Length) c.B = Blu[frame].Value;
                                 if (Alpa != null && Alpa.Length >= cube.Frames.Length) c.A = Alpa[frame].Value;
 
-                                if (cube.Frames[frame] == null) cube.Frames[frame] = new Cube.Frame();
+                                cube.Frames[frame] ??= new Cube.Frame();
                                 cube.Frames[frame].Color = c;
                                 cube.Frames[frame].Number = frame;
                             }
@@ -139,10 +118,10 @@ namespace ModChart.Wall
                         if (cubeAnimationsContainer.animation != null && cubeAnimationsContainer.animation.Any(a => a.id.Contains("hide_viewport")))
                         {
                             var source = cubeAnimationsContainer.animation
-                            .Where(a => a.id.Contains("hide_viewport"))
-                            .First().sources.Where(s => s.id
-                            .Contains("-output"))
-                            .First();
+                            .First(a => a.id.Contains("hide_viewport"))
+                            .sources
+                            .First(s => s.id
+                            .Contains("-output"));
 
                             int[] visible = source.float_array.values.ParseToIntArray();
                             doframes(int.Parse(source.float_array.count));
@@ -165,7 +144,7 @@ namespace ModChart.Wall
                         continue;
                     }
 
-                    if(node.instance_geometry != null && node.instance_geometry.url.ToLower().Contains("sphere"))
+                    if (node.instance_geometry != null && node.instance_geometry.url.ToLower().Contains("sphere"))
                     {
                         cube.isBomb = true;
                     }
@@ -175,12 +154,12 @@ namespace ModChart.Wall
                         cube.Material = node.instance_geometry.bind_material.technique_common.instance_material.Select(m => m.symbol.Split("-material")[0]).ToArray();
 
                     //library_effects
-                    if (model.library_effects != null)
+                    if (_model.library_effects != null)
                     {
 
-                        if(cube.Material != null && cube.Material.Any())
+                        if (cube.Material != null && cube.Material.Any())
                         {
-                            var effectcontainer/* = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));*/ = model.library_effects.effect;
+                            var effectcontainer/* = model.library_effects.effect.Where(e => cube.Material.Any(m => e.id.Contains(m)));*/ = _model.library_effects.effect;
                             var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0]).First();
 
 
@@ -192,13 +171,14 @@ namespace ModChart.Wall
 
                     }
 
-                    if (cube.Material != null) {
+                    if (cube.Material != null)
+                    {
                         if (cube.Material.Any(m => m.ToLower().Contains("note"))) cube.isNote = true;
                         if (cube.Material.Any(m => m.ToLower().StartsWith("track_"))) cube.Track = cube.Material.Where(m => !m.ToLower().StartsWith("track_")).Last();
                         else if (cube.Material.Length > 1) cube.Track = cube.Material.Last();
                     }
-                    
-                    
+
+
                     cubes.Add(cube);
                 }
             }
@@ -211,7 +191,7 @@ namespace ModChart.Wall
     }
 
 
-    
+
 
     public static class Converters
     {
