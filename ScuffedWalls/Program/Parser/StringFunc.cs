@@ -9,6 +9,7 @@ namespace ScuffedWalls
 {
     public class StringFunction
     {
+        public static Random RandomInstance = new Random();
         public string Name { get; set; } //name of the func
         public Func<ValuePair<string[], string>, string> FunctionAction { get; set; } //convert from params to output string
         public static StringFunction[] Functions => new StringFunction[]
@@ -34,6 +35,7 @@ namespace ScuffedWalls
                         {
                             repeat.StringData = i.ToString();
                             points.Add(Parameter.ParseVarFuncMath(pd, internalvars, true));
+                            Parameter.ExternalVariables.RefreshAllParameters();
                         }
 
                         return string.Join(',',points);
@@ -93,9 +95,9 @@ namespace ScuffedWalls
                     FunctionAction = InputArgs =>
                     {
 
-                         Random rnd = new Random();
                          float first = InputArgs.Main[0].ToFloat();
                          float last = InputArgs.Main[1].ToFloat();
+                         if (InputArgs.Main.Length > 2) 
                          if (last < first)
                          {
                              float f = first;
@@ -104,7 +106,7 @@ namespace ScuffedWalls
                              last = f;
                          }
 
-                         return (rnd.NextDouble() * (last - first) + first).ToString();
+                         return (RandomInstance.NextDouble() * (last - first) + first).ToString();
 
                     }
                 },
