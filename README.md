@@ -54,6 +54,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Wasted`](https://www.youtube.com/watch?v=TTqqOfxKLEI)
  - [`Don't Wanna Fall`](https://youtu.be/unjtFxjYHH4)
  - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
+ - [`Reassurance`](https://www.youtube.com/watch?v=c5mail8zQjo)
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
 
