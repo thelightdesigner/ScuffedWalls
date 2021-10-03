@@ -591,6 +591,18 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
 - localrotation: \[x,y,z]
 - position: \[x,y,z]
 - rotation: \[x,y,z]
+
+  Example
+```
+1:Environment
+    id:^BigMirrorEnvironment\.\[0]Environment\.\[18]DoubleColorLaser$
+    lookupMethod:Regex
+    position:[8,1.667,39]
+    track:DoubleColorLaser
+    active:true
+    
+    #takes the double color laser and changes position and adds it to a track
+ ```
  
  
 # CloneFromWorkspace
