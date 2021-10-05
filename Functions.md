@@ -137,6 +137,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
 - [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
 - [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
+- [`AnimateDissolveArrow`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolvearrow): \[d,t,"e"?]
 - [`AnimateColor`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_color): \[r,g,b,a,t,"e"?]
 - [`AnimateRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_rotation): \[x,y,z,t,"e"?]
 - [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
