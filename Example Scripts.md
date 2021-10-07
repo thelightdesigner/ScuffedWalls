@@ -1,7 +1,7 @@
 # Script Examples
-A Cheat Sheet For Various Noodle And Chroma Effects
+A Compilation Of Pre-made ScuffedWalls Scripts
 
-## Contents
+## Script Complexity
  - [`Simple`](#Simple)
  - [`Medium`](#Medium)
  - [`Advanced`](#Advanced)
