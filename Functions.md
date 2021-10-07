@@ -183,6 +183,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 
 `Other`
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
+ - \#  is used at the start of a blank line for a comment
 
 Usefull links:
  - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
