@@ -19,15 +19,15 @@ Community pre-made font models:
 
 
 - [`TzurS11Font.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.dae)
-![](https://cdn.discordapp.com/attachments/635693570698772490/895330990329831495/unknown.png)
+![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
 
 - [`litefont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)      [`litefont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
-![](https://cdn.discordapp.com/attachments/635693570698772490/895330691640885268/unknown.png)
+![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/litefont.png)
 
 - [`swifterfont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.dae)
-![](https://cdn.discordapp.com/attachments/635693570698772490/895330855118053436/unknown.png)
+![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/swifterfont.png)
 - [`AirscrachFont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
-![](https://cdn.discordapp.com/attachments/635693570698772490/895330516058910811/unknown.png)
+![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/AirscrachFont.png)
 
 ```
 5:TextToWall
@@ -48,6 +48,7 @@ Community pre-made font models:
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/fuck.jpg)
 
 ## Font Image
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/All%20Functions%20in%20Docs/font.png)
 Scuffedwalls can use a special image to get the font for text to wall conversion. The image consists of a black or transparent background with the all characters on the same line.
 
 Individual characters must be seperated by at least one vertical line of uninterupted black/transparent pixels.  (i.e just keep the characters apart)
