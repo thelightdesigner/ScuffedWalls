@@ -49,6 +49,7 @@ Community pre-made font models:
 
 ## Font Image
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/All%20Functions%20in%20Docs/font.png)
+
 Scuffedwalls can use a special image to get the font for text to wall conversion. The image consists of a black or transparent background with the all characters on the same line.
 
 Individual characters must be seperated by at least one vertical line of uninterupted black/transparent pixels.  (i.e just keep the characters apart)
