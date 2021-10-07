@@ -34,9 +34,12 @@ namespace ScuffedWalls
         /// </summary>
 
         public static event Action OnChangeDetected;
-
+        //Adds Code Correction For Some Code Editors
         static string SWText =>
 @$"# ScuffedWalls {ScuffedWalls.ver}
+
+# FUNCTIONS - AppendWalls AppendNotes AppendEvents TextToWall ModelToWall ImageToWall Environment CloneFromWorkspace WorkspaceDefault Blackout Import Run Wall Note AnimateTrack AssignPathAnimation AssignPlayerToTrack ParentTrack PointDefinition
+# FORMATTING - NJSOffset NJS Interactable Fake Position Rotation LocalRotation CutDirection DisableNoteGravity DisableNoteLook Scale Log Color RGBColor DisableSpawnEffect CPropID CLightID CGradientDuration CgradientStartColor CgradientEndColor CgradientEasing CLockPosition CPreciseSpeed CDirection CNameFilter CReset CStep CProp CSpeed CCounterSpin Track AnimateDefinitePosition AnimatePosition AnimateDissolve AnimateColor AnimateRotation AnimateLocalRotation AnimateScale AnimateInteractable AnimateTime
 
 # Documentation on functions can be found at
 # https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md
