@@ -17,7 +17,9 @@ Everything in this section of the docs is referenced in the \_ScuffedWalls.sw fi
 Functions in ScuffedWalls are always called by stating a time value and the name of the function. Some functions do not use their time values, for those you can set the value to 0. In the lines beneath the function call, you can add parameters. Every parameter beneath a function call will apply only to that function.
 
 example:
-```
+
+[//]: # (I Added ruby syntax highlighing to commands, its not perfect but its still nicer to read than pure white)
+```ruby
 Workspace <- workspace
 
 0:Wall <- function call
@@ -59,7 +61,7 @@ Every workspace is combined when writing to the map file
 Workspaces are usefull for organization, cloning and appending
 
 Examples
-```
+```ruby
 Workspace: Workspace 1
 
 1:Note
@@ -71,7 +73,7 @@ Workspace: A Different Workspace
 0:AppendNotes
 #Affects Note 2 but not Note 1
 ```
-```
+```ruby
 Workspace: Workspace 1
 
 1:Note
@@ -87,7 +89,7 @@ Name: Workspace 1
 
 #This workspace has a clone of Note 1 in it
 ```
-```
+```ruby
 Workspace: Workspace 1
 
 var:Three
@@ -193,13 +195,13 @@ Usefull links:
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
-```
+```ruby
 0:Wall
   position:[{ 5+6 }, Random(1,5), { 5+6+Random(2,10) }]
   scale:[RandomInt(5,0),RandomInt(5,0),RandomInt(5,0)]
   ```
 
-```
+```ruby
 0:Wall
   repeat:100
   position:[{repeat/10},0,0]
@@ -223,7 +225,7 @@ The available functions are:
 An inline function that returns a random number ranging from Val1 to Val2. RandomInt will return a random whole number.
 
 Example:
-```
+```ruby
 0:wall
   njs:Random(0,10)
 ```
@@ -234,11 +236,11 @@ An inline function that returns a point definition representing a color.
 HSLtoRGB(Hue, Saturation, Value, Alpha?, Extra values to be added to the point defintion?)
 
 Examples:
-```
+```ruby
 0:Wall
   color:HSLtoRGB(0.2,1,0.5,1)
 ```
-```
+```ruby
 0:Wall
   animatecolor:HSLtoRGB(0.2,1,0.5,1,0),HSLtoRGB(0.4,1,0.5,1,1,"easeInOutSine")
   #			^   ^  ^  ^ ^   	 ^  ^  ^  ^ ^        ^
@@ -251,7 +253,7 @@ An inline function that returns a controllable amount of point definitions based
 This function has an internal variable `reppd` (short for repeatpointdefinition) which ticks up every repeat.
 
 Example:
-```
+```ruby
 0:Note
   animateposition:RepeatPointDefinition([Random(0,1),Random(0,1),Random(0,1),{reppd/9}],10)
 ```
@@ -259,7 +261,7 @@ Example:
 ## OrderPointDefinitions
 An inline function that returns point definitions ordered by their time value.
 
-```
+```ruby
 0:Wall
   animatedissolve:OrderPointDefinitions([1,1],[1,0],[1,0.2],[1,0.8])
 ```
@@ -267,7 +269,7 @@ An inline function that returns point definitions ordered by their time value.
 ## MultPointDefinition
 An inline function that multiplies all numbers in a point definition by another number.
 
-```
+```ruby
 0:AppendWalls
   color:MultPointDefinition([_color(0),_color(1),_color(2),_color(3)],2)
 ```
@@ -275,7 +277,7 @@ An inline function that multiplies all numbers in a point definition by another 
 # Variables
 Variables are containers for string/numerical data.
 
-```
+```ruby
 Workspace
 
 var:SomeVariableName
@@ -286,7 +288,7 @@ var:SomeVariableName
   NJS:SomeVariableName
   ```
 
-  ```
+  ```ruby
 Workspace
 
   var:Grey
@@ -310,7 +312,7 @@ defaults to 2
 # Internal Variables
 Variables that are auto created and changed internally. All repeatable functions will have at least 2 internal variables called "repeat" and "time". The append function populates all the properties of each wall/note/event as a variable.
 
-```
+```ruby
 0:Wall
   repeat:60
   repeataddtime:0.05
@@ -335,7 +337,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
- ```
+ ```ruby
  5:AppendToAllWallsBetween
    toBeat:10
    track: FurryTrack
@@ -344,18 +346,18 @@ Appending means to add on or to merge two sets of data. The append function will
 
 
 multiplies all the wall times by 2
-```
+```ruby
 0:AppendWalls
    time:{_time * 2}
    appendtechnique:1
-   ```
+```
 
 multiplies all the definitepositions by 3 except for the time value
-```
+```ruby
 0:AppendWalls
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
-   ```
+```
    
 a very scuffed way to make a rainbow
 
@@ -376,37 +378,37 @@ adds on noodle/chroma data to notes between the function time and endtime (toBea
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
-  ```
- 5:AppendToAllNotesBetween
-   toBeat:10
-   track: FurryTrack
-   appendTechnique:2
+```ruby
+5:AppendToAllNotesBetween
+  toBeat:10
+  track: FurryTrack
+  appendTechnique:2
 
 60:AppendToAllNotesBetween
-tobeat:63
-Njsoffset:Random(1,3)
-AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
-AnimateDissolve:[0,0],[1,0.1],[1,1]
-DisableSpawnEffect:true
+  tobeat:63
+  Njsoffset:Random(1,3)
+  AnimatePosition:[Random(-7,6),Random(-6,6),0,0],[0,0,0,0.35,"easeOutCubic"],[0,0,0,1]
+  AnimateDissolve:[0,0],[1,0.1],[1,1]
+  DisableSpawnEffect:true
 
 66:AppendToAllNotesBetween
-tobeat:99
-NJS:10
-DisableSpawnEffect:true
-AnimateDissolveArrow: [0,0],[0,1]
-track:CameraMoveNotes
- ```
+  tobeat:99
+  NJS:10
+  DisableSpawnEffect:true
+  AnimateDissolveArrow: [0,0],[0,1]
+  track:CameraMoveNotes
+```
 
 multiplies all the note times by 2
 
-```
+```ruby
 0:AppendNotes
    time:{_time * 2}
    appendtechnique:1
-   ```
+```
 
 multiplies all the definitepositions by 3 except for the time value
-```
+```ruby
 0:AppendNotes
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
@@ -421,13 +423,13 @@ adds on custom chroma data to events/lights between the function time and endtim
  - selecttype: 0, 1, 2, 3; the type of the light to append to
 
  Example
-```
+```ruby
  5:AppendToAllEventsBetween
    toBeat:10
    appendTechnique:2
    selectType:1,3,0
    color:HSLtoRGB(time, 1, 0.5, 1)
- ```
+```
 
  ## AppendTechnique
 The merge priority of the values being appended
@@ -483,7 +485,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
  Example
- ```
+ ```ruby
  5:TextToWall
    Path:font.dae
    line:a line of text!
@@ -499,7 +501,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
 #makes the text jump in at beat 5 and exist for 7 beats exactly
    definitedurationbeats:7
    definitetime:beats
- ```
+```
 
 ## ModelToWall
 
@@ -540,7 +542,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
  
  
   Example
-  ```
+```ruby
  5:ModelToWall
    Path:model.dae
    hasAnimation:false
@@ -551,7 +553,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 #makes the model jump in at beat 5 and last for 5.1276 seconds exactly
    definitetime:beats
    definitedurationseconds:5.1276
- ```
+```
 
 ## ImageToWall
 
@@ -579,7 +581,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
-  ```
+```ruby
  5:ImageToWall
    Path:image.png
    thicc:12
@@ -592,7 +594,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
    position:[0,2]
    duration:12
    animatedefiniteposition:[0,0,0,0]
- ```
+```
  
 ## Environment
 
@@ -610,7 +612,7 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
 - rotation: \[x,y,z]
 
   Example
-```
+```ruby
 1:Environment
     id:^BigMirrorEnvironment\.\[0]Environment\.\[18]DoubleColorLaser$
     lookupMethod:Regex
@@ -619,7 +621,7 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
     active:true
     
     #takes the double color laser and changes position and adds it to a track
- ```
+```
  
  
 # CloneFromWorkspace
@@ -632,7 +634,7 @@ clones mapobjects from a different workspace by the index or by the name. the ti
 - toBeat: float, the beat where to stop cloning from.
 
  Example
-```
+```ruby
 Workspace:wtf workspace
 64:wall
 
@@ -647,9 +649,7 @@ Workspace
    Type:0,1,2
    toBeat:125
    addTime:32
-   
-   
- ```
+```
  
 ## WorkspaceDefault
 adds a parameter to every function call in a workspace
@@ -658,7 +658,7 @@ adds a parameter to every function call in a workspace
  - any other parameters will be added to every function in the workspace
 
 Example
-```
+```ruby
 Workspace
 
 0:Default
@@ -675,9 +675,9 @@ Workspace
 adds a single light off event at the beat number. why? because why not.
 
  Example
-  ```
+```ruby
  5:Blackout
- ```
+```
  
  
 # Run
@@ -692,14 +692,14 @@ also can run javascript files
  - javascript: string, path to the .js file, will execute this file using the node command
  - refreshonsave: bool, refreshes scuffedwalls when the javascript file is modified
 
-```
+```ruby
 0:Run
   Javascript:CoolMapScript.js
   RunBefore: false
 ```
 note that in the above example, CoolMapScript.js is in the map folder
 
-```
+```ruby
 0:Run
   Args:Start Notepad.exe
   RunBefore: false
@@ -718,12 +718,12 @@ adds in map objects from other map.dat files
  - toBeat: float
  
   Example: adds lights from EasyStandard.dat from beat 15 to beat 180
-  ```
+```ruby
  15:Import
    fullpath:E:\New folder\steamapps\common\Beat Saber\Beat Saber_Data\CustomWIPLevels\scuffed walls test\EasyStandard.dat
    type:2
    toBeat:180
- ```
+```
 
 
 
@@ -742,8 +742,8 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
 
  Example
-```
-	#blue fire
+```ruby
+#blue fire
 5:Wall
   repeat:160
   repeataddtime:0.2
@@ -757,7 +757,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
   track:flowerfloat
   animatedissolve:[0,0],[1,0],[1,0.9],[0,1]
 
-	#shooting star
+#shooting star
 164:Wall
   repeat:50
   repeataddtime:0.4
@@ -767,7 +767,6 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
   position:[Random(0,80),Random(-100,100)]
   color:HSLtoRGB(Random(0,1),1,0.5,1)
   rotation:[Random(0,360),90,0]
-
 ```
 
 ## Note
@@ -791,8 +790,8 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
  - definitetime: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
 
  Example
-```
-	#Note fire
+```ruby
+#Note fire
 100:Note
   repeat:66
   repeatAddTime:0.3
@@ -822,14 +821,14 @@ makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/mast
  - repeatAddTime: float
  
   Example
- ```
- 70:AnimateTrack
+ ```ruby
+70:AnimateTrack
   track:RandomShit
   duration:1
   animatedissolve:[0,0],[0,1]
   animatedissolvearrow:[0,0],[0,1]
   
-  100:AnimateTrack
+100:AnimateTrack
   track:RandomShit
   duration:1
   animatedissolve:[0,0],[1,1]
@@ -847,7 +846,7 @@ makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/bl
  - repeatAddTime: float
  
   Example
- ```
+```ruby
 42:AssignPathAnimation
   track:BeginningStretch
   duration:8
@@ -863,10 +862,10 @@ makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/bl
  - easing: string
  
   Example
- ```
+```ruby
  3:AssignPlayerToTrack
     track:BigMovement
- ```
+```
 
 # ParentTrack
 makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignTrackParent) custom event
@@ -875,11 +874,11 @@ makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob
  - parentTrack: string
  
   Example
-  ```
+```ruby
  3:ParentTrack
     ParentTrack:BigMovement
     ChildTracks:["rightnotes","leftnotes"]
- ```
+```
 
 ## PointDefinition
 makes a point definition for use with custom events
@@ -887,7 +886,7 @@ makes a point definition for use with custom events
   - points: point definitions
 
   Example
-```
+```ruby
   5:PointDefinition
     name:UpDownPoints
     points:[0,0,0,0],[0,15,0,0.5,"easeInOutSine"],[0,0,0,1,"easeInOutSine"]
@@ -907,143 +906,5 @@ don't ever call this
 
 :)
 
-# Example Scripts
-
-Add more tracks to objects - theligtdesibegh r
-```
-0:AppendWalls
-  track:["_track","newTrackToBeAdded"]
-  appendtechnique:1
-  ```
-or
-  ```
-0:AppendWalls
-  track:["_track(0)","_track(1)","newTrackToBeAdded"]
-  appendtechnique:1
-  ```
-  
-
-Polygon Creator - iswimfly
-```
-#CHANGEABLE!
-var:sides
-data:XXX
-
-var:yPos
-data:XXX
-
-var:xPos
-data:XXX
-
-var:radius
-data:XXX
-
-
-#dont touch
-var:LMAO
-data:repeat-1
-var:angles
-data:3.14*2/sides
-var:rot
-data:360/sides*repeat
-var:radians
-data:angles*LMAO
-var:width
-data:2*radius*Tan(3.14/sides)
-var:height
-data:2
-var:sx
-data:xPos+Cos(radians)*radius-width/2
-var:sy
-data:yPos+Sin(radians)*radius-height/2
-
-XXX: Wall
-    repeat:{sides+1}
-    localrotation:[0,0,{33.8+rot}]
-    position:[{sx},{sy}]
-    
-        # CHANGE ANYTHING BELOW HERE AS YOU PLEASE! DO NOT TOUCH THE ABOVE!
-    interactable: false
-    duration:10
-    scale:[6,1,1]
-    animatedefiniteposition:[0,0,5,0],[0,0,5,1]
-    animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
- ```
- 
- Circle generator - iswimfly
- ```
- #The total amount of walls
-var:amount
-data:60
-
-var:RepeatA
-data:repeat-1
-
-#Change to whatever you want, this just puts it roughly at the center
-var:xPos
-data:0
-    
-#Change to whatever you want, this just puts it roughly at the center
-var:yPos
-data:3
-
-var:angle
-data:3.14*2/amount
-
-var:rot
-data:360/amount*RepeatA
-    
-var:radians
-data:angle*RepeatA
-
-#Change to whatever you want
-var:radius
-data:10
-
-var:width
-data:2*radius*Tan(3.14/amount)
-
-#Change to whatever you want, 2 is generally fine
-var:height
-data:2
-
-var:sx
-data:xPos+Cos(radians)*radius-width/2
-
-var:sy
-data:yPos+Sin(radians)*radius-height/2
-
-#Change the scale to get different sized walls, X can increase the length of the walls
-X: Wall
-    repeat:{amount}
-    interactable: false
-    duration:10
-    scale:[1,1,1]
-    localrotation:[0,0,{33.8+rot}]
-    position:[{sx},{sy}]
-  ```
-
-Notes "walk" on their back quarters. looks best on bottom notes (needs to be slow NJS) - wobbleorange
- ```
- XXX:AppendToAllNotesBetween
-tobeat:XXX
-AnimatePosition:[-0.16,-0.2,0,0],[0,0,0,0.025],[0.16,-0.2,0,0.05],[0,0,0,0.075],[-0.16,-0.2,0,0.1],[0,0,0,0.125],[0.16,-0.2,0,0.15],[0,0,0,0.175],[-0.16,-0.2,0,0.2],[0,0,0,0.225],[0.16,-0.2,0,0.25],[0,0,0,0.275],[-0.16,-0.2,0,0.3],[0,0,0,0.325],[0.08,-0.2,0,0.35],[0,0,0,0.375]
-AnimateLocalRotation:[18,15,8,0],[18,-15,-8,0.05],[18,15,8,0.1],[18,-15,-8,0.15],[18,15,8,0.2],[18,-15,-8,0.25],[18,15,8,0.3],[18,-15,-8,0.35],[0,0,0,0.4]
-NJS:13
-NJSOffset:3
-```
-
-Red bomb helix - totally balloon
-```
-XXX:note
-   repeat:120
-   repeataddtime:0.05
-   rotation:[0,0,{repeat*15}]
-   position:[0,4,0]
-   selecttype:3
-   disableNoteGravity:true
-   disableNoteLook:true
-   fake:true
-   interactable:false
-   color:[1,0,0,1]
-   ```
+# [Example Scripts](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Example%20Scripts.md)
+^Moved to a seperate file for clarity

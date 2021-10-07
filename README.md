@@ -25,7 +25,7 @@ Get Started:
  - Functions + Explanations -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
  - 3d modeling for wall conversion -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md)
  - TextToWall -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md)
- - Example Noodle And Chroma Effects -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Effect%20Examples.md)
+ - Example Scripts And Effects -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Example%20Scripts.md)
 
  Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
  
