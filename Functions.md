@@ -114,6 +114,21 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 
 ("" = put in quotes, ? = optional)
 
+### Position Notes
+> x = **left-right**, y = **up-down**, z = **forward-backward** 
+
+> 0,0,0  Is on the ground in the center of the lanes
+### Scale Notes
+
+> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
+
+### Time Notes
+
+> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
+
+> t 0.5 = halfway through the objects lifetime,
+
+
 [`Notes and Obstacles`](https://github.com/Aeroluna/NoodleExtensions#objects-notes-and-obstacles)
 - NJSOffset: float
 - NJS: float
