@@ -19,15 +19,20 @@ Community pre-made font models:
 
 
 - [`TzurS11Font.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
 
 - [`litefont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)      [`litefont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/litefont.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/litefont.png)
 
 - [`swifterfont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/swifterfont.png)
-- [`AirscrachFont.blend`](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/AirscrachFont.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/swifterfont.png)
+
+- [`AirscrachFont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/AirscrachFont.png)
 
 ```
 5:TextToWall
