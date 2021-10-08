@@ -10,7 +10,7 @@ namespace ScuffedWalls
     {
         public string Path { get; private set; }
         public FileInfo File { get; private set; }
-        public Parameter[] Lines { get; private set; }
+        public List<Parameter> Lines { get; private set; }
         public FileChangeDetector Detector { get; private set; }
         public KeyValuePair<int, string>[] SWFileLines { get; private set; }
         public KeyValuePair<int, string>[] SWRaw { get; private set; }
@@ -43,7 +43,7 @@ namespace ScuffedWalls
             }
             SWRaw = raw.ToArray();
             SWFileLines = lines.ToArray();
-            Lines = SWFileLines.Select(l => new Parameter(l.Value) { GlobalIndex = l.Key }).ToArray();
+            Lines = SWFileLines.Select(l => new Parameter(l.Value, l.Key)).ToList();
 
             if (SWRaw.Any(line => line.Value.ToLower().Contains("rick roll")))
             {

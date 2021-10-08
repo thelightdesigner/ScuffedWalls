@@ -13,13 +13,13 @@ namespace ScuffedWalls.Functions
         {
             Repeat = new Parameter ("repeat", "0");
             Beat = new Parameter ("time", Time.ToString());
-            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public override void Run()
         {
             SetParameters();
 
-            var parsedthing = Parameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             bool isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
 
             float duration = GetParam("duration", 0, p => float.Parse(p));
@@ -72,7 +72,7 @@ namespace ScuffedWalls.Functions
                     _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
                     _width = 0,
                     _type = 0
-                }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),AppendPriority.High));
+                }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()),AppendPriority.High));
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
 

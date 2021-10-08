@@ -13,7 +13,7 @@ namespace ScuffedWalls.Functions
         {
             Repeat = new Parameter("repeat", "0");
             Beat = new Parameter("time", Time.ToString());
-            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public override void Run()
         {
@@ -64,7 +64,7 @@ namespace ScuffedWalls.Functions
                     _cutDirection = cutdirection,
                     _type = type,
                     _customData = njsoffset.HasValue ? new TreeDictionary() { ["_noteJumpStartBeatOffset"] = njsoffset } : null
-                }.Append(Parameters.CustomDataParse(new BeatMap.Note()), AppendPriority.High));
+                }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Note()), AppendPriority.High));
 
                 Parameter.ExternalVariables.RefreshAllParameters();
             }

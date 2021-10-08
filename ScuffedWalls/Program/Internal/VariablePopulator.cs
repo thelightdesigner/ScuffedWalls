@@ -37,7 +37,7 @@ namespace ScuffedWalls
         public Parameter[] Properties { get; set; }
         public void SetProperties()
         {
-            List<Parameter> propVars = new List<Parameter>(0);
+            List<AssignableInlineVariable> propVars = new List<Parameter>(0);
 
             ICustomDataMapObject mapobj = _wall;
             if (_note != null) mapobj = _note;
@@ -47,7 +47,7 @@ namespace ScuffedWalls
             foreach (var prop in mapobj.GetType().GetProperties())
             {
                 object val = prop.GetValue(mapobj);
-                if (val != null) propVars.Add(new Parameter(prop.Name, getNumberFromEnum(val).ToString()));
+                if (val != null) propVars.Add(new AssignableInlineVariable(prop.Name, getNumberFromEnum(val).ToString()));
             }
 
             if (mapobj._customData != null)

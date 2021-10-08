@@ -7,6 +7,9 @@ using static ModChart.BeatMap;
 
 namespace ScuffedWalls
 {
+    /// <summary>
+    /// Exposes useful parts of a BeatMap
+    /// </summary>
     public class Workspace : ICloneable
     {
         public Workspace()
@@ -38,37 +41,20 @@ namespace ScuffedWalls
         public List<object> Environment => CustomData.at<List<object>>(_environment);
         public List<object> BPMChanges => CustomData.at<List<object>>(_BPMChanges);
 
-
         public object Clone()
         {
             return new Workspace((BeatMap)BeatMap.Clone(), Name);
         }
-
-        public static BeatMap GetBeatMap(IEnumerable<Workspace> workspaces)
+        public void Add(Workspace workspace)
         {
-            List<Obstacle> obstacles = new List<Obstacle>();
-            List<Note> notes = new List<Note>();
-            List<Event> events = new List<Event>();
-            TreeDictionary customdata = new TreeDictionary();
-            foreach (var workspace in workspaces)
-            {
-                notes.AddRange(workspace.Notes);
-                obstacles.AddRange(workspace.Walls);
-                events.AddRange(workspace.Lights);
-
-                customdata = (TreeDictionary)TreeDictionary.Merge(
-                    customdata, workspace.CustomData,
-                    TreeDictionary.MergeType.Arrays | TreeDictionary.MergeType.Objects,
-                    TreeDictionary.MergeBindingFlags.HasValue);
-            }
-
-            var beatMap = new BeatMap()
-            {
-                _notes = notes.OrderBy(o => o.GetTime()).ToList(),
-                _obstacles = obstacles.OrderBy(o => o.GetTime()).ToList(),
-                _events = events.OrderBy(o => o.GetTime()).ToList(),
-                _customData = customdata
-            };
+            BeatMap.AddMap(workspace);
+        }
+        public static implicit operator Workspace(BeatMap b) => new Workspace(b, null);
+        public static implicit operator BeatMap(Workspace w) => w.BeatMap;
+        public static BeatMap Combine(IEnumerable<Workspace> workspaces)
+        {
+            var beatMap = new BeatMap();
+            foreach (var work in workspaces) beatMap.AddMap(work);
             beatMap.OrderCustomEventLists();
 
             return beatMap;
