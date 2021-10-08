@@ -114,6 +114,21 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 
 ("" = put in quotes, ? = optional)
 
+### Position Notes
+> x = **left-right**, y = **up-down**, z = **forward-backward** 
+
+> 0,0,0  Is on the ground in the center of the lanes
+### Scale Notes
+
+> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
+
+### Time Notes
+
+> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
+
+> t 0.5 = halfway through the objects lifetime,
+
+
 [`Notes and Obstacles`](https://github.com/Aeroluna/NoodleExtensions#objects-notes-and-obstacles)
 - NJSOffset: float
 - NJS: float
@@ -137,6 +152,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
 - [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
 - [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
+- [`AnimateDissolveArrow`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolvearrow): \[d,t,"e"?]
 - [`AnimateColor`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_color): \[r,g,b,a,t,"e"?]
 - [`AnimateRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_rotation): \[x,y,z,t,"e"?]
 - [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
@@ -591,6 +607,18 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
 - localrotation: \[x,y,z]
 - position: \[x,y,z]
 - rotation: \[x,y,z]
+
+  Example
+```
+1:Environment
+    id:^BigMirrorEnvironment\.\[0]Environment\.\[18]DoubleColorLaser$
+    lookupMethod:Regex
+    position:[8,1.667,39]
+    track:DoubleColorLaser
+    active:true
+    
+    #takes the double color laser and changes position and adds it to a track
+ ```
  
  
 # CloneFromWorkspace
