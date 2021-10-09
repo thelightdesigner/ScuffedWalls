@@ -184,7 +184,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 `Other`
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
 
-Usefull links:
+Useful links:
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
 # Math & Functions
