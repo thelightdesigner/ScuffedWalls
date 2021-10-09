@@ -112,22 +112,7 @@ Noodle Extensions/Chroma/Other properties that can be used on most functions
 
 Most of these properties are directly connected to their corresponding Noodle/Chroma property written in JSON. 
 
-("" = put in quotes, ? = optional)
-
-### Position Notes
-> x = **left-right**, y = **up-down**, z = **forward-backward** 
-
-> 0,0,0  Is on the ground in the center of the lanes
-### Scale Notes
-
-> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
-
-### Time Notes
-
-> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
-
-> t 0.5 = halfway through the objects lifetime,
-
+(`""` = put in quotes, `?` = optional)
 
 [`Notes and Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#notes--obstacles)
 - NJSOffset: float
@@ -184,8 +169,24 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 `Other`
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
 
-Useful links:
+Useful links
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
+
+Additional Info
+
+### Position
+> x = **left-right**, y = **up-down**, z = **forward-backward** 
+
+> 0,0,0  Is on the ground in the center of the lanes
+### Scale Walls
+
+> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
+
+### Time Notes
+
+> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
+
+> t 0.5 = halfway through the objects lifetime,
 
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
