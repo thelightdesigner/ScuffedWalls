@@ -21,11 +21,11 @@ example:
 Workspace <- workspace
 
 0:Wall <- function call
-  color:[0,1,1,1] <- parameter
-  scale:[1,1,1] <- parameter
+  color:[0,1,1,1] <- parameter ^ Wall
+  scale:[1,1,1] <- parameter ^ Wall
   
 var:Variable <- variable instance
-  data:2 <- parameter
+  data:2 <- parameter ^ Variable
 ```
 
 All the available functions are listed below
@@ -129,7 +129,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 > t 0.5 = halfway through the objects lifetime,
 
 
-[`Notes and Obstacles`](https://github.com/Aeroluna/NoodleExtensions#objects-notes-and-obstacles)
+[`Notes and Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#notes--obstacles)
 - NJSOffset: float
 - NJS: float
 - Interactable: bool
@@ -138,29 +138,29 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - Rotation: \[x,y,z] or float
 - LocalRotation: \[x,y,z]
 
-[`Notes`](https://github.com/Aeroluna/NoodleExtensions#notes)
+[`Notes`](https://github.com/Aeroluna/Heck/wiki/Objects#notes)
 - CutDirection: float
 - DisableNoteGravity: bool
 - DisableNoteLook: bool
 
-[`Obstacles`](https://github.com/Aeroluna/NoodleExtensions#obstacles)
+[`Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#obstacles)
 - Scale: \[x,y?,z?]
 
-[`Tracks`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#tracks)
+[`Tracks`](https://github.com/Aeroluna/Heck/wiki/Animation#tracks)
 
 - Track: string, or \["t1","t2"...] for multiple tracks
-- [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
-- [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
-- [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
-- [`AnimateDissolveArrow`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolvearrow): \[d,t,"e"?]
-- [`AnimateColor`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_color): \[r,g,b,a,t,"e"?]
-- [`AnimateRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_rotation): \[x,y,z,t,"e"?]
-- [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
-- [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
-- [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
-- [`AnimateTime`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_time):\[t,t,"e"?]
+- [`AnimateDefinitePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_definiteposition): \[x,y,z,t,"e"?]
+- [`AnimatePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_position): \[x,y,z,t,"e"?]
+- [`AnimateDissolve`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolve): \[d,t,"e"?]
+- [`AnimateDissolveArrow`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolvearrow): \[d,t,"e"?]
+- [`AnimateColor`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_color): \[r,g,b,a,t,"e"?]
+- [`AnimateRotation`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_rotation): \[x,y,z,t,"e"?]
+- [`AnimateLocalRotation`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolve): \[x,y,z,t,"e"?]
+- [`AnimateScale`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_scale): \[x,y,z,t,"e"?]
+- [`AnimateInteractable`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_interactable):\[i,t]
+- [`AnimateTime`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_time):\[t,t,"e"?]
 
-[`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
+[`Chroma`](https://github.com/Aeroluna/Heck/wiki/Objects#chroma)
 
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
@@ -185,9 +185,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
 
 Usefull links:
- - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
- - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
- - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
+ - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
@@ -365,7 +363,9 @@ a very scuffed way to make a rainbow
 [`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
 
 ## AppendNotes
-adds on noodle/chroma data to notes between the function time and endtime (toBeat)
+Appends data to notes between the function time and endtime (toBeat)
+
+While it is possible, ScuffedWalls does not serve as a usable alternative to note mapping.
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
@@ -412,10 +412,10 @@ multiplies all the definitepositions by 3 except for the time value
    ```
 
 ## AppendEvents
-adds on custom chroma data to events/lights between the function time and endtime (toBeat)
+Appends data to events between the function time and endtime (toBeat)
 
  - toBeat: float
- - appendTechnique: int(0-2)
+ - appendTechnique: int(0-1)
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - selecttype: 0, 1, 2, 3; the type of the light to append to
 
@@ -430,11 +430,8 @@ adds on custom chroma data to events/lights between the function time and endtim
 
  ## AppendTechnique
 The merge priority of the values being appended
- - 0 = Low Priority (Will not overwrite any property but can still append to nulled properties)
- - 1 = High Priority (Can overwrite any property)
- - 2~4 = ??? (Dont use these)
-
-**default is 0**
+ - 0 = Low Priority, Will not overwrite any property but can still append to nulled properties (default)
+ - 1 = High Priority, Can overwrite any property
 
 ## Append Function Internal Variables
 The append function runs through each object in a workspace and changes its data.
