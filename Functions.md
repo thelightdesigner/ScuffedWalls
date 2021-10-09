@@ -366,8 +366,6 @@ a very scuffed way to make a rainbow
 ## AppendNotes
 Appends data to notes between the function time and endtime (toBeat)
 
-While it is possible, ScuffedWalls does not serve as a usable alternative to note mapping.
-
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
  - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
@@ -458,7 +456,7 @@ confusing right?
 ## TextToWall
 Constructs text out of walls
 
-Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
+Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) tutorial
 
 see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images/models.
 
@@ -503,7 +501,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
-Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
+Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 
 
  - path: string
@@ -552,9 +550,9 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
 ## ImageToWall
 
-constructs an image out of walls as pixels
+Constructs an image out of walls as pixels
 
-Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
+Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) tutorial
 
  - path: string
  - fullpath string
@@ -728,7 +726,7 @@ adds in map objects from other map.dat files
 (repeatable)
 makes a wall
 
-Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - duration: float
 - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
@@ -771,7 +769,9 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 (repeatable)
 makes a note
 
-Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
+While it is possible, ScuffedWalls does not serve as a usable alternative to note mapping. The `Note` function is recommended for creating procedural effects only.
+
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
