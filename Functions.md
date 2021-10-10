@@ -328,7 +328,6 @@ Appending means to add on or to merge two sets of data. The append function will
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
- - onTrack: string, only appends to walls on this track
  - selectlineindex: int,int,int (defaults to 0,1,2,3)
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
@@ -370,7 +369,6 @@ Appends data to notes between the function time and endtime (toBeat)
  - toBeat: float => ending beat of selection (only append notes before...)
  - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
