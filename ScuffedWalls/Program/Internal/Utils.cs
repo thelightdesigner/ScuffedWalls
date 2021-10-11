@@ -34,7 +34,7 @@ namespace ScuffedWalls
         /// </summary>
 
         public static event Action OnChangeDetected;
-        //Adds Code Correction For Some Code Editors
+        //Airscrach: Adds Code Correction For Some Code Editors, (This Is The Only Code Edit That I Wanted To Make, The Rest Will Just Be Docs, love your work <3)
         static string SWText =>
 @$"# ScuffedWalls {ScuffedWalls.ver}
 
