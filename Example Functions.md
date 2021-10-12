@@ -53,7 +53,7 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
-![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897438240288702464/BloqWalkLFS.gif)
+EXAMPLE: <https://cdn.discordapp.com/attachments/869471669356474408/897438240288702464/BloqWalkLFS.gif>
 
 
 ### Red bomb helix - totally balloon
@@ -69,7 +69,7 @@ XXX:note
    interactable:false
    color:[1,0,0,1]
 ```
-![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897432477671497748/BloqSpinLFS.gif)
+EXAMPLE: <https://cdn.discordapp.com/attachments/869471669356474408/897432477671497748/BloqSpinLFS.gif>
 
 # Advanced
 
@@ -118,7 +118,7 @@ XXX:Wall
    animatedefiniteposition:[0,0,5,0],[0,0,5,1]
    animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
 ```
-![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897438105873842216/CircleLFS.gif)
+EXAMPLE: <https://cdn.discordapp.com/attachments/869471669356474408/897438105873842216/CircleLFS.gif>
 
 
 ### Circle generator - iswimfly
