@@ -53,12 +53,7 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
-<<<<<<< HEAD:Example Functions.md
-![EXAMPLE]( FIX BloqWalkLFS.gif)
-=======
-[//]: # (Discord Link Cos The Gif Is 40mb if i should include large gifs in future lmk: MasterAirscrach TG_YT#0666) 
-![](https://cdn.discordapp.com/attachments/893538520659005482/897372856239943731/BloqWalk.gif)
->>>>>>> parent of 49573c2 (Worky?):Example Scripts.md
+![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897438240288702464/BloqWalkLFS.gif)
 
 
 ### Red bomb helix - totally balloon
@@ -74,7 +69,7 @@ XXX:note
    interactable:false
    color:[1,0,0,1]
 ```
-![EXAMPLE](FIX BloqSpinLFS.gif)
+![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897432477671497748/BloqSpinLFS.gif)
 
 # Advanced
 
@@ -123,11 +118,7 @@ XXX:Wall
    animatedefiniteposition:[0,0,5,0],[0,0,5,1]
    animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
 ```
-<<<<<<< HEAD:Example Functions.md
-![EXAMPLE](FIX CircleLFS.gif)
-=======
-![](https://cdn.discordapp.com/attachments/724813982522933258/897385292783317012/cricle.gif)
->>>>>>> parent of 49573c2 (Worky?):Example Scripts.md
+![EXAMPLE](https://cdn.discordapp.com/attachments/869471669356474408/897438105873842216/CircleLFS.gif)
 
 
 ### Circle generator - iswimfly
@@ -182,3 +173,4 @@ X:Wall
    localrotation:[0,0,{33.8+rot}]
    position:[{sx},{sy}]
 ```
+![](Images/EffectExamples/Ring.png)

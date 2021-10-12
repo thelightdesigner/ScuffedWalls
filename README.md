@@ -25,7 +25,7 @@ Get Started:
  - Functions + Explanations -> [`here`](Functions.md)
  - 3d modeling for wall conversion -> [`here`](Blender%20Project.md)
  - TextToWall -> [`here`](TextToWall.md)
- - Example Scripts And Effects -> [`here`](Example%20Scripts.md)
+ - Example Scripts And Effects -> [`here`](Example%20Functions.md)
 
  Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
  
