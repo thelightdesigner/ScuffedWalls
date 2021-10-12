@@ -53,7 +53,7 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
-[//]: # (Discord Link Cos The Gif Is 40mb if (i should include large gifs in future lmk: MasterAirscrach TG_YT#0666)) 
+[//]: # (Discord Link Cos The Gif Is 40mb if i should include large gifs in future lmk: MasterAirscrach TG_YT#0666) 
 ![](https://cdn.discordapp.com/attachments/893538520659005482/897372856239943731/BloqWalk.gif)
 
 
