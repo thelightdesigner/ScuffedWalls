@@ -53,6 +53,8 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
+![](https://cdn.discordapp.com/attachments/635693570698772490/897353966046838815/Walk.mp4)
+
 
 ### Red bomb helix - totally balloon
 ```ruby
