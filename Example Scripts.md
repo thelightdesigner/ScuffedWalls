@@ -70,7 +70,7 @@ XXX:note
    interactable:false
    color:[1,0,0,1]
 ```
-![](Images/EffectExamples/BloqSpin.gif)
+![](Images/EffectExamples/BloqSpinLFS.gif)
 
 # Advanced
 
