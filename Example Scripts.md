@@ -28,7 +28,7 @@ A Compilation Of Pre-made ScuffedWalls Scripts
    Color:[0,2,0,40]
    Interactable:false
 ```
-![](https://cdn.discordapp.com/attachments/635693570698772490/895688320363925564/unknown.png)
+![](Images\EffectExamples\Alpha01.png)
 
 ### Add more tracks to objects - theligtdesibegh r
 ```ruby
@@ -70,7 +70,7 @@ XXX:note
    interactable:false
    color:[1,0,0,1]
 ```
-![](https://cdn.discordapp.com/attachments/724813982522933258/897378276304105493/BloqSpin.gif)
+![](Images/EffectExamples/BloqSpin.gif)
 
 # Advanced
 
