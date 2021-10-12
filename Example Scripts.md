@@ -53,7 +53,8 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
-Example: ![here](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/BetterDocs/Non-Static/Walk.mp4?raw=true)
+[//]: # (Discord Link Cos The Gif Is 40mb if (i should include large gifs in future lmk: MasterAirscrach TG_YT#0666)) 
+![](https://cdn.discordapp.com/attachments/893538520659005482/897372856239943731/BloqWalk.gif)
 
 
 ### Red bomb helix - totally balloon
@@ -63,13 +64,13 @@ XXX:note
    repeataddtime:0.05
    rotation:[0,0,{repeat*15}]
    position:[0,4,0]
-   selecttype:3
    disableNoteGravity:true
    disableNoteLook:true
    fake:true
    interactable:false
    color:[1,0,0,1]
 ```
+![](https://cdn.discordapp.com/attachments/724813982522933258/897378276304105493/BloqSpin.gif)
 
 # Advanced
 
@@ -118,10 +119,12 @@ XXX:Wall
    animatedefiniteposition:[0,0,5,0],[0,0,5,1]
    animatecolor:[1,0,0,1,0.2],[1,1,0,1,0.4],[0,1,0,1,0.6],[0,1,1,1,0.8],[0,0,1,1,1]
 ```
+![](https://cdn.discordapp.com/attachments/724813982522933258/897385292783317012/cricle.gif)
+
 
 ### Circle generator - iswimfly
  ```ruby
- #The total amount of walls
+#The total amount of walls
 var:amount
 data:60
 
