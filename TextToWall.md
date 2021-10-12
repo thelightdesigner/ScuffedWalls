@@ -19,14 +19,19 @@ Community pre-made font models:
 
 
 - [`TzurS11Font.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
 
 - [`litefont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)      [`litefont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/litefont.png)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/litefont.png)
 
 - [`swifterfont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.dae)
-![](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Readme/swifterfont.png)
-- [`AirscrachFont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/MasterAirscrachDev/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
+
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/swifterfont.png)
+
+- [`AirscrachFont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
+
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/AirscrachFont.png)
 
 ```
@@ -48,8 +53,8 @@ Community pre-made font models:
 ![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/fuck.jpg)
 
 ## Font Image
-Example:  
- ![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/All%20Functions%20in%20Docs/font.png)
+Example: 
+![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/All%20Functions%20in%20Docs/font.png)
 
 Scuffedwalls can use a special image to get the font for text to wall conversion. The image consists of a black or transparent background with the all characters on the same line.
 
