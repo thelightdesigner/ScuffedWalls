@@ -57,7 +57,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
  - [`Reassurance`](https://www.youtube.com/watch?v=c5mail8zQjo)
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
+<img src="Images/Try.jpg" alt="Try" width="500"/>
 
 <img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/orb.png" alt="Try" width="500"/>
 
