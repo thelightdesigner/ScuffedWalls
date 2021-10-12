@@ -53,7 +53,7 @@ XXX:AppendToAllNotesBetween
    NJS:13
    NJSOffset:3
 ```
-Example: <https://cdn.discordapp.com/attachments/635693570698772490/897353966046838815/Walk.mp4>
+Example: <https://github.com/MasterAirscrachDev/ScuffedWalls/blob/BetterDocs/Non-Static/Walk.mp4?raw=true>
 
 
 ### Red bomb helix - totally balloon
