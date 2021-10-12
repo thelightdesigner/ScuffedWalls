@@ -1,6 +1,6 @@
 # TextToWall
 
-![](Images/geico.png)
+![](Images/Text/Text/geico.png)
 
 We have a beginners tutorial! [see here](https://www.youtube.com/watch?v=g49gfMtzETY)
 
@@ -13,26 +13,26 @@ questionmark period exclamation apostrophe dash quotationmark greaterthan lessth
 
 All the letters should be roughly one blender unit tall in a line on the X axis.
 
-![](Images/litefont.jpg)
+![](Images/Text/litefont.jpg)
 
 Community pre-made font models:
 
 
 - [`TzurS11Font.blend`](Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](Examples/fonts/TzurS11Font.dae)
 
-![](Images/TzurS11Font.png)
+![](Images/Text/TzurS11Font.png)
 
 - [`litefont.blend`](Examples/fonts/litefont.blend)      [`litefont.dae`](Examples/fonts/litefont.dae)
 
-![](Images/litefont.png)
+![](Images/Text/litefont.png)
 
 - [`swifterfont.blend`](Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](Examples/fonts/swifterfont.dae)
 
-![](Images/swifterfont.png)
+![](Images/Text/swifterfont.png)
 
 - [`AirscrachFont.blend`](Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](Examples/fonts/AirscrachFont.dae)
 
-![](Images/AirscrachFont.png)
+![](Images/Text/AirscrachFont.png)
 
 ```
 5:TextToWall
@@ -50,7 +50,7 @@ Community pre-made font models:
    leading:1.1
    ```
 
-![](Images/fuck.jpg)
+![](Images/Text/fuck.jpg)
 
 ## Font Image
 Example: 

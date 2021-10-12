@@ -57,13 +57,13 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
  - [`Reassurance`](https://www.youtube.com/watch?v=c5mail8zQjo)
 
-<img src="Images/Try.jpg" alt="Try" width="500"/>
+<img src="Images/ReadMe/Try.jpg" alt="Try" width="500"/>
 
-<img src="Images/orb.png" alt="Try" width="500"/>
+<img src="Images/ReadMe/orb.png" alt="Try" width="500"/>
 
-<img src="Images/shelter.jpg" alt="Try" width="500"/>
+<img src="Images/ReadMe/shelter.jpg" alt="Try" width="500"/>
 
-<img src="Images/swifterilluminate.png" alt="Try" width="500"/>
+<img src="Images/ReadMe/swifterilluminate.png" alt="Try" width="500"/>
 
 ## For Developers
 

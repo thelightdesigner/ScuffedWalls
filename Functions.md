@@ -6,7 +6,7 @@
  - [`Math & Functions`](#math--functions)
  - [`Variables`](#Variables)
  - [`Internal Variables`](#internal-variables)
- - [`Example Scripts`](#Example-Scripts)
+ - [`Example Functions`](#Example-Functions)
 
 ## Overview
 
@@ -904,5 +904,5 @@ don't ever call this
 
 :)
 
-# [Example Scripts](Example%20Scripts.md)
+# [Example Functions](Example%20Functions.md)
 ^Moved to a seperate file for clarity
