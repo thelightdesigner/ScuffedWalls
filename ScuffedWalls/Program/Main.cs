@@ -41,17 +41,17 @@
             ScuffedRequest Request = null;
             Debug.TryAction(() => 
             {
-                Request = new ScuffedRequest(Utils.ScuffedWallFile.Lines);
+                Request = (ScuffedRequest)new ScuffedRequest().Setup(Utils.ScuffedWallFile.Lines);
             },e => 
             {
                 Print($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             });
 
-            //Do request
-            FunctionParser Parser = null;
+            ScuffedRequestParser Parser = null;
             Debug.TryAction(() => 
             {
-                Parser = new FunctionParser(Request);
+                Parser = new ScuffedRequestParser(Request);
+                Parser.GetResult();
             },e => 
             {
                 Print($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
@@ -59,16 +59,16 @@
 
             //write to json file
             Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
-            File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.BeatMap, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
+            File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
 
             //add in requirements
-            Utils.Check(Parser.BeatMap);
+            Utils.Check(Parser.Result);
 
             Print($"Writing to Info.dat");
             File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
 
 
-            Utils.DiscordRPCManager.CurrentMap = Parser.BeatMap;
+            Utils.DiscordRPCManager.CurrentMap = Parser.Result;
             Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
         }
         public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true)

@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ScuffedWalls
 {
-    static class Internal
+    static class Extensions
     {
         /// <summary>
         /// Attempts a deep clone of an array and all of the nested arrays, clones ICloneable
@@ -62,37 +62,6 @@ namespace ScuffedWalls
             return false;
         }
         */
-        public static bool needsNoodleExtensions(this BeatMap map)
-        {
-            //are there any custom events?
-            if (map._customData != null && map._customData["_customEvents"] != null && map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0) return true;
-
-            //do any notes have any noodle data other than color?
-            if (map._notes.Any(note => note._customData != null && HasNoodleParams(note._customData))) return true;
-
-            //do any walls have any noodle data other than color?
-            if (map._obstacles.Any(wall => wall._customData != null && HasNoodleParams(wall._customData))) return true;
-
-            bool HasNoodleParams(TreeDictionary customData) => 
-                customData.Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key)) || //customData has one of the noodle properties listed
-                (customData["_animation"] != null && customData.at("_animation").Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key))); //animation exists in custom data and has noodle params
-
-            return false;
-        }
-        public static bool needsChroma(this BeatMap map)
-        {
-            //do light have color
-            if (map._events.Any(light => light._customData != null && light._customData["_color"] != null)) return true;
-
-            //do wal have color or animate color
-            if (map._obstacles.Any(wall => wall._customData != null && (wall._customData["_color"] != null || (wall._customData["_animation"] != null && wall._customData["_animation._color"] != null)))) return true;
-
-            //do note have color or animate color
-            if (map._notes.Any(note => note._customData != null && (note._customData["_color"] != null || (note._customData["_animation"] != null && note._customData["_animation._color"] != null)))) return true;
-
-            return false;
-
-        }
         public static string MakePlural(this string s, int amount)
         {
             if (amount == 0) return s.TrimEnd('s');
@@ -103,6 +72,12 @@ namespace ScuffedWalls
         {
             if (s.Last() == character) return s;
             else return s + character;
+        }
+        public static List<T> Lasts<T>(this IEnumerable<T> list)
+        {
+            var newlist = new List<T>();
+            for(int i = 1; i < list.Count(); i++) newlist.Add(list.ElementAt(i));
+            return newlist;
         }
 
         /*

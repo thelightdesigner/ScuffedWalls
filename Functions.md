@@ -23,11 +23,11 @@ example:
 Workspace <- workspace
 
 0:Wall <- function call
-  color:[0,1,1,1] <- parameter
-  scale:[1,1,1] <- parameter
+  color:[0,1,1,1] <- parameter ^ Wall
+  scale:[1,1,1] <- parameter ^ Wall
   
 var:Variable <- variable instance
-  data:2 <- parameter
+  data:2 <- parameter ^ Variable
 ```
 
 All the available functions are listed below
@@ -114,24 +114,9 @@ Noodle Extensions/Chroma/Other properties that can be used on most functions
 
 Most of these properties are directly connected to their corresponding Noodle/Chroma property written in JSON. 
 
-("" = put in quotes, ? = optional)
+(`""` = put in quotes, `?` = optional)
 
-### Position Notes
-> x = **left-right**, y = **up-down**, z = **forward-backward** 
-
-> 0,0,0  Is on the ground in the center of the lanes
-### Scale Notes
-
-> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
-
-### Time Notes
-
-> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
-
-> t 0.5 = halfway through the objects lifetime,
-
-
-[`Notes and Obstacles`](https://github.com/Aeroluna/NoodleExtensions#objects-notes-and-obstacles)
+[`Notes and Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#notes--obstacles)
 - NJSOffset: float
 - NJS: float
 - Interactable: bool
@@ -140,29 +125,29 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 - Rotation: \[x,y,z] or float
 - LocalRotation: \[x,y,z]
 
-[`Notes`](https://github.com/Aeroluna/NoodleExtensions#notes)
+[`Notes`](https://github.com/Aeroluna/Heck/wiki/Objects#notes)
 - CutDirection: float
 - DisableNoteGravity: bool
 - DisableNoteLook: bool
 
-[`Obstacles`](https://github.com/Aeroluna/NoodleExtensions#obstacles)
+[`Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#obstacles)
 - Scale: \[x,y?,z?]
 
-[`Tracks`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#tracks)
+[`Tracks`](https://github.com/Aeroluna/Heck/wiki/Animation#tracks)
 
 - Track: string, or \["t1","t2"...] for multiple tracks
-- [`AnimateDefinitePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_definiteposition): \[x,y,z,t,"e"?]
-- [`AnimatePosition`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_position): \[x,y,z,t,"e"?]
-- [`AnimateDissolve`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[d,t,"e"?]
-- [`AnimateDissolveArrow`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolvearrow): \[d,t,"e"?]
-- [`AnimateColor`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_color): \[r,g,b,a,t,"e"?]
-- [`AnimateRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_rotation): \[x,y,z,t,"e"?]
-- [`AnimateLocalRotation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_dissolve): \[x,y,z,t,"e"?]
-- [`AnimateScale`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_scale): \[x,y,z,t,"e"?]
-- [`AnimateInteractable`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_interactable):\[i,t]
-- [`AnimateTime`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#_time):\[t,t,"e"?]
+- [`AnimateDefinitePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_definiteposition): \[x,y,z,t,"e"?]
+- [`AnimatePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_position): \[x,y,z,t,"e"?]
+- [`AnimateDissolve`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolve): \[d,t,"e"?]
+- [`AnimateDissolveArrow`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolvearrow): \[d,t,"e"?]
+- [`AnimateColor`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_color): \[r,g,b,a,t,"e"?]
+- [`AnimateRotation`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_rotation): \[x,y,z,t,"e"?]
+- [`AnimateLocalRotation`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolve): \[x,y,z,t,"e"?]
+- [`AnimateScale`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_scale): \[x,y,z,t,"e"?]
+- [`AnimateInteractable`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_interactable):\[i,t]
+- [`AnimateTime`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_time):\[t,t,"e"?]
 
-[`Chroma`](https://github.com/Aeroluna/Chroma#chroma)
+[`Chroma`](https://github.com/Aeroluna/Heck/wiki/Objects#chroma)
 
  - Color: \[r,g,b,a] (0-1)
  - RGBColor:\[r,g,b,a] (0-255)
@@ -187,10 +172,24 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
  - \#  is used at the start of a blank line for a comment
 
-Usefull links:
- - [`Noodle documentation`](https://github.com/Aeroluna/NoodleExtensions) 
- - [`Noodle Animation documentation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md)
- - [`Chroma documentation`](https://github.com/Aeroluna/Chroma)
+Useful links
+ - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
+
+Additional Info
+
+### Position
+> x = **left-right**, y = **up-down**, z = **forward-backward** 
+
+> 0,0,0  Is on the ground in the center of the lanes
+### Scale Walls
+
+> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
+
+### Time Notes
+
+> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
+
+> t 0.5 = halfway through the objects lifetime,
 
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
@@ -368,7 +367,7 @@ a very scuffed way to make a rainbow
 [`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
 
 ## AppendNotes
-adds on noodle/chroma data to notes between the function time and endtime (toBeat)
+Appends data to notes between the function time and endtime (toBeat)
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
@@ -415,10 +414,10 @@ multiplies all the definitepositions by 3 except for the time value
    ```
 
 ## AppendEvents
-adds on custom chroma data to events/lights between the function time and endtime (toBeat)
+Appends data to events between the function time and endtime (toBeat)
 
  - toBeat: float
- - appendTechnique: int(0-2)
+ - appendTechnique: int(0-1)
  - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
  - selecttype: 0, 1, 2, 3; the type of the light to append to
 
@@ -433,11 +432,8 @@ adds on custom chroma data to events/lights between the function time and endtim
 
  ## AppendTechnique
 The merge priority of the values being appended
- - 0 = Low Priority (Will not overwrite any property but can still append to nulled properties)
- - 1 = High Priority (Can overwrite any property)
- - 2~4 = ??? (Dont use these)
-
-**default is 0**
+ - 0 = Low Priority, Will not overwrite any property but can still append to nulled properties (default)
+ - 1 = High Priority, Can overwrite any property
 
 ## Append Function Internal Variables
 The append function runs through each object in a workspace and changes its data.
@@ -463,7 +459,7 @@ confusing right?
 ## TextToWall
 Constructs text out of walls
 
-Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) function
+Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) tutorial
 
 see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images/models.
 
@@ -508,7 +504,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
 (repeatable)
 constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
 
-Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
+Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 
 
  - path: string
@@ -557,9 +553,9 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) function
 
 ## ImageToWall
 
-constructs an image out of walls as pixels
+Constructs an image out of walls as pixels
 
-Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) function
+Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) tutorial
 
  - path: string
  - fullpath string
@@ -731,7 +727,7 @@ adds in map objects from other map.dat files
 (repeatable)
 makes a wall
 
-Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - duration: float
 - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
@@ -773,7 +769,9 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
 (repeatable)
 makes a note
 
-Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) function
+While it is possible, ScuffedWalls does not serve as a usable alternative to note mapping. The `Note` function is recommended for creating procedural effects only.
+
+Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float

@@ -9,7 +9,7 @@ namespace ModChart
 {
     static class BeatmapCompressor
     {
-        public static BeatMap SimplifyAllPointDefinitions(this BeatMap Map)
+        public static void SimplifyAllPointDefinitions(BeatMap Map)
         {
 
             //simplify custom event point definitions
@@ -68,8 +68,6 @@ namespace ModChart
                     }
                 }).ToList();
             }
-
-            return Map;
         }
         public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string,int>()
         {

@@ -25,7 +25,7 @@ namespace ScuffedWalls.Functions
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string tracc = GetParam("ontrack", null, p => p);
             var lineindex = GetParam("selectlineindex", new int[] { 0, 1, 2, 3, 4 }, p => p.Split(',').Select(val => int.Parse(val)));
-            Parameter select = Parameters.FirstOrDefault(p => p.Name == "select");
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
 
@@ -35,7 +35,7 @@ namespace ScuffedWalls.Functions
 
                 internalvars.CurrentWall = obj;
 
-                foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
+                foreach (var param in UnderlyingParameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
 
                 if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && AppendNotes.isOnTrack(obj._customData, tracc) && lineindex.Any(num => num == obj._lineIndex.Value) && selectable())
                 {
@@ -43,7 +43,7 @@ namespace ScuffedWalls.Functions
 
                     FunLog();
 
-                    var r = obj.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), type);
+                    var r = obj.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), type);
                     i++;
                     return r;
                 }
@@ -71,7 +71,7 @@ namespace ScuffedWalls.Functions
             AppendPriority type = GetParam("appendtechnique", AppendPriority.Low, p => (AppendPriority)int.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
 
-            Parameter select = Parameters.FirstOrDefault(p => p.Name == "select");
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
             float starttime = Time;
@@ -82,14 +82,14 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.Notes = InstanceWorkspace.Notes.Select(obj =>
             {
                 internalvars.CurrentNote = obj;
-                foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
+                foreach (var param in UnderlyingParameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
                 if (obj._time.Value >= starttime && obj._time.Value <= endtime && isOnTrack(obj._customData, tracc) && notetype.Any(t => t == (int)obj._type) && selectable())
                 {
                     WallIndex.StringData = i.ToString();
 
                     FunLog();
 
-                    var r = obj.Append(Parameters.CustomDataParse(new BeatMap.Note()), type);
+                    var r = obj.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Note()), type);
                     i++;
                     return r;
                 }
@@ -126,7 +126,7 @@ namespace ScuffedWalls.Functions
             VariablePopulator internalvars = new VariablePopulator();
             float Rfactor = GetParam("rainbowfactor", 1, p => float.Parse(p));
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
-            Parameter select = Parameters.FirstOrDefault(p => p.Name == "select");
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
 
@@ -158,7 +158,7 @@ namespace ScuffedWalls.Functions
             {
 
                 WallIndex.StringData = i.ToString();
-                foreach (var param in Parameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
+                foreach (var param in UnderlyingParameters) param.InternalVariables = internalvars.Properties.CombineWith(ps).ToArray();
 
                 if (obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime && selectable())
                 {
@@ -166,7 +166,7 @@ namespace ScuffedWalls.Functions
 
                     FunLog();
 
-                    var r = (BeatMap.Event)obj.Append(Parameters.CustomDataParse(new BeatMap.Event()), type);
+                    var r = (BeatMap.Event)obj.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Event()), type);
                     i++;
                     return r;
                 }

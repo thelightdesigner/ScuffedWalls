@@ -12,6 +12,7 @@ namespace ScuffedWalls
         public static Random RandomInstance = new Random();
         public string Name { get; set; } //name of the func
         public Func<ValuePair<string[], string>, string> FunctionAction { get; set; } //convert from params to output string
+        public static Func<StringFunction, string> Exposer => sfunc => sfunc.Name;
         public static StringFunction[] Functions => new StringFunction[]
             {
                 new StringFunction()
@@ -19,22 +20,22 @@ namespace ScuffedWalls
                     Name = "RepeatPointDefinition",
                     FunctionAction = InputArgs =>
                     {
-
-
                         int indexoflast = InputArgs.Extra.LastIndexOf(",");
 
                         string pd = InputArgs.Extra.Substring(0,indexoflast);
 
                         int repcount = int.Parse(InputArgs.Extra.Substring(indexoflast + 1,InputArgs.Extra.Length - indexoflast - 1));
 
-                        Parameter repeat = new Parameter("reppd", "0");
-                        Parameter[] internalvars = new Parameter[]{ repeat };
+                        Lookup<AssignableInlineVariable> vars = new Lookup<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+                        AssignableInlineVariable repeat = new AssignableInlineVariable("reppd", "0");
+                        vars.Add(repeat);
+                        StringComputationExcecuter computer = new StringComputationExcecuter(vars, true);
 
                         List<string> points = new List<string>();
                         for (int i = 0; i < repcount; i++)
                         {
                             repeat.StringData = i.ToString();
-                            points.Add(Parameter.ParseVarFuncMath(pd, internalvars, true));
+                            points.Add(computer.Parse(pd));
                             Parameter.ExternalVariables.RefreshAllParameters();
                         }
 

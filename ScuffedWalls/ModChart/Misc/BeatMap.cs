@@ -1,8 +1,10 @@
 ﻿using ScuffedWalls;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Reflection;
 
 namespace ModChart
 {
@@ -15,15 +17,56 @@ namespace ModChart
     {
         public float? _time { get; set; }
     }
+    public class MapStatAttribute : Attribute
+    {
+
+    }
     public class BeatMap : ICloneable
     {
+        public List<KeyValuePair<string, int>> Stats => GetStats();
+        public List<KeyValuePair<string, int>> GetStats()
+        {
+            List<KeyValuePair<string, int>> stats = new List<KeyValuePair<string, int>>();
+            foreach (var prop in typeof(BeatMap).GetProperties().Where(p => p.GetCustomAttributes<MapStatAttribute>().Any()))
+            {
+                object val = prop.GetValue(this);
+                if (val is IEnumerable<object> array && array.Count() > 0)
+                {
+                    int count = array.Count();
+                    stats.Add(new KeyValuePair<string, int>(Extensions.MakePlural(prop.Name, count), count));
+                }
+            }
+            foreach (var item in _customData)
+            {
+                if (item.Value is IEnumerable<object> aray && aray.Count() > 0) stats.Add(new KeyValuePair<string, int>(Extensions.MakePlural(item.Key, aray.Count()), aray.Count()));
+            }
+            return stats;
+        }
+        public static BeatMap Combine(BeatMap b1, BeatMap b2)
+        {
+            b1.AddMap(b2);
+            return (BeatMap)b1.Clone();
+        }
+        public void AddMap(BeatMap b2)
+        {
+            _notes.AddRange(b2._notes);
+            _waypoints.AddRange(b2._waypoints);
+            _obstacles.AddRange(b2._obstacles);
+            _events.AddRange(b2._events);
+            _customData = TreeDictionary.Merge(_customData, b2._customData);
+        }
+
         public string _version { get; set; } = "2.2.0";
         [JsonConverter(typeof(TreeDictionaryJsonConverter))]
         public TreeDictionary _customData { get; set; } = ImportantMapCustomDataFields;
-        public List<Event> _events { get; set; } = new List<Event>();
-        public List<Note> _notes { get; set; } = new List<Note>();
-        public List<Obstacle> _obstacles { get; set; } = new List<Obstacle>();
-        public object[] _waypoints { get; set; }
+        [MapStat] public List<Event> _events { get; set; } = new List<Event>();
+        [MapStat] public List<Note> _notes { get; set; } = new List<Note>();
+        [MapStat] public List<Obstacle> _obstacles { get; set; } = new List<Obstacle>();
+        [MapStat] public List<Waypoint> _waypoints { get; set; } = new List<Waypoint>();
+        public class Waypoint : TreeDictionary
+        {
+
+        }
 
         public const string
                _position = "_position",

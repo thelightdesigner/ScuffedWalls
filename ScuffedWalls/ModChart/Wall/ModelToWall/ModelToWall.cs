@@ -7,9 +7,6 @@ namespace ModChart.Wall
 {
     class WallModel
     {
-        /// <summary>
-        /// yeaaaaaaaaaaaa.....
-        /// </summary>
         public BeatMap Output { get; private set; } = BeatMap.Empty;
         public Model Model { get; private set; }
         public float NJS { get; private set; }

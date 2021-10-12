@@ -2,6 +2,7 @@
 
 namespace ScuffedWalls.Functions
 {
+    /*
     [SFunction("WorkspaceDefault", "Default")]
     class WorkspaceDefault : ScuffedFunction
     {
@@ -10,15 +11,16 @@ namespace ScuffedWalls.Functions
         {
             if (!GetParam("Enabled", true, CustomDataParser.BoolConverter)) InstanceWorkspace.Enabled = false;
 
-            var DefaultParams = Parameters.Where(para => funcParams.All(funcParam => para.Name.ToLower() != funcParam.ToLower())).ToArray();
+            var DefaultParams = UnderlyingParameters.Where(para => funcParams.All(funcParam => para.Name.ToLower() != funcParam.ToLower())).ToArray();
 
-            foreach (var funrequest in InstanceParser.CurrentWorkspaceRequest.FunctionRequests)
+            foreach (var funrequest in InstanceWorkspaceRequest.CurrentWorkspaceRequest.FunctionRequests)
             {
-                funrequest.Parameters
+                funrequest.UnderlyingParameters
                 .AddRange(DefaultParams.CloneArray()
                 .Cast<Parameter>());
             }
-            foreach (var p in Parameters) p.WasUsed = true;
+            foreach (var p in UnderlyingParameters) p.WasUsed = true;
         }
     }
+    */
 }

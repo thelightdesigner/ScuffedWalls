@@ -14,7 +14,7 @@ namespace ScuffedWalls.Functions
             FunLog();
 
 
-            var parsedshit = Parameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedshit = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedshit._customData != null && parsedshit._customData["_noteJumpMovementSpeed"] != null;
             List<string> lines = new List<string>();
@@ -68,7 +68,7 @@ namespace ScuffedWalls.Functions
             if (isNjs) MapOffset = parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat();
             if (isNjspeed) MapNjs = parsedshit._customData["_noteJumpMovementSpeed"].ToFloat();
 
-            foreach (var p in Parameters)
+            foreach (var p in UnderlyingParameters)
             {
                 if (p.Name == "line")
                 {
@@ -106,7 +106,7 @@ namespace ScuffedWalls.Functions
                         _time = Time,
                         _duration = duration,
                         _customData = new TreeDictionary()
-                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
+                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
                 },
                 ModelSettings = new ModelSettings()
                 {
@@ -133,7 +133,7 @@ namespace ScuffedWalls.Functions
                         _time = Time,
                         _duration = duration,
                         _customData = new TreeDictionary()
-                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
+                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
                 }
             });
             InstanceWorkspace.Walls.AddRange(text.Walls);

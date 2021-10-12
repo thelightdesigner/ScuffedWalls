@@ -47,12 +47,12 @@ namespace ModChart
         /// <param name="Dictionary1"></param>
         /// <param name="Dictionary2"></param>
         /// <returns>A TreeDictionary as an IDictionary</returns>
-        public static IDictionary<string, object> Merge(IDictionary<string, object> Dictionary1, IDictionary<string, object> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue)
+        public static TreeDictionary Merge(IDictionary<string, object> Dictionary1, IDictionary<string, object> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue)
         {
             Dictionary1 ??= new TreeDictionary();
             Dictionary2 ??= new TreeDictionary();
 
-            IDictionary<string, object> Merged = new TreeDictionary();
+            TreeDictionary Merged = new TreeDictionary();
             foreach (KeyValuePair<string, object> Item in Dictionary1)
             {
                 Merged[Item.Key] = Item.Value;

@@ -1,6 +1,5 @@
 ﻿using ModChart;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -23,37 +22,33 @@ namespace ScuffedWalls.Functions
             float addtime = GetParam("addtime", 0, p => float.Parse(p));
             float endbeat = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
 
-            
+
             BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path), Utils.DefaultJsonConverterSettings);
-            
+            BeatMap filtered = new BeatMap();
+
             if (beatMap._obstacles != null && beatMap._obstacles.Any() && Type.Any(t => t == 0))
             {
-                var filtered = beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Obstacle>();
-                InstanceWorkspace.Walls.AddRange(filtered);
-                if (filtered.Count() > 0) ConsoleOut("_obstacle", filtered.Count(), Time, "Import");
+                filtered._obstacles.AddRange(beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Obstacle>());
+
             }
             if (beatMap._notes != null && beatMap._notes.Any() && Type.Any(t => t == 1))
             {
-                var filtered = beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Note>();
-                InstanceWorkspace.Notes.AddRange(filtered);
-                if (filtered.Count() > 0) ConsoleOut("_note", filtered.Count(), Time, "Import");
+                filtered._notes.AddRange(beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Note>());
+
             }
             if (beatMap._events != null && beatMap._events.Any() && Type.Any(t => t == 2))
             {
-                var filtered = beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Event>();
-                InstanceWorkspace.Lights.AddRange(filtered);
-                if (filtered.Count() > 0) ConsoleOut("_event", filtered.Count(), Time, "Import");
+                filtered._events.AddRange(beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Event>());
+
             }
             if (beatMap._customData != null && Type.Any(t => t == 3))
             {
-                InstanceWorkspace.CustomData = (TreeDictionary)TreeDictionary.Merge(InstanceWorkspace.CustomData, beatMap._customData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
-
-                foreach (var item in beatMap._customData) if (item.Value is IEnumerable<object> array && array.Count() > 0) ConsoleOut($"_customData.{item.Key}", array.Count(), Time, "Import");
+                InstanceWorkspace.CustomData = TreeDictionary.Merge(InstanceWorkspace.CustomData, beatMap._customData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
             }
+            foreach (var stat in filtered.Stats) ConsoleOut(stat.Key, stat.Value, Time, "Import");
+            InstanceWorkspace.Add(filtered);
 
             Parameter.ExternalVariables.RefreshAllParameters();
         }
-
-
     }
 }

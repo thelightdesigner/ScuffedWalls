@@ -17,12 +17,12 @@ namespace ScuffedWalls.Functions
         {
             Repeat = new Parameter("repeat","0");
             Beat = new Parameter ("time",Time.ToString());
-            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public override void Run()
         {
             SetParameters();
-            var parsedcustomstuff = Parameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpMovementSpeed"] != null;
 
@@ -79,10 +79,7 @@ namespace ScuffedWalls.Functions
             if (isNjs) MapOffset = parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat();
             if (isNjspeed) MapNjs = parsedcustomstuff._customData["_noteJumpMovementSpeed"].ToFloat();
 
-
-            int walls = 0;
-            int notes = 0;
-            int customevents = 0;
+            BeatMap output = new BeatMap();
             for (int i = 0; i < repeatcount; i++)
             {
                 Repeat.StringData = i.ToString();
@@ -103,7 +100,7 @@ namespace ScuffedWalls.Functions
                     RotationEul = GetParam("deltarotation", DefaultValue: new Vector3(0, 0, 0), p => JsonSerializer.Deserialize<float[]>(p).ToVector3()),
                     Scale = GetParam("deltascale", DefaultValue: new Vector3(1, 0, 0), p => new Vector3(float.Parse(p), 0, 0))
                 };
-
+                
                 ModelSettings settings = new ModelSettings()
                 {
                     DefaultTrack = defaulttrack,
@@ -131,23 +128,15 @@ namespace ScuffedWalls.Functions
                     {
                         _time = Time + (i.ToFloat() * repeataddtime),
                         _duration = duration
-                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
+                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
                 };
                 var model = new WallModel(settings);
 
-                InstanceWorkspace.Walls.AddRange(model.Output._obstacles);
-                InstanceWorkspace.Notes.AddRange(model.Output._notes);
-                InstanceWorkspace.CustomEvents.AddRange(model.Output._customData.at<IEnumerable<object>>("_customEvents"));
-
-                walls += model.Output._obstacles.Count;
-                notes += model.Output._notes.Count;
-                customevents += model.Output._customData.at<IEnumerable<object>>("_customEvents").Count();
+                output.AddMap(model.Output);
 
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
-            if (walls > 0) ConsoleOut("Wall", walls, Time, "ModelToWall");
-            if (notes > 0) ConsoleOut("Note", notes, Time, "ModelToWall");
-            if (customevents > 0) ConsoleOut("CustomEvent", customevents, Time, "ModelToWall");
+            foreach (var stat in output.Stats) ConsoleOut(stat.Key,stat.Value,Time,"Model");
         }
     }
 

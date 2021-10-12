@@ -34,7 +34,7 @@ namespace ScuffedWalls.Functions
         {
             Repeat = new Parameter("repeat", "0");
             Beat = new Parameter("time", Time.ToString());
-            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public override void Run()
         {
@@ -53,7 +53,7 @@ namespace ScuffedWalls.Functions
                 {
                     ["_time"] = Time + (i * repeatTime),
                     ["_type"] = "AnimateTrack",
-                    ["_data"] = Parameters.CustomEventsDataParse()
+                    ["_data"] = UnderlyingParameters.CustomEventsDataParse()
                 });
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
@@ -70,7 +70,7 @@ namespace ScuffedWalls.Functions
         {
             Repeat = new Parameter("repeat", "0");
             Beat = new Parameter("time", Time.ToString());
-            Parameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
         }
         public override void Run()
         {
@@ -89,7 +89,7 @@ namespace ScuffedWalls.Functions
                 {
                     ["_time"] = Time + (i * repeatTime),
                     ["_type"] = "AssignPathAnimation",
-                    ["_data"] = Parameters.CustomEventsDataParse()
+                    ["_data"] = UnderlyingParameters.CustomEventsDataParse()
                 });
                 Parameter.ExternalVariables.RefreshAllParameters();
             }
@@ -108,7 +108,7 @@ namespace ScuffedWalls.Functions
             {
                 ["_time"] = Time,
                 ["_type"] = "AssignPlayerToTrack",
-                ["_data"] = Parameters.CustomEventsDataParse()
+                ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignPlayerToTrack", 1, Time, "CustomEvent");
             Parameter.ExternalVariables.RefreshAllParameters();
@@ -127,7 +127,7 @@ namespace ScuffedWalls.Functions
             {
                 ["_time"] = Time,
                 ["_type"] = "AssignTrackParent",
-                ["_data"] = Parameters.CustomEventsDataParse()
+                ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
             ConsoleOut("AssignTrackParent", 1, Time, "CustomEvent");
             Parameter.ExternalVariables.RefreshAllParameters();
