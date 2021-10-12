@@ -208,7 +208,7 @@ Math expressions are computed inside of { } symbols. A random floating point num
   color:HSLtoRGB({repeat/100},1,0.5)
   ```
   
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/rainbow.png)
+![](Images/rainbow.png)
   
 The example above uses the HSLtoRGB function to create a rainbow.
 
@@ -319,7 +319,7 @@ Variables that are auto created and changed internally. All repeatable functions
   position:[{repeat/8},{Sin(repeat/2)}]
   ```
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/sine.png)
+![](Images/sine.png)
 
 
 
@@ -333,7 +333,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to walls on this track
  - selectlineindex: int,int,int (defaults to 0,1,2,3)
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
  ```ruby
@@ -361,10 +361,10 @@ multiplies all the definitepositions by 3 except for the time value
 a very scuffed way to make a rainbow
 
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/color.png)
+![](Images/color.png)
 
 
-[`a less scuffed way to make a rainbow`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#math--functions)
+[`a less scuffed way to make a rainbow`](Functions.md#math--functions)
 
 ## AppendNotes
 Appends data to notes between the function time and endtime (toBeat)
@@ -374,7 +374,7 @@ Appends data to notes between the function time and endtime (toBeat)
  - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
  - onTrack: string, only appends to notes on this track
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
 ```ruby
@@ -418,7 +418,7 @@ Appends data to events between the function time and endtime (toBeat)
 
  - toBeat: float
  - appendTechnique: int(0-1)
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - selecttype: 0, 1, 2, 3; the type of the light to append to
 
  Example
@@ -450,9 +450,9 @@ granted this only works if every object has a  `_definitePosition` with a value 
 confusing right?
 
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/internalvar.jpg)
+![](Images/internalvar.jpg)
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/repeatvar.jpg)
+![](Images/repeatvar.jpg)
 
 
 
@@ -461,12 +461,12 @@ Constructs text out of walls
 
 Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzETY) tutorial
 
-see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md) for how the program reads font images/models.
+see [here](TextToWall.md) for how the program reads font images/models.
 
  - path: string
  - fullpath string
  - refreshonsave: bool, refreshes scuffedwalls when the file at the specified path is modified
- - line: string, the text you want to convert to walls. [this can be repeated](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/linetext.jpg) to add more lines of text.
+ - line: string, the text you want to convert to walls. [this can be repeated](Images/linetext.jpg) to add more lines of text.
  - letting: float, the relative space between letters. default: 1
  - leading: float, the relative space between lines. default: 1
  - size: float, scales the text. default: 1 (gigantic)
@@ -478,7 +478,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
  - Position => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
  Example
  ```ruby
@@ -502,7 +502,7 @@ see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall
 ## ModelToWall
 
 (repeatable)
-constructs a model out of walls. see [here](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more info
+constructs a model out of walls. see [here](Blender%20Project.md) for more info
 
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 
@@ -532,7 +532,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
  - deltascale: float, scales the model around the center of its bounding box
  - setdeltaposition: bool
  - setdeltascale: bool
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - repeat: int
  - repeataddtime: float
  
@@ -574,7 +574,7 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) tutorial
  - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
  - Alpha: the alpha value
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
 ```ruby
@@ -735,7 +735,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
  - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
 
  Example
 ```ruby
@@ -775,7 +775,7 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
 - type:int
 - cutDirection:int
 
@@ -813,7 +813,7 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 (repeatable)
 makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - easing: string
  - repeat: int, amount of times to repeat
  - repeatAddTime: float
@@ -855,7 +855,7 @@ makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/bl
 ## AssignPlayerToTrack
 makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
 
- - any of [`these properties`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md#noodle-extensionschroma-properties-syntax)
+ - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - track: string
  - easing: string
  
@@ -904,5 +904,5 @@ don't ever call this
 
 :)
 
-# [Example Scripts](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Example%20Scripts.md)
+# [Example Scripts](Example%20Scripts.md)
 ^Moved to a seperate file for clarity
