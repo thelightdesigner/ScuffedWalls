@@ -1,11 +1,11 @@
 # TextToWall
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/geico.png)
+![](Images/Text/Text/geico.png)
 
 We have a beginners tutorial! [see here](https://www.youtube.com/watch?v=g49gfMtzETY)
 
 ## Font Model
-Scuffedwalls can use a 3d model to create wall text, see [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md) for more information on 3d modeling for wall conversion. Groups of cubes can be assigned as a letter by having a material named one of the letters from the character list below. example: Letter_a, Letter_b...Letter_A... Letter_quotationmark, Letter_apostrophe...
+Scuffedwalls can use a 3d model to create wall text, see [`here`](Blender%20Project.md) for more information on 3d modeling for wall conversion. Groups of cubes can be assigned as a letter by having a material named one of the letters from the character list below. example: Letter_a, Letter_b...Letter_A... Letter_quotationmark, Letter_apostrophe...
 
 a b c d e f g h i j k l m n o p q r s t u v w x y z
 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
@@ -13,26 +13,26 @@ questionmark period exclamation apostrophe dash quotationmark greaterthan lessth
 
 All the letters should be roughly one blender unit tall in a line on the X axis.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/litefont.jpg)
+![](Images/Text/litefont.jpg)
 
 Community pre-made font models:
 
 
-- [`TzurS11Font.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/TzurS11Font.dae)
+- [`TzurS11Font.blend`](Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](Examples/fonts/TzurS11Font.dae)
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/TzurS11Font.png)
+![](Images/Text/TzurS11Font.png)
 
-- [`litefont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.blend)      [`litefont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/litefont.dae)
+- [`litefont.blend`](Examples/fonts/litefont.blend)      [`litefont.dae`](Examples/fonts/litefont.dae)
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/litefont.png)
+![](Images/Text/litefont.png)
 
-- [`swifterfont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/swifterfont.dae)
+- [`swifterfont.blend`](Examples/fonts/swifterfont.blend)      [`swifterfont.dae`](Examples/fonts/swifterfont.dae)
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/swifterfont.png)
+![](Images/Text/swifterfont.png)
 
-- [`AirscrachFont.blend`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/fonts/AirscrachFont.dae)
+- [`AirscrachFont.blend`](Examples/fonts/AirscrachFont.blend)  [`AirscrachFont.dae`](Examples/fonts/AirscrachFont.dae)
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/AirscrachFont.png)
+![](Images/Text/AirscrachFont.png)
 
 ```
 5:TextToWall
@@ -50,11 +50,11 @@ Community pre-made font models:
    leading:1.1
    ```
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/fuck.jpg)
+![](Images/Text/fuck.jpg)
 
 ## Font Image
 Example: 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Examples/All%20Functions%20in%20Docs/font.png)
+![](Examples/All%20Functions%20in%20Docs/font.png)
 
 Scuffedwalls can use a special image to get the font for text to wall conversion. The image consists of a black or transparent background with the all characters on the same line.
 

@@ -5,15 +5,15 @@ All modeling done for wall conversion must be made up exclusively of 3d cubes (d
 ## Animating
 Any animation on position, rotation, scale, viewport color and viewport visibility to a cube will show up in beatsaber. Shape Keys and other mesh deformations wont work.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/transformation.jpg)
+![](Images/Blender/transformation.jpg)
 
 ## Animating Hide in Viewport & Color
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/viewport.jpg)
+![](Images/Blender/viewport.jpg)
 
 Animating Hide Viewport will precisely fit the note/walls lifespan to fit the animation of the blender object visibility. For example, animating this property to disabled then re enabled 3 times would add 3 separate walls/notes, each spawning in and being destroyed exactly when animated in the viewport.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/animateview.gif)
+![](Images/Blender/animateview.gif)
 
 
 Animating the viewport color will animate the color of the wall/note
@@ -27,7 +27,7 @@ Adding an extra material to a cube and naming it "Note" will make the model conv
 
 This can also be used to create tracks. Adding an extra material to a cube and naming it anything other than Note will add that object onto a track with the name of the material.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/1.0/Readme/tracc.jpg)
+![](Images/Blender/tracc.jpg)
 
 ## Bombs & Cameras
 
@@ -43,33 +43,33 @@ Parenting is a good way to get a collection of cubes in blender to all move toge
 
 While selecting the children objects go to object, animation, bake action. Select visual keying and clear parents. This will automatically keyframe every child object to its visual position in the scene. It also clears all parents that the child objects may have had.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake.png)
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/bake2.png)
+![](Images/Blender/bake.png)
+![](Images/Blender/bake2.png)
 
 ## Exporting
 
 When going to export to collada hitting 'n' will bring up a collada settings menu. this is where you will choose the Y up Z forwards. check the global orientation box.
 
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/global%20or.jpg)
+![](Images/Blender/global%20or.jpg)
 
 To ensure proper parsing check that 'Matrix' is the selected transformation type.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/animation.jpg)
+![](Images/Blender/animation.jpg)
 
 Sampling rate can be adjusted if the map file size becomes an issue.
 
 ## Importing
 
-To make a 3d model in your map with scuffedwalls. Call the ModelToWall function. More info on the parameters can be found in [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
+To make a 3d model in your map with scuffedwalls. Call the ModelToWall function. More info on the parameters can be found in [`here`](Functions.md)
 
 HasAnimation: bool; this tells the model parser to read the model file as if it has an animation attached to it. It is enabled by default.
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/text%20examlpe.gif)
+![](Images/Blender/text%20examlpe.gif)
 
 Normal: bool; makes the walls jump in and despawn as normal ne1.0 walls would. the proportions are preserved so overriding njs will change the amount of time it takes for the model finish being visible.
 
 Normal:true will result in this from a static model with no animations
 
-![](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/normal.gif)
+![](Images/Blender/normal.gif)
 

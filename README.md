@@ -22,16 +22,17 @@ Features:
 Get Started:
 
  - Intro and Setup video tutorial by #Rizthesnuggie2634 -> [`right here`](https://youtu.be/RrcQRQfaXAI)
- - Functions + Explanations -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md)
- - 3d modeling for wall conversion -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Blender%20Project.md)
- - TextToWall -> [`here`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/TextToWall.md)
+ - Functions + Explanations -> [`here`](Functions.md)
+ - 3d modeling for wall conversion -> [`here`](Blender%20Project.md)
+ - TextToWall -> [`here`](TextToWall.md)
+ - Example Scripts And Effects -> [`here`](Example%20Functions.md)
 
  Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
  
  
 *Windows will probably bother you about this being malware. If you dont trust it, clone the repo and build it yourself.*
 
-If everything doesnt work and your in a country that uses , as the decimal symbol, [`changing regional settings`](https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/regional.png) is a common fix.
+If everything doesnt work and your in a country that uses , as the decimal symbol, [`changing regional settings`](Images/regional.png) is a common fix.
 
 ## Example Maps
 
@@ -56,13 +57,13 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
  - [`Reassurance`](https://www.youtube.com/watch?v=c5mail8zQjo)
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/Try.jpg" alt="Try" width="500"/>
+<img src="Images/ReadMe/Try.jpg" alt="Try" width="500"/>
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/orb.png" alt="Try" width="500"/>
+<img src="Images/ReadMe/orb.png" alt="Try" width="500"/>
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/shelter.jpg" alt="Try" width="500"/>
+<img src="Images/ReadMe/shelter.jpg" alt="Try" width="500"/>
 
-<img src="https://github.com/thelightdesigner/ScuffedWalls/blob/main/Readme/swifterilluminate.png" alt="Try" width="500"/>
+<img src="Images/ReadMe/swifterilluminate.png" alt="Try" width="500"/>
 
 ## For Developers
 
