@@ -25,9 +25,9 @@ namespace ScuffedWalls
         public bool Public { get; private set; }
         public override Request Setup(List<Parameter> Lines)
         {
-            Parameters = new Lookup<Parameter>(Lines, Parameter.Exposer);
+            Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
-            UnderlyingParameters = new Lookup<Parameter>(Lines.Lasts(), Parameter.Exposer);
+            UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
 
             Name = DefiningParameter.StringData;
             Data = GetParam("data", "", p => p, UnderlyingParameters);

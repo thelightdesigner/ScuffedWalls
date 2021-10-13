@@ -7,12 +7,18 @@ namespace ScuffedWalls
 {
     public class ScuffedFunction
     {
+        public ScuffedFunction()
+        {
+            Variables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+            if (UnderlyingParameters != null) foreach (var param in UnderlyingParameters) param.Variables.Register(Variables);
+        }
         public Workspace InstanceWorkspace { get; private set; }
-        public List<Parameter> UnderlyingParameters { get; private set; }
+        public TreeList<Parameter> UnderlyingParameters { get; private set; }
         public Parameter DefiningParameter { get; private set; }
+        public TreeList<AssignableInlineVariable> Variables { get; }
         public float Time { get; set; }
         public virtual void Run() => ScuffedWalls.Print("Unimplimented Function", ScuffedWalls.LogSeverity.Warning);
-        public void InstantiateSFunction(List<Parameter> parameters, Parameter defining, Workspace instance, float time)
+        public void InstantiateSFunction(TreeList<Parameter> parameters, Parameter defining, Workspace instance, float time)
         {
             UnderlyingParameters = parameters;
             DefiningParameter = defining;
@@ -39,14 +45,13 @@ namespace ScuffedWalls
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)
         {
-            var filteredparams = UnderlyingParameters.Where(p => p.Name.ToLower() == Name.ToLower());
-            if (filteredparams != null && filteredparams.Any())
+            Parameter result = UnderlyingParameters.Get(Name.ToLower());
+            if (result != null)
             {
-                var converted = Converter(filteredparams.First().StringData);
-                filteredparams.First().WasUsed = true;
-                return converted;
+                result.WasUsed = true;
+                return Converter(result.StringData);
             }
-            else return DefaultValue;
+            return DefaultValue;
         }
     }
 

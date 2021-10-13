@@ -7,15 +7,12 @@ namespace ScuffedWalls
 {
     public class StringComputationExcecuter
     {
-        private static readonly Lookup<StringFunction> _stringFunctions = new Lookup<StringFunction>(StringFunction.Functions, StringFunction.Exposer);
-        public Lookup<AssignableInlineVariable> Variables { get; }
-        public Lookup<AssignableInlineVariable> Constants { get; }
-        private Lookup<AssignableInlineVariable> _allVars => new Lookup<AssignableInlineVariable>(Variables.CombineWith(Constants), AssignableInlineVariable.Exposer);
+        private static readonly TreeList<StringFunction> _stringFunctions = new TreeList<StringFunction>(StringFunction.Functions, StringFunction.Exposer);
+        public TreeList<AssignableInlineVariable> Variables { get; }
         public bool HandleExceptions { get; private set; }
-        public StringComputationExcecuter(Lookup<AssignableInlineVariable> vars, Lookup<AssignableInlineVariable> consts = null, bool handleExceptions = false)
+        public StringComputationExcecuter(TreeList<AssignableInlineVariable> vars = null, bool handleExceptions = false)
         {
-            Variables = vars;
-            Constants = consts ?? new Lookup<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+            Variables = vars ?? new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
             HandleExceptions = handleExceptions;
         }
         public string Parse(string Line)
@@ -30,7 +27,7 @@ namespace ScuffedWalls
 
                 try //Variables
                 {
-                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), _allVars);
+                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), Variables);
                     if (Modified.Key) //CASE 1: string was modified with no error; last error doesnt count because it was resolved
                     {
                         ThisAttempt = Modified.Value;
@@ -66,7 +63,7 @@ namespace ScuffedWalls
 
             return ThisAttempt;
         }
-        public static KeyValuePair<bool, string> ParseVar(string s, Lookup<AssignableInlineVariable> variables)
+        public static KeyValuePair<bool, string> ParseVar(string s, TreeList<AssignableInlineVariable> variables)
         {
             string currentvar = "";
             string BeforeModifications = s.Clone().ToString();

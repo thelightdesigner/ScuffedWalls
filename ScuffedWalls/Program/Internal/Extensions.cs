@@ -30,42 +30,21 @@ namespace ScuffedWalls
 
             return list.ToArray();
         }
-        /*
-        public static string Remove(this string str, char ch)
-        {
-            return string.Join("", str.Split(ch));
-        }
-        public static string Remove(this string str, string ch)
-        {
-            return string.Join("", str.Split(ch));
-        }
-        */
         public static IEnumerable<ITimeable> GetAllBetween(this IEnumerable<ITimeable> mapObjects, float starttime, float endtime)
         {
             return mapObjects.Where(obj => obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime).ToArray();
         }
-        /*
-        static public bool MethodExists<t>(this string methodname, Type attribute)
-        {
-            foreach (var methods in typeof(t).GetMethods().Where(m => m.GetCustomAttributes(attribute).Count() > 0))
-            {
-                if (methods.Name == methodname) return true;
-            }
-            return false;
-        }
-        static public bool MethodExists<t>(this string methodname)
-        {
-            foreach (var methods in typeof(t).GetMethods())
-            {
-                if (methods.Name == methodname) return true;
-            }
-            return false;
-        }
-        */
         public static string MakePlural(this string s, int amount)
         {
             if (amount == 0) return s.TrimEnd('s');
             else return s.SetEnd('s');
+        }
+        public static void AddRange<K,T>(this Dictionary<K, T> dict, IEnumerable<KeyValuePair<K, T>> items)
+        {
+            foreach (var item in items)
+            {
+                dict[item.Key] = item.Value;
+            }
         }
 
         public static string SetEnd(this string s, char character)
@@ -79,26 +58,6 @@ namespace ScuffedWalls
             for(int i = 1; i < list.Count(); i++) newlist.Add(list.ElementAt(i));
             return newlist;
         }
-
-        /*
-        public static int getCountByID(this int type)
-        {
-            if (type == 0 || type == 2 || type == 3) return 5;
-            else if (type == 1) return 15;
-            else if (type == 4) return 9;
-            return 0;
-        }
-        public static int getValueFromOld(this int value)
-        {
-            if (value == 0) return 0;
-            return 5;
-        }
-        
-        public static T DeepClone<T>(this T a)
-        {
-            return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(a));
-        }
-        */
         public static string ToFileString(this DateTime time)
         {
             return $"Backup - {time.ToFileTime()}";
@@ -108,13 +67,6 @@ namespace ScuffedWalls
         {
             return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
-        /*
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> Array)
-        {
-            Random rnd = new Random();
-            return Array.OrderBy(x => rnd.Next());
-        }
-        */
     }
 
     public class JsonValidator

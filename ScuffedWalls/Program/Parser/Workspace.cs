@@ -31,10 +31,10 @@ namespace ScuffedWalls
                 else return Empty;
             }
         }
-        public TreeDictionary CustomData { get => BeatMap._customData; set { BeatMap._customData = value; } }
-        public List<Note> Notes { get => BeatMap._notes; set { BeatMap._notes = value; } }
-        public List<Event> Lights { get => BeatMap._events; set { BeatMap._events = value; } }
-        public List<Obstacle> Walls { get => BeatMap._obstacles; set { BeatMap._obstacles = value; } }
+        public TreeDictionary CustomData => BeatMap._customData;
+        public List<Note> Notes => BeatMap._notes;
+        public List<Event> Lights => BeatMap._events;
+        public List<Obstacle> Walls => BeatMap._obstacles;
         public List<object> CustomEvents => CustomData.at<List<object>>(_customEvents);
         public List<object> PointDefinitions => CustomData.at<List<object>>(_pointDefinitions);
         public List<object> Bookmarks => CustomData.at<List<object>>(_bookmarks);

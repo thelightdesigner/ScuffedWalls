@@ -287,8 +287,10 @@ namespace ModChart.Wall
                 }
                 if (_settings.Wall._customData["_color"] != null) wall._customData["_color"] = _settings.Wall._customData["_color"];
                 if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) wall._customData["_track"] = cube.Track;
-                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[BeatMap._track] = _settings.DefaultTrack; 
-                walls.Add((BeatMap.Obstacle)wall.Append(_settings.Wall, AppendPriority.Low));
+                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[BeatMap._track] = _settings.DefaultTrack;
+                BeatMap.Append(wall, _settings.Wall, BeatMap.AppendPriority.Low);
+
+                walls.Add(wall);
 
             }
             Output._obstacles = walls.ToList();
@@ -376,7 +378,10 @@ namespace ModChart.Wall
                 if (_settings.CreateTracks && string.IsNullOrEmpty(cube.Track)) note._customData["_track"] = cube.Track;
                 if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") note._customData[BeatMap._track] = _settings.DefaultTrack;
 
-                notes.Add((BeatMap.Note)note.Append(_settings.Wall, AppendPriority.Low));
+                BeatMap.Append(note, _settings.Wall, BeatMap.AppendPriority.Low);
+
+                notes.Add(note);
+
             }
             Output._notes = notes;
         }

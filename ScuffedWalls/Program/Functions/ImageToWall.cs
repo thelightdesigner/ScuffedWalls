@@ -6,24 +6,15 @@ namespace ScuffedWalls.Functions
     [SFunction("ImageToWall", "Image", "RenderImage")]
     class ImageToWall : ScuffedFunction
     {
-        public Parameter Repeat;
-        public Parameter Beat;
-        public void SetParameters()
-        {
-            Repeat = new Parameter("repeat", "0");
-            Beat = new Parameter("time", Time.ToString());
-            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
-        }
 
         public override void Run()
         {
             FunLog();
-            SetParameters();
 
             var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
 
-            
+
             float duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             bool isBlackEmpty = GetParam("isblackempty", DefaultValue: true, p => bool.Parse(p));
             bool centered = GetParam("centered", DefaultValue: true, p => bool.Parse(p));
@@ -58,44 +49,38 @@ namespace ScuffedWalls.Functions
                 if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
                 return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
-            int repeatcount = GetParam("repeat", DefaultValue: 1, p => int.Parse(p));
-            float repeataddtime = GetParam("repeataddtime", DefaultValue: 0, p => float.Parse(p));
-            int walls = 0;
-            for (float i = 0; i < repeatcount; i++)
+
+
+            string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
+            Path = GetParam("fullpath", DefaultValue: Path, p => p);
+            AddRefresh(Path);
+
+            BeatMap.Obstacle wall = new BeatMap.Obstacle()
             {
-                Repeat.StringData = i.ToString();
-                Beat.StringData = (Time + (i * repeataddtime)).ToString();
+                _time = Time,
+                _duration = duration,
+                _customData = new TreeDictionary()
+            };
 
+            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
 
-                string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
-                Path = GetParam("fullpath", DefaultValue: Path, p => p);
-                AddRefresh(Path);
+            WallImage converter = new WallImage(Path, new ImageSettings()
+            {
+                maxPixelLength = maxlength,
+                isBlackEmpty = isBlackEmpty,
+                scale = size,
+                thicc = thicc,
+                shift = shift,
+                centered = centered,
+                PCOptimizerPro = spreadspawntime,
+                alfa = alpha,
+                tolerance = compression,
+                Wall = wall
+            });
 
-                WallImage converter = new WallImage(Path, new ImageSettings()
-                {
-                    maxPixelLength = maxlength,
-                    isBlackEmpty = isBlackEmpty,
-                    scale = size,
-                    thicc = thicc,
-                    shift = shift,
-                    centered = centered,
-                    PCOptimizerPro = spreadspawntime,
-                    alfa = alpha,
-                    tolerance = compression,
-                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
-                    {
-                        _time = Time,
-                        _duration = duration,
-                        _customData = new TreeDictionary()
-                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
-                });
+            InstanceWorkspace.Walls.AddRange(converter.Walls);
 
-                InstanceWorkspace.Walls.AddRange(converter.Walls);
-                walls += converter.Walls.Length;
-            }
-
-            ConsoleOut("Wall", walls, Time, "ImageToWall");
-            Parameter.ExternalVariables.RefreshAllParameters();
+            ConsoleOut("Wall", converter.Walls.Length, Time, "ImageToWall");
         }
     }
 }

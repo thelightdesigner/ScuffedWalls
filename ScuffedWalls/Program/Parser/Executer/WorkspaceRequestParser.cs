@@ -1,13 +1,17 @@
 ﻿using ModChart;
 using System.Collections.Generic;
 using System.Linq;
-using static ScuffedWalls.ScuffedRequest;
 
 namespace ScuffedWalls
 {
 
     public class WorkspaceRequestParser : IRequestParser<ContainerRequest, Workspace>
-    {
+    { 
+        public void RefreshCurrentParameters()
+        {
+            foreach (var param in CurrentRequest.Parameters) param.RefreshVariables();
+        }
+        public static WorkspaceRequestParser Instance { get; private set; }
         public ContainerRequest CurrentRequest => _request;
         public Workspace Result => _latestWorkspaceResult;
 
@@ -21,33 +25,21 @@ namespace ScuffedWalls
         private IEnumerator<FunctionRequest> _functionRequestEnumerator;
         public Workspace GetResult()
         {
-            Lookup<AssignableInlineVariable> globalvariables = new Lookup<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+            TreeList<AssignableInlineVariable> globalvariables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+            foreach (var param in _request.Parameters) param.Variables.Register(globalvariables);
+
             Workspace workspace = new Workspace(BeatMap.Empty, _request.Name);
+
             _variableRequestEnumerator = _request.VariableRequests.GetEnumerator();
             _functionRequestEnumerator = _request.FunctionRequests.GetEnumerator();
 
             while (_variableRequestEnumerator.MoveNext())
             {
-                var varreq = _variableRequestEnumerator.Current;
-
-                Debug.TryAction(() =>
-                {
-                   // Parameter.ExternalVariables = globalvariables.ToArray();
-
-                    AssignableInlineVariable variable = new AssignableInlineVariable(
-                        varreq.Name,
-                        varreq.UnderlyingParameters.Get("data").Raw.StringData,
-                        ScuffedRequestParser.GetParam("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p), varreq.UnderlyingParameters));
-
-                    globalvariables.Add(variable);
-
-                    ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
-                }, e =>
-                {
-                    ScuffedWalls.Print($"Error adding global variable {varreq.Name} ERROR:{e.Message} ", ScuffedWalls.LogSeverity.Error);
-                });
-
+                var result = new VariableRequestParser(_variableRequestEnumerator.Current).GetResult();
+                if (result != null) globalvariables.Add(result);
             }
+
+           // Parameter.AssignVariables(_request.Parameters, globalvariables);
 
             while (_functionRequestEnumerator.MoveNext())
             {

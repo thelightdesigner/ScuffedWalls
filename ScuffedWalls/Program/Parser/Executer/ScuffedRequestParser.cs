@@ -31,12 +31,13 @@ namespace ScuffedWalls
         public ScuffedRequestParser(ScuffedRequest request)
         {
             _request = request;
-        }
-        public static T GetParam<T>(string name, T defaultval, Func<string, T> converter, IEnumerable<Parameter> parameters)
+        } /*
+        public static T GetParam<T>(string name, T defaultval, Func<string, T> converter, Lookup<Parameter> parameters)
         {
             if (!parameters.Any(p => p.Clean.Name.Equals(name))) return defaultval;
             return converter(parameters.Where(p => p.Clean.Name.Equals(name)).First().StringData);
         }
+        */
         public BeatMap GetResult()
         {
             _workspaceRequestEnumerator = CurrentRequest.WorkspaceRequests.GetEnumerator();

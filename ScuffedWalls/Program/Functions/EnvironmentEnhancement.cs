@@ -25,7 +25,6 @@ namespace ScuffedWalls.Functions
                 ["_lightID"] = GetParam("lightid", null, p => (object)int.Parse(p))
             });
             ConsoleOut("Environment",1,0,"Environment Enhancement");
-            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
 }

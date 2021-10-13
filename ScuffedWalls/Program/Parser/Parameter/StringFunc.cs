@@ -26,7 +26,7 @@ namespace ScuffedWalls
 
                         int repcount = int.Parse(InputArgs.Extra.Substring(indexoflast + 1,InputArgs.Extra.Length - indexoflast - 1));
 
-                        Lookup<AssignableInlineVariable> vars = new Lookup<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+                        TreeList<AssignableInlineVariable> vars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
                         AssignableInlineVariable repeat = new AssignableInlineVariable("reppd", "0");
                         vars.Add(repeat);
                         StringComputationExcecuter computer = new StringComputationExcecuter(vars, true);
@@ -36,7 +36,7 @@ namespace ScuffedWalls
                         {
                             repeat.StringData = i.ToString();
                             points.Add(computer.Parse(pd));
-                            Parameter.ExternalVariables.RefreshAllParameters();
+                            WorkspaceRequestParser.Instance.RefreshCurrentParameters();
                         }
 
                         return string.Join(',',points);

@@ -297,6 +297,47 @@ namespace ModChart
             _dissolveArrow,
             _time
         };
+
+        public static void Append(ICustomDataMapObject MapObject, ICustomDataMapObject AppendObject, AppendPriority type)
+        {
+            switch (type)
+            {
+                case AppendPriority.Low:
+                    foreach (var property in MapObject.GetType().GetProperties())
+                        if (property.GetValue(MapObject) == null)
+                            property.SetValue(MapObject, property.GetValue(AppendObject));
+
+                    if (AppendObject._customData != null)
+                    {
+                        MapObject._customData = TreeDictionary.Merge(
+                            MapObject._customData,
+                            AppendObject._customData,
+                            TreeDictionary.MergeType.Dictionaries | TreeDictionary.MergeType.Objects,
+                            TreeDictionary.MergeBindingFlags.HasValue);
+                    }
+                    break;
+                case AppendPriority.High:
+                    foreach (var property in MapObject.GetType().GetProperties())
+                        if (property.GetValue(AppendObject) != null)
+                            property.SetValue(MapObject, property.GetValue(AppendObject));
+
+                    if (MapObject._customData != null)
+                    {
+                        MapObject._customData = TreeDictionary.Merge(
+                            AppendObject._customData,
+                            MapObject._customData,
+                            TreeDictionary.MergeType.Dictionaries | TreeDictionary.MergeType.Objects,
+                            TreeDictionary.MergeBindingFlags.HasValue);
+                    }
+                    break;
+            }
+        }
+        public enum AppendPriority
+        {
+            Low,
+            High
+        }
+
     }
 
 

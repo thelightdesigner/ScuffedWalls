@@ -7,53 +7,29 @@ namespace ScuffedWalls
 {
     class VariablePopulator
     {
-        private BeatMap.Obstacle _wall;
-        public BeatMap.Obstacle CurrentWall
+        public VariablePopulator()
         {
-            set
-            {
-                _wall = value;
-                SetProperties();
-            }
+            Properties = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
         }
-        private BeatMap.Note _note;
-        public BeatMap.Note CurrentNote
+        public void UpdateProperties(ICustomDataMapObject obj)
         {
-            set
-            {
-                _note = value;
-                SetProperties();
-            }
+            SetProperties(Properties, obj);
         }
-        private BeatMap.Event _event;
-        public BeatMap.Event CurrentEvent
+        public TreeList<AssignableInlineVariable> Properties { get; }
+        public static void SetProperties(TreeList<AssignableInlineVariable> properties, ICustomDataMapObject mapObject)
         {
-            set
-            {
-                _event = value;
-                SetProperties();
-            }
-        }
-        public Parameter[] Properties { get; set; }
-        public void SetProperties()
-        {
-            List<AssignableInlineVariable> propVars = new List<Parameter>(0);
+            List<AssignableInlineVariable> propVars = new List<AssignableInlineVariable>();
 
-            ICustomDataMapObject mapobj = _wall;
-            if (_note != null) mapobj = _note;
-            if (_event != null) mapobj = _event;
-            if (mapobj == null) return;
-
-            foreach (var prop in mapobj.GetType().GetProperties())
+            foreach (var prop in mapObject.GetType().GetProperties())
             {
-                object val = prop.GetValue(mapobj);
+                object val = prop.GetValue(mapObject);
                 if (val != null) propVars.Add(new AssignableInlineVariable(prop.Name, getNumberFromEnum(val).ToString()));
             }
 
-            if (mapobj._customData != null)
+            if (mapObject._customData != null)
             {
-                mapobj._customData.DeleteNullValues();
-                PopulateParts(mapobj._customData);
+                mapObject._customData.DeleteNullValues();
+                PopulateParts(mapObject._customData);
             }
 
 
@@ -63,21 +39,22 @@ namespace ScuffedWalls
                 {
                     if (Property.Value is TreeDictionary dictionary) PopulateParts(dictionary, Property.Key + ".");
                     else if (Property.Value is IEnumerable<object> Array) propVars.AddRange(GetArrayVars(Array, prefix + Property.Key));
-                    else propVars.Add(new Parameter(Property.Key, prefix + Property.Value.ToString()));
+                    else propVars.Add(new AssignableInlineVariable(Property.Key, prefix + Property.Value.ToString()));
                 }
             }
 
-            Properties = propVars.ToArray();
-            ScuffedWalls.Print(string.Join(',', Properties.Select(p => p.Name + " " + p.StringData)));
+            properties.Clear();
+            properties.AddRange(propVars);
+          //  ScuffedWalls.Print(string.Join(',', Properties.Select(p => p.Name + " " + p.StringData)));
         }
-        private object getNumberFromEnum(object val)
+        private static object getNumberFromEnum(object val)
         {
             if (val is Enum) return (int)val;
             else return val;
         }
-        public Parameter[] GetArrayVars(IEnumerable<object> Array, string Name)
+        public static TreeList<AssignableInlineVariable> GetArrayVars(IEnumerable<object> Array, string Name)
         {
-            var Vars = new List<Parameter>();
+            var Vars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
 
             for (int Index = 0; Index < Array.Count(); Index++)
             {
@@ -88,13 +65,13 @@ namespace ScuffedWalls
                             $"{Name}({Index})"));
 
                 else Vars.Add(
-                    new Parameter(
+                    new AssignableInlineVariable(
                         $"{Name}({Index})",
                         Array.ElementAt(Index).ToString()
                         ));
             }
 
-            return Vars.ToArray();
+            return Vars;
         }
     }
 }

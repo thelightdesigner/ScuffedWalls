@@ -1,32 +1,28 @@
 ﻿using ModChart;
-using System;
-using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
     [SFunction("Wall")]
     class Wall : ScuffedFunction
     {
-        public Parameter Repeat; 
-        public Parameter Beat;
-        public void SetParameters()
-        {
-            Repeat = new Parameter ("repeat", "0");
-            Beat = new Parameter ("time", Time.ToString());
-            UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
-        }
+        //public Parameter Repeat; 
+        // public Parameter Beat;
+     //   public void SetParameters()
+     //   {
+            //Repeat = new Parameter ("repeat", "0");
+            // Beat = new Parameter ("time", Time.ToString());
+            // UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
+     //   }
         public override void Run()
         {
-            SetParameters();
+          //  SetParameters();
 
             var parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             bool isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
 
             float duration = GetParam("duration", 0, p => float.Parse(p));
-            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
-            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
             int lineindex = GetParam("lineindex", 0, p => int.Parse(p));
-            
+
 
             duration = GetParam("definiteduration", duration, p =>
             {
@@ -58,25 +54,25 @@ namespace ScuffedWalls.Functions
                 return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
-            for (float i = 0; i < repeatcount; i++)
+            FunLog();
+
+            BeatMap.Obstacle wall = new BeatMap.Obstacle()
             {
-                Repeat.StringData = i.ToString();
-                Beat.StringData = (Time + (i * repeatTime)).ToString();
+                _time = Time,
+                _duration = duration,
+                _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
+                _width = 0,
+                _type = 0
+            };
 
-                FunLog();
+            BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
 
-                InstanceWorkspace.Walls.Add((BeatMap.Obstacle)new BeatMap.Obstacle()
-                {
-                    _time = Time + (i * repeatTime),
-                    _duration = duration,
-                    _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
-                    _width = 0,
-                    _type = 0
-                }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()),AppendPriority.High));
-                Parameter.ExternalVariables.RefreshAllParameters();
-            }
+            BeatMap.Append(wall, append, BeatMap.AppendPriority.High);
 
-            ConsoleOut("Wall", repeatcount, Time, "Wall");
+            InstanceWorkspace.Walls.Add(wall);
+
+
+            ConsoleOut("Wall", 1, Time, "Wall");
         }
     }
 

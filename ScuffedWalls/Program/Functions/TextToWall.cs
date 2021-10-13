@@ -80,6 +80,13 @@ namespace ScuffedWalls.Functions
             bool isModel = false;
             if (new FileInfo(Path).Extension.ToLower() == ".dae")isModel = true;
 
+            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            {
+                _time = Time,
+                _duration = duration,
+                _customData = new TreeDictionary()
+            };
+            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
 
             lines.Reverse();
             WallText text = new WallText(new TextSettings()
@@ -101,12 +108,7 @@ namespace ScuffedWalls.Functions
                     maxPixelLength = linelength,
                     thicc = thicc,
                     tolerance = compression,
-                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
-                    {
-                        _time = Time,
-                        _duration = duration,
-                        _customData = new TreeDictionary()
-                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
+                    Wall = wall
                 },
                 ModelSettings = new ModelSettings()
                 {
@@ -128,19 +130,13 @@ namespace ScuffedWalls.Functions
                     
                     NJS = MapNjs,
                     Offset = MapOffset,
-                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
-                    {
-                        _time = Time,
-                        _duration = duration,
-                        _customData = new TreeDictionary()
-                    }.Append(UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
+                    Wall = wall
                 }
             });
             InstanceWorkspace.Walls.AddRange(text.Walls);
             InstanceWorkspace.Notes.AddRange(text.Notes);
             ConsoleOut("Wall", text.Walls.Length, Time, "TextToWall");
             if(text.Notes.Any()) ConsoleOut("Note", text.Notes.Length, Time, "TextToWall");
-            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
 

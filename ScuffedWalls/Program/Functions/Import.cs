@@ -43,12 +43,11 @@ namespace ScuffedWalls.Functions
             }
             if (beatMap._customData != null && Type.Any(t => t == 3))
             {
-                InstanceWorkspace.CustomData = TreeDictionary.Merge(InstanceWorkspace.CustomData, beatMap._customData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
+                TreeDictionary.Merge(InstanceWorkspace.CustomData, beatMap._customData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
             }
             foreach (var stat in filtered.Stats) ConsoleOut(stat.Key, stat.Value, Time, "Import");
             InstanceWorkspace.Add(filtered);
 
-            Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
 }

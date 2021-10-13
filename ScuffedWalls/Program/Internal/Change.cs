@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 class FileChangeDetector
 {
-    public static string LatestMessage { get; private set; } = "Program opened";
+    public static string LatestMessage { get; private set; }
     public FileChangeDetector(FileInfo file)
     {
         File = file;
         _lastModifiedTime = _currentModifiedTime;
+        LatestMessage = "Program opened";
     }
     public FileInfo File;
     private DateTime _currentModifiedTime => System.IO.File.GetLastWriteTime(File.FullName);

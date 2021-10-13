@@ -14,14 +14,14 @@ namespace ScuffedWalls
             FunctionRequest,
             VariableRequest
         }
-        public Lookup<Parameter> Parameters { get; protected set; }
+        public TreeList<Parameter> Parameters { get; protected set; }
         public Parameter DefiningParameter { get; protected set; }
-        public Lookup<Parameter> UnderlyingParameters { get; protected set; }
+        public TreeList<Parameter> UnderlyingParameters { get; protected set; }
         public virtual Request Setup(List<Parameter> Lines)
         {
-            Parameters = new Lookup<Parameter>(Lines, Parameter.Exposer);
+            Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
-            UnderlyingParameters = new Lookup<Parameter>(Lines.Lasts(), Parameter.Exposer);
+            UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
             return this;
         }
     }
@@ -32,7 +32,7 @@ namespace ScuffedWalls
 
         public override Request Setup(List<Parameter> Lines)
         {
-            Parameters = new Lookup<Parameter>(Lines, Parameter.Exposer);
+            Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = null;
             UnderlyingParameters = null;
 

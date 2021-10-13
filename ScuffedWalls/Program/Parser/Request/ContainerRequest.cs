@@ -23,9 +23,9 @@ namespace ScuffedWalls
         private CacheableScanner<Parameter> _paramScanner;
         public override Request Setup(List<Parameter> Lines)
         {
-            Parameters = new Lookup<Parameter>(Lines, Parameter.Exposer);
+            Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
-            UnderlyingParameters = new Lookup<Parameter>(Lines.Lasts(), Parameter.Exposer);
+            UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
             IsFunction = DefiningParameter.Clean.Name == "function";
             Name = DefiningParameter.StringData;
 
