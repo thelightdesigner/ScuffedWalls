@@ -596,6 +596,8 @@ Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) tutorial
 
 makes a chroma environment enhancement, idk what this does but i heard [`its pretty cool`](https://github.com/Aeroluna/Chroma#environment-enhancement)
 
+(Airscrach) This Took Me An Entire Day To Figure Out So Heres A [`Quickstart Guide`](Environment%20Id%20Quick%20Guide.md)
+
 - id: string
 - track: string
 - lookupmethod: string
@@ -721,8 +723,6 @@ adds in map objects from other map.dat files
    toBeat:180
 ```
 
-
-
 ## Wall
 (repeatable)
 makes a wall
@@ -731,11 +731,11 @@ Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
 - duration: float
 - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
- - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
- - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
+- definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
+- definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
 - repeat: int, amount of times to repeat
 - repeatAddTime: float
- - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
+- any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
 
  Example
 ```ruby
