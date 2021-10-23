@@ -72,7 +72,7 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.Walls.Add(wall);
 
 
-            ConsoleOut("Wall", 1, Time, "Wall");
+            RegisterChanges("Wall", 1);
         }
     }
 

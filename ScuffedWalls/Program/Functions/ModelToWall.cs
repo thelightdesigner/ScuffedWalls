@@ -119,7 +119,9 @@ return Time;
 
             output.AddMap(model.Output);
 
-            foreach (var stat in output.Stats) ConsoleOut(stat.Key, stat.Value, Time, "Model");
+            foreach (var stat in output.Stats) RegisterChanges(stat.Key, stat.Value);
+
+            InstanceWorkspace.Add(output);
         }
     }
 

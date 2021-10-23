@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModChart;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,12 +19,14 @@ namespace ScuffedWalls
         public TreeList<AssignableInlineVariable> Variables { get; }
         public float Time { get; set; }
         public virtual void Run() => ScuffedWalls.Print("Unimplimented Function", ScuffedWalls.LogSeverity.Warning);
+        public MapStats Stats { get; private set; }
         public void InstantiateSFunction(TreeList<Parameter> parameters, Parameter defining, Workspace instance, float time)
         {
             UnderlyingParameters = parameters;
             DefiningParameter = defining;
             InstanceWorkspace = instance;
             Time = time;
+            Stats = new MapStats();
         }
         public void FunLog()
         {
@@ -39,9 +42,10 @@ namespace ScuffedWalls
                     new FileChangeDetector(new System.IO.FileInfo(file)));
             }
         }
-        public void ConsoleOut(string Type, int Amount, float Beat, string Purpose)
+        public void RegisterChanges(string Type, int Amount)
         {
-            ScuffedWalls.Print($"Added {Purpose} at beat {Beat} ({Amount} {Type.MakePlural(Amount)})", Color: ConsoleColor.White, StackFrame: new StackTrace().GetFrame(1));
+            Stats.AddStat(Type, Amount);
+           // ScuffedWalls.Print($"Added {Purpose} at beat {Beat} ({Amount} {Type.MakePlural(Amount)})", Color: ConsoleColor.White, StackFrame: new StackTrace().GetFrame(1));
         }
         public T GetParam<T>(string Name, T DefaultValue, Func<string,T> Converter)
         {
@@ -52,7 +56,7 @@ namespace ScuffedWalls
                 return Converter(result.StringData);
             }
             return DefaultValue;
-        }
+        } 
     }
 
 

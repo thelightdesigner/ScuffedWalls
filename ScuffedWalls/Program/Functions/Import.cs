@@ -45,7 +45,7 @@ namespace ScuffedWalls.Functions
             {
                 TreeDictionary.Merge(InstanceWorkspace.CustomData, beatMap._customData, TreeDictionary.MergeType.Arrays, TreeDictionary.MergeBindingFlags.HasValue);
             }
-            foreach (var stat in filtered.Stats) ConsoleOut(stat.Key, stat.Value, Time, "Import");
+            Stats.AddStats(filtered.Stats);
             InstanceWorkspace.Add(filtered);
 
         }

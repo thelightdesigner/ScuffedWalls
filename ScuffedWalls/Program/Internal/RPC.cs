@@ -45,7 +45,7 @@ namespace ScuffedWalls
 
             while (true)
             {
-                List<KeyValuePair<string, int>> RPCMsg = CurrentMap.Stats;
+                List<KeyValuePair<string, int>> RPCMsg = CurrentMap.Stats.ToList();
                 RPCMsg.Add(new KeyValuePair<string, int>("Workspace".MakePlural(Workspaces), Workspaces));
 
                 foreach (var mesg in RPCMsg)

@@ -24,7 +24,7 @@ namespace ScuffedWalls.Functions
                 ["_rotation"] = GetParam("rotation", null, p => JsonSerializer.Deserialize<object[]>(p)),
                 ["_lightID"] = GetParam("lightid", null, p => (object)int.Parse(p))
             });
-            ConsoleOut("Environment",1,0,"Environment Enhancement");
+            RegisterChanges("Environment",1);
         }
     }
 }

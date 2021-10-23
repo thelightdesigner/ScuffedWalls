@@ -79,10 +79,22 @@ namespace ScuffedWalls
             }
             return default;
         }
+        public T Get(string key, T DefaultValue) => Get(key) ?? DefaultValue;
+        public H Get<H>(string key, H DefaultValue, Func<T, H> converter)
+        {
+            T item = Get(key);
+            if (item == null) return DefaultValue;
+            return converter(item);
+        }
 
         public IEnumerator<T> GetEnumerator() => Values.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+
+
+
+
+        //things i dont care about
         public int IndexOf(T item) => throw new NotImplementedException();
 
         public void Insert(int index, T item) => throw new NotImplementedException();

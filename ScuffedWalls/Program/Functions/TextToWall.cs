@@ -135,8 +135,8 @@ namespace ScuffedWalls.Functions
             });
             InstanceWorkspace.Walls.AddRange(text.Walls);
             InstanceWorkspace.Notes.AddRange(text.Notes);
-            ConsoleOut("Wall", text.Walls.Length, Time, "TextToWall");
-            if(text.Notes.Any()) ConsoleOut("Note", text.Notes.Length, Time, "TextToWall");
+            RegisterChanges("Wall", text.Walls.Length);
+            if(text.Notes.Any()) RegisterChanges("Note", text.Notes.Length);
         }
     }
 

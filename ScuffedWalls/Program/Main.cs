@@ -64,22 +64,30 @@
             //add in requirements
             Utils.Check(Parser.Result);
 
-            Print($"Writing to Info.dat");
-            File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
+          //  Print($"Writing to Info.dat");
+          // File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
 
 
             Utils.DiscordRPCManager.CurrentMap = Parser.Result;
             Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
+
+            Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")));
         }
-        public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true)
+        public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true, string OverrideStackFrame = null)
         {
             if (Color.HasValue) Console.ForegroundColor = Color.Value;
             else Console.ForegroundColor = sevColor[(int)Severity];
 
             var methodInfo = (StackFrame ?? new StackTrace().GetFrame(1)).GetMethod();
             string stack = methodInfo.DeclaringType.Name.Replace("ScuffedWalls", "Main");
+            string message = 
+                OverrideStackFrame != null ? 
+                $"{OverrideStackFrame} - {Message}" :
+                (ShowStackFrame && Severity < LogSeverity.Error ?
+                $"{stack} - {Message}" :
+                Message);
 
-            Console.WriteLine($"[{Severity}]{(ShowStackFrame && Severity != LogSeverity.Error ? " " + stack : "")} - {Message}");
+            Console.WriteLine($"[{Severity}] {message}");
 
             Console.ResetColor();
 

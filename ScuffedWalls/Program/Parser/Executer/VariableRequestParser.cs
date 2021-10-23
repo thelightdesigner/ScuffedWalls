@@ -24,7 +24,7 @@ namespace ScuffedWalls
                 variable = new AssignableInlineVariable(_request.Name, _request.Data, _request.VariableRecomputeSettings);
                 _result = variable;
 
-                ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}");
+                ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}", ShowStackFrame: false);
             }, e =>
             {
                 ScuffedWalls.Print($"Error adding global variable {_request.Name} ERROR:{e.Message} ", ScuffedWalls.LogSeverity.Error);

@@ -30,9 +30,9 @@ namespace ScuffedWalls
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
 
             Name = DefiningParameter.StringData;
-            Data = GetParam("data", "", p => p, UnderlyingParameters);
-            VariableRecomputeSettings = GetParam("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p), UnderlyingParameters);
-            Public = GetParam("public", false, p => bool.Parse(p), UnderlyingParameters);
+            Data = UnderlyingParameters.Get("data", "", p => p.Use().StringData);
+            VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
+            Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
             return this;
         }
     }

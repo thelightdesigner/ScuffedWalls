@@ -1,6 +1,7 @@
 ﻿using ModChart;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -23,22 +24,22 @@ namespace ScuffedWalls
         private FunctionRequest _request;
         private BeatMap _latestResultObjs = BeatMap.Empty;
 
-        private static readonly Type[] _functions = Assembly
+        public static readonly Type[] Functions = Assembly
                  .GetExecutingAssembly()
                  .GetTypes()
                  .Where(t => t.Namespace == "ScuffedWalls.Functions" && t.GetCustomAttributes<SFunctionAttribute>().Any())
                  .ToArray();
         public BeatMap GetResult()
         {
-            Parameter.UnUseAll(_request.UnderlyingParameters);
+           // Parameter.UnUseAll(_request.UnderlyingParameters);
 
 
-            if (!_functions.Any(f => f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))))
+            if (!Functions.Any(f => f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))))
             {
                 throw new InvalidFilterCriteriaException($"Function {_request.Name} at Beat {_request.Time} does NOT exist, skipping");
             }
 
-            Type func = _functions.Where(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))).First();
+            Type func = Functions.Where(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))).First();
 
             ScuffedFunction funcInstance = (ScuffedFunction)Activator.CreateInstance(func);
 
@@ -46,7 +47,14 @@ namespace ScuffedWalls
 
             Debug.TryAction(() =>
             {
-                funcInstance.Run();
+                float initialTime = _request.Time;
+                for (int i = 0; i < _request.RepeatCount; i++)
+                {
+                    _request.Time += _request.RepeatAddTime;
+                    funcInstance.Run();
+                }
+                ScuffedWalls.Print($"Added \"{_request.Name}\" at beat {initialTime} ({string.Join(", ", funcInstance.Stats.Select(st => $"{st.Value} {st.Key.MakePlural(st.Value)}"))})", Color: ConsoleColor.White, OverrideStackFrame: func.Name);
+
             }, e =>
             {
                 throw new Exception($"Error executing function {_request.Name} at Beat {_request.Time}", e.InnerException ?? e);

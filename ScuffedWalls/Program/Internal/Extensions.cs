@@ -36,7 +36,7 @@ namespace ScuffedWalls
         }
         public static string MakePlural(this string s, int amount)
         {
-            if (amount == 0) return s.TrimEnd('s');
+            if (amount == 1) return s.TrimEnd('s');
             else return s.SetEnd('s');
         }
         public static void AddRange<K,T>(this Dictionary<K, T> dict, IEnumerable<KeyValuePair<K, T>> items)

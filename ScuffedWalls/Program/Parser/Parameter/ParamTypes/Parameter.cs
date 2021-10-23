@@ -7,6 +7,11 @@ namespace ScuffedWalls
 {
     public class Parameter : INameStringDataPair, ICloneable
     {
+        public Parameter Use()
+        {
+            WasUsed = true;
+            return this;
+        }
         public static Func<Parameter, string> Exposer => var => var.Clean.Name;
         public static void UnUseAll(IEnumerable<Parameter> parameters)
         {

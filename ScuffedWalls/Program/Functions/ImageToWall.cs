@@ -80,7 +80,7 @@ namespace ScuffedWalls.Functions
 
             InstanceWorkspace.Walls.AddRange(converter.Walls);
 
-            ConsoleOut("Wall", converter.Walls.Length, Time, "ImageToWall");
+            RegisterChanges("Wall", converter.Walls.Length);
         }
     }
 }

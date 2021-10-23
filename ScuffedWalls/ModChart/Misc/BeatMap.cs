@@ -21,24 +21,25 @@ namespace ModChart
     {
 
     }
+   
     public class BeatMap : ICloneable
     {
-        public List<KeyValuePair<string, int>> Stats => GetStats();
-        public List<KeyValuePair<string, int>> GetStats()
+        public MapStats Stats => GetStats();
+        public MapStats GetStats()
         {
-            List<KeyValuePair<string, int>> stats = new List<KeyValuePair<string, int>>();
+            MapStats stats = new MapStats();
             foreach (var prop in typeof(BeatMap).GetProperties().Where(p => p.GetCustomAttributes<MapStatAttribute>().Any()))
             {
                 object val = prop.GetValue(this);
                 if (val is IEnumerable<object> array && array.Count() > 0)
                 {
                     int count = array.Count();
-                    stats.Add(new KeyValuePair<string, int>(Extensions.MakePlural(prop.Name, count), count));
+                    stats.AddStat(new KeyValuePair<string, int>(Extensions.MakePlural(prop.Name, count), count));
                 }
             }
             foreach (var item in _customData)
             {
-                if (item.Value is IEnumerable<object> aray && aray.Count() > 0) stats.Add(new KeyValuePair<string, int>(Extensions.MakePlural(item.Key, aray.Count()), aray.Count()));
+                if (item.Value is IEnumerable<object> aray && aray.Count() > 0) stats.AddStat(new KeyValuePair<string, int>(Extensions.MakePlural(item.Key, aray.Count()), aray.Count()));
             }
             return stats;
         }

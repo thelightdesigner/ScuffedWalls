@@ -61,7 +61,7 @@ namespace ScuffedWalls.Functions
 
             InstanceWorkspace.Notes.Add(note);
 
-            ConsoleOut("Note", 1, Time, "Note");
+            RegisterChanges("Note", 1);
         }
     }
 

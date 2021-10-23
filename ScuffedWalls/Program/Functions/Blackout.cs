@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
         {
             FunLog();
 
-            ConsoleOut("Light", 1, Time, "Blackout");
+            RegisterChanges("Light", 1);
             InstanceWorkspace.Lights.Add(new BeatMap.Event() { _time = Time, _type = 0, _value = 0 });
         }
     }

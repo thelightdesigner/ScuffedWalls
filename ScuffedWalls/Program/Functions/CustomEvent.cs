@@ -20,7 +20,7 @@ namespace ScuffedWalls.Functions
                 ["_points"] = points
             });
 
-            ConsoleOut("PointDefinition", 1, Time, "PointDefinition");
+            RegisterChanges("PointDefinition", 1);
         }
     }
     [SFunction("AnimateTrack")]
@@ -37,7 +37,7 @@ namespace ScuffedWalls.Functions
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
-            ConsoleOut("AnimateTrack", 1, Time, "CustomEvent");
+            RegisterChanges("AnimateTrack", 1);
 
         }
     }
@@ -55,7 +55,7 @@ namespace ScuffedWalls.Functions
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
-            ConsoleOut("AssignPathAnimation", 1, Time, "CustomEvent");
+            RegisterChanges("AssignPathAnimation", 1);
         }
     }
     [SFunction("AssignPlayerToTrack")]
@@ -71,7 +71,7 @@ namespace ScuffedWalls.Functions
                 ["_type"] = "AssignPlayerToTrack",
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
-            ConsoleOut("AssignPlayerToTrack", 1, Time, "CustomEvent");
+            RegisterChanges("AssignPlayerToTrack", 1);
         }
     }
 
@@ -88,7 +88,7 @@ namespace ScuffedWalls.Functions
                 ["_type"] = "AssignTrackParent",
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
-            ConsoleOut("AssignTrackParent", 1, Time, "CustomEvent");
+            RegisterChanges("AssignTrackParent", 1);
         }
     }
 
