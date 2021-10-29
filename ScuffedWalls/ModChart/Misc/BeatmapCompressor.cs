@@ -15,7 +15,7 @@ namespace ModChart
             //simplify custom event point definitions
             if (Map._customData != null && Map._customData["_customEvents"] != null && Map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0)
             {
-                
+
                 Map._customData["_customEvents"] = Map._customData.at<IEnumerable<object>>("_customEvents").Cast<TreeDictionary>().Select(mapobj =>
                 {
                     try
@@ -43,7 +43,7 @@ namespace ModChart
                         if (mapobj._customData != null && mapobj._customData["_animation"] != null) mapobj._customData["_animation"] = mapobj._customData.at("_animation").SimplifyAnimationPointDefinitions();
                         return mapobj;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         ScuffedWalls.ScuffedWalls.Print($"Error on _obstacle at beat {mapobj._time} {JsonSerializer.Serialize(mapobj)}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
@@ -68,12 +68,14 @@ namespace ModChart
                     }
                 }).ToList();
             }
+
+
         }
-        public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string,int>()
+        public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string, int>()
         {
-            ["_color"] = 4, 
-            ["_dissolve"] = 1, 
-            ["_dissolveArrow"] = 1, 
+            ["_color"] = 4,
+            ["_dissolve"] = 1,
+            ["_dissolveArrow"] = 1,
             ["_definitePosition"] = 3,
             ["_position"] = 3,
             ["_scale"] = 3,

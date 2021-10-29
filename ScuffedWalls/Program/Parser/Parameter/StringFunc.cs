@@ -11,7 +11,7 @@ namespace ScuffedWalls
     {
         public static Random RandomInstance = new Random();
         public string Name { get; set; } //name of the func
-        public Func<ValuePair<string[], string>, string> FunctionAction { get; set; } //convert from params to output string
+        public Func<string, string> FunctionAction { get; set; } //convert from params to output string
         public static Func<StringFunction, string> Exposer => sfunc => sfunc.Name;
         public static StringFunction[] Functions => new StringFunction[]
             {
@@ -20,11 +20,11 @@ namespace ScuffedWalls
                     Name = "RepeatPointDefinition",
                     FunctionAction = InputArgs =>
                     {
-                        int indexoflast = InputArgs.Extra.LastIndexOf(",");
+                        int indexoflast = InputArgs.LastIndexOf(",");
 
-                        string pd = InputArgs.Extra.Substring(0,indexoflast);
+                        string pd = InputArgs.Substring(0,indexoflast);
 
-                        int repcount = int.Parse(InputArgs.Extra.Substring(indexoflast + 1,InputArgs.Extra.Length - indexoflast - 1));
+                        int repcount = int.Parse(InputArgs.Substring(indexoflast + 1,InputArgs.Length - indexoflast - 1));
 
                         TreeList<AssignableInlineVariable> vars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
                         AssignableInlineVariable repeat = new AssignableInlineVariable("reppd", "0");
@@ -47,7 +47,7 @@ namespace ScuffedWalls
                     Name = "MultPointDefinition",
                     FunctionAction = InputArgs =>
                     {
-                        string[] spli = InputArgs.Extra.Split("],",2);
+                        string[] spli = InputArgs.Split("],",2);
                         string pd = spli[0] + "]";
                         float val = spli[1].ToFloat();
 
@@ -62,11 +62,12 @@ namespace ScuffedWalls
                     Name = "HSLtoRGB",
                     FunctionAction = InputArgs =>
                     {
-                        float H = InputArgs.Main[0].ToFloat();
-                        float S = InputArgs.Main.Length > 1 ? InputArgs.Main[1].ToFloat() : 1f;
-                        float L = InputArgs.Main.Length > 2 ? InputArgs.Main[2].ToFloat() : 0.5f;
-                        float A = InputArgs.Main.Length > 3 ? InputArgs.Main[3].ToFloat() : 1f;
-                        string AdditionalValues = InputArgs.Main.Length > 4 ? ","+ string.Join(',', InputArgs.Main.Slice(4,InputArgs.Main.Length)) : string.Empty;
+                        string[] parameters = InputArgs.Split(',');
+                        float H = parameters[0].ToFloat();
+                        float S = parameters.Length > 1 ? parameters[1].ToFloat() : 1f;
+                        float L = parameters.Length > 2 ? parameters[2].ToFloat() : 0.5f;
+                        float A = parameters.Length > 3 ? parameters[3].ToFloat() : 1f;
+                        string AdditionalValues = parameters.Length > 4 ? ","+ string.Join(',', parameters.Slice(4,parameters.Length)) : string.Empty;
 
                         Color p = Color.HslToRGB(H,S,L);
 
@@ -78,7 +79,7 @@ namespace ScuffedWalls
                     Name = "OrderPointDefinitions",
                     FunctionAction = InputArgs =>
                     {
-                        object[][] PointDefinition = JsonSerializer.Deserialize<object[][]>($"[{InputArgs.Extra}]");
+                        object[][] PointDefinition = JsonSerializer.Deserialize<object[][]>($"[{InputArgs}]");
                         string serial = JsonSerializer.Serialize( PointDefinition.OrderBy(p => gettimevalue(p)));
                         return serial.Substring(1,serial.Length-2);
 
@@ -95,11 +96,10 @@ namespace ScuffedWalls
                     Name = "Random",
                     FunctionAction = InputArgs =>
                     {
-
-                         float first = InputArgs.Main[0].ToFloat();
-                         float last = InputArgs.Main[1].ToFloat();
-                         if (InputArgs.Main.Length > 2) 
-                         if (last < first)
+                        string[] parameters = InputArgs.Split(',');
+                        float first = parameters[0].ToFloat();
+                        float last = parameters[1].ToFloat();
+                         if (parameters.Length > 2 && last < first)
                          {
                              float f = first;
                              float l = last;
@@ -115,10 +115,11 @@ namespace ScuffedWalls
                 {
                     Name = "RandomInt",
                     FunctionAction = InputArgs =>
-                    {
+                    { 
+                        string[] parameters = InputArgs.Split(',');
                         Random rnd = new Random();
-                        int first = int.Parse(InputArgs.Main[0]);
-                        int last = int.Parse(InputArgs.Main[1]);
+                        int first = int.Parse(parameters[0]);
+                        int last = int.Parse(parameters[1]);
                         if (last < first)
                         {
                             int f = first;

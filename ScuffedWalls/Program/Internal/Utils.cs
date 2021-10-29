@@ -35,11 +35,8 @@ namespace ScuffedWalls
 
         public static event Action OnChangeDetected;
         //Airscrach: Adds Code Correction For Some Code Editors, (This Is The Only Code Edit That I Wanted To Make, The Rest Will Just Be Docs, love your work <3)
-        static string SWText =>
-@$"# ScuffedWalls {ScuffedWalls.ver}
-
-# FUNCTIONS - AppendWalls AppendNotes AppendEvents TextToWall ModelToWall ImageToWall Environment CloneFromWorkspace WorkspaceDefault Blackout Import Run Wall Note AnimateTrack AssignPathAnimation AssignPlayerToTrack ParentTrack PointDefinition
-# FORMATTING - NJSOffset NJS Interactable Fake Position Rotation LocalRotation CutDirection DisableNoteGravity DisableNoteLook Scale Log Color RGBColor DisableSpawnEffect CPropID CLightID CGradientDuration CgradientStartColor CgradientEndColor CgradientEasing CLockPosition CPreciseSpeed CDirection CNameFilter CReset CStep CProp CSpeed CCounterSpin Track AnimateDefinitePosition AnimatePosition AnimateDissolve AnimateColor AnimateRotation AnimateLocalRotation AnimateScale AnimateInteractable AnimateTime
+        public static string SWText =>
+@$"# ScuffedWalls {ScuffedWalls.Version}
 
 # Documentation on functions can be found at
 # https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md
@@ -47,11 +44,12 @@ namespace ScuffedWalls
 # DM @thelightdesigner#1337 for more help?
 
 # Using this tool requires an understanding of Noodle Extensions.
-# https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md
+# https://github.com/Aeroluna/Heck/wiki
 
 # Playtest your maps
 
-Workspace:Default";
+Workspace:Default
+";
         public static void ResetAwaitingFiles()
         {
             FilesToChange = new List<FileChangeDetector>() { ScuffedWallFile.Detector };
@@ -62,7 +60,7 @@ Workspace:Default";
             SerializerOptions.Converters.Add(new TreeDictionaryJsonConverter());
             DefaultJsonConverterSettings = SerializerOptions;
 
-            Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
+            Console.Title = $"ScuffedWalls {ScuffedWalls.Version}";
             args = argss;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
@@ -201,7 +199,7 @@ Workspace:Default";
             GitHubClient client = new GitHubClient(new ProductHeaderValue("ScuffedWalls"));
             var releases = await client.Repository.Release.GetAll("thelightdesigner", "ScuffedWalls");
             var latest = releases.OrderBy(r => r.PublishedAt).Last();
-            if (latest.TagName != ScuffedWalls.ver)
+            if (latest.TagName != ScuffedWalls.Version)
             {
                 ScuffedWalls.Print($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})", ScuffedWalls.LogSeverity.Notice, ShowStackFrame: false);
             }
@@ -220,7 +218,7 @@ Workspace:Default";
             info["_customData._editors"] ??= new TreeDictionary();
             info["_customData._editors._lastEditedBy"] = "ScuffedWalls";
             info["_customData._editors.ScuffedWalls"] ??= new TreeDictionary();
-            info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.ver;
+            info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.Version;
 
             return info;
         }
@@ -250,8 +248,9 @@ Workspace:Default";
                 using (StreamWriter file = new StreamWriter(ConfigFileName))
                 {
                     file.Write(JsonSerializer.Serialize(reConfig, new JsonSerializerOptions() { WriteIndented = true }));
+                    file.Close();
                 }
-                File.SetAttributes(ConfigFileName, FileAttributes.Hidden);
+                File.SetAttributes(ConfigFileName, FileAttributes.Normal);
             }
         }
 

@@ -36,7 +36,7 @@ namespace ScuffedWalls
             Computer = new StringComputationExcecuter();
         }
         public Variable Raw { get; private set; } = new Variable();
-        public Variable Clean => new Variable(Name?.ToLower().RemoveWhiteSpace(), StringData?.ToLower().RemoveWhiteSpace());
+        public Variable Clean => new Variable(Raw?.Name?.ToLower().RemoveWhiteSpace(), Raw?.StringData?.ToLower().RemoveWhiteSpace());
         public int GlobalIndex { get; private set; }
         public string Line { get; private set; }
         public string Name

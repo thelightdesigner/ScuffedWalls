@@ -70,9 +70,9 @@ namespace ScuffedWalls.Functions
 
             foreach (var p in UnderlyingParameters)
             {
-                if (p.Name == "line")
+                if (p.Clean.Name == "line")
                 {
-                    lines.Add(p.StringData);
+                    lines.Add(p.Raw.StringData);
                     p.WasUsed = true;
                 }
             }

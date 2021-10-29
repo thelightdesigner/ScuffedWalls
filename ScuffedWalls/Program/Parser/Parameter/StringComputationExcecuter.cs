@@ -1,6 +1,7 @@
 ﻿using NCalc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ScuffedWalls
@@ -20,6 +21,7 @@ namespace ScuffedWalls
             string LastAttempt = string.Empty;
             string ThisAttempt = Line.Clone().ToString();
             Exception MostRecentError = null;
+            IEnumerable<AssignableInlineVariable> sortedVars = Variables.Values.OrderBy(v => 1f/v.Name.Length);
 
             while (!LastAttempt.Equals(ThisAttempt)) //if we break from this, nothing changed so there is nothing more to do
             {
@@ -27,7 +29,7 @@ namespace ScuffedWalls
 
                 try //Variables
                 {
-                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), Variables);
+                    KeyValuePair<bool, string> Modified = ParseVar(ThisAttempt.Clone().ToString(), sortedVars);
                     if (Modified.Key) //CASE 1: string was modified with no error; last error doesnt count because it was resolved
                     {
                         ThisAttempt = Modified.Value;
@@ -63,7 +65,7 @@ namespace ScuffedWalls
 
             return ThisAttempt;
         }
-        public static KeyValuePair<bool, string> ParseVar(string s, TreeList<AssignableInlineVariable> variables)
+        public static KeyValuePair<bool, string> ParseVar(string s, IEnumerable<AssignableInlineVariable> variables)
         {
             string currentvar = "";
             string BeforeModifications = s.Clone().ToString();
@@ -144,7 +146,7 @@ namespace ScuffedWalls
                         FuncStringInternals = br.TextInsideOfBrackets;
 
                         string[] paramss = br.TextInsideOfBrackets.Split(',');
-                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(new ModChart.ValuePair<string[], string>() { Main = paramss, Extra = br.TextInsideOfBrackets }) + br.TextAfterFocused;
+                        s = br.TextBeforeFocused.Substring(0, br.TextBeforeFocused.Length - func.Name.Length) + currentFunc.FunctionAction(br.TextInsideOfBrackets) + br.TextAfterFocused;
                     }
                 }
             }

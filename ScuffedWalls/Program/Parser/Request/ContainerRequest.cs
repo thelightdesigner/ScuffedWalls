@@ -6,17 +6,9 @@ namespace ScuffedWalls
 {
     public class ContainerRequest : Request
     {
-        public static string[] Keywords => new string[] { "workspace", "function" };
-        public static bool IsName(string name)
-        {
-            if (Keywords.Any(keyword => name.Equals(keyword))) return true;
-            return false;
-        }
+        public const string WorkspaceKeyword = "workspace";
+        public const string DefineKeyword = "function";
         public string Name { get; private set; }
-        /// <summary>
-        /// Indicates if this workspace should be populated as a callable scuffed function
-        /// </summary>
-        public bool IsFunction { get; private set; }
         public List<FunctionRequest> FunctionRequests { get; private set; } = new List<FunctionRequest>();
         public List<VariableRequest> VariableRequests { get; private set; } = new List<VariableRequest>();
 
@@ -26,13 +18,10 @@ namespace ScuffedWalls
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
-            IsFunction = DefiningParameter.Clean.Name == "function";
             Name = DefiningParameter.StringData;
 
-            //     foreach(var p in UnderlyingParameters) Console.WriteLine(p.ToString());
-
             _paramScanner = new CacheableScanner<Parameter>(UnderlyingParameters);
-            Type previous = Type.ContainerRequest;
+            Type previous = Type.None;
 
             while (_paramScanner.MoveNext())
             {
@@ -41,7 +30,7 @@ namespace ScuffedWalls
                 if (varIs || funIs)
                 {
                     addLastRequest();
-                    previous = varIs ? Type.VariableRequest : funIs ? Type.FunctionRequest : Type.ContainerRequest;
+                    previous = varIs ? Type.VariableRequest : funIs ? Type.FunctionRequest : Type.None;
                 }
                 _paramScanner.AddToCache();
             }

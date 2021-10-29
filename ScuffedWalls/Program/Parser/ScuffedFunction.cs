@@ -11,7 +11,6 @@ namespace ScuffedWalls
         public ScuffedFunction()
         {
             Variables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
-            if (UnderlyingParameters != null) foreach (var param in UnderlyingParameters) param.Variables.Register(Variables);
         }
         public Workspace InstanceWorkspace { get; private set; }
         public TreeList<Parameter> UnderlyingParameters { get; private set; }
@@ -27,6 +26,7 @@ namespace ScuffedWalls
             InstanceWorkspace = instance;
             Time = time;
             Stats = new MapStats();
+            if (UnderlyingParameters != null) foreach (var param in UnderlyingParameters) param.Variables.Register(Variables);
         }
         public void FunLog()
         {

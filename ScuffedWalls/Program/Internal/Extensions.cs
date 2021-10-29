@@ -46,6 +46,10 @@ namespace ScuffedWalls
                 dict[item.Key] = item.Value;
             }
         }
+        public static List<Parameter> ToParameters(this IEnumerable<KeyValuePair<int, string>> lines)
+        {
+            return lines.Select(line => new Parameter(line.Value, line.Key)).ToList();
+        }
 
         public static string SetEnd(this string s, char character)
         {
@@ -69,42 +73,4 @@ namespace ScuffedWalls
         }
     }
 
-    public class JsonValidator
-    {
-        public dynamic Deserialized;
-        public bool WasSuccess;
-        public string Raw;
-        public static JsonValidator Check(string s)
-        {
-            var val = new JsonValidator() { Raw = s };
-
-            try
-            {
-                val.Deserialized = JsonSerializer.Deserialize<object>(s);
-                val.WasSuccess = true;
-            }
-            catch
-            {
-                val.WasSuccess = false;
-            }
-
-            return val;
-        }
-        public static JsonValidator Check<t>(string s)
-        {
-            var val = new JsonValidator() { Raw = s };
-
-            try
-            {
-                val.Deserialized = JsonSerializer.Deserialize<t>(s);
-                val.WasSuccess = true;
-            }
-            catch
-            {
-                val.WasSuccess = false;
-            }
-
-            return val;
-        }
-    }
 }

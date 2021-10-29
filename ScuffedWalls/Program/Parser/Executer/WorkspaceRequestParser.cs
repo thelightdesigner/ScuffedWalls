@@ -13,20 +13,24 @@ namespace ScuffedWalls
         }
         public static WorkspaceRequestParser Instance { get; private set; }
         public ContainerRequest CurrentRequest => _request;
+        public bool HideLogs { get; set; }
         public Workspace Result => _latestWorkspaceResult;
+        public TreeList<AssignableInlineVariable> GlobalVariables { get; private set; }
 
         private ContainerRequest _request;
         private Workspace _latestWorkspaceResult;
-        public WorkspaceRequestParser(ContainerRequest containerrequest)
+        public WorkspaceRequestParser(ContainerRequest containerrequest, bool hideLogs = false)
         {
+            Instance = this;
+            HideLogs = hideLogs;
             _request = containerrequest;
         }
         private IEnumerator<VariableRequest> _variableRequestEnumerator;
         private IEnumerator<FunctionRequest> _functionRequestEnumerator;
         public Workspace GetResult()
         {
-            TreeList<AssignableInlineVariable> globalvariables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
-            foreach (var param in _request.Parameters) param.Variables.Register(globalvariables);
+            GlobalVariables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+            foreach (var param in _request.Parameters) param.Variables.Register(GlobalVariables);
 
             Workspace workspace = new Workspace(BeatMap.Empty, _request.Name);
 
@@ -35,16 +39,17 @@ namespace ScuffedWalls
 
             while (_variableRequestEnumerator.MoveNext())
             {
-                var result = new VariableRequestParser(_variableRequestEnumerator.Current).GetResult();
-                if (result != null) globalvariables.Add(result);
+                var result = new VariableRequestParser(_variableRequestEnumerator.Current, HideLogs).GetResult();
+                if (result != null) GlobalVariables.Add(result);
             }
 
            // Parameter.AssignVariables(_request.Parameters, globalvariables);
 
             while (_functionRequestEnumerator.MoveNext())
             {
-                new FunctionRequestParser(_functionRequestEnumerator.Current, workspace).GetResult();
+                new FunctionRequestParser(_functionRequestEnumerator.Current, workspace, HideLogs).GetResult();
             }
+            _latestWorkspaceResult = workspace;
             return workspace;
         }
     }

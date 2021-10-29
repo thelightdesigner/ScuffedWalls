@@ -1,4 +1,5 @@
 ﻿using ModChart;
+using ScuffedWalls.Functions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +14,12 @@ namespace ScuffedWalls
     /// </summary>
     public class FunctionRequestParser : IRequestParser<FunctionRequest, BeatMap>
     {
+        public bool HideLogs { get; set; }
         public FunctionRequest CurrentRequest => _request;
         public BeatMap Result => _latestResultObjs;
-        public FunctionRequestParser(FunctionRequest request, Workspace instance = null)
+        public FunctionRequestParser(FunctionRequest request, Workspace instance = null, bool hideLogs = false)
         {
+            HideLogs = hideLogs;
             _request = request;
             _instanceWorkspace = instance ?? BeatMap.Empty;
         }
@@ -31,15 +34,19 @@ namespace ScuffedWalls
                  .ToArray();
         public BeatMap GetResult()
         {
-           // Parameter.UnUseAll(_request.UnderlyingParameters);
+            // Parameter.UnUseAll(_request.UnderlyingParameters);
 
+            bool isCustom = ScuffedRequestParser.Instance.CurrentRequest.CustomFunctionExists(_request.Name);
 
-            if (!Functions.Any(f => f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))))
+            if (!isCustom && !Functions.Any(f => f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))))
             {
                 throw new InvalidFilterCriteriaException($"Function {_request.Name} at Beat {_request.Time} does NOT exist, skipping");
             }
 
-            Type func = Functions.Where(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => a.ParserName.Any(n => n == _request.Name))).First();
+            Type func = 
+                isCustom ? typeof(CustomFunction) :
+                Functions.First(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => !a.ParserName.Contains("[NONCALLABLE]") && a.ParserName.Any(n => n == _request.Name)));
+            
 
             ScuffedFunction funcInstance = (ScuffedFunction)Activator.CreateInstance(func);
 
@@ -48,12 +55,32 @@ namespace ScuffedWalls
             Debug.TryAction(() =>
             {
                 float initialTime = _request.Time;
-                for (int i = 0; i < _request.RepeatCount; i++)
+                TreeList<AssignableInlineVariable> repeatVars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
+                AssignableInlineVariable repeat = new AssignableInlineVariable("repeat", "0");
+                AssignableInlineVariable beat = new AssignableInlineVariable("time", _request.Time.ToString());
+                repeatVars.Add(repeat);
+                repeatVars.Add(beat);
+                foreach(var re in _request.Parameters) re.Variables.Register(repeatVars);
+
+                int repeatCount = _request.RepeatCount != null ? int.Parse(_request.RepeatCount.StringData) : 1;
+                float repeatTime = _request.RepeatAddTime != null ? float.Parse(_request.RepeatAddTime.StringData) : 0.0f;
+                
+
+                for (int i = 0; i < repeatCount; i++)
                 {
-                    _request.Time += _request.RepeatAddTime;
+                    repeat.StringData = i.ToString();
+                    beat.StringData = _request.Time.ToString();
+
+                    funcInstance.Time = _request.Time + (i * repeatTime);
                     funcInstance.Run();
+
+                    WorkspaceRequestParser.Instance.RefreshCurrentParameters();
                 }
-                ScuffedWalls.Print($"Added \"{_request.Name}\" at beat {initialTime} ({string.Join(", ", funcInstance.Stats.Select(st => $"{st.Value} {st.Key.MakePlural(st.Value)}"))})", Color: ConsoleColor.White, OverrideStackFrame: func.Name);
+                if (!HideLogs)
+                {
+                    string stats = string.Join(", ", funcInstance.Stats.Select(st => $"{st.Value} {st.Key.MakePlural(st.Value)}"));
+                    ScuffedWalls.Print($"Added \"{_request.Name}\" at beat {initialTime} {(string.IsNullOrEmpty(stats) ? "" : $"({stats})")}", Color: ConsoleColor.White, OverrideStackFrame: func.Name);
+                }
 
             }, e =>
             {

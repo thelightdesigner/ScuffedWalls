@@ -28,8 +28,8 @@ namespace ScuffedWalls
                     Timestamps = Timestamps.Now,
                     Assets = new Assets()
                     {
-                        LargeImageKey = "scuffed_v1_update",
-                        LargeImageText = $"ScuffedWalls {ScuffedWalls.ver}",
+                        LargeImageKey = "scuffed_v2_update",
+                        LargeImageText = $"ScuffedWalls {ScuffedWalls.Version}",
                         SmallImageKey = "??",
                         SmallImageText = "??"
                     }

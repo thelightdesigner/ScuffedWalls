@@ -26,7 +26,7 @@ namespace ScuffedWalls.Functions
             string tracc = GetParam("ontrack", null, p => p);
             var lineindex = GetParam("selectlineindex", new int[] { 0, 1, 2, 3, 4 }, p => p.Split(',').Select(val => int.Parse(val)));
 
-            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Clean.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
 
@@ -34,6 +34,7 @@ namespace ScuffedWalls.Functions
             foreach (var wall in InstanceWorkspace.Walls.Where(w => w._time.ToFloat() >= starttime && w._time.ToFloat() <= endtime && selectable()))
             {
                 WallIndex.StringData = i.ToString();
+                internalvars.UpdateProperties(wall);
 
                 FunLog();
 
@@ -61,8 +62,7 @@ namespace ScuffedWalls.Functions
             VariablePopulator internalvars = new VariablePopulator();
             Variables.Register(internalvars.Properties);
 
-            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
-            if (select != null) select.WasUsed = true;
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Clean.Name == "select")?.Use();
             bool selectable() => select == null || bool.Parse(select.StringData);
 
             float starttime = Time;
@@ -72,6 +72,7 @@ namespace ScuffedWalls.Functions
             foreach (var note in InstanceWorkspace.Notes.Where(w => w._time.ToFloat() >= starttime && w._time.ToFloat() <= endtime && selectable()))
             {
                 NoteIndex.StringData = i.ToString();
+                internalvars.UpdateProperties(note);
 
                 FunLog();
 
@@ -101,7 +102,7 @@ namespace ScuffedWalls.Functions
             Variables.Register(internalvars.Properties);
             float Rfactor = GetParam("rainbowfactor", 1, p => float.Parse(p));
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
-            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Name == "select");
+            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Clean.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
 
@@ -109,6 +110,7 @@ namespace ScuffedWalls.Functions
             foreach (var even in InstanceWorkspace.Lights.Where(w => w._time.ToFloat() >= starttime && w._time.ToFloat() <= endtime && selectable()))
             {
                 EventIndex.StringData = i.ToString();
+                internalvars.UpdateProperties(even);
 
                 FunLog();
 

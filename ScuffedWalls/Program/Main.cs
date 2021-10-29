@@ -9,13 +9,12 @@
 
     static class ScuffedWalls
     {
-
-        public static string ver => "v1.5.2-dev";
+        public const string Version = "v2.0.0-dev";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
 
-            Print($"ScuffedWalls {ver}");
+            Print($"ScuffedWalls {Version}");
             Print(Utils.ScuffedConfig.MapFolderPath);
 
 
@@ -41,7 +40,7 @@
             ScuffedRequest Request = null;
             Debug.TryAction(() => 
             {
-                Request = (ScuffedRequest)new ScuffedRequest().Setup(Utils.ScuffedWallFile.Lines);
+                Request = (ScuffedRequest)new ScuffedRequest().Setup(Utils.ScuffedWallFile.Parameters);
             },e => 
             {
                 Print($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
@@ -57,16 +56,11 @@
                 Print($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             });
 
-            //write to json file
             Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
             File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
 
-            //add in requirements
-            Utils.Check(Parser.Result);
-
-          //  Print($"Writing to Info.dat");
-          // File.WriteAllText(Utils.ScuffedConfig.InfoPath, JsonSerializer.Serialize(Utils.Info, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
-
+            Print("Saving Config");
+            File.WriteAllText(Utils.ConfigFileName, JsonSerializer.Serialize(Utils.ScuffedConfig, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
 
             Utils.DiscordRPCManager.CurrentMap = Parser.Result;
             Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
@@ -75,6 +69,8 @@
         }
         public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true, string OverrideStackFrame = null)
         {
+            if (string.IsNullOrEmpty(Message)) return;
+
             if (Color.HasValue) Console.ForegroundColor = Color.Value;
             else Console.ForegroundColor = sevColor[(int)Severity];
 

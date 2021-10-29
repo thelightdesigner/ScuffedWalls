@@ -29,10 +29,12 @@ namespace ScuffedWalls
                     return _instance.StringData;
                 case VariableRecomputeSettings.OnCreationOnly:
                     return _creation.StringData;
+                case VariableRecomputeSettings.AllReferences:
+                    return Computer.Parse(_raw.StringData);
                 default:
                     return Computer.Parse(_raw.StringData);
             }
-            
+
         }
 
         public AssignableInlineVariable(string name, string value, VariableRecomputeSettings recompute = VariableRecomputeSettings.AllReferences)
@@ -42,7 +44,10 @@ namespace ScuffedWalls
             _instance = (Variable)_creation.Clone();
             _variableComputeSettings = recompute;
         }
-
+        public override string ToString()
+        {
+            return $"{Name}:{StringData}";
+        }
         /// <summary>
         /// Recomputes the internal variables if Recompute Settings is set to do so.
         /// </summary>
