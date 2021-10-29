@@ -174,3 +174,83 @@ X:Wall
    position:[{sx},{sy}]
 ```
 ![](Images/EffectExamples/Ring.png)
+
+### Cube Generator - iswimfly
+```ruby
+# Length of Each Wall
+var:LWH
+data:XXX
+
+# How THICC you want the walls
+var:THICK
+data:XXX
+
+# Center of the Cube on the X Axis
+var:CenterX
+data:XXX
+
+# Center of the Cube on the Y Axis
+var:CenterY
+data:XXX
+
+# Center of the Cube on the Z Axis
+var:CenterZ
+data:XXX
+
+# Right Square Set One
+X:Wall
+    repeat:2
+    scale:[THICK,LWH,THICK]
+    localrotation:[{90*(repeat-1)},0,0]
+    animatedefiniteposition:[{CenterX-(LWH/2)+THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)},0]
+
+# Right Square Set Two
+
+X:Wall
+    repeat:2
+    scale:[THICK,LWH,THICK]
+    localrotation:[{90*(repeat+1)},0,0]
+    animatedefiniteposition:[{CenterX-(LWH/2)+THICK/2},{CenterY/2+(LWH/2)},{CenterZ/2-(LWH/2)},0]
+
+# Left Square Set One
+
+X:Wall
+    repeat:2
+    scale:[THICK,LWH,THICK]
+    localrotation:[{90*(repeat-1)},0,0]
+    animatedefiniteposition:[{CenterX+(LWH/2)-THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)},0]
+
+# Left Square Set Two
+
+X:Wall
+    repeat:2
+    scale:[THICK,LWH,THICK]
+    localrotation:[{90*(repeat+1)},0,0]
+    animatedefiniteposition:[{CenterX+(LWH/2)-THICK/2},{CenterY/2+(LWH/2)},{CenterZ/2-(LWH/2)},0]
+
+# Connecting Edges
+
+#Back Bottom
+X:Wall
+    scale:[THICK,LWH,THICK]
+    localrotation:[180,0,270]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2-(LWH/2)+THICK/2},{CenterZ/2+(LWH/2)+THICK},0]
+
+#Back Top
+X:Wall
+    scale:[THICK,LWH,THICK]
+    localrotation:[180,0,270]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2+(LWH/2)-THICK/2},{CenterZ/2+(LWH/2)+THICK},0]
+
+#Front Bottom
+X:Wall
+    scale:[THICK,LWH,THICK]
+    localrotation:[180,0,270]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2-(LWH/2)+THICK/2},{CenterZ/2-(LWH/2)},0]
+
+#Front Top   
+X:Wall
+    scale:[THICK,LWH,THICK]
+    localrotation:[180,0,270]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2+(LWH/2)-THICK/2},{CenterZ/2-(LWH/2)},0]
+```
