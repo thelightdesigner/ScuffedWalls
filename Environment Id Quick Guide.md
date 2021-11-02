@@ -19,6 +19,10 @@ This Will Now Contain The Logs Of All Map Elements In Any Maps You Play
 ## id Conversion
 The Chroma Logs Will Give You Lots Of Ids like this
 ```ruby
+[DEBUG @ 16:32:17 | Chroma] BTSEnvironment.[0]Environment.[11]Clouds
+```
+You only need the part after the chroma word
+```ruby
 BTSEnvironment.[0]Environment.[11]Clouds
 ```
 ### Notes
