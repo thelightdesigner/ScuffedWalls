@@ -33,7 +33,9 @@ The **\\** character is called an escape character and tells code to ignore the 
 When scripting you escape twice but if you are using ScuffedWalls to edit environment you only escape once.
 
 I highly recommend to use a [REGEX WEBSITE](https://regexr.com/) it will help you check if your Regex statement is correct (since the webiste is pure Regex you only escape once)
+
 <hr>
+
 To convert a normal Chroma ID into Regex you must first escape all `.` (periods)
 
 ```ruby
@@ -45,8 +47,8 @@ Then escape all square brackets
 BTSEnvironment\.\[0\]Environment\.\[11\]Clouds
 ```
 
-If the regex statement that you use is being highlighted in the website it means that it works! good job you did regex!
-there is much more with regex and I suggest [THIS TUTORIAL](https://youtu.be/sa-TUpSx1JA) that explains how to do regex
+If the Regex statement that you use is being highlighted in the website it means that it works! good job you did Regex!
+there is much more with Regex and I suggest [THIS TUTORIAL](https://youtu.be/sa-TUpSx1JA) that explains how to do Regex
 
 This can now be used by ScuffedWalls or custom scripts
 
