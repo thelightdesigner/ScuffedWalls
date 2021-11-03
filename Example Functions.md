@@ -1,5 +1,5 @@
 # Function Examples
-A Compilation Of Pre-made ScuffedWalls Functions
+A compilation of pre-made ScuffedWalls functions
 
 ## Complexity
  - [`Simple`](#Simple)
