@@ -5,6 +5,7 @@
 ```json
 "CondenseModLogs": false,
 "CreateModLogs": true,
+"HideMessagesForPerformance": false
 ```
 - 2 - Beat Saber\UserData\Chroma.json
 ```json
@@ -18,12 +19,20 @@ This Will Now Contain The Logs Of All Map Elements In Any Maps You Play
 ## id Conversion
 The Chroma Logs Will Give You Lots Of Ids like this
 ```ruby
+[DEBUG @ 16:32:17 | Chroma] BTSEnvironment.[0]Environment.[11]Clouds
+```
+You only need the part after the chroma word
+```ruby
 BTSEnvironment.[0]Environment.[11]Clouds
 ```
 ### Notes
 The reccomended lookup method for Environment Enhancement is **Regex** (I Highly recommend doing your own research on Regex.)
 
 The **\\** character is called an escape character and tells code to ignore the intended functionality of the next character
+
+When scripting you escape twice but if you are using scuffed walls to edit environment you only escape once.
+
+I highly recommend to use a [REGEX WEBSITE](https://regexr.com/) it will help you check if your regex statement is correct(since the webiste is pure regex you only escape once)
 <hr>
 To Convert A Normal Chroma Id Into Regex You Must First Escape All . (periods)
 
@@ -35,22 +44,29 @@ Then Escape All Square Brackets
 ```ruby
 BTSEnvironment\.\[0\]Environment\.\[11\]Clouds
 ```
-Add **^** and **$** To Define The Start And End Of The ID
 
-```ruby
-^BTSEnvironment\.\[0\]Environment\.\[11\]Clouds$
-```
-and Finally Replace all non-specific numbers with a number wildcard **d\*** (Don't forget to include an escape character)
+If the regex statement that you use is being highlighted in the website it means that it works! good job you did regex!
+there is much more with regex and I recommend [THIS TUTORIAL](https://youtu.be/sa-TUpSx1JA) that explains how to do regex
 
-```ruby
-^BTSEnvironment\.\[\d*\]Environment\.\[\d*\]Clouds$
-```
-This Can Now Be Used by Scuffed Walls
+This Can Now Be Used by Scuffed Walls/scripts
 
-```ruby
+Scuffed walls:
+```js
 0:Environment
-  Id:^BTSEnvironment\.\[\d*\]Environment\.\[\d*\]Clouds$
-  LookUpMethod:Regex
+  Id: IDSTATEMENT
+  LookUpMethod:Regex/Contains/Exact
   Rotation:[90,0,0]
+  //Here you can put more custom data!
+```
+Script:
+```js
+_environment.push(
+{
+_id: "IDSTATEMENT",
+_lookupMethod: "Regex/Contains/Exact",
+_rotation:[x,y,z]
+//Here you can put more custom data!
+}
+)
 ```
 ## [`Back To Functions`](Functions.md#Environment)
