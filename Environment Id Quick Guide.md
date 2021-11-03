@@ -14,43 +14,43 @@
 - 3 - Play A Map
 - 4 - Beat Saber\Logs\Chroma\\_latest.log
 
-This Will Now Contain The Logs Of All Map Elements In Any Maps You Play
+This will now contain the logs of all map elements in any maps you play
 
-## id Conversion
-The Chroma Logs Will Give You Lots Of Ids like this
+## ID Conversion
+The Chroma logs will give you IDs like this
 ```ruby
 [DEBUG @ 16:32:17 | Chroma] BTSEnvironment.[0]Environment.[11]Clouds
 ```
-You only need the part after the chroma word
+You only need the part after the Chroma word
 ```ruby
 BTSEnvironment.[0]Environment.[11]Clouds
 ```
 ### Notes
-The reccomended lookup method for Environment Enhancement is **Regex** (I Highly recommend doing your own research on Regex.)
+The suggested lookup method for Environment Enhancement is **Regex** (I highly recommend doing your own research on Regex.)
 
 The **\\** character is called an escape character and tells code to ignore the intended functionality of the next character
 
-When scripting you escape twice but if you are using scuffed walls to edit environment you only escape once.
+When scripting you escape twice but if you are using ScuffedWalls to edit environment you only escape once.
 
-I highly recommend to use a [REGEX WEBSITE](https://regexr.com/) it will help you check if your regex statement is correct(since the webiste is pure regex you only escape once)
+I highly recommend to use a [REGEX WEBSITE](https://regexr.com/) it will help you check if your Regex statement is correct (since the webiste is pure Regex you only escape once)
 <hr>
-To Convert A Normal Chroma Id Into Regex You Must First Escape All . (periods)
+To convert a normal Chroma ID into Regex you must first escape all `.` (periods)
 
 ```ruby
 BTSEnvironment\.[0]Environment\.[11]Clouds
 ```
-Then Escape All Square Brackets
+Then escape all square brackets
 
 ```ruby
 BTSEnvironment\.\[0\]Environment\.\[11\]Clouds
 ```
 
 If the regex statement that you use is being highlighted in the website it means that it works! good job you did regex!
-there is much more with regex and I recommend [THIS TUTORIAL](https://youtu.be/sa-TUpSx1JA) that explains how to do regex
+there is much more with regex and I suggest [THIS TUTORIAL](https://youtu.be/sa-TUpSx1JA) that explains how to do regex
 
-This Can Now Be Used by Scuffed Walls/scripts
+This can now be used by ScuffedWalls or custom scripts
 
-Scuffed walls:
+ScuffedWalls:
 ```js
 0:Environment
   Id: IDSTATEMENT
@@ -58,7 +58,7 @@ Scuffed walls:
   Rotation:[90,0,0]
   //Here you can put more custom data!
 ```
-Script:
+JavaScript:
 ```js
 _environment.push(
 {
