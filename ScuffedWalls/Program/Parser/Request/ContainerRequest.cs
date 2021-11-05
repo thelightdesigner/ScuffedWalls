@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ScuffedWalls
 {
-    public class ContainerRequest : Request
+    public class ContainerRequest : Request, ICloneable
     {
         public const string WorkspaceKeyword = "workspace";
         public const string DefineKeyword = "function";
@@ -52,5 +53,15 @@ namespace ScuffedWalls
                 }
             }
         }
+
+        public object Clone() => new ContainerRequest()
+        {
+            Name = Name,
+            Parameters = Parameters,
+            DefiningParameter = DefiningParameter,
+            UnderlyingParameters = UnderlyingParameters,
+            FunctionRequests = FunctionRequests.CloneArray().Cast<FunctionRequest>().ToList(),
+            VariableRequests = VariableRequests.CloneArray().Cast<VariableRequest>().ToList()
+        };
     }
 }

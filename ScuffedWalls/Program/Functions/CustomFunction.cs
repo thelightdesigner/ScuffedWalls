@@ -5,7 +5,7 @@
     {
         public override void Run()
         {
-            ContainerRequest customFunction = ScuffedRequestParser.Instance.CustomFunctions.Find(func => func.DefiningParameter.Clean.StringData == DefiningParameter.Clean.StringData);
+            ContainerRequest customFunction = (ContainerRequest)ScuffedRequestParser.Instance.CustomFunctions.Find(func => func.DefiningParameter.Clean.StringData == DefiningParameter.Clean.StringData).Clone();
             customFunction.VariableRequests.Add(new VariableRequest("calltime", Time.ToString(), VariableRecomputeSettings.AllReferences, false));
 
             foreach (var param in UnderlyingParameters)

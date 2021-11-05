@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace ScuffedWalls
 {
-    public class FunctionRequest : Request
+    public class FunctionRequest : Request, ICloneable
     {
         public const string FunctionKeyword = @"^([+-]?([0-9]+\.?[0-9]*|\.[0-9]+)|fun)$";
         public static bool IsName(string name)
@@ -33,5 +33,17 @@ namespace ScuffedWalls
             TimeParam = UnderlyingParameters.Get("funtime", null, p => p.Use());
             return this;
         }
+
+        public object Clone() => new FunctionRequest()
+        {
+            Name = Name,
+            _time = _time,
+            Parameters = Parameters,
+            DefiningParameter = DefiningParameter,
+            UnderlyingParameters = UnderlyingParameters,
+            RepeatAddTime = (Parameter)RepeatAddTime?.Clone(),
+            RepeatCount = (Parameter)RepeatCount?.Clone(),
+            TimeParam = (Parameter)TimeParam?.Clone()
+        };
     }
 }

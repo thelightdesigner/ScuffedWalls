@@ -64,7 +64,6 @@ namespace ScuffedWalls
 
                 int repeatCount = _request.RepeatCount != null ? int.Parse(_request.RepeatCount.StringData) : 1;
                 float repeatTime = _request.RepeatAddTime != null ? float.Parse(_request.RepeatAddTime.StringData) : 0.0f;
-                
 
                 for (int i = 0; i < repeatCount; i++)
                 {

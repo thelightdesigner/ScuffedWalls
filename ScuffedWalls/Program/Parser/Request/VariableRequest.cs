@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using static ScuffedWalls.ScuffedRequestParser;
 
 namespace ScuffedWalls
 {
-    public class VariableRequest : Request
+    public class VariableRequest : Request, ICloneable
     {
         public const string VariableKeyword = "var";
         public static bool IsName(string name)
@@ -47,5 +45,15 @@ namespace ScuffedWalls
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
             return this;
         }
+        public object Clone() => new VariableRequest()
+        {
+            Name = Name,
+            Parameters = Parameters,
+            UnderlyingParameters = UnderlyingParameters,
+            DefiningParameter = DefiningParameter,
+            Data = Data,
+            VariableRecomputeSettings = VariableRecomputeSettings,
+            Public = Public
+        };
     }
 }
