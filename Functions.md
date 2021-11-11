@@ -2,6 +2,8 @@
  - [`Overview`](#Overview)
  - [`Functions`](#Functions)
  - [`Workspaces`](#Workspaces)
+ - [`Custom Functions Overview`](#custom-functions-basics)
+ - [`Custom Functions Features`](#custom-functions-features)
  - [`Noodle Extensions/Chroma Properties Syntax`](#noodle-extensionschroma-properties-syntax)
  - [`Math & Functions`](#math--functions)
  - [`Variables`](#Variables)
@@ -107,7 +109,108 @@ Workspace: A Different Workspace
   
 ```
 
+# Custom Functions Basics
+A custom function is a `workspace` that can be instantiated multiple times.
 
+You can define a custom function by using the keyword `function` in place of `workspace`
+
+Example
+```
+Function: SpinWall
+
+  0:Wall
+    duration:5 
+    animateLocalRotation:[0,0,0,0],[0,0,180,1]
+
+```
+Defines a custom function which adds one wall with some properties. **Note: this does nothing on its own.**
+
+To use this custom function you can reference it like a regular function.
+
+Example
+```
+Workspace
+
+  0:SpinWall
+
+```
+
+# Custom Functions Features
+CFs have the ability to set variabels as public. Meaning you can change the variables data from outside the CF.
+
+Example
+```
+Function: OhWow
+
+Var: AmazingVariableName
+  data: hi retrx!
+  public:true
+
+0:Log
+  Log:AmazingVariableName
+
+Workspace
+
+0: OhWow
+  AmazingVariableName: bye retrx :(
+
+```
+This example prints to the console: `bye retrx :(`
+
+CFs also have the ability to set a function call to the time that the CF was called from.
+
+Example
+```
+Function: NeatO
+
+XXX:Wall
+
+Workspace
+
+7.2: NeatO
+
+```
+This example adds a wall at beat 7.2
+
+Practical use example:
+
+cleaning up text to wall
+```
+function:Subtitle
+
+var:line
+  data:????
+  public:true
+
+  
+var:duration
+  data:1
+  public:true
+
+xxx:texttowall
+  definitedurationbeats:duration
+  Path:font.dae
+  line:line
+  letting:2
+  leading:-1
+  thicc:12
+  spreadspawntime:1
+  size:0.1
+  position:[0,2]
+  animatedefiniteposition:[0,0,0,0]
+
+workspace:text
+
+5.25:Subtitle
+  line:You know you gotta...
+  duration:1.25
+
+  
+6.5:Subtitle
+  line:TRY
+  duration:8
+
+```
 
 # Noodle Extensions/Chroma Properties Syntax
 Noodle Extensions/Chroma/Other properties that can be used on most functions
