@@ -7,11 +7,6 @@ namespace ScuffedWalls
 
     public class WorkspaceRequestParser : IRequestParser<ContainerRequest, Workspace>
     { 
-        public void RefreshCurrentParameters()
-        {
-            foreach (var param in CurrentRequest.Parameters) param.RefreshVariables();
-        }
-        public static WorkspaceRequestParser Instance { get; private set; }
         public ContainerRequest CurrentRequest => _request;
         public bool HideLogs { get; set; }
         public Workspace Result => _latestWorkspaceResult;
@@ -21,7 +16,7 @@ namespace ScuffedWalls
         private Workspace _latestWorkspaceResult;
         public WorkspaceRequestParser(ContainerRequest containerrequest, bool hideLogs = false)
         {
-            Instance = this;
+            //Instance = this;
             HideLogs = hideLogs;
             _request = containerrequest;
         }

@@ -36,7 +36,7 @@ namespace ScuffedWalls
                         {
                             repeat.StringData = i.ToString();
                             points.Add(computer.Parse(pd));
-                            WorkspaceRequestParser.Instance.RefreshCurrentParameters();
+                            AssignableInlineVariable.Ping();
                         }
 
                         return string.Join(',',points);

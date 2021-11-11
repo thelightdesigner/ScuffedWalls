@@ -5,18 +5,8 @@ namespace ScuffedWalls.Functions
     [SFunction("Note")]
     class Note : ScuffedFunction
     {
-        /*  public Parameter Repeat;
-          public Parameter Beat;
-          public void SetParameters()
-          {
-              Repeat = new Parameter("repeat", "0");
-              Beat = new Parameter("time", Time.ToString());
-              UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
-          } */
-        public override void Run()
+        protected override void Update()
         {
-            // SetParameters();
-
 
             BeatMap.Note.NoteType type = GetParam("type", BeatMap.Note.NoteType.Right, p => (BeatMap.Note.NoteType)int.Parse(p));
             BeatMap.Note.CutDirection cutdirection = GetParam("notecutdirection", BeatMap.Note.CutDirection.Down, p => (BeatMap.Note.CutDirection)int.Parse(p));
@@ -44,9 +34,6 @@ namespace ScuffedWalls.Functions
                 return Time;
             });
             //parse special parameters
-
-
-            FunLog();
 
             BeatMap.Note note = new BeatMap.Note()
             {

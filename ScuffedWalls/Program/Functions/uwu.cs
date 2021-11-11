@@ -7,7 +7,7 @@ namespace ScuffedWalls.Functions
     [SFunction("Uwu")]
     class uwu : ScuffedFunction
     {
-        public override void Run()
+        protected override void Init()
         {
 
             

@@ -5,18 +5,14 @@ using static ModChart.BeatMap;
 namespace ScuffedWalls.Functions
 {
 
-    [SFunction("AppendToAllWallsBetween", "AppendWalls", "AppendWall")]
+    [SFunction("AppendToAllWallsBetween", "AppendWalls", "AppendWall", "ForeachWall")]
     class AppendWalls : ScuffedFunction
     {
-        public AssignableInlineVariable WallIndex;
-        public void SetParameters()
+        AssignableInlineVariable WallIndex;
+        protected override void Init()
         {
             WallIndex = new AssignableInlineVariable("index", "0");
             Variables.Add(WallIndex);
-        }
-        public override void Run()
-        {
-            SetParameters();
 
             AppendPriority type = GetParam("appendtechnique", AppendPriority.Low, p => (AppendPriority)int.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
@@ -36,7 +32,6 @@ namespace ScuffedWalls.Functions
                 WallIndex.StringData = i.ToString();
                 internalvars.UpdateProperties(wall);
 
-                FunLog();
 
                 Append(wall, UnderlyingParameters.CustomDataParse(new Obstacle()), type);
                 i++;
@@ -46,18 +41,14 @@ namespace ScuffedWalls.Functions
             //  Parameter.ExternalVariables.RefreshAllParameters();
         }
     }
-    [SFunction("AppendToAllNotesBetween", "AppendNotes", "AppendNote")]
+    [SFunction("AppendToAllNotesBetween", "AppendNotes", "AppendNote", "ForeachNote")]
     class AppendNotes : ScuffedFunction
     {
         public AssignableInlineVariable NoteIndex;
-        public void SetParameters()
+        protected override void Init()
         {
             NoteIndex = new AssignableInlineVariable("index", "0");
             Variables.Add(NoteIndex);
-        }
-        public override void Run()
-        {
-            SetParameters();
             AppendPriority type = GetParam("appendtechnique", AppendPriority.Low, p => (AppendPriority)int.Parse(p));
             VariablePopulator internalvars = new VariablePopulator();
             Variables.Register(internalvars.Properties);
@@ -74,7 +65,6 @@ namespace ScuffedWalls.Functions
                 NoteIndex.StringData = i.ToString();
                 internalvars.UpdateProperties(note);
 
-                FunLog();
 
                 Append(note, UnderlyingParameters.CustomDataParse(new BeatMap.Note()), type);
                 i++;
@@ -83,18 +73,14 @@ namespace ScuffedWalls.Functions
             ScuffedWalls.Print($"Appended {i} notes from beats {starttime} to {endtime}");
         }
     }
-    [SFunction("AppendToAllEventsBetween", "AppendLights", "AppendEvent", "AppendEvents")]
+    [SFunction("AppendToAllEventsBetween", "AppendLights", "AppendEvent", "ForeachEvent")]
     class AppendEvents : ScuffedFunction
     {
         public AssignableInlineVariable EventIndex;
-        public void SetParameters()
+        protected override void Init()
         {
             EventIndex = new AssignableInlineVariable("index", "0");
             Variables.Add(EventIndex);
-        }
-        public override void Run()
-        {
-            SetParameters();
             AppendPriority type = GetParam("appendtechnique", AppendPriority.Low, p => (AppendPriority)int.Parse(p));
             int[] lightypes = GetParam("selecttype", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray());
             float starttime = Time;
@@ -102,6 +88,7 @@ namespace ScuffedWalls.Functions
             Variables.Register(internalvars.Properties);
             float Rfactor = GetParam("rainbowfactor", 1, p => float.Parse(p));
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
+            string callfun = GetParam("call", null, p => p);
             Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Clean.Name == "select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
@@ -111,8 +98,6 @@ namespace ScuffedWalls.Functions
             {
                 EventIndex.StringData = i.ToString();
                 internalvars.UpdateProperties(even);
-
-                FunLog();
 
                 Append(even, UnderlyingParameters.CustomDataParse(new BeatMap.Note()), type);
                 i++;

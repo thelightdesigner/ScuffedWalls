@@ -6,10 +6,8 @@ namespace ScuffedWalls.Functions
     [SFunction("Environment", "EnvironmentEnhancement")]
     class EnvironmentEnhancement : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
             InstanceWorkspace.Environment.Add(new TreeDictionary()
             {
                 ["_id"] = GetParam("id", null, p => (object)p),

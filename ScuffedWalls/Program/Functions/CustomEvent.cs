@@ -6,52 +6,47 @@ namespace ScuffedWalls.Functions
     [SFunction("PointDefinition")]
     class PointDefinition : ScuffedFunction
     {
-        public override void Run()
+        string name;
+        object[][] points;
+        protected override void Init()
         {
-            FunLog();
-
-
-            string name = GetParam("name", "unimplemented_pointdefinition", p => p);
-            object[][] points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
-
+            name = GetParam("name", "unimplemented_pointdefinition", p => p);
+            points = GetParam("points", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
+        }
+        protected override void Update()
+        {
             InstanceWorkspace.PointDefinitions.Add(new TreeDictionary()
             {
                 ["_name"] = name,
                 ["_points"] = points
             });
-
             RegisterChanges("PointDefinition", 1);
         }
     }
     [SFunction("AnimateTrack")]
     class CustomEventAnimateTrack : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
-                ["_type"] = "AnimateTrack",
+                ["_type"] = BeatMap.AnimateTrack,
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
             RegisterChanges("AnimateTrack", 1);
-
         }
     }
     [SFunction("AssignPathAnimation")]
     class CustomEventAssignpath : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
-                ["_type"] = "AssignPathAnimation",
+                ["_type"] = BeatMap.AssignPathAnimation,
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
@@ -61,16 +56,9 @@ namespace ScuffedWalls.Functions
     [SFunction("AssignPlayerToTrack")]
     public class CustomEventPlayerTrack : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
-            InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
-            {
-                ["_time"] = Time,
-                ["_type"] = "AssignPlayerToTrack",
-                ["_data"] = UnderlyingParameters.CustomEventsDataParse()
-            });
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = BeatMap.AssignPlayerToTrack, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
             RegisterChanges("AssignPlayerToTrack", 1);
         }
     }
@@ -78,16 +66,9 @@ namespace ScuffedWalls.Functions
     [SFunction("ParentTrack")]
     public class CustomEventParent : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
-            InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
-            {
-                ["_time"] = Time,
-                ["_type"] = "AssignTrackParent",
-                ["_data"] = UnderlyingParameters.CustomEventsDataParse()
-            });
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = BeatMap.AssignTrackParent, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
             RegisterChanges("AssignTrackParent", 1);
         }
     }

@@ -7,11 +7,8 @@ namespace ScuffedWalls.Functions
     [SFunction("Run", "cmd", "Terminal", "Execute")]
     class ExecuteCommandPrompt : ScuffedFunction
     {
-        public override void Run()
+        protected override void Init()
         {
-            FunLog();
-
-
             string JSfile = GetParam("Javascript", null, p => Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
             AddRefresh(JSfile);
             bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));

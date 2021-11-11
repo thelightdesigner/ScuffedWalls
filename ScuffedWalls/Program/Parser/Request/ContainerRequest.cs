@@ -14,6 +14,12 @@ namespace ScuffedWalls
         public List<VariableRequest> VariableRequests { get; private set; } = new List<VariableRequest>();
 
         private CacheableScanner<Parameter> _paramScanner;
+        public void ResetDefaultValues(float call)
+        {
+            foreach (var Var in VariableRequests) Var.ResetDefaultValue();
+            foreach (var Fun in FunctionRequests) Fun.SetCallTime(call);
+            foreach (var param in Parameters) param.Variables.Clear();
+        }
         public override Request Setup(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);

@@ -1,7 +1,6 @@
 ﻿using ModChart;
 using ModChart.Wall;
 using System;
-using System.Linq;
 using System.Numerics;
 using System.Text.Json;
 
@@ -10,7 +9,7 @@ namespace ScuffedWalls.Functions
     [SFunction("ModelToWall", "ModelToNote", "ModelToBomb", "Model")]
     class ModelToWall : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
             var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
@@ -36,22 +35,22 @@ namespace ScuffedWalls.Functions
             float duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             Time = GetParam("definitetime", Time, p =>
 {
-if (p.ToLower().RemoveWhiteSpace() == "beats")
-{
-   if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
-   else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
-}
-else if (p.ToLower().RemoveWhiteSpace() == "seconds")
-{
-   if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
-   else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
-}
-return Time;
+    if (p.ToLower().RemoveWhiteSpace() == "beats")
+    {
+        if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
+        else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
+    }
+    else if (p.ToLower().RemoveWhiteSpace() == "seconds")
+    {
+        if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
+        else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
+    }
+    return Time;
 });
             duration = GetParam("definitedurationseconds", duration, p =>
 {
-   if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
-   return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
+    if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()), parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat());
+    return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
 });
             duration = GetParam("definitedurationbeats", duration, p =>
             {
@@ -68,9 +67,6 @@ return Time;
             if (isNjspeed) MapNjs = parsedcustomstuff._customData["_noteJumpMovementSpeed"].ToFloat();
 
             BeatMap output = new BeatMap();
-
-
-            FunLog();
 
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);

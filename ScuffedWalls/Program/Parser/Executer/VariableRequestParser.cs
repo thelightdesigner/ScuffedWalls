@@ -23,6 +23,10 @@ namespace ScuffedWalls
             AssignableInlineVariable variable = null;
             Debug.TryAction(() =>
             {
+                if (_request.Name == "LWH")
+                {
+                    object t = null;
+                }
                 variable = new AssignableInlineVariable(_request.Name, _request.Data, _request.VariableRecomputeSettings);
                 _result = variable;
 

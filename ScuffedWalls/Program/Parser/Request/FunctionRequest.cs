@@ -8,13 +8,28 @@ namespace ScuffedWalls
 {
     public class FunctionRequest : Request, ICloneable
     {
-        public const string FunctionKeyword = @"^([+-]?([0-9]+\.?[0-9]*|\.[0-9]+)|fun)$";
+        public enum Keyword
+        {
+            Number,
+            Fun,
+            CallTime
+        }
+        public const string FunctionKeyword = @"^([+-]?([0-9]+\.?[0-9]*|\.[0-9]+)|fun|x*)$";
         public static bool IsName(string name)
         {
             if (Regex.IsMatch(name, FunctionKeyword)) return true;
             return false;
         }
+        public static Keyword MatchCallSign(string name)
+        {
+            return float.TryParse(name, out _) ? Keyword.Number : name == "fun" ? Keyword.Fun : Keyword.CallTime;
+        }
         public string Name { get; private set; }
+        public Keyword CallSign { get; private set; }
+        public void SetCallTime(float calltime)
+        {
+            if (CallSign == Keyword.CallTime) _time = calltime;
+        }
         private float _time;
         public float Time => TimeParam != null ? float.Parse(TimeParam.StringData) : _time;
         public Parameter RepeatCount { get; private set; }
@@ -26,14 +41,17 @@ namespace ScuffedWalls
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
 
-            _time = float.TryParse(DefiningParameter.Name, out float result) ? result : 0;
+            string name = DefiningParameter.Clean.Name;
+            CallSign = MatchCallSign(name);
+
+            _time = CallSign == Keyword.Number ? float.Parse(name) : 0;
+
             Name = DefiningParameter.Clean.StringData;
             RepeatCount = UnderlyingParameters.Get("repeat", null, p => p.Use());
             RepeatAddTime = UnderlyingParameters.Get("repeataddtime", null, p => p.Use());
             TimeParam = UnderlyingParameters.Get("funtime", null, p => p.Use());
             return this;
         }
-
         public object Clone() => new FunctionRequest()
         {
             Name = Name,

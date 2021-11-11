@@ -44,6 +44,7 @@ namespace ScuffedWalls
         public void Clear()
         {
             _list.Clear();
+            foreach (var tree in _lookupGroups) tree.Clear();
         }
         public void Add(T value)
         {

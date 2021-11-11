@@ -17,10 +17,6 @@ namespace ScuffedWalls
         {
             foreach (var p in parameters) p.WasUsed = false;
         }
-        public void RefreshVariables()
-        {
-            foreach (var var in Variables) var.Refresh();
-        }
         public static void Check(IEnumerable<Parameter> parameters)
         {
             foreach (var p in parameters) if (!p.WasUsed) ScuffedWalls.Print($"Parameter {p.Name} at line {p.GlobalIndex} may be unused (Mispelled?)", ScuffedWalls.LogSeverity.Warning);

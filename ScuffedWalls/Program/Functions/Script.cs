@@ -3,7 +3,15 @@
     [SFunction("Script")]
     class Script : ScuffedFunction
     {
-        public override void Run()
+        protected override void Init()
+        {
+
+        }
+        protected override void Finish()
+        {
+
+        }
+        protected override void Update()
         {
 
         }

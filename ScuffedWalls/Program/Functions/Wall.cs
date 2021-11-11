@@ -5,21 +5,15 @@ namespace ScuffedWalls.Functions
     [SFunction("Wall")]
     class Wall : ScuffedFunction
     {
-        //public Parameter Repeat; 
-        // public Parameter Beat;
-     //   public void SetParameters()
-     //   {
-            //Repeat = new Parameter ("repeat", "0");
-            // Beat = new Parameter ("time", Time.ToString());
-            // UnderlyingParameters.SetInteralVariables(new Parameter[] { Repeat, Beat });
-     //   }
-        public override void Run()
+        ICustomDataMapObject parsedthing;
+        bool isNjs;
+        protected override void Init()
         {
-          //  SetParameters();
-
-            var parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
-            bool isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
-
+            parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
+        }
+        protected override void Update()
+        {
             float duration = GetParam("duration", 0, p => float.Parse(p));
             int lineindex = GetParam("lineindex", 0, p => int.Parse(p));
 
@@ -53,8 +47,6 @@ namespace ScuffedWalls.Functions
                 if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
                 return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
-
-            FunLog();
 
             BeatMap.Obstacle wall = new BeatMap.Obstacle()
             {

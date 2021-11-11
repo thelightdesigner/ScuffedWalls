@@ -9,10 +9,8 @@ namespace ScuffedWalls.Functions
     [SFunction("TextToWall")]
     class TextToWall : ScuffedFunction
     {
-        public override void Run()
+        protected override void Update()
         {
-            FunLog();
-
 
             var parsedshit = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
