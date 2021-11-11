@@ -29,7 +29,7 @@ namespace ScuffedWalls.Functions
             {
                 VariableRequest _var = customFunction.VariableRequests.FirstOrDefault(v => v.Public && v.DefiningParameter.Clean.StringData == param.Clean.Name);
                 if (_var == null) continue;
-                _var.Data = param.Use().Raw.StringData;
+                _var.Data = param.Use().StringData;
             }
 
             Workspace result = new WorkspaceRequestParser(customFunction, hideLogs: true).GetResult();

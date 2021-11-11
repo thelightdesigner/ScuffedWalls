@@ -33,6 +33,10 @@ namespace ScuffedWalls
             VariableRecomputeSettings = recompute;
             Public = _public;
         }
+        public override string ToString()
+        {
+            return $"{Name}:{Data}";
+        }
         public string DefaultVal { get; private set; }
         public string Name { get; set; }
         public string Data { get; set; }

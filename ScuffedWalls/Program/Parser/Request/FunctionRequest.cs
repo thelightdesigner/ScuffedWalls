@@ -30,6 +30,10 @@ namespace ScuffedWalls
         {
             if (CallSign == Keyword.CallTime) _time = calltime;
         }
+        public override string ToString()
+        {
+            return $"{Time}:{Name}";
+        }
         private float _time;
         public float Time => TimeParam != null ? float.Parse(TimeParam.StringData) : _time;
         public Parameter RepeatCount { get; private set; }
