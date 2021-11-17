@@ -177,6 +177,10 @@ X:Wall
 
 ### Cube Generator - iswimfly
 ```ruby
+# How long the Cube will stick around
+var:duration
+data:XXX
+
 # Length of Each Wall
 var:LWH
 data:XXX
@@ -199,32 +203,33 @@ data:XXX
 
 # Right Square Set One
 X:Wall
+    duration:duration
     repeat:2
-    scale:[THICK,LWH,THICK]
+    scale:[THICK,{if(repeat = 1, LWH, LWH-THICK)},THICK]
     localrotation:[{90*(repeat-1)},0,0]
-    animatedefiniteposition:[{CenterX-(LWH/2)+THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)},0]
+    animatedefiniteposition:[{CenterX-(LWH/2)+THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)-(THICK*2)},0]
 
 # Right Square Set Two
-
 X:Wall
+    duration:duration
     repeat:2
-    scale:[THICK,LWH,THICK]
+    scale:[THICK,{if(repeat = 1, LWH, LWH-THICK)},THICK]
     localrotation:[{90*(repeat+1)},0,0]
     animatedefiniteposition:[{CenterX-(LWH/2)+THICK/2},{CenterY/2+(LWH/2)},{CenterZ/2-(LWH/2)},0]
 
 # Left Square Set One
-
 X:Wall
+    duration:duration
     repeat:2
-    scale:[THICK,LWH,THICK]
+    scale:[THICK,{if(repeat = 1, LWH, LWH-THICK)},THICK]
     localrotation:[{90*(repeat-1)},0,0]
-    animatedefiniteposition:[{CenterX+(LWH/2)-THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)},0]
+    animatedefiniteposition:[{CenterX+(LWH/2)-THICK/2},{CenterY/2-(LWH/2)},{CenterZ/2+(LWH/2)-(THICK*2)},0]
 
 # Left Square Set Two
-
 X:Wall
+    duration:duration
     repeat:2
-    scale:[THICK,LWH,THICK]
+    scale:[THICK,{if(repeat = 1, LWH, LWH-THICK)},THICK]
     localrotation:[{90*(repeat+1)},0,0]
     animatedefiniteposition:[{CenterX+(LWH/2)-THICK/2},{CenterY/2+(LWH/2)},{CenterZ/2-(LWH/2)},0]
 
@@ -232,25 +237,30 @@ X:Wall
 
 #Back Bottom
 X:Wall
+    duration:duration
     scale:[THICK,LWH,THICK]
     localrotation:[180,0,270]
-    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2-(LWH/2)+THICK/2},{CenterZ/2+(LWH/2)+THICK},0]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2-(LWH/2)+THICK/2},{CenterZ/2+(LWH/2)-THICK},0]
 
 #Back Top
 X:Wall
+    duration:duration
     scale:[THICK,LWH,THICK]
     localrotation:[180,0,270]
-    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2+(LWH/2)-THICK/2},{CenterZ/2+(LWH/2)+THICK},0]
+    animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2+(LWH/2)-THICK/2},{CenterZ/2+(LWH/2)-THICK},0]
 
 #Front Bottom
 X:Wall
+    duration:duration
     scale:[THICK,LWH,THICK]
     localrotation:[180,0,270]
     animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2-(LWH/2)+THICK/2},{CenterZ/2-(LWH/2)},0]
 
 #Front Top   
 X:Wall
+    duration:duration
     scale:[THICK,LWH,THICK]
     localrotation:[180,0,270]
     animatedefiniteposition:[{CenterX-(LWH/2)},{CenterY/2+(LWH/2)-THICK/2},{CenterZ/2-(LWH/2)},0]
 ```
+![Cube](https://user-images.githubusercontent.com/48336237/141658150-d52d5a1a-c568-4f9d-b2d1-7562b49d9fe3.png)
