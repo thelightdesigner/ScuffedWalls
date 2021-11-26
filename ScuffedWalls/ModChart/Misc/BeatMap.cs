@@ -1,10 +1,9 @@
 ﻿using ScuffedWalls;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace ModChart
 {
@@ -16,12 +15,13 @@ namespace ModChart
     public interface ITimeable
     {
         public float? _time { get; set; }
+        public float GetTime();
     }
     public class MapStatAttribute : Attribute
     {
 
     }
-   
+
     public class BeatMap : ICloneable
     {
         public MapStats Stats => GetStats();
@@ -338,6 +338,18 @@ namespace ModChart
             Low,
             High
         }
+        public enum MapObjectType
+        {
+            Obstacle,
+            Note,
+            Event
+        }
+        public static ICustomDataMapObject GetInstance(MapObjectType type) =>
+            type == MapObjectType.Note ? (ICustomDataMapObject)new Note() :
+            type == MapObjectType.Obstacle ? (ICustomDataMapObject)new Obstacle() :
+            type == MapObjectType.Event ? (ICustomDataMapObject)new Event() :
+            throw new Exception();
+
 
     }
 

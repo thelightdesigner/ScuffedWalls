@@ -33,7 +33,11 @@ namespace ScuffedWalls
         {
             Instance = this;
             _request = request;
-        } /*
+        } 
+        
+        
+        /*
+          
         public static T GetParam<T>(string name, T defaultval, Func<string, T> converter, Lookup<Parameter> parameters)
         {
             if (!parameters.Any(p => p.Clean.Name.Equals(name))) return defaultval;

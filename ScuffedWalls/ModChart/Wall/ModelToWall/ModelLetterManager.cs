@@ -17,7 +17,7 @@ namespace ModChart.Wall
         private static readonly float scalefactor = 4;
         public static IEnumerable<ModelLetterManager> CreateLetters(Model model, TextSettings Settings)
         {
-            var letters = model.Cubes
+            var letters = model.Objects
                 .Where(c => c.Material != null && c.Material.Any(s => s.ToLower().Contains("letter_")))
                 .GroupBy(c => Regex.Split(c.Material.Where(s => s.ToLower().Contains("letter_")).First(), "letter_", RegexOptions.IgnoreCase).Last());
             List<ModelLetterManager> Letters = new List<ModelLetterManager>();

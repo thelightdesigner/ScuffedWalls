@@ -8,7 +8,8 @@ namespace ScuffedWalls
     {
         public static void TryAction(Action action, Action<Exception> onError)
         {
-          /*  if (Utils.ScuffedConfig.Debug) 
+           //  /*
+            if (Utils.ScuffedConfig.Debug) 
             {
                 try
                 {
@@ -22,13 +23,14 @@ namespace ScuffedWalls
             }
 
             try
-            { */
-                action(); /*
+            { 
+                action(); 
             } 
             catch(Exception e)
             {
                 onError(e);
-            } */
+            }
+           //  */ action(); 
         }
     }
 }

@@ -40,10 +40,10 @@
             ScuffedRequest Request = null;
             Debug.TryAction(() => 
             {
-                Request = (ScuffedRequest)new ScuffedRequest().Setup(Utils.ScuffedWallFile.Parameters);
+                Request = (ScuffedRequest)new ScuffedRequest().SetupFromLines(Utils.ScuffedWallFile.Parameters);
             },e => 
             {
-                Print($"Error parsing ScuffedWall file ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
+                Print($"Error parsing ScuffedWall file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             });
 
             ScuffedRequestParser Parser = null;
@@ -53,19 +53,24 @@
                 Parser.GetResult();
             },e => 
             {
-                Print($"Error executing ScuffedRequest ERR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
+                Print($"Error executing ScuffedRequest ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             });
+            Debug.TryAction(() =>
+            {
+                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+                File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
+                
+                Utils.DiscordRPCManager.CurrentMap = Parser.Result;
+                Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
 
-            Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
-            File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
-
+                Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")));
+            }, e =>
+            {
+                Print($"Error saving to map file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
+            }); 
             Print("Saving Config");
             File.WriteAllText(Utils.ConfigFileName, JsonSerializer.Serialize(Utils.ScuffedConfig, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
-
-            Utils.DiscordRPCManager.CurrentMap = Parser.Result;
-            Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
-
-            Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")));
+           
         }
         public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true, string OverrideStackFrame = null)
         {

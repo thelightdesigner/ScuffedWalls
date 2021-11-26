@@ -28,6 +28,7 @@ namespace ScuffedWalls.Functions
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardError = true
+                        ,
                     }
                 };
                 cmd.Start();

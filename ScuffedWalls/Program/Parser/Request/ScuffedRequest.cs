@@ -19,7 +19,7 @@ namespace ScuffedWalls
         public TreeList<Parameter> Parameters { get; protected set; }
         public Parameter DefiningParameter { get; protected set; }
         public TreeList<Parameter> UnderlyingParameters { get; protected set; }
-        public virtual Request Setup(List<Parameter> Lines)
+        public virtual Request SetupFromLines(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
@@ -29,11 +29,12 @@ namespace ScuffedWalls
     }
     public class ScuffedRequest : Request
     {
+        public ContainerRequest GetCustomFunction(string name) => CustomFunctionRequests.FirstOrDefault(p => p.Name.ToLower().RemoveWhiteSpace() == name.ToLower().RemoveWhiteSpace());
         public bool CustomFunctionExists(string name) => CustomFunctionRequests.Any(p => p.Name.ToLower().RemoveWhiteSpace() == name.ToLower().RemoveWhiteSpace());
         private CacheableScanner<Parameter> _paramScanner;
         public List<ContainerRequest> WorkspaceRequests { get; private set; } = new List<ContainerRequest>();
         public List<ContainerRequest> CustomFunctionRequests { get; private set; } = new List<ContainerRequest>();
-        public override Request Setup(List<Parameter> Lines)
+        public override Request SetupFromLines(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             _paramScanner = new CacheableScanner<Parameter>(Parameters);
@@ -52,7 +53,7 @@ namespace ScuffedWalls
             {
                 ScuffedWalls.Print($"Included {include.Name}");
 
-                ScuffedRequest requestToInclude = (ScuffedRequest)new ScuffedRequest().Setup(new ScuffedWallFile(include.FullName).Parameters);
+                ScuffedRequest requestToInclude = (ScuffedRequest)new ScuffedRequest().SetupFromLines(new ScuffedWallFile(include.FullName).Parameters);
 
                 WorkspaceRequests.AddRange(requestToInclude.WorkspaceRequests);
                 CustomFunctionRequests.AddRange(requestToInclude.CustomFunctionRequests); 
@@ -69,10 +70,10 @@ namespace ScuffedWalls
                     switch (previousType)
                     {
                         case Type.WorkspaceRequest:
-                            WorkspaceRequests.Add((ContainerRequest)new ContainerRequest().Setup(_paramScanner.GetAndResetCache()));
+                            WorkspaceRequests.Add((ContainerRequest)new ContainerRequest().SetupFromLines(_paramScanner.GetAndResetCache()));
                             break;
                         case Type.DefineRequest:
-                            ContainerRequest def = (ContainerRequest)new ContainerRequest().Setup(_paramScanner.GetAndResetCache());
+                            ContainerRequest def = (ContainerRequest)new ContainerRequest().SetupFromLines(_paramScanner.GetAndResetCache());
                             CustomFunctionRequests.Add(def);
 
                             string param = string.Join(", ", def.VariableRequests.Where(v => v.Public).Select(v => v.Name));

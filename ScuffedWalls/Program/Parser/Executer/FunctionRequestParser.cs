@@ -66,7 +66,7 @@ namespace ScuffedWalls
             {
                 ScuffedFunction funcInstance = (ScuffedFunction)Activator.CreateInstance(func);
 
-                funcInstance.InstantiateSFunction(_request.UnderlyingParameters, _request.DefiningParameter, _instanceWorkspace, _request.Time, repeatCount);
+                funcInstance.InstantiateSFunction(_request, _instanceWorkspace, _request.Time, repeatCount);
 
 
                 for (int i = 0; i < repeatCount; i++)

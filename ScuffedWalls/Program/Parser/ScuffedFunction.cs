@@ -13,8 +13,9 @@ namespace ScuffedWalls
             Variables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
         }
         protected Workspace InstanceWorkspace { get; private set; }
-        protected TreeList<Parameter> UnderlyingParameters { get; private set; }
-        protected Parameter DefiningParameter { get; private set; }
+        protected FunctionRequest Request { get; private set; }
+        protected TreeList<Parameter> UnderlyingParameters => Request.UnderlyingParameters;
+        protected Parameter DefiningParameter => Request.DefiningParameter;
         protected TreeList<AssignableInlineVariable> Variables { get; }
         protected int RepeatCount { get; private set; }
         protected float Time { get; set; }
@@ -35,10 +36,9 @@ namespace ScuffedWalls
         {
             Time = time;
         }
-        public void InstantiateSFunction(TreeList<Parameter> parameters, Parameter defining, Workspace instance, float time, int repeat)
+        public void InstantiateSFunction(FunctionRequest request, Workspace instance, float time, int repeat)
         {
-            UnderlyingParameters = parameters;
-            DefiningParameter = defining;
+            Request = request;
             InstanceWorkspace = instance;
             Time = time;
             Stats = new MapStats();

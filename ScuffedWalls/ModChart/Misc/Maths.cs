@@ -112,7 +112,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         {
             return new Vector2(array[0].ToFloat(), array[1].ToFloat());
         }
-        public static object[] FromVector2(this Vector2 vector)
+        public static object[] ToFloatArray(this Vector2 vector)
         {
             return new object[] { vector.X, vector.Y };
         }
@@ -120,7 +120,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         {
             return new Vector3(array[0].ToFloat(), array[1].ToFloat(), array[2].ToFloat());
         }
-        public static object[] FromVector3(this Vector3 vector)
+        public static object[] ToFloatArray(this Vector3 vector)
         {
             return new object[] { vector.X, vector.Y, vector.Z };
         }

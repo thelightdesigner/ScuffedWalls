@@ -6,6 +6,7 @@ namespace ScuffedWalls
 {
     public class VariableRequest : Request, ICloneable
     {
+        public static readonly Func<VariableRequest, string> Exposer = var => var.Name;
         public const string VariableKeyword = "var";
         public static bool IsName(string name)
         {
@@ -15,7 +16,7 @@ namespace ScuffedWalls
         public static VariableRequest GetSetup(List<Parameter> Lines)
         {
             var req = new VariableRequest();
-            req.Setup(Lines);
+            req.SetupFromLines(Lines);
             return req;
         }
         public void ResetDefaultValue()
@@ -26,7 +27,7 @@ namespace ScuffedWalls
         {
 
         }
-        public VariableRequest(string name, string data, VariableRecomputeSettings recompute, bool _public)
+        public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {
             Name = name;
             Data = data;
@@ -42,7 +43,7 @@ namespace ScuffedWalls
         public string Data { get; set; }
         public VariableRecomputeSettings VariableRecomputeSettings { get; private set; }
         public bool Public { get; private set; }
-        public override Request Setup(List<Parameter> Lines)
+        public override Request SetupFromLines(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();

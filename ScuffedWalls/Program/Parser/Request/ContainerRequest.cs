@@ -5,22 +5,46 @@ using System.Text.RegularExpressions;
 
 namespace ScuffedWalls
 {
-    public class ContainerRequest : Request, ICloneable
+    public class ContainerRequest : Request
     {
         public const string WorkspaceKeyword = "workspace";
         public const string DefineKeyword = "function";
         public string Name { get; private set; }
         public List<FunctionRequest> FunctionRequests { get; private set; } = new List<FunctionRequest>();
-        public List<VariableRequest> VariableRequests { get; private set; } = new List<VariableRequest>();
+
+        private readonly TreeList<VariableRequest> _varRequestContainer = new TreeList<VariableRequest>(VariableRequest.Exposer);
+        private readonly TreeList<VariableRequest> _primaryRequests = new TreeList<VariableRequest>(VariableRequest.Exposer);
+        protected readonly TreeList<VariableRequest> _customVariables = new TreeList<VariableRequest>(VariableRequest.Exposer);
+
+        public List<VariableRequest> VariableRequests => _varRequestContainer.Values;
 
         private CacheableScanner<Parameter> _paramScanner;
-        public void ResetDefaultValues(float call)
+        public ContainerRequest()
         {
+            _varRequestContainer.Register(_primaryRequests);
+            _varRequestContainer.Register(_customVariables);
+        }
+        public void ResetDefaultValues()
+        {
+            _customVariables.Clear();
             foreach (var Var in VariableRequests) Var.ResetDefaultValue();
-            foreach (var Fun in FunctionRequests) Fun.SetCallTime(call);
             foreach (var param in Parameters) param.Variables.Clear();
         }
-        public override Request Setup(List<Parameter> Lines)
+        public void RegisterCallTime(float call)
+        {
+            foreach (var Fun in FunctionRequests) Fun.SetCallTime(call);
+        }
+        public void RegisterCustomVariables(IEnumerable<VariableRequest> cvs, bool affectPublicVariablesOnly)
+        {
+            foreach (var _var in cvs)
+            {
+                VariableRequest primaryRequest = _primaryRequests.Get(_var.Name);
+                if (affectPublicVariablesOnly && primaryRequest == null) continue;
+                if (primaryRequest != null && primaryRequest.Public) primaryRequest.Data = _var.Data;
+                else _customVariables.Add(_var);
+            }
+        }
+        public override Request SetupFromLines(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
@@ -50,24 +74,14 @@ namespace ScuffedWalls
                 {
                     case Type.FunctionRequest:
                         if (_paramScanner.AnyCached)
-                            FunctionRequests.Add((FunctionRequest)new FunctionRequest().Setup(_paramScanner.GetAndResetCache()));
+                            FunctionRequests.Add((FunctionRequest)new FunctionRequest().SetupFromLines(_paramScanner.GetAndResetCache()));
                         break;
                     case Type.VariableRequest:
                         if (_paramScanner.AnyCached)
-                            VariableRequests.Add((VariableRequest)new VariableRequest().Setup(_paramScanner.GetAndResetCache()));
+                            VariableRequests.Add((VariableRequest)new VariableRequest().SetupFromLines(_paramScanner.GetAndResetCache()));
                         break;
                 }
             }
         }
-
-        public object Clone() => new ContainerRequest()
-        {
-            Name = Name,
-            Parameters = Parameters,
-            DefiningParameter = DefiningParameter,
-            UnderlyingParameters = UnderlyingParameters,
-            FunctionRequests = FunctionRequests.CloneArray().Cast<FunctionRequest>().ToList(),
-            VariableRequests = VariableRequests.CloneArray().Cast<VariableRequest>().ToList()
-        };
     }
 }
