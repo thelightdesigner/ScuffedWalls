@@ -49,7 +49,7 @@ namespace ScuffedWalls
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
-            Name = DefiningParameter.StringData;
+            Name = DefiningParameter.StringData?.Trim();
 
             _paramScanner = new CacheableScanner<Parameter>(UnderlyingParameters);
             Type previous = Type.None;
@@ -78,7 +78,7 @@ namespace ScuffedWalls
                         break;
                     case Type.VariableRequest:
                         if (_paramScanner.AnyCached)
-                            VariableRequests.Add((VariableRequest)new VariableRequest().SetupFromLines(_paramScanner.GetAndResetCache()));
+                            _primaryRequests.Add((VariableRequest)new VariableRequest().SetupFromLines(_paramScanner.GetAndResetCache()));
                         break;
                 }
             }

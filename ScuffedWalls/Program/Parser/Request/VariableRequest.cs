@@ -29,7 +29,7 @@ namespace ScuffedWalls
         }
         public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {
-            Name = name;
+            Name = name.Trim();
             Data = data;
             VariableRecomputeSettings = recompute;
             Public = _public;
@@ -48,7 +48,7 @@ namespace ScuffedWalls
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
-            Name = DefiningParameter.StringData;
+            Name = DefiningParameter.StringData?.Trim();
             Data = UnderlyingParameters.Get("data", "", p => p.Use().Raw.StringData);
             DefaultVal = Data;
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
