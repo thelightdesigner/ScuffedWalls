@@ -12,8 +12,8 @@ namespace ScuffedWalls
     /// <typeparam name="T"></typeparam>
     public class TreeList<T> : IEnumerable<T>
     {
-      //  public List<T> Values => _totalValues;
-        public Func<T, string> Exposer => _exposer; 
+        //  public List<T> Values => _totalValues;
+        public Func<T, string> Exposer => _exposer;
         public List<T> Values
         {
             get
@@ -26,7 +26,7 @@ namespace ScuffedWalls
         private readonly Func<T, string> _exposer;
         private readonly List<T> _list;
         private readonly List<TreeList<T>> _lookupGroups;
-        
+
         public int Count => Values.Count;
 
         public TreeList(Func<T, string> Exposer)
@@ -37,7 +37,7 @@ namespace ScuffedWalls
         }
         public TreeList(IEnumerable<T> collection, Func<T, string> Exposer)
         {
-            _list =  collection.ToList();
+            _list = collection.ToList();
             _lookupGroups = new List<TreeList<T>>();
             _exposer = Exposer;
         }
@@ -90,26 +90,5 @@ namespace ScuffedWalls
 
         public IEnumerator<T> GetEnumerator() => Values.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-
-
-
-
-        //things i dont care about
-        public int IndexOf(T item) => throw new NotImplementedException();
-
-        public void Insert(int index, T item) => throw new NotImplementedException();
-
-        public void RemoveAt(int index) => throw new NotImplementedException();
-
-        public bool Contains(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

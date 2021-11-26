@@ -39,7 +39,17 @@ namespace ScuffedWalls
         public Parameter RepeatCount { get; private set; }
         public Parameter RepeatAddTime { get; private set; }
         public Parameter TimeParam { get; private set; }
-        public override Request Setup(List<Parameter> Lines)
+        public FunctionRequest()
+        {
+
+        }
+        public FunctionRequest(float time, string name, IEnumerable<Parameter> parameterss)
+        {
+            Name = name;
+            _time = time;
+            UnderlyingParameters = new TreeList<Parameter>(parameterss, Parameter.Exposer);
+        }
+        public override Request SetupFromLines(List<Parameter> Lines)
         {
             Parameters = new TreeList<Parameter>(Lines, Parameter.Exposer);
             DefiningParameter = Lines.First();

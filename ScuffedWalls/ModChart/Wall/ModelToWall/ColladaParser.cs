@@ -10,7 +10,7 @@ namespace ModChart.Wall
 {
     public class Model
     {
-        public Cube[] Cubes { get; set; }
+        public Cube[] Objects { get; set; }
 
         private Collada _model;
 
@@ -18,12 +18,12 @@ namespace ModChart.Wall
         {
             _model = (Collada)Converters.DeserializeXML<Collada>(path);
             SetCubes();
-            foreach (var cube in Cubes) cube.SetOffset();
-            foreach (var cube in Cubes) cube.Decompose();
+            foreach (var cube in Objects) cube.SetOffset();
+            foreach (var cube in Objects) cube.Decompose();
         }
         public Model(Cube[] Cubes)
         {
-            this.Cubes = Cubes;
+            Objects = Cubes;
         }
 
 
@@ -185,7 +185,7 @@ namespace ModChart.Wall
 
             List<Cube> instancecubes = new List<Cube>();
             foreach (var cube in cubes) instancecubes.AddRange(cube.InstantiateMultiples());
-            Cubes = instancecubes.ToArray();
+            Objects = instancecubes.ToArray();
         }
 
     }

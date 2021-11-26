@@ -134,7 +134,7 @@ namespace ModChart
 
             var difference = Matrix4x4.CreateTranslation(trans * dec.Scale);
             var compensation = Matrix4x4.Transform(difference, dec.RotationQuat);
-            matrix.Translation = matrix.Translation + compensation.Translation;
+            matrix.Translation += compensation.Translation;
             return matrix;
         }
     }
