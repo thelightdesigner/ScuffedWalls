@@ -52,7 +52,7 @@ Community pre-made font models:
 
 ![](Images/Text/fuck.jpg)
 
-## Font Image
+## Font Image (Please dont use that)
 Example: 
 ![](Examples/All%20Functions%20in%20Docs/font.png)
 
