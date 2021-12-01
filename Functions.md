@@ -41,8 +41,6 @@ All the available functions are listed below
 - [`ModelToWall`](#ModelToWall)
 - [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
-- [`CloneFromWorkspace`](#CloneFromWorkspace)
-- [`WorkspaceDefault`](#WorkspaceDefault)
 - [`Blackout`](#Blackout)
 - [`Import`](#Import)
 - [`Run`](#Run)
@@ -723,55 +721,7 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
     
     #takes the double color laser and changes position and adds it to a track
 ```
- 
- 
-# CloneFromWorkspace
-clones mapobjects from a different workspace by the index or by the name. the time of the function is the beat that starts cloning from.
 
-- Type: int,int,int (defaults to 0,1,2,3) 0 being walls, 1 being notes, 2 being lights, 3 being custom events & NOT point definitions
-- Index: int, the index of the workspace you want to clone from. It's either one or the other.
-- Name:string, the name of the workspace you want to clone from. It's either one or the other.
-- addTime: float, shifts the cloned things by this amount.
-- toBeat: float, the beat where to stop cloning from.
-
- Example
-```ruby
-Workspace:wtf workspace
-64:wall
-
-Workspace:hahaball
-
-Workspace
-
-	#adds in one wall at beat 97, a copy of "wtf workspace" shifted up by 32 beats
-	#now in the map there will be a wall at 64 and a wall at 96
- 25:CloneFromWorkspace
-   Name:wtf workspace
-   Type:0,1,2
-   toBeat:125
-   addTime:32
-```
- 
-## WorkspaceDefault
-adds a parameter to every function call in a workspace
-
- - Enabled: bool, if set to false, no map objects in the workspace will be added to the map
- - any other parameters will be added to every function in the workspace
-
-Example
-```ruby
-Workspace
-
-0:Default
-  NJS:25
-  
-0:Wall
-
-0:Note
-
-   #Both the wall and the note will have NJS 25 applied to them
-```
- 
 ## Blackout
 adds a single light off event at the beat number. why? because why not.
 
