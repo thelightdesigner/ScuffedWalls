@@ -70,6 +70,8 @@ namespace ModChart
         }
 
         public const string
+               _height = "_height",
+               _attenuation = "_attenuation",
                _position = "_position",
                _localPosition = "_localPosition",
                _scale = "_scale",
@@ -95,7 +97,8 @@ namespace ModChart
                AnimateTrack = "AnimateTrack",
                AssignPathAnimation = "AssignPathAnimation",
                AssignPlayerToTrack = "AssignPlayerToTrack",
-               AssignTrackParent = "AssignTrackParent";
+               AssignTrackParent = "AssignTrackParent",
+               AssignFogTrack = "AssignFogTrack";
         public void Prune()
         {
             _customData.DeleteNullValues();
@@ -289,6 +292,8 @@ namespace ModChart
         }
         public static string[] NoodleExtensionsPropertyNames => new string[]
         {
+            _height,
+            _attenuation,
             _position,
             _rotation,
             _scale,

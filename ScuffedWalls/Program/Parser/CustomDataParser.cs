@@ -116,6 +116,8 @@ namespace ScuffedWalls
         {
             var customdata = new TreeDictionary()
             {
+                ["_height"] = GetParam("animateheight", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateheight", null, p => (object)p),
+                ["_attenuation"] = GetParam("animateattenuation", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateattenuation", null, p => (object)p),
                 ["_definitePosition"] = GetParam("animatedefiniteposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatedefiniteposition", null, p => (object)p),
                 ["_position"] = GetParam("animateposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateposition", null, p => (object)p),
                 ["_dissolve"] = GetParam("animatedissolve", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatedissolve", null, p => (object)p),
