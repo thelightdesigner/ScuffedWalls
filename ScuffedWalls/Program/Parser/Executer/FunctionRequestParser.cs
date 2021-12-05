@@ -56,7 +56,9 @@ namespace ScuffedWalls
 
             TreeList<AssignableInlineVariable> repeatVars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
             AssignableInlineVariable repeat = new AssignableInlineVariable("repeat", "0");
+            AssignableInlineVariable repeattotal = new AssignableInlineVariable("repeattotal", "0");
             AssignableInlineVariable beat = new AssignableInlineVariable("time", _request.Time.ToString());
+            repeatVars.Add(repeattotal);
             repeatVars.Add(repeat);
             repeatVars.Add(beat);
             foreach (var re in _request.Parameters) re.Variables.Register(repeatVars);
@@ -68,6 +70,10 @@ namespace ScuffedWalls
 
                 funcInstance.InstantiateSFunction(_request, _instanceWorkspace, _request.Time, repeatCount);
 
+                for (int i = 0; i < repeatCount; i++)
+                {
+                    repeattotal.StringData = i.ToString();
+                }
 
                 for (int i = 0; i < repeatCount; i++)
                 {
