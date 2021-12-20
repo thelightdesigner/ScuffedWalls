@@ -35,7 +35,7 @@ namespace ScuffedWalls
             while (_variableRequestEnumerator.MoveNext())
             {
                 var result = new VariableRequestParser(_variableRequestEnumerator.Current, HideLogs).GetResult();
-                if (result != null) GlobalVariables.Add(result);
+                if (result != null) GlobalVariables.AddRange(result);
             }
 
            // Parameter.AssignVariables(_request.Parameters, globalvariables);

@@ -8,6 +8,7 @@ namespace ScuffedWalls
 {
     static class Extensions
     {
+        public static string[] ParseSWArray(this string array) => array.Replace("[","").Replace("]", "").Split(',');
         public static TreeList<T> ToTreeList<T>(this IEnumerable<T> enumerable, Func<T, string> exposer) => new TreeList<T>(enumerable, exposer);
         /// <summary>
         /// Attempts a deep clone of an array and all of the nested arrays, clones ICloneable

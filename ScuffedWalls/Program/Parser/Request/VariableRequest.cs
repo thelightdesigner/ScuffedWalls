@@ -32,12 +32,15 @@ namespace ScuffedWalls
             Name = name.Trim();
             Data = data;
             VariableRecomputeSettings = recompute;
-            Public = _public;
+            Public = _public; 
+            DefaultVal = Data;
         }
         public override string ToString()
         {
             return $"{Name}:{Data}";
         }
+        public VariableEnumType ContentsType { get; private set; } = VariableEnumType.Single;
+        public bool Static { get; private set; } = false;
         public string DefaultVal { get; private set; }
         public string Name { get; set; }
         public string Data { get; set; }
@@ -50,6 +53,8 @@ namespace ScuffedWalls
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
             Name = DefiningParameter.StringData?.Trim();
             Data = UnderlyingParameters.Get("data", "", p => p.Use().Raw.StringData);
+            ContentsType = UnderlyingParameters.Get("type", VariableEnumType.Single, p => Enum.Parse<VariableEnumType>(p.Clean.StringData,true));
+            Static = UnderlyingParameters.Get("static", false, p => true);
             DefaultVal = Data;
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
@@ -65,5 +70,12 @@ namespace ScuffedWalls
             VariableRecomputeSettings = VariableRecomputeSettings,
             Public = Public
         };
+
+    }
+    public enum VariableEnumType
+    {
+        Array,
+        Vector,
+        Single
     }
 }

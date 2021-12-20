@@ -57,7 +57,7 @@
             });
             Debug.TryAction(() =>
             {
-                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}", ShowStackFrame: false);
                 File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
                 
                 Utils.DiscordRPCManager.CurrentMap = Parser.Result;
