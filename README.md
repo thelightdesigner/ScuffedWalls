@@ -36,6 +36,9 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 
 ## Example Maps
 
+ - [`Phototropic`](https://www.youtube.com/watch?v=Bp1w2SPBRHE)
+ - [`Overthinker`](https://www.youtube.com/watch?v=PYvPg2J73Jw)
+ - [`Centipede`](https://www.youtube.com/watch?v=rkcK2gJZTfs&t=82s)
  - [`Shelter`](https://www.youtube.com/watch?v=a4zSCDYRwAQ)
  - [`Illuminate`](https://www.youtube.com/watch?v=lFL3Gjy15oc&t=1s)
  - [`Homesick`](https://www.youtube.com/watch?v=St3fSqj8SXc)
@@ -56,6 +59,12 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
  - [`Don't Wanna Fall`](https://youtu.be/unjtFxjYHH4)
  - [`Let it Rain`](https://youtu.be/sQUd3LIQP1M)
  - [`Reassurance`](https://www.youtube.com/watch?v=c5mail8zQjo)
+ - `Rolls Royce - Tisoki & Grabbitz (Renycs)`
+ - `Take A Chance - Flume (Renycs)`
+ - `My Boy (Troyboy Remix) - Billie Eilish (Renycs)`
+ - `Jaws theme song (wobbleorange)`
+ - `A1 - It's Just A Burning Memory (GojiCrafter)`
+ - `secret base ~Kimi ga Kureta Mono (iswimfly)`
 
 <img src="Images/ReadMe/Try.jpg" alt="Try" width="500"/>
 
