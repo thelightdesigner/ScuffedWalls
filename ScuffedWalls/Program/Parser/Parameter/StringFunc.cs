@@ -167,7 +167,7 @@ namespace ScuffedWalls
         {
             Focus(FullLine.IndexOf(Name) + (Name.Length - 1));
         }
-
+        public bool IsOpeningBracket(int i) => FullLine[i] == OpeningBracket;
         public int GetPosOfClosingSymbol(int indexofparenthesis)
         {
             char[] characters = FullLine.ToCharArray();

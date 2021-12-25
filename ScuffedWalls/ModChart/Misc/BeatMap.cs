@@ -24,6 +24,7 @@ namespace ModChart
 
     public class BeatMap : ICloneable
     {
+        [JsonIgnore]
         public MapStats Stats => GetStats();
         public MapStats GetStats()
         {
@@ -163,7 +164,7 @@ namespace ModChart
             return false;
 
         }
-        public void OrderCustomEventLists()
+        public void Order()
         {
             string[] Keys = _customData.Keys.ToArray();
 
@@ -174,6 +175,12 @@ namespace ModChart
                     _customData[key] = array.OrderBy(obj => ((IDictionary<string, object>)obj)["_time"].ToFloat()).ToList();
                 }
             }
+
+            _events = _events.OrderBy(obj => obj.GetTime()).ToList();
+
+            _notes = _notes.OrderBy(obj => obj.GetTime()).ToList();
+
+            _obstacles = _obstacles.OrderBy(obj => obj.GetTime()).ToList();
         }
 
         public class Event : ICustomDataMapObject, ICloneable

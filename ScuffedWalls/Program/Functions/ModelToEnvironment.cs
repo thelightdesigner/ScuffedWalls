@@ -71,8 +71,8 @@ namespace ScuffedWalls.Functions
 
                 Index++;
 
-                RegisterChanges("Duplications",model.Objects.Length);
-            } 
+            }
+            RegisterChanges("Duplications", model.Objects.Length);
         }
     }
 }

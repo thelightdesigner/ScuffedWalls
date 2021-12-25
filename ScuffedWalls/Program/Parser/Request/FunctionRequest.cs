@@ -35,8 +35,10 @@ namespace ScuffedWalls
             return $"{Time}:{Name}";
         }
         private float _time;
-        public float Time => TimeParam != null ? float.Parse(TimeParam.StringData) : _time;
-        public Parameter RepeatCount { get; private set; }
+        public float Time => TimeParam != null && float.TryParse(TimeParam.StringData, out float help) ? help : _time;
+
+        public int RepeatCount => RepeatCountParam != null && int.TryParse(RepeatCountParam.StringData, out int help) ? help : 1;
+        public Parameter RepeatCountParam { get; private set; }
         public Parameter RepeatAddTime { get; private set; }
         public Parameter TimeParam { get; private set; }
         public FunctionRequest()
@@ -61,9 +63,10 @@ namespace ScuffedWalls
             _time = CallSign == Keyword.Number ? float.Parse(name) : 0;
 
             Name = DefiningParameter.Clean.StringData;
-            RepeatCount = UnderlyingParameters.Get("repeat", null, p => p.Use());
+            RepeatCountParam = UnderlyingParameters.Get("repeat", null, p => p.Use());
             RepeatAddTime = UnderlyingParameters.Get("repeataddtime", null, p => p.Use());
             TimeParam = UnderlyingParameters.Get("funtime", null, p => p.Use());
+            if (TimeParam != null) TimeParam.Computer.HandleExceptions = true;
             return this;
         }
         public object Clone() => new FunctionRequest()
@@ -74,7 +77,7 @@ namespace ScuffedWalls
             DefiningParameter = DefiningParameter,
             UnderlyingParameters = UnderlyingParameters,
             RepeatAddTime = (Parameter)RepeatAddTime?.Clone(),
-            RepeatCount = (Parameter)RepeatCount?.Clone(),
+            RepeatCountParam = (Parameter)RepeatCountParam?.Clone(),
             TimeParam = (Parameter)TimeParam?.Clone()
         };
     }

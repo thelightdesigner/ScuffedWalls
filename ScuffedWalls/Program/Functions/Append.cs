@@ -35,7 +35,7 @@ namespace ScuffedWalls.Functions
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string callfun = GetParam("call", null, p => p);
 
-            Parameter select = UnderlyingParameters.FirstOrDefault(p => p.Clean.Name == "select");
+            Parameter select = UnderlyingParameters.Get("select");
             if (select != null) select.WasUsed = true;
             bool selectable() => select == null || bool.Parse(select.StringData);
 
@@ -49,14 +49,17 @@ namespace ScuffedWalls.Functions
                 AppendObjectType == MapObjectType.Event ? InstanceWorkspace.Lights.Cast<ICustomDataMapObject>() :
                 throw new Exception();
 
-            var FilteredObjects = appendObjects.Where(x => starttime <= x._time.Value && x._time.Value <= endtime && selectable()).ToArray();
 
-            for (int i = 0; i < FilteredObjects.Count(); i++)
+            var FilteredObjects = appendObjects.Where(x => starttime <= x._time.Value && x._time.Value <= endtime).ToArray();
+
+            int index = 0;
+            for (int i = 0; i < FilteredObjects.Length; i++)
             {
-                ICustomDataMapObject current = FilteredObjects.ElementAt(i);
-
-                EventIndex.StringData = i.ToString();
+                ICustomDataMapObject current = FilteredObjects[i];
                 internalvars.UpdateProperties(current);
+                if (!selectable()) continue;
+                
+                EventIndex.StringData = index.ToString();
 
                 if (customFunction != null)
                 {
@@ -65,6 +68,8 @@ namespace ScuffedWalls.Functions
 
                 if (!delete) Append(current, UnderlyingParameters.CustomDataParse(GetInstance(AppendObjectType)), type);
                 else deleteInstanceWorkspaceItem(current);
+
+                index++;
             }
 
             void deleteInstanceWorkspaceItem(object mapObject)
@@ -86,7 +91,7 @@ namespace ScuffedWalls.Functions
             Stats.AddStats(containResult.BeatMap.Stats);
             InstanceWorkspace.Add(containResult);
 
-            ScuffedWalls.Print($"Modified {FilteredObjects.Count()} {AppendObjectType.ToString().MakePlural(FilteredObjects.Count())} from beats {starttime} to {endtime}");
+            ScuffedWalls.Print($"Modified {index} {AppendObjectType.ToString().MakePlural(FilteredObjects.Count())} from beats {starttime} to {endtime}");
         }
 
     }

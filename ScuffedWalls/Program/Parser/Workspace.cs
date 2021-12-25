@@ -55,7 +55,8 @@ namespace ScuffedWalls
         {
             var beatMap = new BeatMap();
             foreach (var work in workspaces) beatMap.AddMap(work);
-            beatMap.OrderCustomEventLists();
+            beatMap.Order();
+            
 
             return beatMap;
         }
