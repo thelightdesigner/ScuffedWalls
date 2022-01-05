@@ -653,6 +653,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 ```
 
 ## ImageToWall
+(Only works on versions less than v2.0.0)
 
 Constructs an image out of walls as pixels
 
