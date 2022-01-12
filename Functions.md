@@ -273,24 +273,28 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
  - \#  is used at the start of a blank line for a comment
 
-Useful links
+`Useful links`
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
-Additional Info
+### Additional Info
 
-### Position
-> x = **left-right**, y = **up-down**, z = **forward-backward** 
+**Position**
+- x = **left-right**
+- y = **up-down**
+- z = **forward-backward** 
+- 0,0,0  Is on the ground in the center of the lanes
+ 
+**Scale (Walls)**
+ - x = **width** extending from the right
+ - y = **hight** extending from the top
+ - z = **length** extending from the back
 
-> 0,0,0  Is on the ground in the center of the lanes
-### Scale Walls
+**Time (Notes)**
+ - t = **time of any given animation event**
+ -  relative to the object duration (0.0 - 1.0)
+ - t 0.5 = halfway through the objects lifetime,
 
-> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
-
-### Time Notes
-
-> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
-
-> t 0.5 = halfway through the objects lifetime,
+For any questions about these values that havent been listed, check the [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
@@ -401,7 +405,36 @@ Workspace
   repeat:15
   ```
   
-Variables are only accessable from the workspace they are defined in.
+Variables are only accessable from the workspace/function they are defined in.
+  
+  ```ruby
+Workspace
+
+/#Makes 5 variables
+  "NumbersOneThroughFive(0)": 1
+  "NumbersOneThroughFive(1)": 2
+  "NumbersOneThroughFive(2)": 3
+  "NumbersOneThroughFive(3)": 4
+  "NumbersOneThroughFive(4)": 5
+#/
+var:NumbersOneThroughFive
+  data:1,2,3,4,5
+  recompute:1
+  type:array
+  
+  
+  
+/#Makes 3 variables
+  "Position(x)": 5
+  "Position(y)": 2
+  "Position(z)": 1
+#/
+var:Position
+  data:[5,2,1]
+  recompute:1
+  type:vector
+  ```
+ Setting `type` to either `array` or `vector` will split the data given (by commas) into seperate variables. The names of the seperate variables will be printed to the console.
 
 recompute:
  - 0 = recompute math, variables and random() for all references of the variable, 
