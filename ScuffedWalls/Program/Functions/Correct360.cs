@@ -16,7 +16,7 @@ using static ModChart.BeatMap;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("Correct360")]
+    [SFunction("[NONCALLABLE] Correct360")]
     class Append360 : ScuffedFunction
     {
         public AssignableInlineVariable RotationEvent;
