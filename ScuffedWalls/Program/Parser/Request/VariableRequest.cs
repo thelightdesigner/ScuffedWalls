@@ -52,12 +52,13 @@ namespace ScuffedWalls
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
             Name = DefiningParameter.StringData?.Trim();
-            Data = UnderlyingParameters.Get("data", "", p => p.Use().Raw.StringData);
             ContentsType = UnderlyingParameters.Get("type", VariableEnumType.Single, p => Enum.Parse<VariableEnumType>(p.Clean.StringData,true));
             Static = UnderlyingParameters.Get("static", false, p => true);
             DefaultVal = Data;
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
+            Data = string.Join(',', UnderlyingParameters.Where(p => p.Name.RemoveWhiteSpace().ToLower() == "data").Select(p => p.Raw.StringData));
+
             return this;
         }
         public object Clone() => new VariableRequest()

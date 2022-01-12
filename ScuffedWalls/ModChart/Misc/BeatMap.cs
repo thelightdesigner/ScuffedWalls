@@ -211,7 +211,7 @@ namespace ModChart
                 FlashRed = 6,
                 FadeRed = 7
             }
-            public float GetTime() => float.Parse(_time.ToString());
+            public float GetTime() => _time.Value;
             public float? _time { get; set; }
             public Type? _type { get; set; }
             public Value? _value { get; set; }
@@ -249,7 +249,7 @@ namespace ModChart
                 DownRight = 7,
                 Dot = 8
             }
-            public float GetTime() => float.Parse(_time.ToString());
+            public float GetTime() => _time.Value;
             public float? _time { get; set; }
             public int? _lineIndex { get; set; }
             public int? _lineLayer { get; set; }
@@ -278,7 +278,7 @@ namespace ModChart
                 FullHeight = 0,
                 Crouch = 1
             }
-            public float GetTime() => float.Parse(_time.ToString());
+            public float GetTime() => _time.Value;
             public float? _time { get; set; }
             public int? _lineIndex { get; set; }
             public Type? _type { get; set; }

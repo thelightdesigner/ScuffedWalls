@@ -25,12 +25,15 @@ namespace ScuffedWalls
         {
             indexes = indexes.OrderBy(x => x).ToArray();
             string[] output = new string[indexes.Length + 1];
-            int pos = 0;
+            int lastpos = 0;
 
-            for (int i = 0; i < indexes.Length; pos = indexes[i++])
-                output[i] = source.Substring(pos, indexes[i] - pos);
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                output[i] = source.Substring(lastpos, indexes[i] - lastpos);
+                lastpos = indexes[i] + 1;
+            }
 
-            output[indexes.Length] = source.Substring(pos);
+            output[indexes.Length] = source.Substring(lastpos);
             return output;
         }
         public static string[] SplitExcludeParanthesis(this string line) => SplitExcludeBrackets(new BracketAnalyzer(line, '(',')'));

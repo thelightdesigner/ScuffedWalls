@@ -63,7 +63,7 @@
                 Utils.DiscordRPCManager.CurrentMap = Parser.Result;
                 Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
 
-                Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")));
+                Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")), ShowStackFrame: false);
             }, e =>
             {
                 Print($"Error saving to map file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
@@ -109,7 +109,7 @@
             {
                 if (debugStats[i] > 0) stat.Add($"[{debugStats[i]} {((LogSeverity)i).ToString().MakePlural(debugStats[i])}]");
             }
-            Print(string.Join(' ', stat), Color: getHighestSev());
+            Print(string.Join(' ', stat), Color: getHighestSev(), ShowStackFrame: false);
             debugStats = new int[logSevCount];
 
             ConsoleColor getHighestSev()
