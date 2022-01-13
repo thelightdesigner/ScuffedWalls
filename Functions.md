@@ -209,6 +209,82 @@ workspace:text
   duration:8
 
 ```
+Custom Functions can be repeated like any other function while allowing repeats of functions inside of your Custom Function to operate as normal.
+```
+Function:ExampleCustomFunction
+ 
+var:VarRepeat
+    data:0
+    public:true
+ 
+X:Wall
+    repeat:VarRepeat
+ 
+Workspace:FunctionCalling
+
+10:ExampleCustomFunction
+    repeat:10
+    repeataddtime:1
+    VarRepeat:{20*repeat}
+```
+In the example above, the Custom Function will be repeated 10 times with an addtime of 1.
+Inside of the Custom Function, the repeat used when calling the wall is defined in the variable VarRepeat. 
+This logic can be used to recall functions that utilize repeats in a much cleaner manner.
+
+Another functionality repeating with Custom Functions is randomization:
+```
+Function:ExampleCustomFunction
+ 
+var:PosX
+    data:0
+    public:true
+ 
+X:Wall
+    animatedefiniteposition:[PosX,0,0,0],[PosX,10,0,1]
+
+Workspace:ExampleWorkspace
+
+var:RandomXCoord
+data:Random(-10,10)
+recompute:0
+ 
+10:ExampleCustomFunction
+repeat:10
+PosX:RandomXCoord
+```
+The Custom Function above calls for a wall with a random X position, however since the random number is created outside of the custom function, the random number will only change once per call (or repeat) of the Custom Function. 
+For example if the random number generated is 2, the X position of animatedefiniteposition for the first repeat of ExampleCustomFunction will be 2. 
+Randomizing inside of the function would result in two different random positions, not a single consistent coordinate.
+Note:This can also be done by simply defining PosX as a random number when calling the Custom Function. Doing it through variables is my default - iswimfly
+
+Custom Functions can additionally be nested inside of each other. Infinite loops will result in a stack overflow and your map will never compile.
+```
+function:ExampleChildFunction
+
+var:ChildVariable
+    data:0
+    public:true
+
+X:Wall
+    repeat:ChildVariable
+
+function:ExampleParentFunction
+
+var:ParentVariable
+    data:0
+    public:true
+
+X:ExampleChildFunction
+    ChildVariable:ParentVariable
+
+Workspace:ExampleWorkspace
+
+0:ExampleParentFunction
+    ParentVariable:10
+```
+This setup calls ExampleChildFunction at the calltime of ExampleParentFunction.
+When attempting to modify variables, it is important to keep in mind that public variables can only be redefined when calling the Custom Function.
+To fix this when nesting Custom Functions, defining a "Child" Variable as a "Parent" variable as shown in the example above will bring the value "10" of "ParentVariable" to the nested variable "ChildVariable".
 
 # Noodle Extensions/Chroma Properties Syntax
 Noodle Extensions/Chroma/Other properties that can be used on most functions
@@ -273,24 +349,28 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
  - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
  - \#  is used at the start of a blank line for a comment
 
-Useful links
+`Useful links`
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
-Additional Info
+### Additional Info
 
-### Position
-> x = **left-right**, y = **up-down**, z = **forward-backward** 
+**Position**
+- x = **left-right**
+- y = **up-down**
+- z = **forward-backward** 
+- 0,0,0  Is on the ground in the center of the lanes
+ 
+**Scale (Walls)**
+ - x = **width** extending from the right
+ - y = **hight** extending from the top
+ - z = **length** extending from the back
 
-> 0,0,0  Is on the ground in the center of the lanes
-### Scale Walls
+**Time (Notes)**
+ - t = **time of any given animation event**
+ -  relative to the object duration (0.0 - 1.0)
+ - t 0.5 = halfway through the objects lifetime,
 
-> x = **width** extending from the right, y = **hight** extending from the top , z = **length** extending from the back
-
-### Time Notes
-
-> t = **time of any given animation event**, relative to the object duration (0.0 - 1.0)
-
-> t 0.5 = halfway through the objects lifetime,
+For any questions about these values that havent been listed, check the [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
 # Math & Functions
 Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
@@ -401,7 +481,36 @@ Workspace
   repeat:15
   ```
   
-Variables are only accessable from the workspace they are defined in.
+Variables are only accessable from the workspace/function they are defined in.
+  
+  ```ruby
+Workspace
+
+/#Makes 5 variables
+  "NumbersOneThroughFive(0)": 1
+  "NumbersOneThroughFive(1)": 2
+  "NumbersOneThroughFive(2)": 3
+  "NumbersOneThroughFive(3)": 4
+  "NumbersOneThroughFive(4)": 5
+#/
+var:NumbersOneThroughFive
+  data:1,2,3,4,5
+  recompute:1
+  type:array
+  
+  
+  
+/#Makes 3 variables
+  "Position(x)": 5
+  "Position(y)": 2
+  "Position(z)": 1
+#/
+var:Position
+  data:[5,2,1]
+  recompute:1
+  type:vector
+  ```
+ Setting `type` to either `array` or `vector` will split the data given (by commas) into seperate variables. The names of the seperate variables will be printed to the console.
 
 recompute:
  - 0 = recompute math, variables and random() for all references of the variable, 
@@ -432,8 +541,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
- - onTrack: string, only appends to walls on this track
- - selectlineindex: int,int,int (defaults to 0,1,2,3)
+ - select: bool, only applies the affect if the value is true. example `select:{_lineLayer = 0}` will only append to walls with linelayer 0
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
@@ -472,9 +580,8 @@ Appends data to notes between the function time and endtime (toBeat)
 
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
- - selecttype: int,int,int (defaults to 0,1,2,3), only appends to notes with the specified type(s), see [`here`](https://bsmg.wiki/mapping/map-format.html#notes-2) for info on \_type
  - appendTechnique: int(0-2)
- - onTrack: string, only appends to notes on this track
+ - select: bool, only applies the affect if the value is true. example `select:{_lineLayer = 0}` will only append to notes with linelayer 0
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
@@ -653,6 +760,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 ```
 
 ## ImageToWall
+(Only works on versions less than v2.0.0)
 
 Constructs an image out of walls as pixels
 
