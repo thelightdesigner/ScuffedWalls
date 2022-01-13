@@ -286,6 +286,8 @@ This setup calls ExampleChildFunction at the calltime of ExampleParentFunction.
 When attempting to modify variables, it is important to keep in mind that public variables can only be redefined when calling the Custom Function.
 To fix this when nesting Custom Functions, defining a "Child" Variable as a "Parent" variable as shown in the example above will bring the value "10" of "ParentVariable" to the nested variable "ChildVariable".
 
+Feel free to dm iswimfly#0556 on Discord with any questions/problems/help needed regarding Custom Functions.
+
 # Noodle Extensions/Chroma Properties Syntax
 Noodle Extensions/Chroma/Other properties that can be used on most functions
 
