@@ -38,7 +38,7 @@ All the available functions are listed below
 - [`AppendNotes`](#AppendNotes)
 - [`AppendEvents`](#AppendEvents)
 - [`TextToWall`](#TextToWall)
-- [`ModelToWall`](#ModelToWall)
+- [`Model`](#Model)
 - [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
 - [`Blackout`](#Blackout)
