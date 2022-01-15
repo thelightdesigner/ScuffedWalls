@@ -8,7 +8,7 @@ using static ModChart.BeatMap;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("[NONCALLABLE] Script0")]
+    [SFunction("Script0")]
     public class Script0 : ScuffedFunction
     {
         //KDA VALUES GLOWLINE

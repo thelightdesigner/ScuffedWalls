@@ -68,6 +68,9 @@ namespace ScuffedWalls
             UnderlyingParameters = UnderlyingParameters,
             DefiningParameter = DefiningParameter,
             Data = Data,
+            DefaultVal = DefaultVal,
+            ContentsType = ContentsType,
+            Static = Static,
             VariableRecomputeSettings = VariableRecomputeSettings,
             Public = Public
         };
