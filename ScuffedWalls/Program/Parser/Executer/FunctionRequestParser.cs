@@ -54,7 +54,7 @@ namespace ScuffedWalls
             AssignableInlineVariable repeat = new AssignableInlineVariable("repeat", "0");
             AssignableInlineVariable repeattotal = new AssignableInlineVariable("repeattotal", _request.RepeatCount.ToString());
             AssignableInlineVariable beat = new AssignableInlineVariable("time", _request.Time.ToString());
-            AssignableInlineVariable originalTime = new AssignableInlineVariable("timeparam", _request.Time.ToString());
+            AssignableInlineVariable originalTime = new AssignableInlineVariable("timeconst", _request.Time.ToString());
             repeatVars.Add(repeattotal);
             repeatVars.Add(repeat);
             repeatVars.Add(beat);

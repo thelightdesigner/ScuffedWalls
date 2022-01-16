@@ -25,15 +25,15 @@ namespace ScuffedWalls
         }
         public VariableRequest()
         {
-
+            Console.WriteLine("sacreligous");
         }
         public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {
             Name = name.Trim();
             Data = data;
             VariableRecomputeSettings = recompute;
-            Public = _public; 
             DefaultVal = Data;
+            Public = _public;
         }
         public override string ToString()
         {
@@ -54,11 +54,11 @@ namespace ScuffedWalls
             Name = DefiningParameter.StringData?.Trim();
             ContentsType = UnderlyingParameters.Get("type", VariableEnumType.Single, p => Enum.Parse<VariableEnumType>(p.Clean.StringData,true));
             Static = UnderlyingParameters.Get("static", false, p => true);
-            DefaultVal = Data;
+            
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
             Data = string.Join(',', UnderlyingParameters.Where(p => p.Name.RemoveWhiteSpace().ToLower() == "data").Select(p => p.Raw.StringData));
-
+            DefaultVal = Data;
             return this;
         }
         public object Clone() => new VariableRequest()
