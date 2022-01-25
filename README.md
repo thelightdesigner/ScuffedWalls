@@ -1,7 +1,7 @@
 # ScuffedWalls
 A command line tool for making Noodle Extensions 2.0 beat saber maps & modcharts.
 
-This tool does not do the same thing as beatwalls.
+This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
 
 Features:
  - Create custom events
