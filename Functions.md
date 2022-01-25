@@ -209,6 +209,84 @@ workspace:text
   duration:8
 
 ```
+Custom Functions can be repeated like any other function while allowing repeats of functions inside of your Custom Function to operate as normal.
+```
+Function:ExampleCustomFunction
+ 
+var:VarRepeat
+    data:0
+    public:true
+ 
+X:Wall
+    repeat:VarRepeat
+ 
+Workspace:FunctionCalling
+
+10:ExampleCustomFunction
+    repeat:10
+    repeataddtime:1
+    VarRepeat:{20*repeat}
+```
+In the example above, the Custom Function will be repeated 10 times with an addtime of 1.
+Inside of the Custom Function, the repeat used when calling the wall is defined in the variable VarRepeat. 
+This logic can be used to recall functions that utilize repeats in a much cleaner manner.
+
+Another functionality repeating with Custom Functions is randomization:
+```
+Function:ExampleCustomFunction
+ 
+var:PosX
+    data:0
+    public:true
+ 
+X:Wall
+    animatedefiniteposition:[PosX,0,0,0],[PosX,10,0,1]
+
+Workspace:ExampleWorkspace
+
+var:RandomXCoord
+data:Random(-10,10)
+recompute:0
+ 
+10:ExampleCustomFunction
+repeat:10
+PosX:RandomXCoord
+```
+The Custom Function above calls for a wall with a random X position, however since the random number is created outside of the custom function, the random number will only change once per call (or repeat) of the Custom Function. 
+For example if the random number generated is 2, the X position of animatedefiniteposition for the first repeat of ExampleCustomFunction will be 2. 
+Randomizing inside of the function would result in two different random positions, not a single consistent coordinate.
+Note:This can also be done by simply defining PosX as a random number when calling the Custom Function. Doing it through variables is my default - iswimfly
+
+Custom Functions can additionally be nested inside of each other. Infinite loops will result in a stack overflow and your map will never compile.
+```
+function:ExampleChildFunction
+
+var:ChildVariable
+    data:0
+    public:true
+
+X:Wall
+    repeat:ChildVariable
+
+function:ExampleParentFunction
+
+var:ParentVariable
+    data:0
+    public:true
+
+X:ExampleChildFunction
+    ChildVariable:ParentVariable
+
+Workspace:ExampleWorkspace
+
+0:ExampleParentFunction
+    ParentVariable:10
+```
+This setup calls ExampleChildFunction at the calltime of ExampleParentFunction.
+When attempting to modify variables, it is important to keep in mind that public variables can only be redefined when calling the Custom Function.
+To fix this when nesting Custom Functions, defining a "Child" Variable as a "Parent" variable as shown in the example above will bring the value "10" of "ParentVariable" to the nested variable "ChildVariable".
+
+Feel free to dm iswimfly#0556 on Discord with any questions/problems/help needed regarding Custom Functions.
 
 # Noodle Extensions/Chroma Properties Syntax
 Noodle Extensions/Chroma/Other properties that can be used on most functions
@@ -276,7 +354,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 `Useful links`
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
-### Additional Info
+### Scale/Position/Time Explanation
 
 **Position**
 - x = **left-right**
