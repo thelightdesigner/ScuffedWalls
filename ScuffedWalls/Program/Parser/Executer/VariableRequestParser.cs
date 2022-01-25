@@ -4,35 +4,53 @@ using System.Text;
 
 namespace ScuffedWalls
 {
-    class VariableRequestParser : IRequestParser<VariableRequest, AssignableInlineVariable>
+    class VariableRequestParser : IRequestParser<VariableRequest, IEnumerable<AssignableInlineVariable>>
     {
-        public AssignableInlineVariable Result => _result;
+        public static readonly char[] VectorIndex = { 'x', 'y', 'z', 't', 'e', 's' };
+        public IEnumerable<AssignableInlineVariable> Result => _result;
         public VariableRequest CurrentRequest => _request;
         public bool HideLogs { get; set; }
 
         private readonly VariableRequest _request;
-        private AssignableInlineVariable _result;
+        private IEnumerable<AssignableInlineVariable> _result;
 
         public VariableRequestParser(VariableRequest request, bool hideLogs)
         {
             HideLogs = hideLogs;
             _request = request;
         }
-        public AssignableInlineVariable GetResult()
+        public IEnumerable<AssignableInlineVariable> GetResult()
         {
-            AssignableInlineVariable variable = null;
+            List<AssignableInlineVariable> variables = new List<AssignableInlineVariable>();
             Debug.TryAction(() =>
             {
-                variable = new AssignableInlineVariable(_request.Name, _request.Data, _request.VariableRecomputeSettings);
-                _result = variable;
+                if (_request.ContentsType == VariableEnumType.Array || _request.ContentsType == VariableEnumType.Vector)
+                {
+                    string[] values = _request.Data.ParseSWArray();
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        string indexer = _request.ContentsType switch
+                        {
+                            VariableEnumType.Array => i.ToString(),
+                            VariableEnumType.Vector => VectorIndex[i].ToString(),
+                            _ => throw new Exception("iswimfly")
+                        };
+                        variables.Add(new AssignableInlineVariable(_request.Name + $"({indexer})", values[i], _request.VariableRecomputeSettings));
+                    }
+                }
+                else
+                {
+                    variables.Add(new AssignableInlineVariable(_request.Name, _request.Data, _request.VariableRecomputeSettings));
+                    _result = variables;
+                }
 
-                if (!HideLogs) ScuffedWalls.Print($"Added Variable \"{variable.Name}\" Val:{variable.StringData}", ShowStackFrame: false);
+                if (!HideLogs) foreach(var x in variables) ScuffedWalls.Print($"Added Variable \"{x.Name}\" Val:{x.StringData}", ShowStackFrame: false);
             }, e =>
             {
                 ScuffedWalls.Print($"Error adding global variable {_request.Name} ERROR:{e.Message} ", ScuffedWalls.LogSeverity.Error);
             });
-            _result = variable;
-            return variable;
+            _result = variables;
+            return variables;
         }
     }
 }

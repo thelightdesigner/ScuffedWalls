@@ -9,7 +9,7 @@
 
     static class ScuffedWalls
     {
-        public const string Version = "v2.0.0";
+        public const string Version = "v2.0.2-dev";
         static void Main(string[] args)
         {
             Utils.Initialize(args);
@@ -57,13 +57,13 @@
             });
             Debug.TryAction(() =>
             {
-                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}");
+                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}", ShowStackFrame: false);
                 File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
                 
                 Utils.DiscordRPCManager.CurrentMap = Parser.Result;
                 Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
 
-                Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")));
+                Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")), ShowStackFrame: false);
             }, e =>
             {
                 Print($"Error saving to map file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
@@ -109,7 +109,7 @@
             {
                 if (debugStats[i] > 0) stat.Add($"[{debugStats[i]} {((LogSeverity)i).ToString().MakePlural(debugStats[i])}]");
             }
-            Print(string.Join(' ', stat), Color: getHighestSev());
+            Print(string.Join(' ', stat), Color: getHighestSev(), ShowStackFrame: false);
             debugStats = new int[logSevCount];
 
             ConsoleColor getHighestSev()

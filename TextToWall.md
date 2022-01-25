@@ -17,6 +17,7 @@ All the letters should be roughly one blender unit tall in a line on the X axis.
 
 Community pre-made font models:
 
+- [`acloudyskye_font.dae`](Examples/fonts/acloudyskye_font.dae)
 
 - [`TzurS11Font.blend`](Examples/fonts/TzurS11Font.blend)      [`TzurS11Font.dae`](Examples/fonts/TzurS11Font.dae)
 

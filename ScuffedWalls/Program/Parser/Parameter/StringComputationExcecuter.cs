@@ -10,7 +10,7 @@ namespace ScuffedWalls
     {
         private static readonly TreeList<StringFunction> _stringFunctions = new TreeList<StringFunction>(StringFunction.Functions, StringFunction.Exposer);
         public TreeList<AssignableInlineVariable> Variables { get; }
-        public bool HandleExceptions { get; private set; }
+        public bool HandleExceptions { get; set; }
         public StringComputationExcecuter(TreeList<AssignableInlineVariable> vars = null, bool handleExceptions = false)
         {
             Variables = vars ?? new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);

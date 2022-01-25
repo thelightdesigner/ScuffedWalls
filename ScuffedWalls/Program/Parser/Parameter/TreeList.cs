@@ -66,7 +66,7 @@ namespace ScuffedWalls
         }
         public T Get(string key)
         {
-            T item = _list.FirstOrDefault(item => Exposer(item) == key);
+            T item = _list.FirstOrDefault(item => Exposer(item).ToLower() == key.ToLower());
             if (item != null) return item;
 
             else if (_lookupGroups != null)

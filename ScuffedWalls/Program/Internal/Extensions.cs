@@ -8,6 +8,35 @@ namespace ScuffedWalls
 {
     static class Extensions
     {
+        public static string[] ParseSWArray(this string array) =>  array.Replace("[", "").Replace("]", "").SplitExcludeParanthesis();
+        public static string[] SplitExcludeBrackets(BracketAnalyzer analyzer)
+        {
+            List<int> splits = new List<int>();
+
+            for (int i = 0; i < analyzer.FullLine.Length; i++)
+            {
+                if (analyzer.IsOpeningBracket(i)) i = analyzer.GetPosOfClosingSymbol(i);
+                else if (analyzer.FullLine[i] == ',') splits.Add(i);
+            }
+            
+            return analyzer.FullLine.SplitAt(splits.ToArray());
+        }
+        public static string[] SplitAt(this string source, int[] indexes)
+        {
+            indexes = indexes.OrderBy(x => x).ToArray();
+            string[] output = new string[indexes.Length + 1];
+            int lastpos = 0;
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                output[i] = source.Substring(lastpos, indexes[i] - lastpos);
+                lastpos = indexes[i] + 1;
+            }
+
+            output[indexes.Length] = source.Substring(lastpos);
+            return output;
+        }
+        public static string[] SplitExcludeParanthesis(this string line) => SplitExcludeBrackets(new BracketAnalyzer(line, '(',')'));
         public static TreeList<T> ToTreeList<T>(this IEnumerable<T> enumerable, Func<T, string> exposer) => new TreeList<T>(enumerable, exposer);
         /// <summary>
         /// Attempts a deep clone of an array and all of the nested arrays, clones ICloneable

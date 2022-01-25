@@ -26,25 +26,12 @@ namespace ScuffedWalls.Functions
     [SFunction("AnimateTrack")]
     class CustomEventAnimateTrack : ScuffedFunction
     {
-        object[][] height;
-        object[][] attenuation;
-        object[][] offset;
-        object[][] startY;
-        protected override void Init()
-        {
-            height = GetParam("animateheight", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
-            attenuation = GetParam("animateattenuation", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
-            offset = GetParam("animateoffset", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
-            startY = GetParam("animatestarty", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]"));
-        }
         protected override void Update()
         {
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
                 ["_type"] = BeatMap.AnimateTrack,
-                ["_attenuation"] = attenuation,
-                ["_height"] = height,
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 

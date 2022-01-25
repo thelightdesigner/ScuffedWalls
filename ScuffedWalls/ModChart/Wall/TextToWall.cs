@@ -161,6 +161,7 @@ namespace ModChart.Wall
         public ModelSettings ModelSettings { get; set; }
 
     }
+    //I HATE ALL OF THIS
     public static class TextHelper
     {
         //sets the position of a collection of walls, account for thicc

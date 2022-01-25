@@ -1,11 +1,8 @@
 ﻿using ModChart;
 using ScuffedWalls.Functions;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace ScuffedWalls
 {
@@ -44,38 +41,36 @@ namespace ScuffedWalls
                 throw new InvalidFilterCriteriaException($"Function {_request.Name} at Beat {_request.Time} does NOT exist, skipping");
             }
 
-            Type func = 
+            Type func =
                 isCustom ? typeof(CustomFunction) :
                 Functions.First(f => f.BaseType == typeof(ScuffedFunction) && f.GetCustomAttributes<SFunctionAttribute>().Any(a => !a.ParserName.Contains("[NONCALLABLE]") && a.ParserName.Any(n => n == _request.Name)));
-            
 
 
-            int repeatCount = _request.RepeatCount != null ? int.Parse(_request.RepeatCount.StringData) : 1;
+
             float repeatTime = _request.RepeatAddTime != null ? float.Parse(_request.RepeatAddTime.StringData) : 0.0f;
             float initialTime = _request.Time;
 
             TreeList<AssignableInlineVariable> repeatVars = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
             AssignableInlineVariable repeat = new AssignableInlineVariable("repeat", "0");
-            AssignableInlineVariable repeattotal = new AssignableInlineVariable("repeattotal", "0");
+            AssignableInlineVariable repeattotal = new AssignableInlineVariable("repeattotal", _request.RepeatCount.ToString());
             AssignableInlineVariable beat = new AssignableInlineVariable("time", _request.Time.ToString());
+            AssignableInlineVariable originalTime = new AssignableInlineVariable("timeconst", _request.Time.ToString());
             repeatVars.Add(repeattotal);
             repeatVars.Add(repeat);
             repeatVars.Add(beat);
+            repeatVars.Add(originalTime);
             foreach (var re in _request.Parameters) re.Variables.Register(repeatVars);
+            _request.TimeParam?.Variables.Register(repeatVars);
 
 
             Debug.TryAction(() =>
             {
                 ScuffedFunction funcInstance = (ScuffedFunction)Activator.CreateInstance(func);
 
-                funcInstance.InstantiateSFunction(_request, _instanceWorkspace, _request.Time, repeatCount);
+                funcInstance.InstantiateSFunction(_request, _instanceWorkspace, _request.Time, _request.RepeatCount);
 
-                for (int i = 0; i < repeatCount; i++)
-                {
-                    repeattotal.StringData = i.ToString();
-                }
 
-                for (int i = 0; i < repeatCount; i++)
+                for (int i = 0; i < _request.RepeatCount; i++)
                 {
                     repeat.StringData = i.ToString();
                     beat.StringData = _request.Time.ToString();
@@ -83,7 +78,7 @@ namespace ScuffedWalls
                     funcInstance.SetTime(_request.Time + (i * repeatTime));
                     funcInstance.Repeat();
 
-                   // WorkspaceRequestParser.Instance.RefreshCurrentParameters();
+                    // WorkspaceRequestParser.Instance.RefreshCurrentParameters();
                 }
 
                 funcInstance.Terminate();

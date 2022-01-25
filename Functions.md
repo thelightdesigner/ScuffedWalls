@@ -38,7 +38,7 @@ All the available functions are listed below
 - [`AppendNotes`](#AppendNotes)
 - [`AppendEvents`](#AppendEvents)
 - [`TextToWall`](#TextToWall)
-- [`ModelToWall`](#ModelToWall)
+- [`Model`](#Model)
 - [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
 - [`Blackout`](#Blackout)
@@ -354,7 +354,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 `Useful links`
  - [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
-### Additional Info
+### Scale/Position/Time Explanation
 
 **Position**
 - x = **left-right**
@@ -583,7 +583,7 @@ Appends data to notes between the function time and endtime (toBeat)
  - Function Time => starting beat of selection (only append notes after...)
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
- - select: bool, only applies the affect if the value is true. example `select:{_lineLayer = 0}` will only append to notes with linelayer 0
+ - select:bool WHERE if `true` object will be modified and if `false` object will be skipped. EXAMPLE: `select:{_lineLayer = 0}` will only append to notes with linelayer 0
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
@@ -629,7 +629,7 @@ Appends data to events between the function time and endtime (toBeat)
  - toBeat: float
  - appendTechnique: int(0-1)
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
- - selecttype: 0, 1, 2, 3; the type of the light to append to
+ - select:bool WHERE if `true` object will be modified and if `false` object will be skipped
 
  Example
 ```ruby
@@ -709,10 +709,10 @@ see [here](TextToWall.md) for how the program reads font images/models.
    definitetime:beats
 ```
 
-## ModelToWall
+## Model
 
 (repeatable)
-constructs a model out of walls. see [here](Blender%20Project.md) for more info
+constructs a model out of walls/notes/bombs/playertracks. see [here](Blender%20Project.md) for more info
 
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 
@@ -734,7 +734,6 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
  - createnotes: bool
  - spline: bool
  - spreadspawntime: float
- - type: 0, 1, 2 or 3, 0 = ModelDefined, 1 = AllWalls,  2 = AllBombs, 3 = AllNotes
  - alpha: float
  - thicc: float
  - deltaposition: \[x,y,z] offsets the model in 3d by this position vector
@@ -745,7 +744,7 @@ Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - repeat: int
  - repeataddtime: float
- 
+ - type: 0, 1, 2 or 3 WHERE 0 = The model defines which object should be walls or notes, 1 = every object will be a wall,  2 = every object will be a bomb, 3 = every object will be a note
  
   Example
 ```ruby

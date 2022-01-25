@@ -25,19 +25,22 @@ namespace ScuffedWalls
         }
         public VariableRequest()
         {
-
+            Console.WriteLine("sacreligous");
         }
         public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {
             Name = name.Trim();
             Data = data;
             VariableRecomputeSettings = recompute;
+            DefaultVal = Data;
             Public = _public;
         }
         public override string ToString()
         {
             return $"{Name}:{Data}";
         }
+        public VariableEnumType ContentsType { get; private set; } = VariableEnumType.Single;
+        public bool Static { get; private set; } = false;
         public string DefaultVal { get; private set; }
         public string Name { get; set; }
         public string Data { get; set; }
@@ -49,10 +52,13 @@ namespace ScuffedWalls
             DefiningParameter = Lines.First();
             UnderlyingParameters = new TreeList<Parameter>(Lines.Lasts(), Parameter.Exposer);
             Name = DefiningParameter.StringData?.Trim();
-            Data = UnderlyingParameters.Get("data", "", p => p.Use().Raw.StringData);
-            DefaultVal = Data;
+            ContentsType = UnderlyingParameters.Get("type", VariableEnumType.Single, p => Enum.Parse<VariableEnumType>(p.Clean.StringData,true));
+            Static = UnderlyingParameters.Get("static", false, p => true);
+            
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
+            Data = string.Join(',', UnderlyingParameters.Where(p => p.Name.RemoveWhiteSpace().ToLower() == "data").Select(p => p.Raw.StringData));
+            DefaultVal = Data;
             return this;
         }
         public object Clone() => new VariableRequest()
@@ -62,8 +68,18 @@ namespace ScuffedWalls
             UnderlyingParameters = UnderlyingParameters,
             DefiningParameter = DefiningParameter,
             Data = Data,
+            DefaultVal = DefaultVal,
+            ContentsType = ContentsType,
+            Static = Static,
             VariableRecomputeSettings = VariableRecomputeSettings,
             Public = Public
         };
+
+    }
+    public enum VariableEnumType
+    {
+        Array,
+        Vector,
+        Single
     }
 }
