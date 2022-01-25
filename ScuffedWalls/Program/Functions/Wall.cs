@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
         bool isNjs;
         protected override void Init()
         {
-            parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            parsedthing = UnderlyingParameters.Parse(new BeatMap.Obstacle());
             isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
         }
         protected override void Update()
@@ -57,7 +57,7 @@ namespace ScuffedWalls.Functions
                 _type = 0
             };
 
-            BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.Parse(new BeatMap.Obstacle());
 
             BeatMap.Append(wall, append, BeatMap.AppendPriority.High);
 

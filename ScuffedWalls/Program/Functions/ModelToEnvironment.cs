@@ -22,12 +22,13 @@ namespace ScuffedWalls.Functions
         {
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
-            float scalerX = GetParam("scalerx", 30, CustomDataParser.FloatConverter);
-            float scalerY = GetParam("scalerY", 1.2f, CustomDataParser.FloatConverter);
-            float scalerZ = GetParam("scalerZ", 30, CustomDataParser.FloatConverter);
-            float YOffset = GetParam("YOffset", 0, CustomDataParser.FloatConverter);
-            float ZOffset = GetParam("ZOffset", 1.1f, CustomDataParser.FloatConverter);
-            float XOffset = GetParam("XOffset", 0, CustomDataParser.FloatConverter);
+            AddRefresh(Path);
+            float scalerX = GetParam("scalerx", 30, HeckDataConverter.FloatConverter);
+            float scalerY = GetParam("scalerY", 1.2f, HeckDataConverter.FloatConverter);
+            float scalerZ = GetParam("scalerZ", 30, HeckDataConverter.FloatConverter);
+            float YOffset = GetParam("YOffset", 0, HeckDataConverter.FloatConverter);
+            float ZOffset = GetParam("ZOffset", 1.1f, HeckDataConverter.FloatConverter);
+            float XOffset = GetParam("XOffset", 0, HeckDataConverter.FloatConverter);
             int Index = GetParam("Index", 31, p => int.Parse(p));
             int IndexFirstCloned = GetParam("IndexFirstCloned", 118, p => int.Parse(p));
             string RegexStatement = GetParam("Regex", @$"GlowLine \(2\)", p => p);

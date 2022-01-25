@@ -12,7 +12,7 @@ namespace ScuffedWalls.Functions
         protected override void Update()
         {
 
-            var parsedshit = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedshit = UnderlyingParameters.Parse(new BeatMap.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedshit._customData != null && parsedshit._customData["_noteJumpMovementSpeed"] != null;
             List<string> lines = new List<string>();
@@ -84,7 +84,7 @@ namespace ScuffedWalls.Functions
                 _duration = duration,
                 _customData = new TreeDictionary()
             };
-            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
+            BeatMap.Append(wall, UnderlyingParameters.Parse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
 
             lines.Reverse();
             WallText text = new WallText(new TextSettings()
