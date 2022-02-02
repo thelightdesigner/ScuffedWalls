@@ -70,7 +70,7 @@ namespace ScuffedWalls.Functions
             {
                 if (p.Clean.Name == "line")
                 {
-                    lines.Add(p.Raw.StringData);
+                    lines.Add(p.StringData);
                     p.WasUsed = true;
                 }
             }
