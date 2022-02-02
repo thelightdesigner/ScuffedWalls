@@ -6,53 +6,15 @@ using System.Text.Json;
 
 namespace ScuffedWalls
 {
-    public static class HeckDataConverter
+    public static class CustomDataParser
     {
-        private static Func<string, object> boolConverter = value => bool.Parse(value);
-        private static Func<string, object> arrayOrFloatConverter = value => bool.Parse(value);
-        private static Func<string, object> trackConverter => track => DeserializeDefaultToString<object[]>(track);
-        private static Func<string, object> floatConverter => val => float.Parse(val);
-        private static Func<string, object> stringConverter => val => val;
-        private static Func<string, object> intConverter = val => int.Parse(val);
-        private static Func<string, object> arrayConverter => val => val.ParseSWArray();
-        private static Func<string, object> nestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
-
-        public static readonly Dictionary<string, Func<string, object>> CustomDataPropertyConverters = new Dictionary<string, Func<string, object>>()
-        {
-            ["_interactable"] = boolConverter,
-            ["_disableNoteGravity"] = boolConverter,
-            ["_cutDirection"] = floatConverter,
-            ["_noteJumpMovementSpeed"] = floatConverter,
-            ["_noteJumpStartBeatOffset"] = floatConverter,
-            ["_track"] = stringConverter,
-            ["_fake"] = boolConverter,
-            ["_rotation"] = arrayConverter,
-            ["_localRotation"] = arrayConverter,
-            ["_position"] = arrayConverter,
-            ["_scale"] = arrayConverter,
-            ["_propID"] = intConverter,
-            ["_lightID"] = intConverter,
-            ["_disableSpawnEffect"] = boolConverter,
-            ["_color"] = arrayConverter,
-            ["_lockPosition"] = boolConverter,
-            ["_preciseSpeed"] = floatConverter,
-            ["_direction"] = intConverter,
-            ["_nameFilter"] = stringConverter,
-            ["_reset"] = boolConverter,
-            ["_step"] = floatConverter,
-            ["_prop"] = floatConverter,
-            ["_speed"] = floatConverter,
-            ["_counterSpin"] = boolConverter,
-            ["_disableNoteLook"] = boolConverter,
-        };
-        /*
         public static Func<string, object> TrackConverter => track => DeserializeDefaultToString<object[]>(track);
         public static Func<string, float> FloatConverter => val => float.Parse(val);
         public static Func<string, bool> BoolConverter => val => bool.Parse(val);
         public static Func<string, string> StringConverter => val => val;
         public static Func<string, object> ArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
-        public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");*/
-        public static TreeDictionary Parse(this TreeList<Parameter> parameters)
+        public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
+        public static ICustomDataMapObject CustomDataParse(this TreeList<Parameter> parameters, ICustomDataMapObject objInstance)
         {
             objInstance._time = GetParam("time", null, p => (float?)float.Parse(p));
             var customdata = new TreeDictionary

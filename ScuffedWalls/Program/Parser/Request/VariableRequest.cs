@@ -25,7 +25,7 @@ namespace ScuffedWalls
         }
         public VariableRequest()
         {
-
+            Console.WriteLine("sacreligous");
         }
         public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {
@@ -54,6 +54,7 @@ namespace ScuffedWalls
             Name = DefiningParameter.StringData?.Trim();
             ContentsType = UnderlyingParameters.Get("type", VariableEnumType.Single, p => Enum.Parse<VariableEnumType>(p.Clean.StringData,true));
             Static = UnderlyingParameters.Get("static", false, p => true);
+            
             VariableRecomputeSettings = UnderlyingParameters.Get("recompute", VariableRecomputeSettings.OnCreationOnly, p => (VariableRecomputeSettings)int.Parse(p.Use().StringData));
             Public = UnderlyingParameters.Get("public", false, p => bool.Parse(p.Use().Clean.StringData));
             Data = string.Join(',', UnderlyingParameters.Where(p => p.Name.RemoveWhiteSpace().ToLower() == "data").Select(p => p.Raw.StringData));

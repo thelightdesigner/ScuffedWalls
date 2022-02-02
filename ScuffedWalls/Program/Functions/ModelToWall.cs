@@ -11,7 +11,7 @@ namespace ScuffedWalls.Functions
     {
         protected override void Update()
         {
-            var parsedcustomstuff = UnderlyingParameters.Parse(new BeatMap.Obstacle());
+            var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpMovementSpeed"] != null;
 
@@ -77,7 +77,7 @@ namespace ScuffedWalls.Functions
                 _time = Time,
                 _duration = duration
             };
-            BeatMap.Append(wall, UnderlyingParameters.Parse(new BeatMap.Obstacle()), BeatMap.AppendPriority.Low);
+            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.Low);
 
             Transformation Delta = new Transformation
             {

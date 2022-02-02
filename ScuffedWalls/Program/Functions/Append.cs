@@ -30,7 +30,7 @@ namespace ScuffedWalls.Functions
                 name.Contains("event") ? MapObjectType.Event :
                 throw new ArgumentException("Invalid append map object type! (not set?)");
 
-            bool delete = GetParam("delete",false, HeckDataConverter.BoolConverter);
+            bool delete = GetParam("delete",false, CustomDataParser.BoolConverter);
 
             float endtime = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
             string callfun = GetParam("call", null, p => p);
@@ -63,10 +63,10 @@ namespace ScuffedWalls.Functions
 
                 if (customFunction != null)
                 {
-                    containResult.Add(customFunction.GetResult(current.GetTime(), Variables.Select(v => new VariableRequest(v.Name, v.StringData)).CombineWith(UnderlyingParameters.Select(p => new VariableRequest(p.Name, p.StringData))), false));
+                    containResult.Add(customFunction.GetResult(current.GetTime(), Variables.Select(v => new VariableRequest(v.Name, v.StringData)), false));
                 }
 
-                if (!delete) Append(current, UnderlyingParameters.Parse(GetInstance(AppendObjectType)), type);
+                if (!delete) Append(current, UnderlyingParameters.CustomDataParse(GetInstance(AppendObjectType)), type);
                 else deleteInstanceWorkspaceItem(current);
 
                 index++;

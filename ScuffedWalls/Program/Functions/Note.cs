@@ -44,7 +44,7 @@ namespace ScuffedWalls.Functions
                 _type = type,
                 _customData = njsoffset.HasValue ? new TreeDictionary() { ["_noteJumpStartBeatOffset"] = njsoffset } : null
             };
-            BeatMap.Append(note, UnderlyingParameters.Parse(new BeatMap.Note()), BeatMap.AppendPriority.High);
+            BeatMap.Append(note, UnderlyingParameters.CustomDataParse(new BeatMap.Note()), BeatMap.AppendPriority.High);
 
             InstanceWorkspace.Notes.Add(note);
 
