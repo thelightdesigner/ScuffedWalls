@@ -107,16 +107,16 @@ namespace ScuffedWalls
                     switch (line.Clean.Name)
                     {
                         case "include":
-                            includes.Add(new FileInfo(Path.Combine(Utils.ScuffedConfig.MapFolderPath, line.StringData.Trim())));
+                            includes.Add(new FileInfo(Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, line.StringData.Trim())));
                             break;
                         case "hidemapinrpc":
-                            Utils.ScuffedConfig.HideMapInRPC = bool.Parse(line.StringData);
+                            ScuffedWallsContainer.ScuffedConfig.HideMapInRPC = bool.Parse(line.StringData);
                             break;
                         case "debug":
-                            Utils.ScuffedConfig.Debug = bool.Parse(line.StringData);
+                            ScuffedWallsContainer.ScuffedConfig.Debug = bool.Parse(line.StringData);
                             break;
                         case "prettyprintjson":
-                            Utils.ScuffedConfig.PrettyPrintJson = bool.Parse(line.StringData);
+                            ScuffedWallsContainer.ScuffedConfig.PrettyPrintJson = bool.Parse(line.StringData);
                             break;
                     }
                     

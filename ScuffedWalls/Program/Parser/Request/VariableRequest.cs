@@ -25,7 +25,7 @@ namespace ScuffedWalls
         }
         public VariableRequest()
         {
-            Console.WriteLine("sacreligous");
+           // Console.WriteLine("sacreligous");
         }
         public VariableRequest(string name, string data, VariableRecomputeSettings recompute = VariableRecomputeSettings.OnCreationOnly, bool _public = true)
         {

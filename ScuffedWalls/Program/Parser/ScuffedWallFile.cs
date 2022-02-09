@@ -35,9 +35,9 @@ namespace ScuffedWalls
                 Environment.Exit(1);
             }
 
-            if (Utils.ScuffedConfig.IsBackupEnabled)
+            if (ScuffedWallsContainer.ScuffedConfig.IsBackupEnabled)
             {
-                System.IO.File.Copy(Path, System.IO.Path.Combine(Utils.ScuffedConfig.BackupPaths.BackupSWFolderPath, $"{DateTime.Now.ToFileString()}.sw"));
+                System.IO.File.Copy(Path, System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.BackupPaths.BackupSWFolderPath, $"{DateTime.Now.ToFileString()}.sw"));
             }
         }
         public static List<KeyValuePair<int, string>> RemoveCommentedAreas(IEnumerable<KeyValuePair<int, string>> lines)

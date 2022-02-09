@@ -25,9 +25,9 @@ namespace ScuffedWalls.Functions
 
             int id = 0;
 
-            Utils.InfoDifficulty["_customData"] ??= new TreeDictionary();
+            ScuffedWallsContainer.InfoDifficulty["_customData"] ??= new TreeDictionary();
 
-            if (Utils.InfoDifficulty["_customData._sounds"] is IList<object> _sounds)
+            if (ScuffedWallsContainer.InfoDifficulty["_customData._sounds"] is IList<object> _sounds)
             {
                 if (_sounds.All(s => s.ToString() != path)) _sounds.Add(path);
                 id = _sounds.IndexOf(path);
@@ -39,7 +39,7 @@ namespace ScuffedWalls.Functions
                     path
                 };
 
-                Utils.InfoDifficulty["_customData._sounds"] = newList;
+                ScuffedWallsContainer.InfoDifficulty["_customData._sounds"] = newList;
                 
             }
 

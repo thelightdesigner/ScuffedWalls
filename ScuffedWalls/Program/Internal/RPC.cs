@@ -41,7 +41,7 @@ namespace ScuffedWalls
         {
             while (CurrentMap == null) await Task.Delay(500);
 
-            if (!Utils.ScuffedConfig.HideMapInRPC) client.UpdateDetails(Utils.Info["_songName"].ToString());
+            if (!ScuffedWallsContainer.ScuffedConfig.HideMapInRPC) client.UpdateDetails(ScuffedWallsContainer.Info["_songName"].ToString());
 
             while (true)
             {

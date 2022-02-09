@@ -9,30 +9,30 @@
 
     static class ScuffedWalls
     {
-        public const string Version = "v2.0.3-dev";
+        public const string Version = "v2.0.2";
         static void Main(string[] args)
         {
-            Utils.Initialize(args);
+            ScuffedWallsContainer.Initialize(args);
 
             Print($"ScuffedWalls {Version}");
-            Print(Utils.ScuffedConfig.MapFolderPath);
+            Print(ScuffedWallsContainer.ScuffedConfig.MapFolderPath);
 
 
             while (true)
             {
-                if (Utils.ScuffedConfig.ClearConsoleOnRefresh) Console.Clear();
-                Utils.ScuffedWallFile.Refresh();
+                if (ScuffedWallsContainer.ScuffedConfig.ClearConsoleOnRefresh) Console.Clear();
+                ScuffedWallsContainer.ScuffedWallFile.Refresh();
                 Print($"{FileChangeDetector.LatestMessage}, running...");
                 var StartTime = DateTime.Now;
-                Utils.InvokeOnChangeDetected();
+                ScuffedWallsContainer.InvokeOnChangeDetected();
                 ExecuteRequest();
                 GC.Collect();
-                Utils.InvokeOnProgramComplete();
+                ScuffedWallsContainer.InvokeOnProgramComplete();
                 printStats();
                 Print($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
-                Print($"Waiting for changes to {string.Join(", ", Utils.FilesToChange.Select(file => file.File.Name))}");
-                FileChangeDetector.WaitForChange(Utils.FilesToChange);
-                Utils.ResetAwaitingFiles();
+                Print($"Waiting for changes to {string.Join(", ", ScuffedWallsContainer.FilesToChange.Select(file => file.File.Name))}");
+                FileChangeDetector.WaitForChange(ScuffedWallsContainer.FilesToChange);
+                ScuffedWallsContainer.ResetAwaitingFiles();
             }
         }
         static void ExecuteRequest()
@@ -40,7 +40,7 @@
             ScuffedRequest Request = null;
             Debug.TryAction(() => 
             {
-                Request = (ScuffedRequest)new ScuffedRequest().SetupFromLines(Utils.ScuffedWallFile.Parameters);
+                Request = (ScuffedRequest)new ScuffedRequest().SetupFromLines(ScuffedWallsContainer.ScuffedWallFile.Parameters);
             },e => 
             {
                 Print($"Error parsing ScuffedWall file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
@@ -57,11 +57,11 @@
             });
             Debug.TryAction(() =>
             {
-                Print($"Writing to {new FileInfo(Utils.ScuffedConfig.MapFilePath).Name}", ShowStackFrame: false);
-                File.WriteAllText(Utils.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = Utils.ScuffedConfig.PrettyPrintJson }));
+                Print($"Writing to {new FileInfo(ScuffedWallsContainer.ScuffedConfig.MapFilePath).Name}", ShowStackFrame: false);
+                File.WriteAllText(ScuffedWallsContainer.ScuffedConfig.MapFilePath, JsonSerializer.Serialize(Parser.Result, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = ScuffedWallsContainer.ScuffedConfig.PrettyPrintJson }));
                 
-                Utils.DiscordRPCManager.CurrentMap = Parser.Result;
-                Utils.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
+                ScuffedWallsContainer.DiscordRPCManager.CurrentMap = Parser.Result;
+                ScuffedWallsContainer.DiscordRPCManager.Workspaces = Parser.Workspaces.Count();
 
                 Print(string.Join(' ', Parser.Result.Stats.Select(st => $"[{st.Value} {st.Key.MakePlural(st.Value)}]")), ShowStackFrame: false);
             }, e =>
@@ -69,7 +69,7 @@
                 Print($"Error saving to map file ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
             }); 
             Print("Saving Config");
-            File.WriteAllText(Utils.ConfigFileName, JsonSerializer.Serialize(Utils.ScuffedConfig, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
+            File.WriteAllText(ScuffedWallsContainer.ConfigFileName, JsonSerializer.Serialize(ScuffedWallsContainer.ScuffedConfig, new JsonSerializerOptions() { IgnoreNullValues = true, WriteIndented = true }));
            
         }
         public static void Print(string Message, LogSeverity Severity = LogSeverity.Info, ConsoleColor? Color = null, StackFrame StackFrame = null, bool ShowStackFrame = true, string OverrideStackFrame = null)

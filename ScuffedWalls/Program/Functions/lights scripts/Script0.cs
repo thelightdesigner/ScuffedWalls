@@ -22,7 +22,7 @@ namespace ScuffedWalls.Functions
         //REGEX @$"\[{Index}\]GlowLine \(2\)"
         protected override void Update()
         {
-            string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
+            string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
             AddRefresh(Path);
             float scalerX = GetParam("scalerx", 30, CustomDataParser.FloatConverter);

@@ -16,7 +16,7 @@ namespace ScuffedWalls.Functions
         float endbeat;
         protected override void Init()
         {
-            Path = GetParam("path", string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
+            Path = GetParam("path", string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
             AddRefresh(Path); 
             Type = GetParam("type", new int[] { 0, 1, 2, 3, 4, 5 }, p => p.Split(",").Select(a => Convert.ToInt32(a)).ToArray()); 
@@ -24,7 +24,7 @@ namespace ScuffedWalls.Functions
             addtime = GetParam("addtime", 0, p => float.Parse(p));
             endbeat = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
 
-            BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path), Utils.DefaultJsonConverterSettings);
+            BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path), ScuffedWallsContainer.DefaultJsonConverterSettings);
             BeatMap filtered = new BeatMap();
 
             if (beatMap._obstacles != null && beatMap._obstacles.Any() && Type.Any(t => t == 0))

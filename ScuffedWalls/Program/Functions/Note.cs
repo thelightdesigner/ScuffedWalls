@@ -12,24 +12,24 @@ namespace ScuffedWalls.Functions
             BeatMap.Note.CutDirection cutdirection = GetParam("notecutdirection", BeatMap.Note.CutDirection.Down, p => (BeatMap.Note.CutDirection)int.Parse(p));
             float? njsoffset = GetParam("definitedurationseconds", null, p =>
             {
-                return (float?)Utils.BPMAdjuster.GetDefiniteNjsOffsetBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
+                return (float?)ScuffedWallsContainer.BPMAdjuster.GetDefiniteNjsOffsetBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()));
             });
             njsoffset = GetParam("definitedurationbeats", njsoffset, p =>
             {
-                return (float?)Utils.BPMAdjuster.GetDefiniteNjsOffsetBeats(p.ToFloat());
+                return (float?)ScuffedWallsContainer.BPMAdjuster.GetDefiniteNjsOffsetBeats(p.ToFloat());
             });
 
             Time = GetParam("definitetime", Time, p =>
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (njsoffset.HasValue) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, njsoffset.Value);
-                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
+                    if (njsoffset.HasValue) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time, njsoffset.Value);
+                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (njsoffset.HasValue) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), njsoffset.Value);
-                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
+                    if (njsoffset.HasValue) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time), njsoffset.Value);
+                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time));
                 }
                 return Time;
             });

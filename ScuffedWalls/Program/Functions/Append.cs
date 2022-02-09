@@ -68,7 +68,7 @@ namespace ScuffedWalls.Functions
 
                 if (!delete) Append(current, UnderlyingParameters.CustomDataParse(GetInstance(AppendObjectType)), type);
                 else deleteInstanceWorkspaceItem(current);
-
+                
                 index++;
             }
 

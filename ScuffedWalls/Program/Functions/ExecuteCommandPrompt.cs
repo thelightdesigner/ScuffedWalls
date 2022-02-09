@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
     {
         protected override void Init()
         {
-            string JSfile = GetParam("Javascript", null, p => Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
+            string JSfile = GetParam("Javascript", null, p => Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p));
             AddRefresh(JSfile);
             bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
             
@@ -57,8 +57,8 @@ namespace ScuffedWalls.Functions
                 cmd.WaitForExit();
             }
 
-            if (!EarlyRun) Utils.OnProgramComplete += Execute;
-            else Utils.OnChangeDetected += Execute;
+            if (!EarlyRun) ScuffedWallsContainer.OnProgramComplete += Execute;
+            else ScuffedWallsContainer.OnChangeDetected += Execute;
 
 
         }

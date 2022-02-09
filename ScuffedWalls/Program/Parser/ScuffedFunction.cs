@@ -64,7 +64,7 @@ namespace ScuffedWalls
         {
             if (GetParam("refreshonsave", false, p => bool.Parse(p)))
             {
-                Utils.FilesToChange.Add(
+                ScuffedWallsContainer.FilesToChange.Add(
                     new FileChangeDetector(new System.IO.FileInfo(file)));
             }
         }

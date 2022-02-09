@@ -95,7 +95,8 @@ namespace ModChart.Wall
                                 var animation = cubeAnimationsContainer.animation;
                                 if (animation == null || !animation.Any()) return null;
 
-                                var source = animation.First(anim => Regex.IsMatch(anim.id, regex, RegexOptions.Multiline)).sources.Where(s => s.id.Contains("-output")).First();
+                                var source = animation.FirstOrDefault(anim => Regex.IsMatch(anim.id, regex, RegexOptions.Multiline))?.sources.Where(s => s.id.Contains("-output")).First();
+                                if (source is null) return null;
                                 doframes(int.Parse(source.float_array.count));
                                 return source.float_array.values.ParseToNullFloatArray();
 

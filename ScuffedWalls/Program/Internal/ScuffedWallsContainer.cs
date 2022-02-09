@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ScuffedWalls
 {
-    class Utils
+    internal static class ScuffedWallsContainer
     {
         public static string[] args;
         
@@ -77,7 +77,7 @@ Workspace:Default
                 InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
                          .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
                          .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
-                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
+                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedWallsContainer.ScuffedConfig.MapFilePath).Name).First();
             }
             catch(Exception e)
             {

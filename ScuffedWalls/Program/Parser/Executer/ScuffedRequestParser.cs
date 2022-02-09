@@ -63,7 +63,7 @@ namespace ScuffedWalls
             }
             BeatMap map = Workspace.Combine(Workspaces);
             map.Prune();
-            if (Utils.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled)
+            if (ScuffedWallsContainer.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled)
             {
                 try
                 {

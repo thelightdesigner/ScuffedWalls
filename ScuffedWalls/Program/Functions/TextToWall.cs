@@ -27,7 +27,7 @@ namespace ScuffedWalls.Functions
             bool isblackempty =     GetParam("isblackempty", true, p => bool.Parse(p));
             float alpha =           GetParam("alpha", 1, p => float.Parse(p));
             float smooth =          GetParam("spreadspawntime", 0, p => float.Parse(p));
-            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
+            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
             AddRefresh(Path);
             float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
@@ -37,31 +37,31 @@ namespace ScuffedWalls.Functions
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
+                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time, parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
+                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time));
                 }
                 return Time;
             });
             duration =              GetParam("definitedurationseconds", duration, p =>
             {
-                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
+                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()));
             });
             duration = GetParam("definitedurationbeats", duration, p =>
             {
-                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
+                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
 
-            float MapBpm = Utils.Info["_beatsPerMinute"].ToFloat();
-            float MapNjs = Utils.InfoDifficulty["_noteJumpMovementSpeed"].ToFloat();
-            float MapOffset = Utils.InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat();
+            float MapBpm = ScuffedWallsContainer.Info["_beatsPerMinute"].ToFloat();
+            float MapNjs = ScuffedWallsContainer.InfoDifficulty["_noteJumpMovementSpeed"].ToFloat();
+            float MapOffset = ScuffedWallsContainer.InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat();
 
             if (isNjs) MapOffset = parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat();
             if (isNjspeed) MapNjs = parsedshit._customData["_noteJumpMovementSpeed"].ToFloat();
