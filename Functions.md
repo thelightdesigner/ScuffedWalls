@@ -39,7 +39,6 @@ All the available functions are listed below
 - [`AppendEvents`](#AppendEvents)
 - [`TextToWall`](#TextToWall)
 - [`Model`](#Model)
-- [`ImageToWall`](#ImageToWall)
 - [`Environment`](#Environment)
 - [`Blackout`](#Blackout)
 - [`Import`](#Import)
@@ -51,6 +50,8 @@ All the available functions are listed below
 - [`AssignPlayerToTrack`](#AssignPlayerToTrack)
 - [`ParentTrack`](#ParentTrack)
 - [`PointDefinition`](#PointDefinition)
+- [`ImageToWall`](https://github.com/thelightdesigner/ScuffedWalls/blob/v2.0.0/Functions.md#imagetowall) is still supported, however there are better things out there. Why would you use it?
+
 
 # Workspaces
 
