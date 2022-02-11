@@ -846,11 +846,11 @@ adds a single light off event at the beat number. why? because why not.
 
 calls the terminal/command prompt and runs the specified args after or before the programs runtime.
 
-also can run javascript files
+also can run javascript/typescript files
 
  - args: string, this is what will be put into the terminal
  - runbefore: bool, (if true) will execute this function before SW begins to parse the .sw file, when false this function runs after SW finishes writing to the map file
- - javascript: string, path to the .js file, will execute this file using the node command
+ - javascript: string, path to the .js file, will execute this file using the node command. If the file ends with `.ts`, this will invoke using [`ts-node`](https://github.com/TypeStrong/ts-node) which is required separately.
  - refreshonsave: bool, refreshes scuffedwalls when the javascript file is modified
 
 ```ruby
