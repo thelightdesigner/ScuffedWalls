@@ -11,10 +11,18 @@ namespace ScuffedWalls.Functions
         {
             string JSfile = GetParam("Javascript", null, p => Path.Combine(Utils.ScuffedConfig.MapFolderPath, p));
             AddRefresh(JSfile);
-            bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
-            
+            bool EarlyRun = GetParam("RunBefore", false, bool.Parse);
 
-            string InputArgs = JSfile != null ? $"node \"{JSfile}\"" : GetParam("Args", "", p => p);
+
+            string InputArgs;
+            if (JSfile != null)
+            {
+             InputArgs = JSfile.EndsWith(".ts") ? $"ts-node \"{JSfile}\" " : $"node \"{JSfile}\"";
+            }
+            else
+            {
+                InputArgs =  GetParam("Args", "", p => p);
+            }
 
             void Execute()
             {
