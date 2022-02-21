@@ -53,8 +53,8 @@ namespace ScuffedWalls.Functions
                 _time = Time,
                 _duration = duration,
                 _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
-                _width = 0,
-                _type = 0
+                _width = GetParam("width", 0, p => int.Parse(p)),
+                _type = (BeatMap.Obstacle.Type)GetParam("type", 0, p => int.Parse(p))
             };
 
             BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());

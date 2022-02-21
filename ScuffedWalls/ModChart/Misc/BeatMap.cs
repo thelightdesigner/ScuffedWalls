@@ -81,6 +81,8 @@ namespace ModChart
                _localRotation = "_localRotation",
                _rotation = "_rotation",
                _definitePosition = "_definitePosition",
+                _noteJumpStartBeatOffset = "_noteJumpStartBeatOffset",
+                _noteJumpMovementSpeed = "_noteJumpMovementSpeed",
                _dissolve = "_dissolve",
                _dissolveArrow = "_dissolveArrow",
                _time = "_time",

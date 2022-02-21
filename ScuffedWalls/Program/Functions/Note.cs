@@ -1,4 +1,5 @@
 ﻿using ModChart;
+using System;
 
 namespace ScuffedWalls.Functions
 {
@@ -38,13 +39,15 @@ namespace ScuffedWalls.Functions
             BeatMap.Note note = new BeatMap.Note()
             {
                 _time = Time,
-                _lineIndex = 0,
-                _lineLayer = 0,
+                _lineIndex = GetParam("lineindex",0,p => int.Parse(p)),
+                _lineLayer = GetParam("linelayer", 0, p => int.Parse(p)),
                 _cutDirection = cutdirection,
                 _type = type,
-                _customData = njsoffset.HasValue ? new TreeDictionary() { ["_noteJumpStartBeatOffset"] = njsoffset } : null
+                _customData = new TreeDictionary()
             };
             BeatMap.Append(note, UnderlyingParameters.CustomDataParse(new BeatMap.Note()), BeatMap.AppendPriority.High);
+            note._customData[BeatMap._noteJumpStartBeatOffset] ??= njsoffset;
+           // Console.WriteLine(note._customData[BeatMap._noteJumpStartBeatOffset]);
 
             InstanceWorkspace.Notes.Add(note);
 

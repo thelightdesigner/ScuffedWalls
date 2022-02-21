@@ -9,7 +9,7 @@ namespace ScuffedWalls
         public static void TryAction(Action action, Action<Exception> onError)
         {
              
-        /*    if (ScuffedWallsContainer.ScuffedConfig.Debug) 
+            if (ScuffedWallsContainer.ScuffedConfig.Debug) 
             {
                 try
                 {
@@ -30,7 +30,7 @@ namespace ScuffedWalls
             {
                 onError(e);
             }
-             //*/ action(); 
+             // action(); 
         }
     }
 }
