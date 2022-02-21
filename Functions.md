@@ -12,7 +12,7 @@
  - [`Math & Functions`](#math--functions)
  - [`Variables`](#Variables)
  - [`Internal Variables`](#internal-variables)
- - [`Example Functions`](#Example-Functions)
+ - [`Headers`](#headers)
 
 ## Overview
 
@@ -564,6 +564,27 @@ Variables that are auto created and changed internally. All repeatable functions
 ![](Images/sine.png)
 
 
+## Headers
+
+Headers are lines of code that occur in the \_ScuffedWall.sw file BEFORE the first `workspace` or `function`.
+
+Available headers are:
+ - `include`:string, put the relative path of any other \_ScuffedWall.sw file to import all the code and have it run alongside this code. (can be repeated)
+ - `hidemapinrpc`: bool, if TRUE - doesnt show the name of the map you're working on in the Discord rich presence.
+ - `debug`: idk
+ - `prettyprintjson`: bool, if TRUE - prints the map JSON file with indentation.
+
+![](Images/example.png)
+```ruby
+include:cooleffects.sw
+include:SwimFunction.sw
+hidemapinrpc:true
+
+Workspace:Default
+
+...
+..
+```
 
 
 ## AppendWalls
