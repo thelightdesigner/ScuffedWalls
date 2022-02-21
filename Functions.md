@@ -701,8 +701,46 @@ Appends data to events between the function time and endtime (toBeat)
 
  ## AppendTechnique
 The merge priority of the values being appended
- - 0 = Low Priority, Will not overwrite any property but can still append to nulled properties (default)
- - 1 = High Priority, Can overwrite any property
+ - 0 = Low Priority, Add data if there isnt already data (default)
+ - 1 = High Priority, Add data even if there is already data
+
+What does this mean?
+
+We know that objects in our map file have properties.
+
+![](Images/example.png)
+
+```js
+  "_notes": [
+    {
+      "_time": 0,
+      "_lineIndex": 0,
+      "_lineLayer": 0,  
+      "_type": 1,
+      "_cutDirection": 1,
+      "_customData": {
+        "_noteJumpMovementSpeed": 12,  <<<< property
+        "_track": "ExampleTrack"       <<<< property
+      }
+    }
+  ],
+  "_obstacles": [
+    {
+      "_time": 0,
+      "_lineIndex": 0,
+      "_type": 0,
+      "_duration": 0,
+      "_width": 0,
+      "_customData": {
+        "_noteJumpMovementSpeed": 12,  <<<< property
+        "_track": "ExampleTrack"       <<<< property
+      }
+    }
+
+```
+
+Append priorities deal with how we **reassign** properties of objects. High priority simply means that our properties that we are currently **assigning** are more important than the properties that were already on the object. Low priority is the opposite, the properties that were already on the object are more important than the properties that we are currently **assigning**.
+
 
 ## Append Function Internal Variables
 The append function runs through each object in a workspace and changes its data.
