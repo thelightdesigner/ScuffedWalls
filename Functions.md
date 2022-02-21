@@ -549,6 +549,7 @@ Appending means to add on or to merge two sets of data. The append function will
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - select: bool, only applies the affect if the value is true. example `select:{_lineLayer = 0}` will only append to walls with linelayer 0
+ - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
@@ -560,27 +561,50 @@ Appending means to add on or to merge two sets of data. The append function will
  ```
 
 
-multiplies all the wall times by 2
 ```ruby
 0:AppendWalls
    time:{_time * 2}
    appendtechnique:1
 ```
+^ multiplies all the wall times by 2
 
-multiplies all the definitepositions by 3 except for the time value
 ```ruby
 0:AppendWalls
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
 ```
+^ multiplies all the definitepositions by 3 except for the time value
    
-a very scuffed way to make a rainbow
-
 
 ![](Images/color.png)
 
+^ a very scuffed way to make a rainbow
 
 [`a less scuffed way to make a rainbow`](Functions.md#math--functions)
+
+
+
+```ruby
+#random dot converter
+#auto import map then paste code
+var:PercentageToConvertToDotNotes
+  data:30
+
+0:AppendNotes
+  select:{RandomInt(0,100)<PercentageToConvertToDotNotes}   #IF a random number btw 100-0 is less than a defined percentage, continue...
+  delete:true                                               #delete this note
+  call:AddDotNote                                           #call the function to add a dot note
+
+function:AddDotNote
+0:Note                  #make a new note
+  type:_type            #get the original _type of the note (passed in be the append function)
+  linelayer:_lineLayer  #get the original _lineLayer of the note (passed in be the append function)
+  lineIndex:_lineIndex  #get the original _lineIndex of the note (passed in be the append function)
+  notecutdirection:8    #set the cutdirection to 8 (bomb)
+  ```
+  ^ converts a random percentage of notes in the map to dot notes. Utlilizes the `call` keyword by giving it the exact name of the defined custom function.
+
+
 
 ## AppendNotes
 Appends data to notes between the function time and endtime (toBeat)
@@ -589,6 +613,7 @@ Appends data to notes between the function time and endtime (toBeat)
  - toBeat: float => ending beat of selection (only append notes before...)
  - appendTechnique: int(0-2)
  - select:bool WHERE if `true` object will be modified and if `false` object will be skipped. EXAMPLE: `select:{_lineLayer = 0}` will only append to notes with linelayer 0
+ - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
   Example
@@ -613,20 +638,20 @@ Appends data to notes between the function time and endtime (toBeat)
   track:CameraMoveNotes
 ```
 
-multiplies all the note times by 2
 
 ```ruby
 0:AppendNotes
    time:{_time * 2}
    appendtechnique:1
 ```
+^ multiplies all the note times by 2
 
-multiplies all the definitepositions by 3 except for the time value
 ```ruby
 0:AppendNotes
    animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3},{_animation._definitePosition(0)(1) * 3},{_animation._definitePosition(0)(2) * 3},_animation._definitePosition(0)(3)]
    appendtechnique:1
    ```
+^ multiplies all the definitepositions by 3 except for the time value
 
 ## AppendEvents
 Appends data to events between the function time and endtime (toBeat)
@@ -635,6 +660,7 @@ Appends data to events between the function time and endtime (toBeat)
  - appendTechnique: int(0-1)
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - select:bool WHERE if `true` object will be modified and if `false` object will be skipped
+ - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
 
  Example
 ```ruby
