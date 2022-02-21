@@ -9,7 +9,7 @@
 
     static class ScuffedWalls
     {
-        public const string Version = "v2.0.6(dev worldpositionstays)";
+        public const string Version = "v2.1.0";
         static void Main(string[] args)
         {
             ScuffedWallsContainer.Initialize(args);
