@@ -1,5 +1,5 @@
 
-![](Images/sw image Transparent.png)
+![](Images/sw.png)
 
 
 ## Contents
