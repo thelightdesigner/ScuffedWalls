@@ -1,30 +1,21 @@
 # ScuffedWalls
-A command line tool for making Noodle Extensions 2.0 beat saber maps & modcharts.
+A command line tool designed as an alternative to scripting Noodle Extensions maps.
 
 This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
-
-Features:
- - Create custom events
- - Import/Combine map objects from other map files
- - Add noodle/chroma data to map objects
- - Work without code
- - 3d model converter
- - Image converter
- - Text converter
  
- Usage:
-  - Place the program in the map folder
+## Quick Start
+  - Place the program in the map folder or drag the map folder onto the `.exe`
   - Open the program
-  - Input the number of the map file to write to (Will overwrite anything in this map file)
-  - Write in the generated \_ScuffedWalls.sw file. 
-  - Saving the \_ScuffedWalls.sw file causes the program to write to the map files.
+  - Follow the prompts until a `.sw` file is generated
+  - Put your code in the generated `_ScuffedWalls.sw` file. 
+  - Save the `_ScuffedWalls.sw` file to refresh the program.
 
-Get Started:
+## Documentation
 
- - Intro and Setup video tutorial by #Rizthesnuggie2634 -> [`right here`](https://youtu.be/RrcQRQfaXAI)
- - Functions + Explanations -> [`here`](Functions.md)
- - 3d modeling for wall conversion -> [`here`](Blender%20Project.md)
- - TextToWall -> [`here`](TextToWall.md)
+ - **Intro and Setup video tutorial** by #Rizthesnuggie2634 -> [`right here`](https://youtu.be/RrcQRQfaXAI)
+ - **Documentation** -> [`here`](Functions.md)
+ - ModelToWall Specifics -> [`here`](Blender%20Project.md)
+ - TextToWall Specifics -> [`here`](TextToWall.md)
  - Example Scripts And Effects -> [`here`](Example%20Functions.md)
 
  Rizthesnuggie's full intro documentation can be found [`here`](https://drive.google.com/drive/folders/1aAUuv8Ycmf2LdSRvKYhfThY2tQhZxFYS?usp=sharing)
@@ -33,6 +24,15 @@ Get Started:
 *Windows will probably bother you about this being malware. If you dont trust it, clone the repo and build it yourself.*
 
 If everything doesnt work and your in a country that uses , as the decimal symbol, [`changing regional settings`](Images/regional.png) is a common fix.
+
+## Problems
+
+The documentation is plentiful, yet not perfect. If you have questions feel free to DM us through Discord.
+ - DM `thelightdesigner#0832` for questions AND bugs
+ - DM `iswimfly#0556` for questions
+ - Join the Noodle Extensions Discord: https://discord.gg/d3JSR4kBD6
+
+Also you can create Issues through github if you want.
 
 ## Example Maps
 
@@ -76,10 +76,4 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 
 ## For Developers
 
-To create a function, 
-- clone the repo and navigate to ScuffedWalls -> Program -> Functions. 
-- Create a new .cs file. All classes under the namespace `ScuffedWalls.Functions` that are decorated with the `SFunction` attribute will be populated as a function. The params string constructor is used to define the name or names of the function. 
-- Your class must inherit from `ScuffedFunction` which contains an array of parameters, the `InstanceWorkspace`, the `InstanceParser`, the `GetParam` method, and the virtual method `Run`. 
-- The starting point for your code must be in an override of the virtual method `Run`.
-- If you use a parameter without calling `GetParam` you must mark the parameter as used by setting `WasUsed` to true. 
-- `InstanceWorkspace` contains the lists of mapobjects that are present in the workspace that the function was called from.
+-> ask thelighdesigner
