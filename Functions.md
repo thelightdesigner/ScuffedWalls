@@ -421,7 +421,7 @@ Math expressions are computed inside of { } symbols. A random floating point num
   
 ![](Images/rainbow.png)
   
-The example above uses the HSLtoRGB function to create a rainbow.
+The example above uses the HSLtoRGB function to create a rainbow. supermemer is a furry
 
 The available functions are:
  - Random(Val1,Val2) => returns a number
