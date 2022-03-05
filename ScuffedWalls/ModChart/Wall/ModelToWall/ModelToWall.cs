@@ -5,6 +5,13 @@ using System.Numerics;
 
 namespace ModChart.Wall
 {
+    class WallModelOutput
+    {
+        public int SceneObjectsLength => SceneWalls.Count() + SceneNotes.Count() + SceneEvent.Count();
+        public IEnumerable<BeatMap.Obstacle> SceneWalls { get; set; }
+        public IEnumerable<BeatMap.Note> SceneNotes { get; set; }
+        public IEnumerable<TreeDictionary> SceneEvent { get; set; }
+    }
     class WallModel
     {
         public BeatMap Output { get; private set; } = BeatMap.Empty;
@@ -180,7 +187,7 @@ namespace ModChart.Wall
                                 List<object[]> colorN = new List<object[]>();
                                 for (int i = 0; i < cube.Frames.Length; i++)
                                 {
-                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat();
+                                    float TimeStamp = i.ToFloat() / (cube.Frames.Length.ToFloat() - 1f);
                                     if (cube.Frames[i].OffsetTransformation != null)
                                     {
                                         var framerot = new object[] { cube.Frames[i].OffsetTransformation.RotationEul.X, cube.Frames[i].OffsetTransformation.RotationEul.Y * -1, cube.Frames[i].OffsetTransformation.RotationEul.Z * -1, TimeStamp };
@@ -339,7 +346,7 @@ namespace ModChart.Wall
                                 List<object[]> colorN = new List<object[]>();
                                 for (int i = 0; i < cube.Frames.Length; i++)
                                 {
-                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat();
+                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat() - 1f;
                                     if (cube.Frames[i].Transformation != null)
                                     {
                                         positionN.Add(new object[] { cube.Frames[i].Transformation.Position.X * -1f, cube.Frames[i].Transformation.Position.Y, cube.Frames[i].Transformation.Position.Z, TimeStamp });

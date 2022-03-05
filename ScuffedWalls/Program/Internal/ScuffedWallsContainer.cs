@@ -40,15 +40,15 @@ namespace ScuffedWalls
 
 # Documentation on functions can be found at
 # https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md
-            
-# DM @thelightdesigner#1337 for more help?
 
 # Using this tool requires an understanding of Noodle Extensions.
 # https://github.com/Aeroluna/Heck/wiki
 
-# Playtest your maps
+# If the documentation is not sufficient
+# DM thelightdesigner#0832 or iswimfly#0556 for help (Discord)
+# Noodle Extension Community Discord https://discord.gg/ZDC3pG3xB8
 
-Workspace:Default
+Workspace
 ";
         public static void ResetAwaitingFiles()
         {

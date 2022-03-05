@@ -8,7 +8,28 @@ namespace ScuffedWalls
 {
     static class Extensions
     {
-        public static string[] ParseSWArray(this string array) =>  array.Replace("[", "").Replace("]", "").SplitExcludeParanthesis();
+        public static ICustomDataMapObject CustomDataParse(this TreeList<Parameter> parameters, ICustomDataMapObject instance)
+        {
+            return CustomDataParser.Instance.ReadToCustomData(parameters, instance);
+        }
+        public static TreeDictionary CustomEventsDataParse(this TreeList<Parameter> parameters)
+        {
+            return CustomDataParser.Instance.ReadAnimation(parameters);
+        }
+        public static string Remove(this string line, string pattern)
+        {
+            foreach(char c in pattern) line = line.Replace(c.ToString(), "");
+            return line;
+        }
+        public static object ParseDynamicStringArray(this string line)
+        {
+            string[] array = ParseSWArray(line);
+
+            if (array.Length == 0) return null;
+            if (array.Length == 1) return array[0];
+            return array;
+        }
+        public static string[] ParseSWArray(this string array) =>  array.Remove("[]\"").SplitExcludeParanthesis();
         public static string[] SplitExcludeBrackets(BracketAnalyzer analyzer)
         {
             List<int> splits = new List<int>();

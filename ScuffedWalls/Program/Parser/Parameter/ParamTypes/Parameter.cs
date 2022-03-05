@@ -1,5 +1,4 @@
-﻿using NCalc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +18,17 @@ namespace ScuffedWalls
         }
         public static void Check(IEnumerable<Parameter> parameters)
         {
-            foreach (var p in parameters) if (!p.WasUsed) ScuffedWalls.Print($"Parameter {p.Name} at line {p.GlobalIndex} may be unused (Mispelled?)", ScuffedWalls.LogSeverity.Warning);
+            var badParams = parameters.Where(p => !p.WasUsed);
+            if (!badParams.Any()) return;
+
+            bool isFirst = true;
+            //ScuffedWalls.Print($"↑", ScuffedWalls.LogSeverity.Warning, ShowStackFrame: false);
+            foreach (var p in badParams)
+            {
+                ScuffedWalls.Print($"{(isFirst ? "↑" : "|")} Unused Parameter \"{p.Name.Trim()}\" at line {p.GlobalIndex}", ScuffedWalls.LogSeverity.Warning, ShowStackFrame: false);
+                isFirst = false;
+            }
+           // ScuffedWalls.Print($" ---------------------------------------------------------------------------------------------", ScuffedWalls.LogSeverity.Warning, ShowStackFrame: false);
         }
         public bool WasUsed { get; set; }
         public StringComputationExcecuter Computer { get; private set; }
