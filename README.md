@@ -4,7 +4,7 @@ A command line tool designed as an alternative to scripting Noodle Extensions ma
 This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
  
 ## Quick Start
-  - Place the program in the map folder or [`drag the map folder onto the .exe`](https://drive.google.com/drive/folders/1dgi8TKrXvSwZZHt874QgmrVFKqEmEkT_)
+  - Place the program in the map folder or [`drag the map folder onto the .exe`](https://drive.google.com/file/d/154HyzH-xqE7AuoDrKM9p0_MZtH_f-F_r/view?usp=sharing)
   - Open the program
   - Follow the prompts until a `.sw` file is generated
   - Put your code in the generated `_ScuffedWalls.sw` file. 
