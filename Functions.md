@@ -974,7 +974,7 @@ also can run javascript/typescript files
  ![](Images/example.png)
 ```ruby
 0:Run
-  Javascript:CoolMapScript.js
+  script:CoolMapScript.js
   RunBefore: false
 ```
 note that in the above example, CoolMapScript.js is in the map folder
