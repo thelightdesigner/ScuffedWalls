@@ -320,25 +320,25 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 (`""` = put in quotes, `?` = optional)
 
 [`Notes and Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#notes--obstacles)
-- NJSOffset: float
-- NJS: float
-- Interactable: bool
-- Fake: bool
-- Position: \[x,y]
-- Rotation: \[x,y,z] or float
-- LocalRotation: \[x,y,z]
+- `NJSOffset`: number (decimal)
+- `NJS`: number (decimal)
+- `Interactable`: true/false
+- `Fake`: true/false
+- `Position`: \[x,y]
+- `Rotation`: \[x,y,z] or number (decimal)
+- `LocalRotation`: \[x,y,z]
 
 [`Notes`](https://github.com/Aeroluna/Heck/wiki/Objects#notes)
-- CutDirection: float
-- DisableNoteGravity: bool
-- DisableNoteLook: bool
+- `CutDirection`: number (decimal)
+- `DisableNoteGravity`: true/false
+- `DisableNoteLook`: true/false
 
 [`Obstacles`](https://github.com/Aeroluna/Heck/wiki/Objects#obstacles)
-- Scale: \[x,y?,z?]
+- `Scale`: \[x,y?,z?]
 
 [`Tracks`](https://github.com/Aeroluna/Heck/wiki/Animation#tracks)
 
-- Track: string, or \["t1","t2"...] for multiple tracks
+- `Track`: string, or \["t1","t2"...] for multiple tracks
 - [`AnimateDefinitePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_definiteposition): \[x,y,z,t,"e"?]
 - [`AnimatePosition`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_position): \[x,y,z,t,"e"?]
 - [`AnimateDissolve`](https://github.com/Aeroluna/Heck/wiki/AnimationProperties#_dissolve): \[d,t,"e"?]
@@ -356,26 +356,26 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 
 [`Chroma`](https://github.com/Aeroluna/Heck/wiki/Objects#chroma)
 
- - Color: \[r,g,b,a] (0-1)
- - DisableSpawnEffect: bool
- - CPropID: int
- - CLightID: int
- - CGradientDuration: float
- - CgradientStartColor: \[r,g,b,a?]
- - CgradientEndColor: \[r,g,b,a?]
- - CgradientEasing: string
- - CLockPosition: bool
- - CPreciseSpeed: float
- - CDirection: int
- - CNameFilter: string
- - CReset: bool
- - CStep: float
- - CProp: float
- - CSpeed: float
- - CCounterSpin: bool
+ - `Color`: \[r,g,b,a] (0-1)
+ - `DisableSpawnEffect`: true/false
+ - `CPropID`: number (integer)
+ - `CLightID`: number (integer)
+ - `CGradientDuration`: number (decimal)
+ - `CgradientStartColor`: \[r,g,b,a?]
+ - `CgradientEndColor`: \[r,g,b,a?]
+ - `CgradientEasing`: string
+ - `CLockPosition`: true/false
+ - `CPreciseSpeed`: number (decimal)
+ - `CDirection`: number (integer)
+ - `CNameFilter`: string
+ - `CReset`: true/false
+ - `CStep`: number (decimal)
+ - `CProp`: number (decimal)
+ - `CSpeed`: number (decimal)
+ - `CCounterSpin`: true/false
 
 `Other`
- - Log: prints things to the console. useful for checking the value of internal variables. ex: `Log:hi retrx!`
+ - `Log`: prints things to the console. useful for checking the value of internal variables. ex: `Log`:hi retrx!`
  - \#  is used at the start of a blank line for a comment
 
 `Useful links`
@@ -402,7 +402,7 @@ Most of these properties are directly connected to their corresponding Noodle/Ch
 For any questions about these values that havent been listed, check the [`Heck Documentation`](https://github.com/Aeroluna/Heck/wiki)
 
 # Math & Functions
-Math expressions are computed inside of { } symbols. A random floating point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
+Math expressions are computed inside of { } symbols. A random  number (decimal)ing point number is yielded from the function `Random(val1,val2)`. A random integer is yielded from the line function `RandomInt(val1,val2)`.
 
 ![](Images/example.png)
 ```ruby
@@ -424,12 +424,12 @@ Math expressions are computed inside of { } symbols. A random floating point num
 The example above uses the HSLtoRGB function to create a rainbow. supermemer is a furry
 
 The available functions are:
- - Random(Val1,Val2) => returns a number
- - RandomInt(Val1,Val2) => returns a number
- - HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?) => returns a point definition
- - MultPointDefinition(PointDefinition,value to multiply) => returns a point definition
- - RepeatPointDefinition(PointDefinition,amount of times to repeat) => returns point definitions
- - OrderPointDefinitions(PointDefinitions) => returns point definitions
+ - `Random(Val1,Val2)` => returns a number
+ - `RandomInt(Val1,Val2)` => returns a number
+ - `HSLtoRGB(Hue,Saturation?,Lightness?,Alpha?,Any extra values like easings or whatever?)` => returns a point definition
+ - `MultPointDefinition(PointDefinition,value to multiply)` => returns a point definition
+ - `RepeatPointDefinition(PointDefinition,amount of times to repeat)` => returns point definitions
+ - `OrderPointDefinitions(PointDefinitions)` => returns point definitions
 
 ## Random & RandomInt
 An inline function that returns a random number ranging from Val1 to Val2. RandomInt will return a random whole number.
@@ -569,10 +569,10 @@ Variables that are auto created and changed internally. All repeatable functions
 Headers are lines of code that occur in the \_ScuffedWall.sw file BEFORE the first `workspace` or `function`.
 
 Available headers are:
- - `include`:string, put the relative path of any other \_ScuffedWall.sw file to import all the code and have it run alongside this code. (can be repeated)
- - `hidemapinrpc`: bool, if TRUE - doesnt show the name of the map you're working on in the Discord rich presence.
- - `debug`: idk
- - `prettyprintjson`: bool, if TRUE - prints the map JSON file with indentation.
+ - `include``:string, put the relative path of any other \_ScuffedWall.sw file to import all the code and have it run alongside this code. (can be repeated)
+ - `hidemapinrpc``: true/false, if TRUE - doesnt show the name of the map you're working on in the Discord rich presence.
+ - `debug``: idk
+ - `prettyprintjson``: true/false, if TRUE - prints the map JSON file with indentation.
 
 ![](Images/example.png)
 ```ruby
@@ -592,10 +592,10 @@ Workspace:Default
 Appending means to add on or to merge two sets of data. The append function will loop through a set of map objects and merge all properties as specified.
 
  - Function Time => starting beat of selection (only append notes after...)
- - toBeat: float => ending beat of selection (only append notes before...)
- - appendTechnique: int(0-2)
- - select: bool, only applies the affect if the value is true. example `select:{_lineLayer = 0}` will only append to walls with linelayer 0
- - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
+ - `toBeat`: number (decimal) => ending beat of selection (only append notes before...)
+ - `appendTechnique`: int(0-2)
+ - `select`: true/false, only applies the affect if the value is true. example `select`:{_lineLayer = 0}` will only append to walls with linelayer 0
+ - `call`: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
 ![](Images/example.png)
@@ -656,10 +656,10 @@ function:AddDotNote
 Appends data to notes between the function time and endtime (toBeat)
 
  - Function Time => starting beat of selection (only append notes after...)
- - toBeat: float => ending beat of selection (only append notes before...)
- - appendTechnique: int(0-2)
- - select:bool WHERE if `true` object will be modified and if `false` object will be skipped. EXAMPLE: `select:{_lineLayer = 0}` will only append to notes with linelayer 0
- - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
+ - `toBeat`:  number (decimal) => ending beat of selection (only append notes before...)
+ - `appendTechnique`: int(0-2)
+ - `select`:true/false WHERE if `true` object will be modified and if `false` object will be skipped. EXAMPLE: `select`:{_lineLayer = 0}` will only append to notes with linelayer 0
+ - `call`: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
 ![](Images/example.png)
@@ -704,11 +704,11 @@ Appends data to notes between the function time and endtime (toBeat)
 ## AppendEvents
 Appends data to events between the function time and endtime (toBeat)
 
- - toBeat: float
- - appendTechnique: int(0-1)
+ - `toBeat`: number (decimal)
+ - `appendTechnique`: int(0-1)
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
- - select:bool WHERE if `true` object will be modified and if `false` object will be skipped
- - call: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
+ - `select`:true/false WHERE if `true` object will be modified and if `false` object will be skipped
+ - `call`: string, put the name of a custom function. It will call this function and pass in every variable from this function into the custom function.
 
 ![](Images/example.png)
 
@@ -766,7 +766,7 @@ Append priorities deal with how we **reassign** properties of objects. High prio
 ## Append Function Internal Variables
 The append function runs through each object in a workspace and changes its data.
 
-In the example, `animateDefinitePosition:[{_animation._definitePosition(0)(0) * 3}...]`
+In the example, `animateDefinitePosition`:[{_animation._definitePosition(0)(0) * 3}...]`
 
 `_animation._definitePosition(0)(0)` is a reference to an "internal" variable created by the append function. in the case of SW, indexers are represented with parenthesis.
 
@@ -791,19 +791,19 @@ Rizthesnuggies [`Intro to TextToWall`](https://www.youtube.com/watch?v=g49gfMtzE
 
 see [here](TextToWall.md) for how the program reads font images/models.
 
- - path: string
+ - `path`: string
  - fullpath string
- - refreshonsave: bool, refreshes scuffedwalls when the file at the specified path is modified
- - line: string, the text you want to convert to walls. [this can be repeated](Images/linetext.jpg) to add more lines of text.
- - letting: float, the relative space between letters. default: 1
- - leading: float, the relative space between lines. default: 1
- - size: float, scales the text. default: 1 (gigantic)
- - thicc: float, makes the edges of the walls fill more of the center
- - duration: float
- - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
- - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
- - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
- - Position => moves the text by this amount, defaults to \[0,0]
+ - `refreshonsave`: true/false, refreshes scuffedwalls when the file at the specified path is modified
+ - `line`: string, the text you want to convert to walls. [this can be repeated](Images/linetext.jpg) to add more lines of text.
+ - `letting`: number (decimal), the relative space between letters. default: 1
+ - `leading`: number (decimal), the relative space between lines. default: 1
+ - `size`: number (decimal), scales the text. default: 1 (gigantic)
+ - `thicc`: number (decimal), makes the edges of the walls fill more of the center
+ - `duration`: number (decimal)
+ - `definitedurationbeats`: number (decimal), makes the walls stay around for exactly this long in beats
+ - `definitedurationseconds`: number (decimal), makes the walls stay around for exactly this long in seconds
+ - `definitetime`: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
+ - `Position` => moves the text by this amount, defaults to \[0,0]
  - all the other imagetowall params if your really interested
  - all the other modeltowall params if your really interested
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
@@ -835,34 +835,34 @@ constructs a model out of walls/notes/bombs/playertracks. see [here](Blender%20P
 Rizthesnuggies [`Intro to ModelToWall`](https://youtu.be/FfHGRbUdV_k) tutorial
 
 
- - path: string
- - fullpath: string 
- - refreshonsave: bool, refreshes scuffedwalls when the file at the specified path is modified
- - hasAnimation: bool, tells the model parser to read animation. definite only
- - duration: float, controls the duration of the model. this affects the length of time it takes to play the model animation.
- - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
- - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
- - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
- - spreadspawntime: float
- - Normal: bool, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
- - createtracks: bool
- - colormult: float, multiplies all the model color values by this amount
- - preservetime: bool
- - cameratoplayer: bool
- - createnotes: bool
- - spline: bool
- - spreadspawntime: float
- - alpha: float
- - thicc: float
- - deltaposition: \[x,y,z] offsets the model in 3d by this position vector
- - deltarotation: \[x,y,z] rotates the model around the center of its bounding box
- - deltascale: float, scales the model around the center of its bounding box
- - setdeltaposition: bool
- - setdeltascale: bool
+ - `path`: string
+ - `fullpath`: string 
+ - `refreshonsave`: true/false, refreshes scuffedwalls when the file at the specified path is modified
+ - `hasAnimation`: true/false, tells the model parser to read animation. definite only
+ - `duration`: number (decimal), controls the duration of the model. this affects the length of time it takes to play the model animation.
+ - `definitedurationbeats`: number (decimal), makes the walls stay around for exactly this long in beats
+ - `definitedurationseconds`: number (decimal), makes the walls stay around for exactly this long in seconds
+ - `definitetime`: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
+ - `spreadspawntime`: number (decimal)
+ - `Normal`: true/false, makes the walls jump in and fly out as normal. essentially 1.0 model to wall when set to true. default: false
+ - `createtracks`: true/false
+ - `colormult`: number (decimal), multiplies all the model color values by this amount
+ - `preservetime`: true/false
+ - `cameratoplayer`: true/false
+ - `createnotes`: true/false
+ - `spline`: true/false
+ - `spreadspawntime`: number (decimal)
+ - `alpha`: number (decimal)
+ - `thicc`: number (decimal)
+ - `deltaposition`: \[x,y,z] offsets the model in 3d by this position vector
+ - `deltarotation`: \[x,y,z] rotates the model around the center of its bounding box
+ - `deltascale`: number (decimal), scales the model around the center of its bounding box
+ - `setdeltaposition`: true/false
+ - `setdeltascale`: true/false
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
- - repeat: int
- - repeataddtime: float
- - type: 0, 1, 2 or 3 WHERE 0 = The model defines which object should be walls or notes, 1 = every object will be a wall,  2 = every object will be a bomb, 3 = every object will be a note
+ - `repeat`: number (integer)
+ - `repeataddtime`: number (decimal)
+ - `type`: 0, 1, 2 or 3 WHERE 0 = The model defines which object should be walls or notes, 1 = every object will be a wall,  2 = every object will be a bomb, 3 = every object will be a note
  
  ![](Images/example.png)
 ```ruby
@@ -885,23 +885,23 @@ Constructs an image out of walls as pixels
 
 Rizthesnuggies [`Intro to ImageToWall`](https://youtu.be/Cxbc4llIq3k) tutorial
 
- - path: string
+ - `path`: string
  - fullpath string
- - refreshonsave: bool, refreshes scuffedwalls when the file at the specified path is modified
- - isBlackEmpty: bool, doesn't add pixel if the pixel color is black. default: false
- - size: float, scales the image. default: 1
- - thicc: float, makes the edges of the walls fill more of the center
- - centered: bool, centers the x position. default: false
- - duration: float  
- - definitedurationbeats: float, makes the walls stay around for exactly this long in beats
- - definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
- - definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
- - spreadspawntime: float. default: 0
- - maxlinelength: int, the max line length. default: +infinity
- - shift: float, the difference in compression priorities between the inverted compression. default: 1
- - compression: float, how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
+ - `refreshonsave`: true/false, refreshes scuffedwalls when the file at the specified path is modified
+ - `isBlackEmpty`: true/false, doesn't add pixel if the pixel color is black. default: false
+ - `size`: number (decimal), scales the image. default: 1
+ - `thicc`: number (decimal), makes the edges of the walls fill more of the center
+ - `centered`: true/false, centers the x position. default: false
+ - `duration`:  number (decimal)  
+ - `definitedurationbeats`: number (decimal), makes the walls stay around for exactly this long in beats
+ - `definitedurationseconds`: number (decimal), makes the walls stay around for exactly this long in seconds
+ - `definitetime`: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
+ - `spreadspawntime`:  number (decimal). default: 0
+ - `maxlinelength`: number (integer), the max line length. default: +infinity
+ - `shift`: number (decimal), the difference in compression priorities between the inverted compression. default: 1
+ - `compression`: number (decimal), how much to compress the wall image, Not linear in the slightest. recommended value(0-0.1) default: 0
  - Position => moves each pixel by this amount, defaults to \[0,0]
- - Alpha: the alpha value
+ - `Alpha`: the alpha value
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  
  ![](Images/example.png)
@@ -926,16 +926,16 @@ makes a chroma environment enhancement, idk what this does but i heard [`its pre
 
 (Airscrach) This Took Me An Entire Day To Figure Out So Heres A [`Quickstart Guide`](Environment%20Id%20Quick%20Guide.md)
 
-- id: string
-- track: string
-- lookupmethod: string
-- duplicate: int
-- active: bool
-- scale: \[x,y,z]
-- localposition: \[x,y,z]
-- localrotation: \[x,y,z]
-- position: \[x,y,z]
-- rotation: \[x,y,z]
+- `id`: string
+- `track`: string
+- `lookupmethod`: string
+- `duplicate`: number (integer)
+- `active`: true/false
+- `scale`: \[x,y,z]
+- `localposition`: \[x,y,z]
+- `localrotation`: \[x,y,z]
+- `position`: \[x,y,z]
+- `rotation`: \[x,y,z]
 
  ![](Images/example.png)
 ```ruby
@@ -965,10 +965,10 @@ calls the terminal/command prompt and runs the specified args after or before th
 
 also can run javascript/typescript files
 
- - args: string, this is what will be put into the terminal
- - runbefore: bool, (if true) will execute this function before SW begins to parse the .sw file, when false this function runs after SW finishes writing to the map file
- - script: string, path to the `.js` or `.ts` file, will execute this file using the node command. If the file ends with `.ts`, this will invoke using [`ts-node`](https://github.com/TypeStrong/ts-node) which is required separately.
- - refreshonsave: bool, refreshes scuffedwalls when the javascript file is modified
+ - `args`: string, this is what will be put into the terminal
+ - `runbefore`: true/false, (if true) will execute this function before SW begins to parse the .sw file, when false this function runs after SW finishes writing to the map file
+ - `script`: string, path to the `.js` or `.ts` file, will execute this file using the node command. If the file ends with `.ts`, this will invoke using [`ts-node`](https://github.com/TypeStrong/ts-node) which is required separately.
+ - `refreshonsave`: true/false, refreshes scuffedwalls when the javascript file is modified
 
 
  ![](Images/example.png)
@@ -991,12 +991,12 @@ Example js script for mapping -> [`here`](https://github.com/TzurS11/NoodleScrip
 ## Import
 adds in map objects from other map.dat files
 
- - path: string
+ - `path`: string
  - fullpath string
- - refreshonsave: bool, refreshes scuffedwalls when the file at the specified path is modified
- - type:int,int,int (defaults to 0,1,2,3) what to import where 0 = walls, 1 = notes, 2 = lights, 3 = customevents & point definitions
- - addtime:float
- - toBeat: float
+ - `refreshonsave`: true/false, refreshes scuffedwalls when the file at the specified path is modified
+ - `type`:int,int,int (defaults to 0,1,2,3) what to import where 0 = walls, 1 = notes, 2 = lights, 3 = customevents & point definitions
+ - `addtime`: number (decimal)
+ - `toBeat`: number (decimal)
  
  
 ![](Images/example.png)
@@ -1015,12 +1015,12 @@ makes a wall
 
 Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
-- duration: float
-- definitedurationbeats: float, makes the walls stay around for exactly this long in beats
-- definitedurationseconds: float, makes the walls stay around for exactly this long in seconds
-- definitetime: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
-- repeat: int, amount of times to repeat
-- repeatAddTime: float
+- `duration`: number (decimal)
+- `definitedurationbeats`: number (decimal), makes the walls stay around for exactly this long in beats
+- `definitedurationseconds`: number (decimal), makes the walls stay around for exactly this long in seconds
+- `definitetime`: beats/seconds, makes the walls jump in at exactly the function time in seconds or beats
+- `repeat`: number (integer), amount of times to repeat
+- `repeatAddTime`: number (decimal)
 - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
 
  ![](Images/example.png)
@@ -1059,19 +1059,19 @@ While it is possible, ScuffedWalls does not serve as a usable alternative to not
 
 Rizthesnuggies [`Intro to Wall & Note`](https://youtu.be/hojmJ1UZcb8) tutorial
 
-- repeat: int, amount of times to repeat
-- repeatAddTime: float
+- `repeat`: number (integer), amount of times to repeat
+- `repeatAddTime`: number (decimal)
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
-- type:int
-- cutDirection:int
+- `type`:int
+- `cutDirection`:int
 
 
 
 these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 
- - definitedurationbeats: float, makes the note stay around for exactly this long in beats
- - definitedurationseconds: float, makes the note stay around for exactly this long in seconds
- - definitetime: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
+ - `definitedurationbeats`: number (decimal), makes the note stay around for exactly this long in beats
+ - `definitedurationseconds`: number (decimal), makes the note stay around for exactly this long in seconds
+ - `definitetime`: beats/seconds, makes the note jump in at exactly the function time in seconds or beats
 
  ![](Images/example.png)
 ```ruby
@@ -1100,9 +1100,9 @@ these properties use \_noteJumpStartBeatOffset to adjust the notes duration
 makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AnimateTrack) custom event
 
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
- - easing: string
- - repeat: int, amount of times to repeat
- - repeatAddTime: float
+ - `easing`: string
+ - `repeat`: number (integer), amount of times to repeat
+ - `repeatAddTime`: number (decimal)
  
  ![](Images/example.png)
  ```ruby
@@ -1124,10 +1124,10 @@ makes an [`AnimateTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/mast
 makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPathAnimation) custom event
 
  - any of [`these properties`](## Noodle Extensions/Chroma Properties Syntax)
- - track: string
- - easing: string
- - repeat: int, amount of times to repeat
- - repeatAddTime: float
+ - `track`: string
+ - `easing`: string
+ - `repeat`: number (integer), amount of times to repeat
+ - `repeatAddTime`: number (decimal)
  
  ![](Images/example.png)
 ```ruby
@@ -1142,7 +1142,7 @@ makes an [`AssignPathAnimation`](https://github.com/Aeroluna/NoodleExtensions/bl
 makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignPlayerToTrack) custom event
 
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
- - track: string
+ - `track`: string
  
  ![](Images/example.png)
 ```ruby
@@ -1153,9 +1153,9 @@ makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/bl
 # ParentTrack
 makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md#AssignTrackParent) custom event
 
- - childTracks:\["str","str"...]
- - parentTrack: string
- - worldpositionstays: bool
+ - `childTracks`:\["str","str"...]
+ - `parentTrack`: string
+ - `worldpositionstays`: true/false
  
  ![](Images/example.png)
 ```ruby
@@ -1166,8 +1166,8 @@ makes an [`AssignTrackParent`](https://github.com/Aeroluna/NoodleExtensions/blob
 
 ## PointDefinition
 makes a point definition for use with custom events
-  - name: string
-  - points: point definitions
+  - `name`: string
+  - `points`: point definitions
 
  ![](Images/example.png)
 ```ruby
