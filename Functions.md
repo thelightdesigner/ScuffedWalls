@@ -1143,7 +1143,6 @@ makes an [`AssignPlayerToTrack`](https://github.com/Aeroluna/NoodleExtensions/bl
 
  - any of [`these properties`](Functions.md#noodle-extensionschroma-properties-syntax)
  - track: string
- - easing: string
  
  ![](Images/example.png)
 ```ruby
