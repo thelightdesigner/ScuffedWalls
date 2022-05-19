@@ -84,6 +84,11 @@ namespace ScuffedWalls.Functions
                 _duration = duration,
                 _customData = new TreeDictionary()
             };
+            wall._customData ??= new TreeDictionary();
+        
+            // by default make walls fake and uninteractable
+            wall._customData["_fake"] = true;
+            wall._customData["_interactable"] = false;
             BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
 
             lines.Reverse();
