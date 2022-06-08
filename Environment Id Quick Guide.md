@@ -25,6 +25,10 @@ You only need the part after the Chroma word
 ```ruby
 BTSEnvironment.[0]Environment.[11]Clouds
 ```
+You can also make it shorter, everything before the `Environment` is not needed
+```ruby
+Clouds
+```
 ### Notes
 The suggested lookup method for Environment Enhancement is **Regex** (I highly recommend doing your own research on Regex.)
 
