@@ -101,6 +101,7 @@ namespace ScuffedWalls
                     br.FocusFirst();
                     MathStringContents = br.TextInsideOfBrackets;
                     Expression e = new Expression(br.TextInsideOfBrackets);
+                    
 
                     s = br.TextBeforeFocused + e.Evaluate().ToString() + br.TextAfterFocused;
                 }

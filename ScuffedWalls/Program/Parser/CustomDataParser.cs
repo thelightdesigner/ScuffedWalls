@@ -15,6 +15,14 @@ namespace ScuffedWalls
         public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
 
         public static readonly CustomDataParser Instance = new CustomDataParser();
+        public CustomDataParser()
+        {
+
+        }
+        public CustomDataParser(TreeList<Parameter> paramss)
+        {
+            this.parameters = paramss;
+        }
 
         private TreeList<Parameter> parameters;
         public ICustomDataMapObject ReadToCustomData(TreeList<Parameter> parameters, ICustomDataMapObject instance)
@@ -89,11 +97,13 @@ namespace ScuffedWalls
         private T GetParam<T>(string Name, T DefaultValue, Func<string, T> Converter)
         {
             var param = parameters.Get(Name);
-            if (param == null) return DefaultValue;
+            if (param == null || string.IsNullOrEmpty(param.StringData)) return DefaultValue;
+            
             try
             {
+                
                 var converted = Converter(param.StringData);
-                param.WasUsed = true;
+                param.Use();
                 return converted;
             }
             catch (Exception e)
@@ -116,21 +126,21 @@ namespace ScuffedWalls
                 ["_scale"] = GetParam("animatescale", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
                 ["_interactable"] = GetParam("animateinteractable", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
                 ["_time"] = GetParam("animatetime", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
-                ["_height"] = GetParam("animateheight", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateheight", null, p => (object)p),
-                ["_attenuation"] = GetParam("animateattenuation", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimateattenuation", null, p => (object)p),
-                ["_startY"] = GetParam("animatestartY", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatestartY", null, p => (object)p),
-                ["_offset"] = GetParam("animatoffset", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatoffset", null, p => (object)p),
+                ["_height"] = GetParam("animateheight", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_attenuation"] = GetParam("animateattenuation", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_startY"] = GetParam("animatestartY", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
+                ["_offset"] = GetParam("animateoffset", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
 
             };
             if (isEventData)
             {
                 data["_track"] = GetParam("track", null, TrackConverter);
                 data["_parentTrack"] = GetParam("parenttrack", null, p => (object)p);
-                data["_childrenTracks"] = GetParam("childtracks", null, p => JsonSerializer.Deserialize<object[]>(p));
+                data["_childrenTracks"] = GetParam("childtracks", null, p => p.ParseSWArray());
                 data["_duration"] = GetParam("duration", null, p => (object)float.Parse(p));
                 data["_easing"] = GetParam("easing", null, p => (object)p);
-                data["_localPosition"] = GetParam("animatelocalposition", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatelocalposition", null, p => (object)p);
-                data["_localScale"] = GetParam("animatelocalscale", null, p => JsonSerializer.Deserialize<object[][]>($"[{p}]")) ?? GetParam("defineanimatelocalscale", null, p => (object)p);
+                data["_localPosition"] = GetParam("animatelocalposition", null, p => DeserializeDefaultToString<object[][]>($"[{p}]"));
+                data["_localScale"] = GetParam("animatelocalscale", null, p => DeserializeDefaultToString<object[][]>($"[{p}]"));
                 data["_worldPositionStays"] = GetParam("worldpositionstays", null, p => (object)bool.Parse(p));
             }
             return data;

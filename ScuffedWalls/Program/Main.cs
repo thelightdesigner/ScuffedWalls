@@ -99,8 +99,8 @@
             Info, //Provide information about normal operations
             Notice, //Provide information about the important
             Warning, //Provide information about the unexpected
-            Error, //Provide information about a non-crucial failure
-            Critical //Provide information about a crucial failure
+            Error, //Provide information about a non-critical failure
+            Critical //Provide information about a critical failure
         }
         private static void printStats()
         {
