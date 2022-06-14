@@ -56,6 +56,12 @@ namespace ScuffedWalls.Functions
                 _width = GetParam("width", 0, p => int.Parse(p)),
                 _type = (BeatMap.Obstacle.Type)GetParam("type", 0, p => int.Parse(p))
             };
+            
+            wall._customData ??= new TreeDictionary();
+        
+            // by default make walls fake and uninteractable
+            wall._customData["_fake"] = true;
+            wall._customData["_interactable"] = false;
 
             BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
 
