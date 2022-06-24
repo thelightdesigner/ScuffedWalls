@@ -3,7 +3,7 @@ A command line tool designed as an alternative to scripting Noodle Extensions ma
 
 This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
  
-<mark>Development has temporarily stopped and will continue July 24, 2022. If you experience any issues please continue to create bug reports and check older versions.</mark>
+**Development has temporarily stopped and will continue July 24, 2022. If you experience any issues please continue to create bug reports and check older versions.**
 
 ## Quick Start
   - Place the program in the map folder or [`drag the map folder onto the .exe`](https://drive.google.com/file/d/154HyzH-xqE7AuoDrKM9p0_MZtH_f-F_r/view?usp=sharing)
