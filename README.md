@@ -2,8 +2,6 @@
 A command line tool designed as an alternative to scripting Noodle Extensions maps.
 
 This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
- 
-**Development has temporarily stopped and will continue July 24, 2022. If you experience any issues please continue to create bug reports and check older versions.**
 
 ## Quick Start
   - Place the program in the map folder or [`drag the map folder onto the .exe`](https://drive.google.com/file/d/154HyzH-xqE7AuoDrKM9p0_MZtH_f-F_r/view?usp=sharing)
@@ -76,6 +74,34 @@ Also you can create Issues through github if you want.
 <img src="Images/ReadMe/shelter.jpg" alt="Try" width="500"/>
 
 <img src="Images/ReadMe/swifterilluminate.png" alt="Try" width="500"/>
+
+# ReMapper
+
+[`Click Here`](https://github.com/Swifter1243/ReMapper)
+
+
+..from repository
+
+
+"a [TypeScript](https://www.typescriptlang.org/) library designed to help
+with making Beat Saber modcharts. It is designed to optimize the scripting
+experience, and reduce code to be very minimal, and sometimes single lines."
+
+Features
+
+- Wrappers for Notes, Walls, Events, Custom Events, and Environment Objects.
+- Class for handling colors (you can make pretty rainbows!!!).
+- Wrapper for optimizing and managing animations.
+- Blender Model Exporting
+  - Switch environments
+  - Supports animations
+  - Compatible with any environment piece (including multiple at once!)
+- LightID remapping tools.
+- Difficulty and Info.dat wrappers.
+- Various random useful functions.
+- Much more!!!
+
+**This is a good alternative to ScuffedWalls!!**
 
 ## For Developers
 
