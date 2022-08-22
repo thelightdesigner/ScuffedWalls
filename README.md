@@ -30,7 +30,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 The documentation is plentiful, yet not perfect. If you have questions feel free to DM us through Discord.
  - DM `thelightdesigner#0832` for questions AND bugs
  - DM `iswimfly#0556` for questions
- - Join the Noodle Extensions Discord: https://discord.gg/d3JSR4kBD6
+ - Join the Noodle Extensions Discord: https://discord.gg/jRtgkc4MNS
 
 Also you can create Issues through github if you want.
 
