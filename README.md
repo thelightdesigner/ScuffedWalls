@@ -30,7 +30,7 @@ If everything doesnt work and your in a country that uses , as the decimal symbo
 The documentation is plentiful, yet not perfect. If you have questions feel free to DM us through Discord.
  - DM `thelightdesigner#0832` for questions AND bugs
  - DM `iswimfly#0556` for questions
- - Join the Noodle Extensions Discord: https://discord.gg/jRtgkc4MNS
+ - Join the Noodle Extensions Discord: https://discord.gg/d3JSR4kBD6
 
 Also you can create Issues through github if you want.
 
@@ -75,19 +75,20 @@ Also you can create Issues through github if you want.
 
 <img src="Images/ReadMe/swifterilluminate.png" alt="Try" width="500"/>
 
-# ReMapper
+# Alternative Tools
+
+## Remapper
+
+
+**This is a good alternative to ScuffedWalls!!**
 
 [`Click Here`](https://github.com/Swifter1243/ReMapper)
 
-
-..from repository
-
-
-"a [TypeScript](https://www.typescriptlang.org/) library designed to help
+a [TypeScript](https://www.typescriptlang.org/) library designed to help
 with making Beat Saber modcharts. It is designed to optimize the scripting
-experience, and reduce code to be very minimal, and sometimes single lines."
+experience, and reduce code to be very minimal, and sometimes single lines.
 
-Features
+**Features**
 
 - Wrappers for Notes, Walls, Events, Custom Events, and Environment Objects.
 - Class for handling colors (you can make pretty rainbows!!!).
@@ -100,8 +101,6 @@ Features
 - Difficulty and Info.dat wrappers.
 - Various random useful functions.
 - Much more!!!
-
-**This is a good alternative to ScuffedWalls!!**
 
 ## For Developers
 
