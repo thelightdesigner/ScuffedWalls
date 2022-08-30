@@ -9,7 +9,6 @@ namespace ScuffedWalls.Functions
     [SFunction("ModelToEnvironment")]
     public class ModelToEnvironment : ScuffedFunction
     {
-        const float pillarToNoodleUnits = 0.1495f;
         protected override void Update()
         {
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
@@ -20,7 +19,13 @@ namespace ScuffedWalls.Functions
             float YOffset = GetParam("YOffset", 0, CustomDataParser.FloatConverter);
             float ZOffset = GetParam("ZOffset", 0, CustomDataParser.FloatConverter);
             float XOffset = GetParam("XOffset", 0, CustomDataParser.FloatConverter);
-            string RegexStatement = GetParam("Regex", "", p => p);
+            string RegexStatement = GetParam("Regex", null, p => p);
+
+            if (RegexStatement is null)
+            {
+                ScuffedWalls.Print("Regex is required for ModelToEnvironment function! The function will not execute.", ScuffedWalls.LogSeverity.Error);
+                return;
+            }
 
             Model model = new Model(Path);
 
@@ -28,9 +33,9 @@ namespace ScuffedWalls.Functions
             {
                 Vector3 Scale = cube.Transformation.Scale;
                 float preModScaleY = Scale.Y;
-                Scale.X *= scalerX * pillarToNoodleUnits;
-                Scale.Y *= scalerY * pillarToNoodleUnits;
-                Scale.Z *= scalerZ * pillarToNoodleUnits;
+                Scale.X *= scalerX;
+                Scale.Y *= scalerY;
+                Scale.Z *= scalerZ;
 
                 Matrix4x4 Transform = cube.Matrix.Value.TransformLoc(new Vector3(0, -1f, 0));
                 Transformation DecomposedTransform = Transformation.fromMatrix(Transform);
@@ -41,7 +46,7 @@ namespace ScuffedWalls.Functions
 
                 InstanceWorkspace.Environment.Add(new TreeDictionary()
                 {
-                    [_id] = RegexStatement + "$",
+                    [_id] = RegexStatement,
                     [_lookupMethod] = "Regex",
                     [_duplicate] = 1,
                     [_position] = DecomposedTransform.Position.ToFloatArray(),
