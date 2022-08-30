@@ -29,7 +29,7 @@ namespace ScuffedWalls.Functions
                 Vector3 Scale = cube.Transformation.Scale;
                 float preModScaleY = Scale.Y;
                 Scale.X *= scalerX * pillarToNoodleUnits;
-                Scale.Y *= scalerY * pillarToNoodleUnits / 32;
+                Scale.Y *= scalerY * pillarToNoodleUnits;
                 Scale.Z *= scalerZ * pillarToNoodleUnits;
 
                 Matrix4x4 Transform = cube.Matrix.Value.TransformLoc(new Vector3(0, -1f, 0));
