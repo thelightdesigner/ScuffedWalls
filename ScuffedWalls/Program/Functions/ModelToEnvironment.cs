@@ -51,7 +51,9 @@ namespace ScuffedWalls.Functions
                     [_duplicate] = 1,
                     [_position] = DecomposedTransform.Position.ToFloatArray(),
                     [_rotation] = DecomposedTransform.RotationEul.ToFloatArray(),
-                    [_scale] = Scale.ToFloatArray()
+                    [_scale] = Scale.ToFloatArray(),
+                    [_track] = GetParam("track", null, p => (object)p),
+                    [_active] = GetParam("active", null, p => (object)bool.Parse(p)),
                 });
 
             }
