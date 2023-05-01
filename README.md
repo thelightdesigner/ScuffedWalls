@@ -1,4 +1,4 @@
-# ScuffedWalls
+# ScuffedWalls (Deprecated)
 A command line tool designed as an alternative to scripting Noodle Extensions maps.
 
 This tool does not do the same thing as [`Beatwalls`](https://github.com/spookyGh0st/beatwalls) from spookyGh0st.
