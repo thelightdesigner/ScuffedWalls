@@ -5,15 +5,11 @@ using System.Numerics;
 
 namespace ModChart.Wall
 {
-    class WallModelOutput
-    {
-        public int SceneObjectsLength => SceneWalls.Count() + SceneNotes.Count() + SceneEvent.Count();
-        public IEnumerable<BeatMap.Obstacle> SceneWalls { get; set; }
-        public IEnumerable<BeatMap.Note> SceneNotes { get; set; }
-        public IEnumerable<TreeDictionary> SceneEvent { get; set; }
-    }
     class WallModel
     {
+        /// <summary>
+        /// yeaaaaaaaaaaaa.....
+        /// </summary>
         public BeatMap Output { get; private set; } = BeatMap.Empty;
         public Model Model { get; private set; }
         public float NJS { get; private set; }
@@ -56,14 +52,13 @@ namespace ModChart.Wall
             _settings.Wall ??= new BeatMap.Obstacle();
             _settings.Wall._customData ??= new TreeDictionary();
             _settings.Wall._customData["_animation"] ??= new TreeDictionary();
-            Output._customData["_customEvents"] ??= new object[] { };
 
             if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData["_noteJumpMovementSpeed"] != null) NJS = _settings.Wall._customData["_noteJumpMovementSpeed"].ToFloat();
             if (_settings.Wall != null && _settings.Wall._customData != null && _settings.Wall._customData["_noteJumpStartBeatOffset"] != null) Offset = _settings.Wall._customData["_noteJumpStartBeatOffset"].ToFloat();
 
             if (_settings.ObjectOverride == ModelSettings.TypeOverride.AllWalls)
             {
-                foreach (var s in Model.Objects)
+                foreach (var s in Model.Cubes)
                 {
                     s.isBomb = false;
                     s.isNote = false;
@@ -71,7 +66,7 @@ namespace ModChart.Wall
             }
             else if (_settings.ObjectOverride == ModelSettings.TypeOverride.AllNotes)
             {
-                foreach (var s in Model.Objects)
+                foreach (var s in Model.Cubes)
                 {
                     s.isBomb = false;
                     s.isNote = true;
@@ -79,7 +74,7 @@ namespace ModChart.Wall
             }
             else if (_settings.ObjectOverride == ModelSettings.TypeOverride.AllBombs)
             {
-                foreach (var s in Model.Objects)
+                foreach (var s in Model.Cubes)
                 {
                     s.isBomb = true;
                     s.isNote = false;
@@ -87,9 +82,9 @@ namespace ModChart.Wall
 
             }
 
-            if (_settings.DeltaTransformation != null) Model.Objects = Cube.TransformCollection(new DeltaTransformOptions()
+            if (_settings.DeltaTransformation != null) Model.Cubes = Cube.TransformCollection(new DeltaTransformOptions()
             {
-                cubes = Model.Objects,
+                cubes = Model.Cubes,
                 Position = _settings.DeltaTransformation.Position,
                 Rotation = _settings.DeltaTransformation.RotationEul,
                 Scale = _settings.DeltaTransformation.Scale.X,
@@ -97,16 +92,16 @@ namespace ModChart.Wall
                 SetScale = _settings.SetDeltaScale
             }).ToArray();
 
-            if (_settings.ColorMult != 1f) foreach (var cube in Model.Objects) cube.Color *= _settings.ColorMult;
+            if (_settings.ColorMult != 1f) foreach (var cube in Model.Cubes) cube.Color *= _settings.ColorMult;
 
             float realduration = BPMAdjuster.GetRealDuration(_settings.Wall._duration.ToFloat());
             float realstarttime = BPMAdjuster.GetRealTime(_settings.Wall._time.ToFloat());
 
 
             //camera
-            if (_settings.AssignCameraToPlayerTrack && Model.Objects.Any(c => c.isCamera && c.Frames != null))
+            if (_settings.AssignCameraToPlayerTrack && Model.Cubes.Any(c => c.isCamera))
             {
-                var camera = Model.Objects.Where(c => c.isCamera).First();
+                var camera = Model.Cubes.Where(c => c.isCamera).First();
                 camera.Frames = camera.Frames.Select(f =>
                 {
                     f.Matrix = f.Matrix.Value.TransformLoc(new Vector3(0, -3, 0));
@@ -136,13 +131,14 @@ namespace ModChart.Wall
                     }
                 }).ToArray();
             }
+            Output._customData["_customEvents"] ??= new object[] { };
 
 
             //walls
             List<BeatMap.Obstacle> walls = new List<BeatMap.Obstacle>();
 
 
-            foreach (var cube in Model.Objects.Where(c => !c.isBomb && !c.isCamera && !c.isNote))
+            foreach (var cube in Model.Cubes.Where(c => !c.isBomb && !c.isCamera && !c.isNote))
             {
                 var wall = new BeatMap.Obstacle()
                 {
@@ -187,7 +183,7 @@ namespace ModChart.Wall
                                 List<object[]> colorN = new List<object[]>();
                                 for (int i = 0; i < cube.Frames.Length; i++)
                                 {
-                                    float TimeStamp = i.ToFloat() / (cube.Frames.Length.ToFloat() - 1f);
+                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat();
                                     if (cube.Frames[i].OffsetTransformation != null)
                                     {
                                         var framerot = new object[] { cube.Frames[i].OffsetTransformation.RotationEul.X, cube.Frames[i].OffsetTransformation.RotationEul.Y * -1, cube.Frames[i].OffsetTransformation.RotationEul.Z * -1, TimeStamp };
@@ -293,18 +289,15 @@ namespace ModChart.Wall
                     wall._customData["_color"] = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, alpha };
                 }
                 if (_settings.Wall._customData["_color"] != null) wall._customData["_color"] = _settings.Wall._customData["_color"];
-                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[BeatMap._track] = _settings.DefaultTrack;
                 if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) wall._customData["_track"] = cube.Track;
-                BeatMap.Append(wall, _settings.Wall, BeatMap.AppendPriority.Low);
-
-                walls.Add(wall);
+                walls.Add((BeatMap.Obstacle)wall.Append(_settings.Wall, AppendPriority.Low));
 
             }
             Output._obstacles = walls.ToList();
 
             //notes and bombs
             List<BeatMap.Note> notes = new List<BeatMap.Note>();
-            foreach (var cube in Model.Objects.Where(c => c.isBomb || c.isNote))
+            foreach (var cube in Model.Cubes.Where(c => c.isBomb || c.isNote))
             {
                 BeatMap.Note.NoteType type = BeatMap.Note.NoteType.Right;
                 if (cube.isBomb) type = BeatMap.Note.NoteType.Bomb;
@@ -346,7 +339,7 @@ namespace ModChart.Wall
                                 List<object[]> colorN = new List<object[]>();
                                 for (int i = 0; i < cube.Frames.Length; i++)
                                 {
-                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat() - 1f;
+                                    float TimeStamp = i.ToFloat() / cube.Frames.Length.ToFloat();
                                     if (cube.Frames[i].Transformation != null)
                                     {
                                         positionN.Add(new object[] { cube.Frames[i].Transformation.Position.X * -1f, cube.Frames[i].Transformation.Position.Y, cube.Frames[i].Transformation.Position.Z, TimeStamp });
@@ -382,22 +375,16 @@ namespace ModChart.Wall
 
                 if (cube.Color != null) note._customData["_color"] = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, cube.Color.A };
                 if (_settings.Wall._customData["_color"] != null) note._customData["_color"] = _settings.Wall._customData["_color"];
-               // if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") note._customData[BeatMap._track] = _settings.DefaultTrack;
-                if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) note._customData["_track"] = cube.Track;
-               
+                if (_settings.CreateTracks && string.IsNullOrEmpty(cube.Track)) note._customData["_track"] = cube.Track;
 
-                BeatMap.Append(note, _settings.Wall, BeatMap.AppendPriority.Low);
-
-
-                notes.Add(note);
-
+                notes.Add((BeatMap.Note)note.Append(_settings.Wall, AppendPriority.Low));
             }
-            Output._notes = notes;
+            Output._notes = notes.ToList();
         }
     }
     public class ModelSettings
     {
-        public string DefaultTrack { get; set; }
+
         public string Path { get; set; }
         /// <summary>
         /// (spreadspawntime)

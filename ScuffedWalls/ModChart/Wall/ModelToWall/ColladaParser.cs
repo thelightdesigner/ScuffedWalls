@@ -10,7 +10,7 @@ namespace ModChart.Wall
 {
     public class Model
     {
-        public Cube[] Objects { get; set; }
+        public Cube[] Cubes { get; set; }
 
         private Collada _model;
 
@@ -18,12 +18,12 @@ namespace ModChart.Wall
         {
             _model = (Collada)Converters.DeserializeXML<Collada>(path);
             SetCubes();
-            foreach (var cube in Objects) cube.SetOffset();
-            foreach (var cube in Objects) cube.Decompose();
+            foreach (var cube in Cubes) cube.SetOffset();
+            foreach (var cube in Cubes) cube.Decompose();
         }
         public Model(Cube[] Cubes)
         {
-            Objects = Cubes;
+            this.Cubes = Cubes;
         }
 
 
@@ -77,7 +77,7 @@ namespace ModChart.Wall
 
                             for (int frame = 0; frame < cube.Count; frame++)
                             {
-                                cube.Frames[frame] ??= new Cube.Frame();
+                                if (cube.Frames[frame] == null) cube.Frames[frame] = new Cube.Frame();
                                 cube.Frames[frame].Matrix = matrices[frame];
                                 cube.Frames[frame].Number = frame;
                             }
@@ -95,8 +95,7 @@ namespace ModChart.Wall
                                 var animation = cubeAnimationsContainer.animation;
                                 if (animation == null || !animation.Any()) return null;
 
-                                var source = animation.FirstOrDefault(anim => Regex.IsMatch(anim.id, regex, RegexOptions.Multiline))?.sources.Where(s => s.id.Contains("-output")).First();
-                                if (source is null) return null;
+                                var source = animation.First(anim => Regex.IsMatch(anim.id, regex, RegexOptions.Multiline)).sources.Where(s => s.id.Contains("-output")).First();
                                 doframes(int.Parse(source.float_array.count));
                                 return source.float_array.values.ParseToNullFloatArray();
 
@@ -164,7 +163,7 @@ namespace ModChart.Wall
                             var correcteffect = effectcontainer.Where(e => e.id.Split("-effect").First() == cube.Material[0]).First();
 
 
-                            if (correcteffect.profile.technique.lambert.diffuse == null) ScuffedWalls.ScuffedWalls.Print($"{cube.Name} diffuse is nulled! skipping", ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
+                            if (correcteffect.profile.technique.lambert.diffuse == null) ScuffedWalls.ScuffedWalls.Print($"{cube.Name} diffuse is nulled! skipping",ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
 
                             float[] colorArray = correcteffect.profile.technique.lambert.diffuse.color.ParseToFloatArray();
                             cube.Color = new Color() { R = colorArray[0], G = colorArray[1], B = colorArray[2], A = colorArray[3] };
@@ -186,7 +185,7 @@ namespace ModChart.Wall
 
             List<Cube> instancecubes = new List<Cube>();
             foreach (var cube in cubes) instancecubes.AddRange(cube.InstantiateMultiples());
-            Objects = instancecubes.ToArray();
+            Cubes = instancecubes.ToArray();
         }
 
     }

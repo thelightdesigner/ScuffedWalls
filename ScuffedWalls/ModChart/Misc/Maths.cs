@@ -5,7 +5,7 @@ namespace ModChart
 {
     public class Transformation
     {
-        public static Transformation fromMatrix(Matrix4x4 Matrix)
+        public static Transformation FromMatrix(Matrix4x4 Matrix)
         {
             Vector3 pos;
             Quaternion rot;
@@ -112,7 +112,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         {
             return new Vector2(array[0].ToFloat(), array[1].ToFloat());
         }
-        public static object[] ToFloatArray(this Vector2 vector)
+        public static object[] FromVector2(this Vector2 vector)
         {
             return new object[] { vector.X, vector.Y };
         }
@@ -120,11 +120,11 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
         {
             return new Vector3(array[0].ToFloat(), array[1].ToFloat(), array[2].ToFloat());
         }
-        public static object[] ToFloatArray(this Vector3 vector)
+        public static object[] FromVector3(this Vector3 vector)
         {
             return new object[] { vector.X, vector.Y, vector.Z };
         }
-
+        /*
         public static Vector2 PolarToCartesian(float angle, float radius)
         {
             float angleRad = (Math.PI.ToFloat() / 180f) * (angle - 90f);
@@ -132,15 +132,7 @@ Scale: {{ X:{Scale.X} Y:{Scale.Y} Z:{Scale.Z} }}";
             float y = radius * Math.Sin(angleRad).ToFloat();
             return new Vector2(x, y);
         }
-
-        public static float Coterminal(this float angle)
-        {
-            while (angle > 360)
-            {
-                angle -= 360;
-            }
-            return angle;
-        }
+        */
 
         public static Vector3 ToEuler(this Quaternion q)
         {

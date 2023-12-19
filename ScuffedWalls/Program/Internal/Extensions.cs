@@ -8,62 +8,30 @@ namespace ScuffedWalls
 {
     static class Extensions
     {
-        public static ICustomDataMapObject CustomDataParse(this TreeList<Parameter> parameters, ICustomDataMapObject instance)
+        public static string MakePlural(this string s, int amount)
         {
-            return CustomDataParser.Instance.ReadToCustomData(parameters, instance);
+            if (amount == 1) return s.TrimEnd('s');
+            else return s.SetEnd('s');
         }
-        public static TreeDictionary CustomEventsDataParse(this TreeList<Parameter> parameters)
+        public static object GetClone(this object obj)
         {
-            return CustomDataParser.Instance.ReadAnimation(parameters);
+            if (obj is ICloneable cloneable) return cloneable.Clone();
+            else if (obj is IEnumerable<object> array) return array.CloneArray();
+            else return obj;
         }
-        public static string Remove(this string line, string pattern)
+        public static string SetEnd(this string s, char character)
         {
-            foreach(char c in pattern) line = line.Replace(c.ToString(), "");
-            return line;
+            if (s.Last() == character) return s;
+            else return s + character;
         }
-        public static object ParseDynamicStringArray(this string line)
+        public static string ToFileString(this DateTime time)
         {
-            string[] array = ParseSWArray(line);
-
-            if (array.Length == 0) return null;
-            if (array.Length == 1) return array[0];
-            return array;
+            return $"Backup - {time.ToFileTime()}";
         }
-        public static string[] ParseSWArray(this string array) =>  array.Remove("[]\"").SplitExcludeParanthesis();
-        public static string[] SplitExcludeBrackets(BracketAnalyzer analyzer)
+        public static string RemoveWhiteSpace(this string WhiteSpace)
         {
-            List<int> splits = new List<int>();
-
-            for (int i = 0; i < analyzer.FullLine.Length; i++)
-            {
-                if (analyzer.IsOpeningBracket(i)) i = analyzer.GetPosOfClosingSymbol(i);
-                else if (analyzer.FullLine[i] == ',') splits.Add(i);
-            }
-            
-            return analyzer.FullLine.SplitAt(splits.ToArray());
+            return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
-        public static string[] SplitAt(this string source, int[] indexes)
-        {
-            indexes = indexes.OrderBy(x => x).ToArray();
-            string[] output = new string[indexes.Length + 1];
-            int lastpos = 0;
-
-            for (int i = 0; i < indexes.Length; i++)
-            {
-                output[i] = source.Substring(lastpos, indexes[i] - lastpos);
-                lastpos = indexes[i] + 1;
-            }
-
-            output[indexes.Length] = source.Substring(lastpos);
-            return output;
-        }
-        public static string[] SplitExcludeParanthesis(this string line) => SplitExcludeBrackets(new BracketAnalyzer(line, '(',')'));
-        public static TreeList<T> ToTreeList<T>(this IEnumerable<T> enumerable, Func<T, string> exposer) => new TreeList<T>(enumerable, exposer);
-        /// <summary>
-        /// Attempts a deep clone of an array and all of the nested arrays, clones ICloneable
-        /// </summary>
-        /// <param name="Array"></param>
-        /// <returns></returns>
         public static IEnumerable<object> CloneArray(this IEnumerable<object> Array)
         {
             return Array.Select(item =>
@@ -81,47 +49,44 @@ namespace ScuffedWalls
 
             return list.ToArray();
         }
-        public static IEnumerable<ITimeable> GetAllBetween(this IEnumerable<ITimeable> mapObjects, float starttime, float endtime)
-        {
-            return mapObjects.Where(obj => obj._time.ToFloat() >= starttime && obj._time.ToFloat() <= endtime).ToArray();
-        }
-        public static string MakePlural(this string s, int amount)
-        {
-            if (amount == 1) return s.TrimEnd('s');
-            else return s.SetEnd('s');
-        }
-        public static void AddRange<K,T>(this Dictionary<K, T> dict, IEnumerable<KeyValuePair<K, T>> items)
-        {
-            foreach (var item in items)
-            {
-                dict[item.Key] = item.Value;
-            }
-        }
-        public static List<Parameter> ToParameters(this IEnumerable<KeyValuePair<int, string>> lines)
-        {
-            return lines.Select(line => new Parameter(line.Value, line.Key)).ToList();
-        }
-
-        public static string SetEnd(this string s, char character)
-        {
-            if (s.Last() == character) return s;
-            else return s + character;
-        }
-        public static List<T> Lasts<T>(this IEnumerable<T> list)
-        {
-            var newlist = new List<T>();
-            for(int i = 1; i < list.Count(); i++) newlist.Add(list.ElementAt(i));
-            return newlist;
-        }
-        public static string ToFileString(this DateTime time)
-        {
-            return $"Backup - {time.ToFileTime()}";
-        }
-
-        public static string RemoveWhiteSpace(this string WhiteSpace)
-        {
-            return new string(WhiteSpace.Where(c => !Char.IsWhiteSpace(c)).ToArray());
-        }
     }
 
+    public class JsonValidator
+    {
+        public dynamic Deserialized;
+        public bool WasSuccess;
+        public string Raw;
+        public static JsonValidator Check(string s)
+        {
+            var val = new JsonValidator() { Raw = s };
+
+            try
+            {
+                val.Deserialized = JsonSerializer.Deserialize<object>(s);
+                val.WasSuccess = true;
+            }
+            catch
+            {
+                val.WasSuccess = false;
+            }
+
+            return val;
+        }
+        public static JsonValidator Check<t>(string s)
+        {
+            var val = new JsonValidator() { Raw = s };
+
+            try
+            {
+                val.Deserialized = JsonSerializer.Deserialize<t>(s);
+                val.WasSuccess = true;
+            }
+            catch
+            {
+                val.WasSuccess = false;
+            }
+
+            return val;
+        }
+    }
 }

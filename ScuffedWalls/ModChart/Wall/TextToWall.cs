@@ -93,7 +93,7 @@ namespace ModChart.Wall
         {
             return new WallLetterCollection()
             {
-                Walls = Walls.CloneArray().Cast<BeatMap.Obstacle>().ToArray(),
+                Walls = Walls?.CloneArray().Cast<BeatMap.Obstacle>().ToArray(),
                 Character = Character,
                 Dimensions = Dimensions
             };
@@ -161,7 +161,6 @@ namespace ModChart.Wall
         public ModelSettings ModelSettings { get; set; }
 
     }
-    //I HATE ALL OF THIS
     public static class TextHelper
     {
         //sets the position of a collection of walls, account for thicc
@@ -173,7 +172,7 @@ namespace ModChart.Wall
             Vector2 difference = new Vector2(XCorner, YCorner) - Pos;
             return walls.Select(wall =>
             {
-                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() - difference).ToFloatArray();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() - difference).FromVector2();
                 return wall;
             }).ToArray();
         }
@@ -181,7 +180,7 @@ namespace ModChart.Wall
         {
             return walltext.Walls.Select(wall =>
             {
-                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + Pos).ToFloatArray();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + Pos).FromVector2();
                 return wall;
             }).ToArray();
         }
@@ -189,7 +188,7 @@ namespace ModChart.Wall
         {
             return walls.Select(wall =>
             {
-                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + pos).ToFloatArray();
+                wall._customData["_position"] = (wall._customData.at<IEnumerable<object>>("_position").ToArray().ToVector2() + pos).FromVector2();
                 return wall;
             }).ToArray();
         }

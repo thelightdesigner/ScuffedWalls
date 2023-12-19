@@ -130,11 +130,11 @@ namespace ModChart
         }
         public static Matrix4x4 TransformLoc(this Matrix4x4 matrix, Vector3 trans)
         {
-            var dec = Transformation.fromMatrix(matrix);
+            var dec = Transformation.FromMatrix(matrix);
 
             var difference = Matrix4x4.CreateTranslation(trans * dec.Scale);
             var compensation = Matrix4x4.Transform(difference, dec.RotationQuat);
-            matrix.Translation += compensation.Translation;
+            matrix.Translation = matrix.Translation + compensation.Translation;
             return matrix;
         }
     }

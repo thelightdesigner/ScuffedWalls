@@ -6,13 +6,15 @@ using System.Linq;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("TextToWall")]
-    class TextToWall : ScuffedFunction
+    [ScuffedFunction("TextToWall")]
+    class TextToWall : SFunction
     {
-        protected override void Update()
+        public override void Run()
         {
+            FunLog();
 
-            var parsedshit = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+
+            var parsedshit = Parameters.CustomDataParse(new BeatMap.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedshit._customData != null && parsedshit._customData["_noteJumpMovementSpeed"] != null;
             List<string> lines = new List<string>();
@@ -27,9 +29,8 @@ namespace ScuffedWalls.Functions
             bool isblackempty =     GetParam("isblackempty", true, p => bool.Parse(p));
             float alpha =           GetParam("alpha", 1, p => float.Parse(p));
             float smooth =          GetParam("spreadspawntime", 0, p => float.Parse(p));
-            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
+            string Path =           GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(Utils.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path =                  GetParam("fullpath", DefaultValue: Path, p => p);
-            AddRefresh(Path);
             float duration =        GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             ModelSettings
             .TypeOverride tpye =    GetParam("type", DefaultValue: ModelSettings.TypeOverride.ModelDefined, p => (ModelSettings.TypeOverride)int.Parse(p));
@@ -37,38 +38,38 @@ namespace ScuffedWalls.Functions
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time, parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time);
+                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time));
+                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
                 }
                 return Time;
             });
             duration =              GetParam("definitedurationseconds", duration, p =>
             {
-                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()));
+                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
             });
             duration = GetParam("definitedurationbeats", duration, p =>
             {
-                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
+                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
 
-            float MapBpm = ScuffedWallsContainer.Info["_beatsPerMinute"].ToFloat();
-            float MapNjs = ScuffedWallsContainer.InfoDifficulty["_noteJumpMovementSpeed"].ToFloat();
-            float MapOffset = ScuffedWallsContainer.InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat();
+            float MapBpm = Utils.Info["_beatsPerMinute"].ToFloat();
+            float MapNjs = Utils.InfoDifficulty["_noteJumpMovementSpeed"].ToFloat();
+            float MapOffset = Utils.InfoDifficulty["_noteJumpStartBeatOffset"].ToFloat();
 
             if (isNjs) MapOffset = parsedshit._customData["_noteJumpStartBeatOffset"].ToFloat();
             if (isNjspeed) MapNjs = parsedshit._customData["_noteJumpMovementSpeed"].ToFloat();
 
-            foreach (var p in UnderlyingParameters)
+            foreach (var p in Parameters)
             {
-                if (p.Clean.Name == "line")
+                if (p.Name == "line")
                 {
                     lines.Add(p.StringData);
                     p.WasUsed = true;
@@ -78,18 +79,6 @@ namespace ScuffedWalls.Functions
             bool isModel = false;
             if (new FileInfo(Path).Extension.ToLower() == ".dae")isModel = true;
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
-            {
-                _time = Time,
-                _duration = duration,
-                _customData = new TreeDictionary()
-            };
-            wall._customData ??= new TreeDictionary();
-        
-            // by default make walls fake and uninteractable
-            wall._customData["_fake"] = true;
-            wall._customData["_interactable"] = false;
-            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
 
             lines.Reverse();
             WallText text = new WallText(new TextSettings()
@@ -111,7 +100,12 @@ namespace ScuffedWalls.Functions
                     maxPixelLength = linelength,
                     thicc = thicc,
                     tolerance = compression,
-                    Wall = wall
+                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
+                    {
+                        _time = Time,
+                        _duration = duration,
+                        _customData = new TreeDictionary()
+                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
                 },
                 ModelSettings = new ModelSettings()
                 {
@@ -133,13 +127,19 @@ namespace ScuffedWalls.Functions
                     
                     NJS = MapNjs,
                     Offset = MapOffset,
-                    Wall = wall
+                    Wall = (BeatMap.Obstacle)new BeatMap.Obstacle()
+                    {
+                        _time = Time,
+                        _duration = duration,
+                        _customData = new TreeDictionary()
+                    }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()), AppendPriority.High)
                 }
             });
             InstanceWorkspace.Walls.AddRange(text.Walls);
             InstanceWorkspace.Notes.AddRange(text.Notes);
-            RegisterChanges("Wall", text.Walls.Length);
-            if(text.Notes.Any()) RegisterChanges("Note", text.Notes.Length);
+            ConsoleOut("Wall", text.Walls.Length, Time, "TextToWall");
+            if(text.Notes.Any()) ConsoleOut("Note", text.Notes.Length, Time, "TextToWall");
+            Parameter.RefreshAllParameters();
         }
     }
 

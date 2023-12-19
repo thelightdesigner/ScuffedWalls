@@ -2,13 +2,18 @@
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("Blackout")]
-    class Blackout : ScuffedFunction
+    [ScuffedFunction("Blackout")]
+    class Blackout : SFunction
     {
-        protected override void Update()
+        public override void Run()
         {
-            RegisterChanges("Light", 1);
+            FunLog();
+
+            ConsoleOut("Light", 1, Time, "Blackout");
             InstanceWorkspace.Lights.Add(new BeatMap.Event() { _time = Time, _type = 0, _value = 0 });
+            Parameter.RefreshAllParameters();
         }
     }
+
+
 }
