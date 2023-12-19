@@ -7,7 +7,17 @@ using System.Text.Json.Serialization;
 
 namespace ModChart
 {
-    public class TreeDictionary : Dictionary<string, object>, IDictionary<string, object>, ICloneable
+    public interface ITreeDictionary : ICloneable
+    { 
+        public TreeDictionary<T> Convert<T, C>(Func<T, C> converter);
+        public void DeleteNullValues();
+        public object at(string Key);
+        public void set(string Key, object Value);
+        public T at<T>(string Key);
+        public object GetMultiple(string Key);
+        public void SetMultiple(string Key, object value);
+    }
+    public class TreeDictionary<TreeType> : Dictionary<string, TreeType>, ITreeDictionary, ICloneable
     {
         public void DeleteNullValues()
         {
@@ -16,71 +26,68 @@ namespace ModChart
 
             foreach (var item in this)
             {
-                if (item.Value is TreeDictionary dict) dict.DeleteNullValues();
-                else if (item.Value is IEnumerable<object> array) foreach (var element in array) if (element is TreeDictionary dict2) dict2.DeleteNullValues();
+                if (item.Value is ITreeDictionary dict) dict.DeleteNullValues();
+                else if (item.Value is IEnumerable<object> array) foreach (var element in array) if (element is ITreeDictionary dict2) dict2.DeleteNullValues();
             }
         }
         public object Clone()
         {
-            IDictionary<string, object> New = new TreeDictionary();
+            TreeDictionary<TreeType> New = new TreeDictionary<TreeType>();
 
             foreach (var Item in this)
             {
-                if (Item.Value is ICloneable cloneable) New[Item.Key] = cloneable.Clone();
-                else if (Item.Value is IEnumerable<object> array) New[Item.Key] = array.CloneArray();
+                if (Item.Value is ICloneable cloneable) New[Item.Key] = (TreeType)cloneable.Clone();
+                else if (Item.Value is IEnumerable<object> array) New[Item.Key] = (TreeType)array.CloneArray();
                 else New[Item.Key] = Item.Value;
             }
 
             return New;
         }
-        public static TreeDictionary Tree() => new TreeDictionary();
-        public static TreeDictionary Tree(IDictionary<string, object> IDict)
-        {
-            TreeDictionary tree = new TreeDictionary();
-            foreach (var item in IDict) tree.Add(item.Key, item.Value);
-            return tree;
-        }
+        
+        public TreeDictionary<H> Merge<H>(TreeDictionary<H> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue, bool PreserveInstance = false) => Merge(this, Dictionary2, mergeType, mergeBindingFlags, PreserveInstance);
 
         /// <summary>
-        /// Merges two IDictionaries, prioritizes Dictionary1
+        /// Merges two IDictionaries, prioritizes Dictionary1, Will not cast between two different typed generics
         /// </summary>
         /// <param name="Dictionary1"></param>
         /// <param name="Dictionary2"></param>
         /// <returns>A TreeDictionary as an IDictionary</returns>
-        public static TreeDictionary Merge(IDictionary<string, object> Dictionary1, IDictionary<string, object> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue)
+        public static TreeDictionary<T> Merge<T>(TreeDictionary<T> Dictionary1, TreeDictionary<T> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue, bool PreserveInstance = false)
         {
-            Dictionary1 ??= new TreeDictionary();
-            Dictionary2 ??= new TreeDictionary();
+            Dictionary1 ??= new TreeDictionary<T>();
+            Dictionary2 ??= new TreeDictionary<T>();
 
-            TreeDictionary Merged = new TreeDictionary();
-            foreach (KeyValuePair<string, object> Item in Dictionary1)
+            TreeDictionary<T> Merged = PreserveInstance ? Dictionary1 : new TreeDictionary<T>();
+
+            if (!PreserveInstance) foreach (KeyValuePair<string, T> Item in Dictionary1) Merged[Item.Key] = Item.Value;
+
+            foreach (KeyValuePair<string, T> Item in Dictionary2)
             {
-                Merged[Item.Key] = Item.Value;
-            }
-            foreach (KeyValuePair<string, object> Item in Dictionary2)
-            {
-                if (!TreeItemExists(Item))
+                if (!dict1ItemExists(Item))
                     if (mergeType.HasFlag(MergeType.Objects))
                         Merged[Item.Key] = Item.Value;
                     else
                         continue;
                 else
                 {
-                    if (Merged[Item.Key] is IDictionary<string, object> dictionary1 && Item.Value is IDictionary<string, object> dictionary2)
+                    if (Merged[Item.Key] is IDictionary<string, T> dictionary1 && Item.Value is IDictionary<string, object> dictionary2)
                         if (mergeType.HasFlag(MergeType.Dictionaries)) Merged[Item.Key] = Merge(dictionary1, dictionary2, mergeType, mergeBindingFlags);
                         else continue;
+
                     else if (Merged[Item.Key] is IList<object> List1 && Item.Value is IEnumerable<object> Array3)
                         if (mergeType.HasFlag(MergeType.Arrays)) foreach (var obj in Array3)
                                 List1.Add(obj);
                         else continue;
+
                     else if (Merged[Item.Key] is IEnumerable<object> Array1 && Item.Value is IEnumerable<object> Array2)
-                        if (mergeType.HasFlag(MergeType.Arrays)) Merged[Item.Key] = Array1.CombineWith(Array2);
+                        if (mergeType.HasFlag(MergeType.Arrays)) Merged[Item.Key] = CombineWith(Array1,Array2);
                         else continue;
+
                 }
             }
             return Merged;
 
-            bool TreeItemExists(KeyValuePair<string, object> Item)
+            bool dict1ItemExists(KeyValuePair<string, T> Item)
             {
                 switch (mergeBindingFlags)
                 {
@@ -88,7 +95,7 @@ namespace ModChart
                         if (Dictionary1.ContainsKey(Item.Key)) return true;
                         else return false;
                     case MergeBindingFlags.HasValue:
-                        if (Dictionary1.TryGetValue(Item.Key, out object Value) && Value != null) return true;
+                        if (Dictionary1.TryGetValue(Item.Key, out T Value) && Value != null) return true;
                         else return false;
                 }
                 return false;
@@ -108,61 +115,64 @@ namespace ModChart
             Exists,
             HasValue
         }
-        public TreeDictionary at(string Key) => (TreeDictionary)base[Key];
-        public T at<T>(string Key) => (T)base[Key];
-
-        public new object this[string Key]
+        public object GetMultiple(string Key)
         {
-            get
+            return getLastDictInChain(Key, out string last).at(last);
+        }
+        public void SetMultiple(string Key, object value)
+        {
+            getLastDictInChain(Key, out string last).set(last, value);
+        }
+
+        private ITreeDictionary getLastDictInChain(string Key, out string LastKey)
+        {
+            if (!Key.Contains('.'))
             {
-                if (!Key.Contains('.'))
-                {
-                    TryGetValue(Key, out object Value);
-                    return Value;
-                }
-                else
-                {
-                    var Layers = Key.Split('.');
-
-                    object CurrentLayer = this;
-                    for (int i = 0; i < Layers.Length; i++)
-                    {
-                        if (CurrentLayer is IDictionary<string, object> dictionary) dictionary.TryGetValue(Layers[i], out CurrentLayer);
-                        else throw new NullReferenceException($"TreeDictionary does not contain one or more of the SubTrees referenced {{{Key}}}");
-                    }
-
-                    return CurrentLayer;
-                }
+                LastKey = Key;
+                return this;
             }
-            set
+
+            string[] Layers = Key.Split('.');
+
+            object CurrentLayer = this;
+            for (int i = 0; i < Layers.Length - 1; i++)
             {
-                if (!Key.Contains('.'))
+                if (CurrentLayer is ITreeDictionary dictionary)
                 {
-                    base[Key] = value;
-                    return;
+                    CurrentLayer = dictionary.at(Layers[i]);
                 }
-                else
-                {
-                    string[] Layers = Key.Split('.');
-
-                    object CurrentLayer = this;
-                    for (int i = 0; i < Layers.Length - 1; i++)
-                    {
-                        if (CurrentLayer is IDictionary<string, object> dictionary) dictionary.TryGetValue(Layers[i], out CurrentLayer);
-                        else throw new NullReferenceException($"TreeDictionary does not contain one or more of the SubTrees referenced {{{Key}}}");
-                    }
-                    ((IDictionary<string, object>)CurrentLayer)[Layers.Last()] = value;
-                }
+                else throw new NullReferenceException($"TreeDictionary does not contain one or more of the SubTrees referenced {{{Key}}}");
             }
+            LastKey = Layers.Last();
+            return CurrentLayer as ITreeDictionary;
+        }
+
+        public TreeDictionary<T> Expose<T>() => (TreeDictionary<T>)(object)this;
+
+        public TreeDictionary<T> Convert<T, C>(Func<T, C> converter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object at(string Key) => base[Key];
+
+        public void set(string Key, object Value)
+        {
+            base[Key] = (TreeType)Value;
+        }
+
+        public T at<T>(string Key)
+        {
+            throw new NotImplementedException();
         }
     }
-    public class TreeDictionaryJsonConverter : JsonConverter<TreeDictionary>
+    public class TreeDictionaryJsonConverter : JsonConverter<ITreeDictionary>
     {
-        public override TreeDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ITreeDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException($"JsonTokenType was of type {reader.TokenType}, only objects are supported");
 
-            var dictionary = new TreeDictionary();
+            var dictionary = new TreeDictionary<object>();
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndObject) return dictionary;
@@ -180,7 +190,7 @@ namespace ModChart
             return dictionary;
         }
 
-        public override void Write(Utf8JsonWriter writer, TreeDictionary value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ITreeDictionary value, JsonSerializerOptions options)
         {
             JsonSerializer.Serialize(writer, value as IDictionary<string, object>, options);
         }

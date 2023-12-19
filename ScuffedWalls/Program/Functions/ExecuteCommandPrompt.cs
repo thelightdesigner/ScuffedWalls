@@ -4,25 +4,19 @@ using System.IO;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("Run", "cmd", "Terminal", "Execute")]
-    class ExecuteCommandPrompt : ScuffedFunction
+    [ScuffedFunction("Run", "cmd", "Terminal", "Execute")]
+    class ExecuteCommandPrompt : SFunction
     {
-        protected override void Init()
+        public override void Run()
         {
-            string JSfile = GetParam("Script", null, p => Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p));
-            AddRefresh(JSfile);
-            bool EarlyRun = GetParam("RunBefore", false, bool.Parse);
+            FunLog();
 
 
-            string InputArgs;
-            if (JSfile != null)
-            {
-                InputArgs = JSfile.EndsWith(".ts") ? $"ts-node \"{JSfile}\" " : $"node \"{JSfile}\"";
-            }
-            else
-            {
-                InputArgs = GetParam("Args", "", p => p);
-            }
+            string JS = GetParam("Javascript", null, p => "node " + '"' + Path.Combine(Utils.ScuffedConfig.MapFolderPath, p) + '"');
+            bool EarlyRun = GetParam("RunBefore", false, p => bool.Parse(p));
+            
+
+            string InputArgs = JS != null ? JS : GetParam("Args", "", p => p);
 
             void Execute()
             {
@@ -36,7 +30,6 @@ namespace ScuffedWalls.Functions
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardError = true
-                        ,
                     }
                 };
                 cmd.Start();
@@ -65,8 +58,8 @@ namespace ScuffedWalls.Functions
                 cmd.WaitForExit();
             }
 
-            if (!EarlyRun) ScuffedWallsContainer.OnProgramComplete += Execute;
-            else ScuffedWallsContainer.OnChangeDetected += Execute;
+            if (!EarlyRun) Utils.OnProgramComplete += Execute;
+            else Utils.OnChangeDetected += Execute;
 
 
         }

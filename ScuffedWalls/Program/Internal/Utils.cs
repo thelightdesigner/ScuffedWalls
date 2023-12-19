@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace ScuffedWalls
 {
-    internal static class ScuffedWallsContainer
+    class Utils
     {
         public static string[] args;
-        
+
         public static JsonSerializerOptions DefaultJsonConverterSettings { get; private set; }
         public static string ConfigFileName { get; private set; }
         public static Config ScuffedConfig { get; private set; }
@@ -22,7 +22,6 @@ namespace ScuffedWalls
         public static TreeDictionary InfoDifficulty { get; private set; }
         public static BpmAdjuster BPMAdjuster { get; private set; }
         public static ScuffedWallFile ScuffedWallFile { get; private set; }
-        public static List<FileChangeDetector> FilesToChange { get; set; }
         public static RPC DiscordRPCManager { get; private set; }
         /// <summary>
         /// These events are erased after a single invoke
@@ -34,33 +33,29 @@ namespace ScuffedWalls
         /// </summary>
 
         public static event Action OnChangeDetected;
-        //Airscrach: Adds Code Correction For Some Code Editors, (This Is The Only Code Edit That I Wanted To Make, The Rest Will Just Be Docs, love your work <3)
-        public static string SWText =>
-@$"# ScuffedWalls {ScuffedWalls.Version}
+
+        static string SWText =>
+@$"# ScuffedWalls {ScuffedWalls.ver}
 
 # Documentation on functions can be found at
 # https://github.com/thelightdesigner/ScuffedWalls/blob/main/Functions.md
+            
+# DM @thelightdesigner#1337 for more help?
 
 # Using this tool requires an understanding of Noodle Extensions.
-# https://github.com/Aeroluna/Heck/wiki
+# https://github.com/Aeroluna/NoodleExtensions/blob/master/Documentation/AnimationDocs.md
 
-# If the documentation is not sufficient
-# DM thelightdesigner#0832 or iswimfly#0556 for help (Discord)
-# Noodle Extension Community Discord https://discord.gg/ZDC3pG3xB8
+# Playtest your maps
 
-Workspace
-";
-        public static void ResetAwaitingFiles()
-        {
-            FilesToChange = new List<FileChangeDetector>() { ScuffedWallFile.Detector };
-        }
+Workspace:Default";
+
         public static void Initialize(string[] argss)
         {
             JsonSerializerOptions SerializerOptions = new JsonSerializerOptions() { IgnoreNullValues = true };
             SerializerOptions.Converters.Add(new TreeDictionaryJsonConverter());
             DefaultJsonConverterSettings = SerializerOptions;
 
-            Console.Title = $"ScuffedWalls {ScuffedWalls.Version}";
+            Console.Title = $"ScuffedWalls {ScuffedWalls.ver}";
             args = argss;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
@@ -77,11 +72,11 @@ Workspace
                 InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
                          .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
                          .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
-                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedWallsContainer.ScuffedConfig.MapFilePath).Name).First();
+                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(Utils.ScuffedConfig.MapFilePath).Name).First();
             }
             catch(Exception e)
             {
-                ScuffedWalls.Print($"Error in info.dat! {e}", ScuffedWalls.LogSeverity.Critical);
+                ScuffedWalls.Print($"Error in info.dat! {e}",ScuffedWalls.LogSeverity.Critical);
                 Console.ReadLine();
                 Environment.Exit(1);
             }
@@ -90,7 +85,7 @@ Workspace
             ScuffedWalls.Print($"Njs: {BPMAdjuster.Njs} Offset: {BPMAdjuster.StartBeatOffset} HalfJump: {BPMAdjuster.HalfJumpBeats}");
 
             ScuffedWallFile = new ScuffedWallFile(ScuffedConfig.SWFilePath);
-            ResetAwaitingFiles();
+            SWFileChangeDetector = new Change(ScuffedWallFile);
 
             DiscordRPCManager = new RPC();
             var releasething = CheckReleases();
@@ -190,7 +185,6 @@ Workspace
    Path:{new FileInfo(ScuffedConfig.OldMapPath).Name}");
                     }
                 }
-                Console.Write("[Default] Main: ");
                 new Rainbow().PrintRainbow("New Scuffed Wall File Created");
             }
         }
@@ -199,9 +193,9 @@ Workspace
             GitHubClient client = new GitHubClient(new ProductHeaderValue("ScuffedWalls"));
             var releases = await client.Repository.Release.GetAll("thelightdesigner", "ScuffedWalls");
             var latest = releases.OrderBy(r => r.PublishedAt).Last();
-            if (latest.TagName != ScuffedWalls.Version)
+            if (latest.TagName != ScuffedWalls.ver)
             {
-                ScuffedWalls.Print($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})", ScuffedWalls.LogSeverity.Notice, ShowStackFrame: false);
+                ScuffedWalls.Print($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})",ScuffedWalls.LogSeverity.Notice);
             }
         }
         public static TreeDictionary GetInfo()
@@ -218,7 +212,7 @@ Workspace
             info["_customData._editors"] ??= new TreeDictionary();
             info["_customData._editors._lastEditedBy"] = "ScuffedWalls";
             info["_customData._editors.ScuffedWalls"] ??= new TreeDictionary();
-            info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.Version;
+            info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.ver;
 
             return info;
         }
@@ -248,9 +242,8 @@ Workspace
                 using (StreamWriter file = new StreamWriter(ConfigFileName))
                 {
                     file.Write(JsonSerializer.Serialize(reConfig, new JsonSerializerOptions() { WriteIndented = true }));
-                    file.Close();
                 }
-                File.SetAttributes(ConfigFileName, FileAttributes.Normal);
+                File.SetAttributes(ConfigFileName, FileAttributes.Hidden);
             }
         }
 
@@ -268,7 +261,7 @@ Workspace
 
             if(mapDataFiles.Count() < 1)
             {
-                ScuffedWalls.Print("No map files (*.dat) detected!", ScuffedWalls.LogSeverity.Critical);
+                Console.WriteLine("No map files (*.dat) detected!");
                 Console.ReadLine();
                 Environment.Exit(1);
             }
@@ -303,12 +296,6 @@ Workspace
                 char answer = Convert.ToChar(Console.ReadLine().ToLower());
                 if (answer == 'n') config.IsBackupEnabled = false;
             }
-            Console.Write("Clear Console on Refresh? (y/n):");
-            {
-                char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                if (answer == 'y') config.ClearConsoleOnRefresh = true;
-            }
-
 
             //path of the sw file by difficulty name
             config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");

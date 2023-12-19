@@ -7,11 +7,14 @@ using static ModChart.BeatMap.Note;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("AddSound")]
-    class SoundExtensions : ScuffedFunction
+    [ScuffedFunction("AddSound")]
+    class SoundExtensions : SFunction
     {
-        protected override void Init()
+        public override void Run()
         {
+            FunLog();
+
+
             float[] Times = GetParam("times", Array.Empty<float>(), p => p.Split(',').Select(h => float.Parse(h)).ToArray());
             NoteType FilterType = GetParam("type", NoteType.Bomb | NoteType.Right | NoteType.Left, p => Enum.Parse<NoteType>(p));
             CutDirection FilterDirection = GetParam("direction",
@@ -25,9 +28,9 @@ namespace ScuffedWalls.Functions
 
             int id = 0;
 
-            ScuffedWallsContainer.InfoDifficulty["_customData"] ??= new TreeDictionary();
+            Utils.InfoDifficulty["_customData"] ??= new TreeDictionary();
 
-            if (ScuffedWallsContainer.InfoDifficulty["_customData._sounds"] is IList<object> _sounds)
+            if (Utils.InfoDifficulty["_customData._sounds"] is IList<object> _sounds)
             {
                 if (_sounds.All(s => s.ToString() != path)) _sounds.Add(path);
                 id = _sounds.IndexOf(path);
@@ -39,7 +42,7 @@ namespace ScuffedWalls.Functions
                     path
                 };
 
-                ScuffedWallsContainer.InfoDifficulty["_customData._sounds"] = newList;
+                Utils.InfoDifficulty["_customData._sounds"] = newList;
                 
             }
 

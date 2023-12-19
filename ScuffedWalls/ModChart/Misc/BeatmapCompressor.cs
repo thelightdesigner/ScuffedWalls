@@ -4,28 +4,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using static ModChart.BeatMap;
 
 namespace ModChart
 {
     static class BeatmapCompressor
     {
-        public static void SimplifyAllPointDefinitions(BeatMap Map)
+        public static BeatMap SimplifyAllPointDefinitions(this BeatMap Map)
         {
 
             //simplify custom event point definitions
-            if (Map._customData != null && Map._customData["_customEvents"] != null && Map._customData.at<IEnumerable<object>>("_customEvents").Count() > 0)
+            if (Map._customData != null && Map._customData[_customEvents] != null && Map._customData.at<IEnumerable<object>>(_customEvents).Count() > 0)
             {
-
-                Map._customData["_customEvents"] = Map._customData.at<IEnumerable<object>>("_customEvents").Cast<TreeDictionary>().Select(mapobj =>
+                
+                Map._customData[_customEvents] = Map._customData.at<IEnumerable<object>>(_customEvents).Cast<TreeDictionary>().Select(mapobj =>
                 {
                     try
                     {
-                        if (mapobj["_data"] != null) mapobj["_data"] = mapobj.at("_data").SimplifyAnimationPointDefinitions();
+                        if (mapobj[_data] != null) mapobj[_data] = mapobj.at(_data).SimplifyAnimationPointDefinitions();
                         return mapobj;
                     }
                     catch (Exception e)
                     {
-                        ScuffedWalls.ScuffedWalls.Print($"Error on _customEvent at beat {mapobj["_time"]}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
+                        ScuffedWalls.ScuffedWalls.Print($"Error on _customEvent at beat {mapobj[_time]}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
                     }
                 }).ToArray();
@@ -40,10 +41,10 @@ namespace ModChart
                 {
                     try
                     {
-                        if (mapobj._customData != null && mapobj._customData["_animation"] != null) mapobj._customData["_animation"] = mapobj._customData.at("_animation").SimplifyAnimationPointDefinitions();
+                        if (mapobj._customData != null && mapobj._customData[_animation] != null) mapobj._customData[_animation] = mapobj._customData.at(_animation).SimplifyAnimationPointDefinitions();
                         return mapobj;
                     }
-                    catch (Exception e)
+                    catch(Exception e)
                     {
                         ScuffedWalls.ScuffedWalls.Print($"Error on _obstacle at beat {mapobj._time} {JsonSerializer.Serialize(mapobj)}", ScuffedWalls.ScuffedWalls.LogSeverity.Error);
                         throw e;
@@ -58,7 +59,7 @@ namespace ModChart
                 {
                     try
                     {
-                        if (mapobj._customData != null && mapobj._customData["_animation"] != null) mapobj._customData["_animation"] = mapobj._customData.at("_animation").SimplifyAnimationPointDefinitions();
+                        if (mapobj._customData != null && mapobj._customData[_animation] != null) mapobj._customData[_animation] = mapobj._customData.at(_animation).SimplifyAnimationPointDefinitions();
                         return mapobj;
                     }
                     catch (Exception e)
@@ -69,29 +70,20 @@ namespace ModChart
                 }).ToList();
             }
 
-
+            return Map;
         }
-        public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string, int>()
+        public static IDictionary<string, int> AnimationSigFigs = new Dictionary<string,int>()
         {
-            ["_color"] = 4,
-            ["_dissolve"] = 1,
-            ["_dissolveArrow"] = 1,
-            ["_definitePosition"] = 3,
-            ["_position"] = 3,
-            ["_scale"] = 3,
-            ["_rotation"] = 3,
-            ["_localPosition"] = 3,
-            ["_localRotation"] = 3
+            [_color] = 4, 
+            [_dissolve] = 1, 
+            [_dissolveArrow] = 1, 
+            [_definitePosition] = 3,
+            [_position] = 3,
+            [_scale] = 3,
+            [_rotation] = 3,
+            [_localPosition] = 3,
+            [_localRotation] = 3
         };
-        /*
-        public static int GetImportantValuesFromAnimationProperty(this PropertyInfo property)
-        {
-            string name = property.Name;
-            if (name == "_color") return 4;
-            else if (name == "_dissolve" || name == "_dissolveArrow") return 1;
-            else return 3;
-        }
-        */
         public static TreeDictionary SimplifyAnimationPointDefinitions(this TreeDictionary _animation)
         {
             TreeDictionary newAnimation = new TreeDictionary();
@@ -140,9 +132,7 @@ namespace ModChart
             }
             else if (NewPoints.Last().ElementAt(importantvalues).ToFloat() > 1f)
             {
-                ScuffedWalls.ScuffedWalls.Print($"Noodle Extensions point definitions don't end with values higher than 1", ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
-                throw new Exception(NewPoints.Last().ElementAt(importantvalues).ToFloat().ToString());
-
+                ScuffedWalls.ScuffedWalls.Print($"[Warning] Noodle Extensions point definitions don't end with values higher than 1",ScuffedWalls.ScuffedWalls.LogSeverity.Warning);
             }
             return NewPoints.ToArray();
         }

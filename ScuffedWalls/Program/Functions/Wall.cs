@@ -1,76 +1,81 @@
 ﻿using ModChart;
+using System;
+using System.Text.Json;
 
 namespace ScuffedWalls.Functions
 {
-    [SFunction("Wall")]
-    class Wall : ScuffedFunction
+    [ScuffedFunction("Wall")]
+    class Wall : SFunction
     {
-        ICustomDataMapObject parsedthing;
-        bool isNjs;
-        protected override void Init()
+        public Parameter Repeat; 
+        public Parameter Beat;
+        public void SetParameters()
         {
-            parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
-            isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
+            Repeat = new Parameter ("repeat", "0");
+            Beat = new Parameter ("time", Time.ToString());
         }
-        protected override void Update()
+        public override void Run()
         {
-            float duration = GetParam("duration", 0, p => float.Parse(p));
-            int lineindex = GetParam("lineindex", 0, p => int.Parse(p));
+            SetParameters();
 
+            var parsedthing = Parameters.CustomDataParse(new BeatMap.Obstacle());
+            bool isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
+
+            float duration = GetParam("duration", 0, p => float.Parse(p));
+            int repeatcount = GetParam("repeat", 1, p => int.Parse(p));
+            float repeatTime = GetParam("repeataddtime", 0, p => float.Parse(p));
+            int lineindex = GetParam("lineindex", 0, p => int.Parse(p));
+            
 
             duration = GetParam("definiteduration", duration, p =>
             {
-                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
-                else return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
+                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
+                else return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
             Time = GetParam("definitetime", Time, p =>
             {
                 if (p.ToLower().RemoveWhiteSpace() == "beats")
                 {
-                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time, parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(Time);
+                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Time, parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Time);
                 }
                 else if (p.ToLower().RemoveWhiteSpace() == "seconds")
                 {
-                    if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
-                    else return ScuffedWallsContainer.BPMAdjuster.GetPlaceTimeBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(Time));
+                    if (isNjs) return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
+                    else return Utils.BPMAdjuster.GetPlaceTimeBeats(Utils.BPMAdjuster.ToBeat(Time));
                 }
                 return Time;
             });
             duration = GetParam("definitedurationseconds", duration, p =>
             {
-                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()));
+                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.BPMAdjuster.GetDefiniteDurationBeats(Utils.BPMAdjuster.ToBeat(p.ToFloat()));
             });
             duration = GetParam("definitedurationbeats", duration, p =>
             {
-                if (isNjs) return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
-                return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
+                if (isNjs) return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat(), parsedthing._customData["_noteJumpStartBeatOffset"].ToFloat());
+                return Utils.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            for (float i = 0; i < repeatcount; i++)
             {
-                _time = Time,
-                _duration = duration,
-                _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
-                _width = GetParam("width", 0, p => int.Parse(p)),
-                _type = (BeatMap.Obstacle.Type)GetParam("type", 0, p => int.Parse(p))
-            };
-            
-            wall._customData ??= new TreeDictionary();
-        
-            // by default make walls fake and uninteractable
-            wall._customData["_fake"] = true;
-            wall._customData["_interactable"] = false;
+                Repeat.StringData = i.ToString();
+                Beat.StringData = (Time + (i * repeatTime)).ToString();
 
-            BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+                FunLog();
 
-            BeatMap.Append(wall, append, BeatMap.AppendPriority.High);
+                InstanceWorkspace.Walls.Add((BeatMap.Obstacle)new BeatMap.Obstacle()
+                {
+                    _time = Time + (i * repeatTime),
+                    _duration = duration,
+                    _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
+                    _width = 0,
+                    _type = 0
+                }.Append(Parameters.CustomDataParse(new BeatMap.Obstacle()),AppendPriority.High));
+                Parameter.RefreshAllParameters();
+            }
 
-            InstanceWorkspace.Walls.Add(wall);
-
-
-            RegisterChanges("Wall", 1);
+            ConsoleOut("Wall", repeatcount, Time, "Wall");
         }
     }
 

@@ -4,9 +4,9 @@ using System.Linq;
 namespace ScuffedWalls
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class SFunctionAttribute : Attribute 
+    public class ScuffedFunctionAttribute : Attribute 
     {
-        public SFunctionAttribute(params string[] name)
+        public ScuffedFunctionAttribute(params string[] name)
         {
             ParserName = name.Select(n => n.ToLower().RemoveWhiteSpace()).ToArray();
             Name = name.First();

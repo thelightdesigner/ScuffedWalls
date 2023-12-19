@@ -72,7 +72,8 @@ namespace ModChart.Wall
 
                 float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.PCOptimizerPro;
 
-                var wall = new BeatMap.Obstacle()
+
+                return new BeatMap.Obstacle()
                 {
                     _time = _Settings.Wall._time.ToFloat() + spread,
                     _duration = _Settings.Wall._duration,
@@ -86,10 +87,7 @@ namespace ModChart.Wall
                         ["_color"] = p.Color.ToObjArray(_Settings.alfa),
                         ["_animation"] = animatedscale
                     }
-                };
-                BeatMap.Append(wall, _Settings.Wall, BeatMap.AppendPriority.Low);
-
-                return wall;
+                }.Append(_Settings.Wall, AppendPriority.Low);
 
             }).Cast<BeatMap.Obstacle>().ToArray();
         }

@@ -28,8 +28,8 @@ namespace ScuffedWalls
                     Timestamps = Timestamps.Now,
                     Assets = new Assets()
                     {
-                        LargeImageKey = "scuffed_v2_update",
-                        LargeImageText = $"ScuffedWalls {ScuffedWalls.Version}",
+                        LargeImageKey = "scuffed_v1_update",
+                        LargeImageText = $"ScuffedWalls {ScuffedWalls.ver}",
                         SmallImageKey = "??",
                         SmallImageText = "??"
                     }
@@ -41,16 +41,28 @@ namespace ScuffedWalls
         {
             while (CurrentMap == null) await Task.Delay(500);
 
-            if (!ScuffedWallsContainer.ScuffedConfig.HideMapInRPC) client.UpdateDetails(ScuffedWallsContainer.Info["_songName"].ToString());
+            if (!Utils.ScuffedConfig.HideMapInRPC) client.UpdateDetails(Utils.Info["_songName"].ToString());
 
             while (true)
             {
-                List<KeyValuePair<string, int>> RPCMsg = CurrentMap.Stats.ToList();
-                RPCMsg.Add(new KeyValuePair<string, int>("Workspace".MakePlural(Workspaces), Workspaces));
-
-                foreach (var mesg in RPCMsg)
+                List<string> RPCMsg = new List<string>()
                 {
-                    client.UpdateState($"{mesg.Value} {mesg.Key}");
+                    $"{CurrentMap._events.Count} Lights",
+                    $"{CurrentMap._notes.Count} Notes",
+                    $"{CurrentMap._obstacles.Count} Walls",
+                    $"{Workspaces} Workspaces"
+                };
+
+                if (CurrentMap._customData != null)
+                    foreach (var coolthing in CurrentMap._customData.Where(item => item.Value is IEnumerable<object> aray && aray.Any()))
+                    {
+                        int count = ((IEnumerable<object>)coolthing.Value).Count();
+                        RPCMsg.Add($"{count} {coolthing.Key.MakePlural(count)}");
+                    }
+
+                foreach (string mesg in RPCMsg)
+                {
+                    client.UpdateState(mesg);
                     await Task.Delay(5000);
                 }
             }

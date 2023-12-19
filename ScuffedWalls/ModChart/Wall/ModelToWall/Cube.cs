@@ -14,15 +14,15 @@ namespace ModChart.Wall
             while (h > 1f) h--;
 
             Color rgb;
-            if (s == 0) rgb = new Color() { R = l, A = l, B = l, G = l};
+            if (s == 0) rgb = new Color() { R = l, A = l, B = l, G = l };
             else
             {
                 rgb = new Color();
 
-                float q = 
-                    l < 0.5f 
-                    ? ( l * (1f + s) )
-                    : ( l + s - l * s);
+                float q =
+                    l < 0.5f
+                    ? (l * (1f + s))
+                    : (l + s - l * s);
 
                 float p = 2 * l - q;
 
@@ -40,9 +40,10 @@ namespace ModChart.Wall
                     return p2;
                 }
 
-            } return rgb;
+            }
+            return rgb;
         }
-        
+
         public float R { get; set; }
         public float G { get; set; }
         public float B { get; set; }
@@ -214,17 +215,17 @@ namespace ModChart.Wall
         {
             if ((Matrix.HasValue))
             {
-                Transformation = Transformation.fromMatrix(Matrix.Value);
+                Transformation = Transformation.FromMatrix(Matrix.Value);
             }
             if ((OffsetMatrix.HasValue))
             {
-                OffsetTransformation = Transformation.fromMatrix(OffsetMatrix.Value);
+                OffsetTransformation = Transformation.FromMatrix(OffsetMatrix.Value);
             }
             if (Frames != null && Frames.All(f => f.Matrix.HasValue))
             {
                 Frames = Frames.Select(frame =>
                 {
-                    frame.Transformation = Transformation.fromMatrix(frame.Matrix.Value);
+                    frame.Transformation = Transformation.FromMatrix(frame.Matrix.Value);
                     return frame;
                 }).ToArray();
                 Transformation = Frames.First().Transformation;
@@ -234,7 +235,7 @@ namespace ModChart.Wall
             {
                 Frames = Frames.Select(frame =>
                 {
-                    frame.OffsetTransformation = Transformation.fromMatrix(frame.OffsetMatrix.Value);
+                    frame.OffsetTransformation = Transformation.FromMatrix(frame.OffsetMatrix.Value);
                     return frame;
                 }).ToArray();
                 OffsetTransformation = Frames.First().Transformation;
@@ -243,57 +244,44 @@ namespace ModChart.Wall
         }
         public Cube[] InstantiateMultiples()
         {
-            if (Frames != null && Frames.Any(f => f.Active != Frames.First().Active))
+            if (!(Frames != null && Frames.Any(f => f.Active != Frames.First().Active))) return new Cube[] { this };
+
+            List<DoubleInt> framespan = new List<DoubleInt>();
+            KeyValuePair<bool, DoubleInt>? current = null;
+            bool? lastactive = null;
+            for (int i = 0; i < Frames.Length; i++)
             {
-                //Console.WriteLine(this.Name);
-                List<DoubleInt> framespan = new List<DoubleInt>();
-                KeyValuePair<bool, DoubleInt>? current = null;
-                bool? lastactive = null;
-                for (int i = 0; i < Frames.Length; i++)
+                if (lastactive.HasValue && current.HasValue && lastactive.Value == Frames[i].Active.Value)
                 {
-                    if (lastactive.HasValue && current.HasValue && lastactive.Value == Frames[i].Active.Value)
-                    {
-                        current.Value //nullable value
-                            .Value //key value (DoubleInt)
-                            .Val2++; //second number of DoubleInt
-                    }
-                    else
-                    {
-                        //Console.WriteLine($"Current Has Value?: {current.HasValue}");
-                        if (current.HasValue && current.Value.Key)
-                        {
-                            //Console.WriteLine("Current Added");
-                            framespan.Add(current.Value.Value);
-                        }
-
-                        current = new KeyValuePair<bool, DoubleInt>(Frames[i].Active.Value, new DoubleInt(i, i + 1));
-
-                        //Console.WriteLine($"Current Set To: {current.ToString()}");
-                    }
-                    lastactive = Frames[i].Active.Value;
-
+                    current.Value //nullable value
+                        .Value //key value (DoubleInt)
+                        .Val2++; //second number of DoubleInt
                 }
-                if (current.HasValue && current.Value.Key)
+                else
                 {
-                    //Console.WriteLine("Current Added");
-                    framespan.Add(current.Value.Value);
+                    if (current.HasValue && current.Value.Key)
+                    {
+                        framespan.Add(current.Value.Value);
+                    }
+                    current = new KeyValuePair<bool, DoubleInt>(Frames[i].Active.Value, new DoubleInt(i, i + 1));
                 }
+                lastactive = Frames[i].Active.Value;
 
-                SetOffset();
-
-                // Console.WriteLine(string.Join(" ",
-                //        Frames.Select(f => f.Active.Value)
-                //        ));
-
-                return framespan.Select(f =>
-                {
-                    var Newcube = this.Clone();
-                    Newcube.FrameSpan = f;
-                    Newcube.Frames = Newcube.Frames.Slice(f.Val1, f.Val2).ToArray();
-                    return Newcube;
-                }).ToArray();
             }
-            return new Cube[] { this };
+            if (current.HasValue && current.Value.Key)
+            {
+                framespan.Add(current.Value.Value);
+            }
+
+            SetOffset();
+
+            return framespan.Select(f =>
+            {
+                var Newcube = this.Clone();
+                Newcube.FrameSpan = f;
+                Newcube.Frames = Newcube.Frames.Slice(f.Val1, f.Val2).ToArray();
+                return Newcube;
+            }).ToArray();
         }
         public Cube Clone()
         {
@@ -325,17 +313,17 @@ namespace ModChart.Wall
             {
                 Frames = Frames.Select(frame =>
                 {
-                    var trans = Transformation.fromMatrix(frame.Matrix.Value);
+                    var trans = Transformation.FromMatrix(frame.Matrix.Value);
                     var mat = frame.Matrix.Value;
                     mat = mat.TransformLoc(new Vector3(0, -1, -1)); //compensate pivot difference
 
-                    mat.Translation = mat.Translation + new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
+                    mat.Translation += new Vector3(trans.Scale.X - 2, 0, 0); //compensate animate scale vs scale difference
                     frame.OffsetMatrix = mat;
 
                     return frame;
                 }).ToArray();
             }
-            var trans = Transformation.fromMatrix(Matrix.Value);
+            var trans = Transformation.FromMatrix(Matrix.Value);
             var mat = Matrix.Value;
             mat = mat.TransformLoc(new Vector3(0, -1, -1));//compensate pivot difference
 
