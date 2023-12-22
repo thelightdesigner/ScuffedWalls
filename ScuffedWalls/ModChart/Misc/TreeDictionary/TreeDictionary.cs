@@ -17,6 +17,8 @@ namespace ModChart
         public object GetMultiple(string Key);
         public void SetMultiple(string Key, object value);
     }
+    public class TreeDictionary : TreeDictionary<object> { }
+
     public class TreeDictionary<TreeType> : Dictionary<string, TreeType>, ITreeDictionary, ICloneable
     {
         public void DeleteNullValues()
