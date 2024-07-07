@@ -9,12 +9,12 @@ namespace ScuffedWalls.Functions
     {
         protected override void Update()
         {
-            InstanceWorkspace.Lights.Add(new ModChart.BeatMap.Event()
+            InstanceWorkspace.Lights.Add(new ModChart.DifficultyV2.Event()
             {
                 _time = Time,
-                _type = GetParam("type", ModChart.BeatMap.Event.Type.CenterLights, p => (ModChart.BeatMap.Event.Type)int.Parse(p)),
-                _value = GetParam("value", ModChart.BeatMap.Event.Value.OnBlue, p => (ModChart.BeatMap.Event.Value)int.Parse(p)),
-                _customData = UnderlyingParameters.CustomDataParse(new ModChart.BeatMap.Event())._customData
+                _type = GetParam("type", ModChart.DifficultyV2.Event.Type.CenterLights, p => (ModChart.DifficultyV2.Event.Type)int.Parse(p)),
+                _value = GetParam("value", ModChart.DifficultyV2.Event.Value.OnBlue, p => (ModChart.DifficultyV2.Event.Value)int.Parse(p)),
+                _customData = UnderlyingParameters.CustomDataParse(new ModChart.DifficultyV2.Event())._customData
             });
             RegisterChanges("_event", 1);
         }

@@ -9,27 +9,27 @@ namespace ScuffedWalls
     /// <summary>
     /// Adds this FunctionRequest's results to the given workspace and returns it.
     /// </summary>
-    public class FunctionRequestParser : IRequestParser<FunctionRequest, BeatMap>
+    public class FunctionRequestParser : IRequestParser<FunctionRequest, DifficultyV2>
     {
         public bool HideLogs { get; set; }
         public FunctionRequest CurrentRequest => _request;
-        public BeatMap Result => _latestResultObjs;
+        public DifficultyV2 Result => _latestResultObjs;
         public FunctionRequestParser(FunctionRequest request, Workspace instance = null, bool hideLogs = false)
         {
             HideLogs = hideLogs;
             _request = request;
-            _instanceWorkspace = instance ?? BeatMap.Empty;
+            _instanceWorkspace = instance ?? DifficultyV2.Empty;
         }
         private Workspace _instanceWorkspace;
         private FunctionRequest _request;
-        private BeatMap _latestResultObjs = BeatMap.Empty;
+        private DifficultyV2 _latestResultObjs = DifficultyV2.Empty;
 
         public static readonly Type[] Functions = Assembly
                  .GetExecutingAssembly()
                  .GetTypes()
                  .Where(t => t.Namespace == "ScuffedWalls.Functions" && t.GetCustomAttributes<SFunctionAttribute>().Any())
                  .ToArray();
-        public BeatMap GetResult()
+        public DifficultyV2 GetResult()
         {
             AssignableInlineVariable.Ping();
             // Parameter.UnUseAll(_request.UnderlyingParameters);

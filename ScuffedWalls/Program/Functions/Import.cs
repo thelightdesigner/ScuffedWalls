@@ -24,22 +24,22 @@ namespace ScuffedWalls.Functions
             addtime = GetParam("addtime", 0, p => float.Parse(p));
             endbeat = GetParam("tobeat", float.PositiveInfinity, p => float.Parse(p));
 
-            BeatMap beatMap = JsonSerializer.Deserialize<BeatMap>(File.ReadAllText(Path), ScuffedWallsContainer.DefaultJsonConverterSettings);
-            BeatMap filtered = new BeatMap();
+            DifficultyV2 beatMap = JsonSerializer.Deserialize<DifficultyV2>(File.ReadAllText(Path), ScuffedWallsContainer.DefaultJsonConverterSettings);
+            DifficultyV2 filtered = new DifficultyV2();
 
             if (beatMap._obstacles != null && beatMap._obstacles.Any() && Type.Any(t => t == 0))
             {
-                filtered._obstacles.AddRange(beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Obstacle>());
+                filtered._obstacles.AddRange(beatMap._obstacles.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<DifficultyV2.Obstacle>());
 
             }
             if (beatMap._notes != null && beatMap._notes.Any() && Type.Any(t => t == 1))
             {
-                filtered._notes.AddRange(beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Note>());
+                filtered._notes.AddRange(beatMap._notes.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<DifficultyV2.Note>());
 
             }
             if (beatMap._events != null && beatMap._events.Any() && Type.Any(t => t == 2))
             {
-                filtered._events.AddRange(beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<BeatMap.Event>());
+                filtered._events.AddRange(beatMap._events.Cast<ITimeable>().GetAllBetween(startbeat, endbeat).Select(o => { o._time = o._time.ToFloat() + addtime; return o; }).Cast<DifficultyV2.Event>());
 
             }
             if (beatMap._customData != null && Type.Any(t => t == 3))

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using static ModChart.BeatMap.Note;
+using static ModChart.DifficultyV2.Note;
 
 namespace ScuffedWalls.Functions
 {

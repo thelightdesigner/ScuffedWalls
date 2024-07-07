@@ -22,7 +22,7 @@ namespace ScuffedWalls.Functions
         string Path;
         protected override void Init()
         {
-            parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            parsedcustomstuff = UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle());
             isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
             duration = GetParam("duration", DefaultValue: 0, p => float.Parse(p));
             isBlackEmpty = GetParam("isblackempty", DefaultValue: true, p => bool.Parse(p));
@@ -66,7 +66,7 @@ namespace ScuffedWalls.Functions
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
             AddRefresh(Path);
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            DifficultyV2.Obstacle wall = new DifficultyV2.Obstacle()
             {
                 _time = Time,
                 _duration = duration,
@@ -79,7 +79,7 @@ namespace ScuffedWalls.Functions
             wall._customData["_fake"] = true;
             wall._customData["_interactable"] = false;
 
-            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
+            DifficultyV2.Append(wall, UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle()), DifficultyV2.AppendPriority.High);
 
             WallImage converter = new WallImage(Path, new ImageSettings()
             {

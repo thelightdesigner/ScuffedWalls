@@ -1,4 +1,4 @@
-﻿using ScuffedWalls;
+﻿/**using ScuffedWalls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +22,14 @@ namespace ModChart
 
     }
 
-    public class BeatMap : ICloneable
+    public class DifficultyV2 : ICloneable
     {
         [JsonIgnore]
         public MapStats Stats => GetStats();
         public MapStats GetStats()
         {
             MapStats stats = new MapStats();
-            foreach (var prop in typeof(BeatMap).GetProperties().Where(p => p.GetCustomAttributes<MapStatAttribute>().Any()))
+            foreach (var prop in typeof(DifficultyV2).GetProperties().Where(p => p.GetCustomAttributes<MapStatAttribute>().Any()))
             {
                 object val = prop.GetValue(this);
                 if (val is IEnumerable<object> array && array.Count() > 0)
@@ -44,12 +44,12 @@ namespace ModChart
             }
             return stats;
         }
-        public static BeatMap Combine(BeatMap b1, BeatMap b2)
+        public static DifficultyV2 Combine(DifficultyV2 b1, DifficultyV2 b2)
         {
             b1.AddMap(b2);
-            return (BeatMap)b1.Clone();
+            return (DifficultyV2)b1.Clone();
         }
-        public void AddMap(BeatMap b2)
+        public void AddMap(DifficultyV2 b2)
         {
             _notes.AddRange(b2._notes);
             _waypoints.AddRange(b2._waypoints);
@@ -115,7 +115,7 @@ namespace ModChart
 
         public object Clone()
         {
-            return new BeatMap()
+            return new DifficultyV2()
             {
                 _notes = _notes?.CloneArray().Cast<Note>().ToList(),
                 _events = _events?.CloneArray().Cast<Event>().ToList(),
@@ -126,7 +126,7 @@ namespace ModChart
             };
         }
 
-        public static BeatMap Empty => new BeatMap();
+        public static DifficultyV2 Empty => new DifficultyV2();
         public static TreeDictionary ImportantMapCustomDataFields => new TreeDictionary()
         {
             [_customEvents] = new List<object>(),
@@ -147,7 +147,7 @@ namespace ModChart
             if (_obstacles.Any(wall => wall._customData != null && HasNoodleParams(wall._customData))) return true;
 
             bool HasNoodleParams(TreeDictionary customData) =>
-                customData.Any(p => BeatMap.NoodleExtensionsPropertyNames.Any(n => n == p.Key)) || //customData has one of the noodle properties listed
+                customData.Any(p => DifficultyV2.NoodleExtensionsPropertyNames.Any(n => n == p.Key)) || //customData has one of the noodle properties listed
                 (customData["_animation"] != null && customData.at("_animation").Any(p => NoodleExtensionsPropertyNames.Any(n => n == p.Key))); //animation exists in custom data and has noodle params
 
             return false;
@@ -371,4 +371,4 @@ namespace ModChart
     }
 
 
-}
+}**/

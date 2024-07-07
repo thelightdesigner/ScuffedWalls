@@ -18,8 +18,8 @@ namespace ScuffedWalls
         public static JsonSerializerOptions DefaultJsonConverterSettings { get; private set; }
         public static string ConfigFileName { get; private set; }
         public static Config ScuffedConfig { get; private set; }
-        public static TreeDictionary Info { get; private set; }
-        public static TreeDictionary InfoDifficulty { get; private set; }
+        public static SDictionary Info { get; private set; }
+        public static SDictionary InfoDifficulty { get; private set; }
         public static BpmAdjuster BPMAdjuster { get; private set; }
         public static ScuffedWallFile ScuffedWallFile { get; private set; }
         public static List<FileChangeDetector> FilesToChange { get; set; }
@@ -57,7 +57,7 @@ Workspace
         public static void Initialize(string[] argss)
         {
             JsonSerializerOptions SerializerOptions = new JsonSerializerOptions() { IgnoreNullValues = true };
-            SerializerOptions.Converters.Add(new TreeDictionaryJsonConverter());
+            SerializerOptions.Converters.Add(new SDictionaryJsonConverter());
             DefaultJsonConverterSettings = SerializerOptions;
 
             Console.Title = $"ScuffedWalls {ScuffedWalls.Version}";
@@ -74,10 +74,10 @@ Workspace
             Info = GetInfo();
             try
             {
-                InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<TreeDictionary>()
-                         .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
-                         .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<TreeDictionary>()
-                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedWallsContainer.ScuffedConfig.MapFilePath).Name).First();
+                InfoDifficulty = Info.at<IEnumerable<object>>("_difficultyBeatmapSets").Cast<SDictionary>()
+                         .Where(set => set.at<IEnumerable<object>>("_difficultyBeatmaps").Cast<SDictionary>().Any(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name))
+                         .First().at<IEnumerable<object>>("_difficultyBeatmaps").Cast<SDictionary>()
+                         .Where(dif => dif["_beatmapFilename"].ToString() == new FileInfo(ScuffedConfig.MapFilePath).Name).First();
             }
             catch(Exception e)
             {
@@ -120,7 +120,7 @@ Workspace
             File.Copy(ScuffedConfig.MapFilePath, Path.Combine(ScuffedConfig.BackupPaths.BackupMAPFolderPath, $"{DateTime.Now.ToFileString()}.dat"));
         }
 
-        public static void Check(BeatMap map)
+       /* public static void Check(DifficultyV3 map)
         {
             try
             {
@@ -149,7 +149,8 @@ Workspace
             {
                 //void
             }
-        }
+        }*/
+
         public static void VerifyBackups()
         {
             if (!ScuffedConfig.IsBackupEnabled) return;
@@ -204,20 +205,20 @@ Workspace
                 ScuffedWalls.Print($"Update Available! Latest Ver: {latest.Name} ({latest.HtmlUrl})", ScuffedWalls.LogSeverity.Notice, ShowStackFrame: false);
             }
         }
-        public static TreeDictionary GetInfo()
+        public static SDictionary GetInfo()
         {
-            TreeDictionary info = null;
-            if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<TreeDictionary>(File.ReadAllText(ScuffedConfig.InfoPath), DefaultJsonConverterSettings);
+            SDictionary info = null;
+            if (File.Exists(ScuffedConfig.InfoPath)) info = JsonSerializer.Deserialize<SDictionary>(File.ReadAllText(ScuffedConfig.InfoPath), DefaultJsonConverterSettings);
             else
             {
                 Console.WriteLine("No Info.dat/info.dat found!");
                 Console.ReadLine();
                 Environment.Exit(1);
             }
-            info["_customData"] ??= new TreeDictionary();
-            info["_customData._editors"] ??= new TreeDictionary();
+            info["_customData"] ??= new SDictionary();
+            info["_customData._editors"] ??= new SDictionary();
             info["_customData._editors._lastEditedBy"] = "ScuffedWalls";
-            info["_customData._editors.ScuffedWalls"] ??= new TreeDictionary();
+            info["_customData._editors.ScuffedWalls"] ??= new SDictionary();
             info["_customData._editors.ScuffedWalls.version"] = ScuffedWalls.Version;
 
             return info;
@@ -241,9 +242,7 @@ Workspace
             {
                 Config reConfig = ConfigureSW();
 
-
                 if (File.Exists(ConfigFileName)) File.Delete(ConfigFileName);
-
 
                 using (StreamWriter file = new StreamWriter(ConfigFileName))
                 {

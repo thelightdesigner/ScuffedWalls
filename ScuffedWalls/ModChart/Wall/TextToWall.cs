@@ -9,8 +9,8 @@ namespace ModChart.Wall
 {
     class WallText
     {
-        public BeatMap.Obstacle[] Walls { get; private set; }
-        public BeatMap.Note[] Notes { get; private set; }
+        public DifficultyV2.Obstacle[] Walls { get; private set; }
+        public DifficultyV2.Note[] Notes { get; private set; }
 
         TextSettings Settings;
         IEnumerable<IPlaceableLetterWallCollection> letterCollection;
@@ -63,14 +63,14 @@ namespace ModChart.Wall
 
             var centered = mapobjs.ToArray().Transform_Pos(new Vector2(-mapobjs.ToArray().GetDimensions().X / 2f, 0));
 
-            Walls = centered.Where(m => m is BeatMap.Obstacle).Cast<BeatMap.Obstacle>().ToArray();
-            Notes = centered.Where(m => m is BeatMap.Note).Cast<BeatMap.Note>().ToArray();
+            Walls = centered.Where(m => m is DifficultyV2.Obstacle).Cast<DifficultyV2.Obstacle>().ToArray();
+            Notes = centered.Where(m => m is DifficultyV2.Note).Cast<DifficultyV2.Note>().ToArray();
         }
 
     }
     public class WallLetterCollection : IPlaceableLetterWallCollection, ICloneable
     {
-        public IEnumerable<BeatMap.Obstacle> Walls { get; set; }
+        public IEnumerable<DifficultyV2.Obstacle> Walls { get; set; }
         public alphabet Character { get; set; }
         public Vector2 Dimensions { get; set; }
 
@@ -93,7 +93,7 @@ namespace ModChart.Wall
         {
             return new WallLetterCollection()
             {
-                Walls = Walls.CloneArray().Cast<BeatMap.Obstacle>().ToArray(),
+                Walls = Walls.CloneArray().Cast<DifficultyV2.Obstacle>().ToArray(),
                 Character = Character,
                 Dimensions = Dimensions
             };

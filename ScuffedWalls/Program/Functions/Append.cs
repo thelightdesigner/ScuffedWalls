@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ModChart.BeatMap;
+using static ModChart.DifficultyV2;
 namespace ScuffedWalls.Functions
 {
     [SFunction(
@@ -79,10 +79,10 @@ namespace ScuffedWalls.Functions
                     case MapObjectType.Obstacle: InstanceWorkspace.Walls.Remove((Obstacle)mapObject);
                             break;
                     case MapObjectType.Event:
-                        InstanceWorkspace.Lights.Remove((BeatMap.Event)mapObject);
+                        InstanceWorkspace.Lights.Remove((DifficultyV2.Event)mapObject);
                         break;
                     case MapObjectType.Note:
-                        InstanceWorkspace.Notes.Remove((BeatMap.Note)mapObject);
+                        InstanceWorkspace.Notes.Remove((DifficultyV2.Note)mapObject);
                         break;
 
                 }

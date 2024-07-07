@@ -12,7 +12,7 @@ namespace ScuffedWalls.Functions
         protected override void Update()
         {
 
-            var parsedshit = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedshit = UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle());
             var isNjs = parsedshit._customData != null && parsedshit._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedshit._customData != null && parsedshit._customData["_noteJumpMovementSpeed"] != null;
             List<string> lines = new List<string>();
@@ -78,7 +78,7 @@ namespace ScuffedWalls.Functions
             bool isModel = false;
             if (new FileInfo(Path).Extension.ToLower() == ".dae")isModel = true;
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            DifficultyV2.Obstacle wall = new DifficultyV2.Obstacle()
             {
                 _time = Time,
                 _duration = duration,
@@ -89,7 +89,7 @@ namespace ScuffedWalls.Functions
             // by default make walls fake and uninteractable
             wall._customData["_fake"] = true;
             wall._customData["_interactable"] = false;
-            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.High);
+            DifficultyV2.Append(wall, UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle()), DifficultyV2.AppendPriority.High);
 
             lines.Reverse();
             WallText text = new WallText(new TextSettings()

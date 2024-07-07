@@ -1,4 +1,5 @@
-﻿using ModChart;
+﻿using DiscordRPC.Message;
+using ModChart;
 using ModChart.Wall;
 using System;
 using System.Collections.Generic;
@@ -168,6 +169,19 @@ namespace ScuffedWalls
             Focus(FullLine.IndexOf(Name) + (Name.Length - 1));
         }
         public bool IsOpeningBracket(int i) => FullLine[i] == OpeningBracket;
+        public bool IsValid() => FullLine.Where(chr => chr == OpeningBracket).Count() == FullLine.Where(chr => chr == ClosingBracket).Count();
+        public int NestingLevel()
+        {
+            int maxLevel = 0;
+            int current = 0;
+            foreach (char c in FullLine)
+            {
+                if (c == OpeningBracket) current++;
+                else if (c == ClosingBracket) current--;
+                if (current > maxLevel) maxLevel = current;
+            }
+            return maxLevel;
+        }
         public int GetPosOfClosingSymbol(int indexofparenthesis)
         {
             char[] characters = FullLine.ToCharArray();

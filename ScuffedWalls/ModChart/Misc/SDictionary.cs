@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace ModChart
 {
-    public class TreeDictionary : Dictionary<string, object>, IDictionary<string, object>, ICloneable
+    public class SDictionary : Dictionary<string, object>, ICloneable
     {
         public void DeleteNullValues()
         {
@@ -16,13 +16,13 @@ namespace ModChart
 
             foreach (var item in this)
             {
-                if (item.Value is TreeDictionary dict) dict.DeleteNullValues();
-                else if (item.Value is IEnumerable<object> array) foreach (var element in array) if (element is TreeDictionary dict2) dict2.DeleteNullValues();
+                if (item.Value is SDictionary dict) dict.DeleteNullValues();
+                else if (item.Value is IEnumerable<object> array) foreach (var element in array) if (element is SDictionary dict2) dict2.DeleteNullValues();
             }
         }
         public object Clone()
         {
-            IDictionary<string, object> New = new TreeDictionary();
+            IDictionary<string, object> New = new SDictionary();
 
             foreach (var Item in this)
             {
@@ -33,33 +33,26 @@ namespace ModChart
 
             return New;
         }
-        public static TreeDictionary Tree() => new TreeDictionary();
-        public static TreeDictionary Tree(IDictionary<string, object> IDict)
-        {
-            TreeDictionary tree = new TreeDictionary();
-            foreach (var item in IDict) tree.Add(item.Key, item.Value);
-            return tree;
-        }
 
         /// <summary>
         /// Merges two IDictionaries, prioritizes Dictionary1
         /// </summary>
         /// <param name="Dictionary1"></param>
         /// <param name="Dictionary2"></param>
-        /// <returns>A TreeDictionary as an IDictionary</returns>
-        public static TreeDictionary Merge(IDictionary<string, object> Dictionary1, IDictionary<string, object> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue)
+        /// <returns>A SDictionary as an IDictionary</returns>
+        public static SDictionary Merge(IDictionary<string, object> Dictionary1, IDictionary<string, object> Dictionary2, MergeType mergeType = MergeType.Dictionaries | MergeType.Objects | MergeType.Arrays, MergeBindingFlags mergeBindingFlags = MergeBindingFlags.HasValue)
         {
-            Dictionary1 ??= new TreeDictionary();
-            Dictionary2 ??= new TreeDictionary();
+            Dictionary1 ??= new SDictionary();
+            Dictionary2 ??= new SDictionary();
 
-            TreeDictionary Merged = new TreeDictionary();
+            SDictionary Merged = new SDictionary();
             foreach (KeyValuePair<string, object> Item in Dictionary1)
             {
                 Merged[Item.Key] = Item.Value;
             }
             foreach (KeyValuePair<string, object> Item in Dictionary2)
             {
-                if (!TreeItemExists(Item))
+                if (!ItemExists(Item))
                     if (mergeType.HasFlag(MergeType.Objects))
                         Merged[Item.Key] = Item.Value;
                     else
@@ -80,7 +73,7 @@ namespace ModChart
             }
             return Merged;
 
-            bool TreeItemExists(KeyValuePair<string, object> Item)
+            bool ItemExists(KeyValuePair<string, object> Item)
             {
                 switch (mergeBindingFlags)
                 {
@@ -108,7 +101,7 @@ namespace ModChart
             Exists,
             HasValue
         }
-        public TreeDictionary at(string Key) => (TreeDictionary)base[Key];
+        public SDictionary at(string Key) => (SDictionary)base[Key];
         public T at<T>(string Key) => (T)base[Key];
 
         public new object this[string Key]
@@ -128,7 +121,7 @@ namespace ModChart
                     for (int i = 0; i < Layers.Length; i++)
                     {
                         if (CurrentLayer is IDictionary<string, object> dictionary) dictionary.TryGetValue(Layers[i], out CurrentLayer);
-                        else throw new NullReferenceException($"TreeDictionary does not contain one or more of the SubTrees referenced {{{Key}}}");
+                        else throw new NullReferenceException($"SDictionary does not contain one or more of the SubSs referenced {{{Key}}}");
                     }
 
                     return CurrentLayer;
@@ -149,20 +142,20 @@ namespace ModChart
                     for (int i = 0; i < Layers.Length - 1; i++)
                     {
                         if (CurrentLayer is IDictionary<string, object> dictionary) dictionary.TryGetValue(Layers[i], out CurrentLayer);
-                        else throw new NullReferenceException($"TreeDictionary does not contain one or more of the SubTrees referenced {{{Key}}}");
+                        else throw new NullReferenceException($"SDictionary does not contain one or more of the SubSs referenced {{{Key}}}");
                     }
                     ((IDictionary<string, object>)CurrentLayer)[Layers.Last()] = value;
                 }
             }
         }
     }
-    public class TreeDictionaryJsonConverter : JsonConverter<TreeDictionary>
+    public class SDictionaryJsonConverter : JsonConverter<SDictionary>
     {
-        public override TreeDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException($"JsonTokenType was of type {reader.TokenType}, only objects are supported");
 
-            var dictionary = new TreeDictionary();
+            var dictionary = new SDictionary();
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndObject) return dictionary;
@@ -180,7 +173,7 @@ namespace ModChart
             return dictionary;
         }
 
-        public override void Write(Utf8JsonWriter writer, TreeDictionary value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, SDictionary value, JsonSerializerOptions options)
         {
             JsonSerializer.Serialize(writer, value as IDictionary<string, object>, options);
         }

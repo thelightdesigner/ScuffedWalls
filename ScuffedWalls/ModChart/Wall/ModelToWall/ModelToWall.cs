@@ -8,13 +8,13 @@ namespace ModChart.Wall
     class WallModelOutput
     {
         public int SceneObjectsLength => SceneWalls.Count() + SceneNotes.Count() + SceneEvent.Count();
-        public IEnumerable<BeatMap.Obstacle> SceneWalls { get; set; }
-        public IEnumerable<BeatMap.Note> SceneNotes { get; set; }
+        public IEnumerable<DifficultyV2.Obstacle> SceneWalls { get; set; }
+        public IEnumerable<DifficultyV2.Note> SceneNotes { get; set; }
         public IEnumerable<TreeDictionary> SceneEvent { get; set; }
     }
     class WallModel
     {
-        public BeatMap Output { get; private set; } = BeatMap.Empty;
+        public DifficultyV2 Output { get; private set; } = DifficultyV2.Empty;
         public Model Model { get; private set; }
         public float NJS { get; private set; }
         public float Offset { get; private set; }
@@ -53,7 +53,7 @@ namespace ModChart.Wall
             Random rnd = new Random();
 
 
-            _settings.Wall ??= new BeatMap.Obstacle();
+            _settings.Wall ??= new DifficultyV2.Obstacle();
             _settings.Wall._customData ??= new TreeDictionary();
             _settings.Wall._customData["_animation"] ??= new TreeDictionary();
             Output._customData["_customEvents"] ??= new object[] { };
@@ -139,12 +139,12 @@ namespace ModChart.Wall
 
 
             //walls
-            List<BeatMap.Obstacle> walls = new List<BeatMap.Obstacle>();
+            List<DifficultyV2.Obstacle> walls = new List<DifficultyV2.Obstacle>();
 
 
             foreach (var cube in Model.Objects.Where(c => !c.isBomb && !c.isCamera && !c.isNote))
             {
-                var wall = new BeatMap.Obstacle()
+                var wall = new DifficultyV2.Obstacle()
                 {
                     _time = _settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _settings.PCOptimizerPro,
                     _duration = _settings.Wall._duration.ToFloat(),
@@ -293,9 +293,9 @@ namespace ModChart.Wall
                     wall._customData["_color"] = new object[] { cube.Color.R, cube.Color.G, cube.Color.B, alpha };
                 }
                 if (_settings.Wall._customData["_color"] != null) wall._customData["_color"] = _settings.Wall._customData["_color"];
-                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[BeatMap._track] = _settings.DefaultTrack;
+                if (_settings.DefaultTrack != null && _settings.DefaultTrack != "") wall._customData[DifficultyV2._track] = _settings.DefaultTrack;
                 if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) wall._customData["_track"] = cube.Track;
-                BeatMap.Append(wall, _settings.Wall, BeatMap.AppendPriority.Low);
+                DifficultyV2.Append(wall, _settings.Wall, DifficultyV2.AppendPriority.Low);
 
                 walls.Add(wall);
 
@@ -303,17 +303,17 @@ namespace ModChart.Wall
             Output._obstacles = walls.ToList();
 
             //notes and bombs
-            List<BeatMap.Note> notes = new List<BeatMap.Note>();
+            List<DifficultyV2.Note> notes = new List<DifficultyV2.Note>();
             foreach (var cube in Model.Objects.Where(c => c.isBomb || c.isNote))
             {
-                BeatMap.Note.NoteType type = BeatMap.Note.NoteType.Right;
-                if (cube.isBomb) type = BeatMap.Note.NoteType.Bomb;
+                DifficultyV2.Note.NoteType type = DifficultyV2.Note.NoteType.Right;
+                if (cube.isBomb) type = DifficultyV2.Note.NoteType.Bomb;
 
-                var note = new BeatMap.Note()
+                var note = new DifficultyV2.Note()
                 {
                     _time = _settings.Wall.GetTime() + (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _settings.PCOptimizerPro,
                     _lineIndex = 0,
-                    _cutDirection = BeatMap.Note.CutDirection.Down,
+                    _cutDirection = DifficultyV2.Note.CutDirection.Down,
                     _lineLayer = 0,
                     _type = type,
                     _customData = new TreeDictionary()
@@ -386,7 +386,7 @@ namespace ModChart.Wall
                 if (_settings.CreateTracks && !string.IsNullOrEmpty(cube.Track)) note._customData["_track"] = cube.Track;
                
 
-                BeatMap.Append(note, _settings.Wall, BeatMap.AppendPriority.Low);
+                DifficultyV2.Append(note, _settings.Wall, DifficultyV2.AppendPriority.Low);
 
 
                 notes.Add(note);
@@ -405,7 +405,7 @@ namespace ModChart.Wall
         public float PCOptimizerPro { get; set; }
         public Technique technique { get; set; }
         public bool HasAnimation { get; set; }
-        public BeatMap.Obstacle Wall { get; set; }
+        public DifficultyV2.Obstacle Wall { get; set; }
         public float NJS { get; set; }
         public float BPM { get; set; }
         public float Offset { get; set; }

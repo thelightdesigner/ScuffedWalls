@@ -31,7 +31,7 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
-                ["_type"] = BeatMap.AnimateTrack,
+                ["_type"] = DifficultyV2.AnimateTrack,
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
@@ -46,7 +46,7 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary()
             {
                 ["_time"] = Time,
-                ["_type"] = BeatMap.AssignPathAnimation,
+                ["_type"] = DifficultyV2.AssignPathAnimation,
                 ["_data"] = UnderlyingParameters.CustomEventsDataParse()
             });
 
@@ -58,7 +58,7 @@ namespace ScuffedWalls.Functions
     {
         protected override void Update()
         {
-            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = BeatMap.AssignPlayerToTrack, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = DifficultyV2.AssignPlayerToTrack, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
             RegisterChanges("AssignPlayerToTrack", 1);
         }
     }
@@ -69,7 +69,7 @@ namespace ScuffedWalls.Functions
         protected override void Update()
         {
             bool worldpositionstays = GetParam("worldpositionstays", true, p => bool.Parse(p));
-            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = BeatMap.AssignTrackParent, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
+            InstanceWorkspace.CustomEvents.Add(new TreeDictionary() { ["_time"] = Time, ["_type"] = DifficultyV2.AssignTrackParent, ["_data"] = UnderlyingParameters.CustomEventsDataParse() });
             RegisterChanges("AssignTrackParent", 1);
         }
     }
@@ -81,7 +81,7 @@ namespace ScuffedWalls.Functions
             InstanceWorkspace.CustomEvents.Add(new TreeDictionary() 
             { 
               ["_time"] = Time,
-              ["_type"] = BeatMap.AssignFogTrack,
+              ["_type"] = DifficultyV2.AssignFogTrack,
               ["_data"] = UnderlyingParameters.CustomEventsDataParse() 
             });
             RegisterChanges("AssignFogTrack", 1);

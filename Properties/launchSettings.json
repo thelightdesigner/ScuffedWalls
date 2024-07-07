@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScuffedWalls": {
+      "commandName": "Project",
+      "commandLineArgs": "\"E:\\New folder\\steamapps\\common\\Beat Saber\\Beat Saber_Data\\CustomWIPLevels\\ChromapperTest\""
+    }
+  }
+}

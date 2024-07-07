@@ -1,6 +1,5 @@
-﻿using ModChart;
-using System;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace ScuffedWalls
@@ -11,11 +10,39 @@ namespace ScuffedWalls
         public static Func<string, float> FloatConverter => val => float.Parse(val);
         public static Func<string, bool> BoolConverter => val => bool.Parse(val);
         public static Func<string, string> StringConverter => val => val;
-        public static Func<string, object> ArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
-        public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
+        public static Func<string, object[]> JsonArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
+        public static Func<string, object[]> JsonJaggedArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
+        public static Func<string, object[]> JsonLazyArrayConverter => val => JsonSerializer.Deserialize<object[]>(val);
+        public static Func<string, object> JsonConverter => val => JsonSerializer.Deserialize<object>(val);
+        //  public static Func<string, object> NestedArrayDefaultStringConverter => val => DeserializeDefaultToString<object[][]>($"[{val}]");
 
         public static readonly CustomDataParser Instance = new CustomDataParser();
-        public CustomDataParser()
+
+        //see this, convert to that 
+        private static readonly Dictionary<string, Func<string, object>> heckStringToTypeParsers = new()
+        {
+            ["coordinates"] = JsonArrayConverter,
+            ["worldrotation"] = JsonConverter
+        };
+
+        /// <summary>
+        /// A lazy array is one that is defined by a string which can or can not have
+        /// surrounding [square brackets]. They can have any data
+        /// types and can be jagged.
+        /// </summary>
+        /// <returns>An object array containing the parsed results.</returns>
+        public static object[] ParseLazyArray(string array)
+        {
+            BracketAnalyzer br = new BracketAnalyzer(array, '[', ']');
+            if (br.NestingLevel() > 1) br.FocusFirst();
+            if ()
+
+            //[2,7,5],[1,76,35,"hello"],["hi"],"hello"
+
+        }
+
+        /*
+         * public CustomDataParser()
         {
 
         }
@@ -25,38 +52,36 @@ namespace ScuffedWalls
         }
 
         private TreeList<Parameter> parameters;
-        public ICustomDataMapObject ReadToCustomData(TreeList<Parameter> parameters, ICustomDataMapObject instance)
+        public DifficultyV3.CustomDataMapObject ReadToCustomData(TreeList<Parameter> parameters, DifficultyV3.CustomDataMapObject instance)
         {
             this.parameters = parameters;
-            instance._customData = Read(out float? time);
-            if (time.HasValue) instance._time = time.Value;
+            instance.CustomData = Read();
+            //if (time.HasValue) instance._time = time.Value;
 
             return instance;
         }
 
-        public TreeDictionary ReadAnimation(TreeList<Parameter> parameters)
+        public SDictionary ReadAnimation(TreeList<Parameter> parameters)
         {
             this.parameters = parameters;
             var customdata = getAnimation(true);
 
             return customdata;
         }
-        public TreeDictionary Read(out float? time)
+        public SDictionary Read()
         {
-            time = GetParam("time", null, p => (float?)float.Parse(p));
-
-            var customdata = new TreeDictionary
+            var customdata = new SDictionary
             {
-                ["_interactable"] = GetParam("interactable", null, p => (object)bool.Parse(p)),
+                ["uninteractable"] = GetParam("uninteractable", null, p => (object)bool.Parse(p)),
                 ["_disableNoteGravity"] = GetParam("disablenotegravity", null, p => (object)bool.Parse(p)),
                 ["_cutDirection"] = GetParam("cutdirection", null, p => (object)float.Parse(p)),
                 ["_noteJumpMovementSpeed"] = GetParam("njs", null, p => (object)float.Parse(p)),
                 ["_noteJumpStartBeatOffset"] = GetParam("njsoffset", null, p => (object)float.Parse(p)),
                 ["_track"] = GetParam("track", null, TrackConverter),
-                ["_fake"] = GetParam("fake", null, p => (object)bool.Parse(p)),
-                ["_rotation"] = GetParam("rotation", null, p => JsonSerializer.Deserialize<object[]>(p)) ?? GetParam("Crotation", null, p => (object)float.Parse(p)),
+                //["_fake"] = GetParam("fake", null, p => (object)bool.Parse(p)),
+                ["worldRotation"] = GetParam("rotation", null, p => JsonSerializer.Deserialize<object[]>(p)) ?? GetParam("Crotation", null, p => (object)float.Parse(p)),
                 ["_localRotation"] = GetParam("localrotation", null, p => JsonSerializer.Deserialize<object[]>(p)),
-                ["_position"] = GetParam("position", null, p => JsonSerializer.Deserialize<object[]>(p)),
+                ["coordinates"] = GetParam("coordinates", null, p => JsonSerializer.Deserialize<object[]>(p)),
                 ["_scale"] = GetParam("scale", null, p => JsonSerializer.Deserialize<object[]>(p)),
                 ["_propID"] = GetParam("cpropid", null, p => (object)int.Parse(p)),
                 ["_lightID"] = GetParam("clightid", null, p => p.ParseSWArray().Select(p => int.Parse(p))),
@@ -75,7 +100,7 @@ namespace ScuffedWalls
 
             };
             var animation = getAnimation(false);
-            var gradient = new TreeDictionary()
+            var gradient = new SDictionary()
             {
                 ["_duration"] = GetParam("cgradientduration", null, p => (object)float.Parse(p)),
                 ["_easing"] = GetParam("cgradienteasing", null, p => (object)p),
@@ -112,9 +137,9 @@ namespace ScuffedWalls
                 return DefaultValue;
             }
         }
-        private TreeDictionary getAnimation(bool isEventData)
+        private SDictionary getAnimation(bool isEventData)
         {
-            var data = new TreeDictionary()
+            var data = new SDictionary()
             {
                 ["_definitePosition"] = GetParam("animatedefiniteposition", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
                 ["_position"] = GetParam("animateposition", null, p => DeserializeDefaultToString<object[][]>($"[{p}]")),
@@ -158,5 +183,5 @@ namespace ScuffedWalls
                 return JSON.TrimStart('[').TrimEnd(']');
             }
         }
+    }*/
     }
-}

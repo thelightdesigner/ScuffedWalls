@@ -11,7 +11,7 @@ namespace ScuffedWalls.Functions
     {
         protected override void Update()
         {
-            var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            var parsedcustomstuff = UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle());
             var isNjs = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpStartBeatOffset"] != null;
             var isNjspeed = parsedcustomstuff._customData != null && parsedcustomstuff._customData["_noteJumpMovementSpeed"] != null;
 
@@ -66,13 +66,13 @@ namespace ScuffedWalls.Functions
             if (isNjs) MapOffset = parsedcustomstuff._customData["_noteJumpStartBeatOffset"].ToFloat();
             if (isNjspeed) MapNjs = parsedcustomstuff._customData["_noteJumpMovementSpeed"].ToFloat();
 
-            BeatMap output = new BeatMap();
+            DifficultyV2 output = new DifficultyV2();
 
             string Path = GetParam("path", DefaultValue: string.Empty, p => System.IO.Path.Combine(ScuffedWallsContainer.ScuffedConfig.MapFolderPath, p.RemoveWhiteSpace()));
             Path = GetParam("fullpath", DefaultValue: Path, p => p);
             AddRefresh(Path);
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            DifficultyV2.Obstacle wall = new DifficultyV2.Obstacle()
             {
                 _time = Time,
                 _duration = duration
@@ -82,7 +82,7 @@ namespace ScuffedWalls.Functions
             // by default make walls fake and uninteractable
             wall._customData["_fake"] = true;
             wall._customData["_interactable"] = false;
-            BeatMap.Append(wall, UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle()), BeatMap.AppendPriority.Low);
+            DifficultyV2.Append(wall, UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle()), DifficultyV2.AppendPriority.Low);
 
             Transformation Delta = new Transformation
             {

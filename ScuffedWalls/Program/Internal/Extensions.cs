@@ -8,11 +8,11 @@ namespace ScuffedWalls
 {
     static class Extensions
     {
-        public static ICustomDataMapObject CustomDataParse(this TreeList<Parameter> parameters, ICustomDataMapObject instance)
+        public static DifficultyV3.CustomDataMapObject CustomDataParse(this TreeList<Parameter> parameters, DifficultyV3.CustomDataMapObject instance)
         {
             return CustomDataParser.Instance.ReadToCustomData(parameters, instance);
         }
-        public static TreeDictionary CustomEventsDataParse(this TreeList<Parameter> parameters)
+        public static SDictionary CustomEventsDataParse(this TreeList<Parameter> parameters)
         {
             return CustomDataParser.Instance.ReadAnimation(parameters);
         }
@@ -89,6 +89,11 @@ namespace ScuffedWalls
         {
             if (amount == 1) return s.TrimEnd('s');
             else return s.SetEnd('s');
+        }
+        public static string MakeTitleFormat(this string s)
+        {
+            s = new(s.Where(c => char.IsLetter(c)).ToArray());
+            return char.ToUpper(s[0]) + s.Substring(1);
         }
         public static void AddRange<K,T>(this Dictionary<K, T> dict, IEnumerable<KeyValuePair<K, T>> items)
         {

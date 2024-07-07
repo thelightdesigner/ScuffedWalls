@@ -2,7 +2,7 @@
 using ModChart.Wall;
 using System;
 using System.Numerics;
-using static ModChart.BeatMap;
+using static ModChart.DifficultyV2;
 
 namespace ScuffedWalls.Functions
 {

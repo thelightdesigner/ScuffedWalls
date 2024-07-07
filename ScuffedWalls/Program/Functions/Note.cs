@@ -9,8 +9,8 @@ namespace ScuffedWalls.Functions
         protected override void Update()
         {
 
-            BeatMap.Note.NoteType type = GetParam("type", BeatMap.Note.NoteType.Right, p => (BeatMap.Note.NoteType)int.Parse(p));
-            BeatMap.Note.CutDirection cutdirection = GetParam("notecutdirection", BeatMap.Note.CutDirection.Down, p => (BeatMap.Note.CutDirection)int.Parse(p));
+            DifficultyV2.Note.NoteType type = GetParam("type", DifficultyV2.Note.NoteType.Right, p => (DifficultyV2.Note.NoteType)int.Parse(p));
+            DifficultyV2.Note.CutDirection cutdirection = GetParam("notecutdirection", DifficultyV2.Note.CutDirection.Down, p => (DifficultyV2.Note.CutDirection)int.Parse(p));
             float? njsoffset = GetParam("definitedurationseconds", null, p =>
             {
                 return (float?)ScuffedWallsContainer.BPMAdjuster.GetDefiniteNjsOffsetBeats(ScuffedWallsContainer.BPMAdjuster.ToBeat(p.ToFloat()));
@@ -36,7 +36,7 @@ namespace ScuffedWalls.Functions
             });
             //parse special parameters
 
-            BeatMap.Note note = new BeatMap.Note()
+            DifficultyV2.Note note = new DifficultyV2.Note()
             {
                 _time = Time,
                 _lineIndex = GetParam("lineindex",0,p => int.Parse(p)),
@@ -45,8 +45,8 @@ namespace ScuffedWalls.Functions
                 _type = type,
                 _customData = new TreeDictionary()
             };
-            BeatMap.Append(note, UnderlyingParameters.CustomDataParse(new BeatMap.Note()), BeatMap.AppendPriority.High);
-            note._customData[BeatMap._noteJumpStartBeatOffset] ??= njsoffset;
+            DifficultyV2.Append(note, UnderlyingParameters.CustomDataParse(new DifficultyV2.Note()), DifficultyV2.AppendPriority.High);
+            note._customData[DifficultyV2._noteJumpStartBeatOffset] ??= njsoffset;
            // Console.WriteLine(note._customData[BeatMap._noteJumpStartBeatOffset]);
 
             InstanceWorkspace.Notes.Add(note);

@@ -11,12 +11,12 @@ namespace ScuffedWalls
         {
             Properties = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
         }
-        public void UpdateProperties(ICustomDataMapObject obj)
+        public void UpdateProperties(DifficultyV3.CustomDataMapObject obj)
         {
             SetProperties(Properties, obj);
         }
         public TreeList<AssignableInlineVariable> Properties { get; }
-        public static void SetProperties(TreeList<AssignableInlineVariable> properties, ICustomDataMapObject mapObject)
+        public static void SetProperties(TreeList<AssignableInlineVariable> properties, DifficultyV3.CustomDataMapObject mapObject)
         {
             List<AssignableInlineVariable> propVars = new List<AssignableInlineVariable>();
 
@@ -26,18 +26,18 @@ namespace ScuffedWalls
                 if (val != null) propVars.Add(new AssignableInlineVariable(prop.Name, getNumberFromEnum(val).ToString()));
             }
 
-            if (mapObject._customData != null)
+            if (mapObject.CustomData != null)
             {
-                mapObject._customData.DeleteNullValues();
-                PopulateParts(mapObject._customData);
+                mapObject.CustomData.DeleteNullValues();
+                PopulateParts(mapObject.CustomData);
             }
 
 
-            void PopulateParts(TreeDictionary dict, string prefix = "")
+            void PopulateParts(SDictionary dict, string prefix = "")
             {
                 foreach (KeyValuePair<string, object> Property in dict)
                 {
-                    if (Property.Value is TreeDictionary dictionary) PopulateParts(dictionary, Property.Key + ".");
+                    if (Property.Value is SDictionary dictionary) PopulateParts(dictionary, Property.Key + ".");
                     else if (Property.Value is IEnumerable<object> Array) propVars.AddRange(GetArrayVars(Array, prefix + Property.Key));
                     else propVars.Add(new AssignableInlineVariable(Property.Key, prefix + Property.Value.ToString()));
                 }

@@ -3,6 +3,7 @@ using ModChart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ScuffedWalls
@@ -12,7 +13,7 @@ namespace ScuffedWalls
         static DiscordRpcClient client;
 
         static Task AutoUpdater;
-        public BeatMap CurrentMap { get; set; }
+        public DifficultyV3 CurrentMap { get; set; }
         public int Workspaces { get; set; }
         public RPC()
         {
@@ -45,7 +46,8 @@ namespace ScuffedWalls
 
             while (true)
             {
-                List<KeyValuePair<string, int>> RPCMsg = CurrentMap.Stats.ToList();
+                List<KeyValuePair<string, int>> RPCMsg = GetMapStats(CurrentMap);
+
                 RPCMsg.Add(new KeyValuePair<string, int>("Workspace".MakePlural(Workspaces), Workspaces));
 
                 foreach (var mesg in RPCMsg)
@@ -54,6 +56,22 @@ namespace ScuffedWalls
                     await Task.Delay(5000);
                 }
             }
+        }
+        public List<KeyValuePair<string, int>> GetMapStats(DifficultyV3 diff)
+        {
+            List<KeyValuePair<string, int>> stats = new();
+            foreach (var prop in typeof(DifficultyV3).GetProperties().Where(p => p.GetCustomAttributes<MapStatAttribute>().Any()))
+            {
+                object value = prop.GetValue(this);
+                if (value is IEnumerable<object> array) stats.Add(new(prop.Name.MakeTitleFormat().MakePlural(array.Count()), array.Count()));
+                else if (value is IDictionary<string, object> dict)
+                {
+                    foreach (var key in dict.Keys)
+                        if (dict[key] is IEnumerable<object> arr)
+                            stats.Add(new(key.MakeTitleFormat().MakePlural(arr.Count()), arr.Count()));
+                }
+            }
+            return stats;
         }
     }
 

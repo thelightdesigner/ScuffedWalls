@@ -11,7 +11,7 @@ namespace ModChart.Wall
     {
         ImageSettings _Settings;
         Bitmap _Bitmap;
-        public BeatMap.Obstacle[] Walls { get; private set; }
+        public DifficultyV2.Obstacle[] Walls { get; private set; }
 
         public WallImage(string path, ImageSettings settings)
         {
@@ -72,7 +72,7 @@ namespace ModChart.Wall
 
                 float spread = (Convert.ToSingle(rnd.Next(-100, 100)) / 100) * _Settings.PCOptimizerPro;
 
-                var wall = new BeatMap.Obstacle()
+                var wall = new DifficultyV2.Obstacle()
                 {
                     _time = _Settings.Wall._time.ToFloat() + spread,
                     _duration = _Settings.Wall._duration,
@@ -87,11 +87,11 @@ namespace ModChart.Wall
                         ["_animation"] = animatedscale
                     }
                 };
-                BeatMap.Append(wall, _Settings.Wall, BeatMap.AppendPriority.Low);
+                DifficultyV2.Append(wall, _Settings.Wall, DifficultyV2.AppendPriority.Low);
 
                 return wall;
 
-            }).Cast<BeatMap.Obstacle>().ToArray();
+            }).Cast<DifficultyV2.Obstacle>().ToArray();
         }
 
         public string ToDebugString(Dictionary<IntVector2, Pixel> dictionary) //gross
@@ -176,7 +176,7 @@ namespace ModChart.Wall
 
     public class ImageSettings
     {
-        public ImageSettings(bool isBlackEmpty, float scale, float thicc, bool centered, float spread, float alfa, BeatMap.Obstacle baseWall)
+        public ImageSettings(bool isBlackEmpty, float scale, float thicc, bool centered, float spread, float alfa, DifficultyV2.Obstacle baseWall)
         {
             this.isBlackEmpty = isBlackEmpty;
             this.scale = scale;
@@ -197,7 +197,7 @@ namespace ModChart.Wall
         public float alfa { get; set; }
         public float shift { get; set; }
         public float tolerance { get; set; }
-        public BeatMap.Obstacle Wall { get; set; }
+        public DifficultyV2.Obstacle Wall { get; set; }
     } //settings
 
     public class Pixel

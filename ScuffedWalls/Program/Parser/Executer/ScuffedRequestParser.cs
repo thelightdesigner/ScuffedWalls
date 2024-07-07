@@ -15,16 +15,16 @@ namespace ScuffedWalls
         public RequestType CurrentRequest { get; }
         public ReturnType Result { get; }
     }
-    public class ScuffedRequestParser : IRequestParser<ScuffedRequest, BeatMap>
+    public class ScuffedRequestParser : IRequestParser<ScuffedRequest, DifficultyV2>
     {
         public static ScuffedRequestParser Instance { get; private set; }
         public static Rainbow WorkspaceRainbow = new Rainbow();
-        public BeatMap Result => _latestRunBeatMap;
+        public DifficultyV2 Result => _latestRunBeatMap;
         public ScuffedRequest CurrentRequest => _request;
         public List<ContainerRequest> CustomFunctions => CurrentRequest.CustomFunctionRequests;
         public List<Workspace> Workspaces => _workspaces;
 
-        private BeatMap _latestRunBeatMap;
+        private DifficultyV2 _latestRunBeatMap;
         private ScuffedRequest _request;
         private List<Workspace> _workspaces;
         private IEnumerator<ContainerRequest> _workspaceRequestEnumerator;
@@ -44,7 +44,7 @@ namespace ScuffedWalls
             return converter(parameters.Where(p => p.Clean.Name.Equals(name)).First().StringData);
         }
         */
-        public BeatMap GetResult()
+        public DifficultyV2 GetResult()
         {
 
             _workspaceRequestEnumerator = CurrentRequest.WorkspaceRequests.GetEnumerator();
@@ -61,7 +61,7 @@ namespace ScuffedWalls
 
                 Workspaces.Add(new WorkspaceRequestParser(workreq).GetResult());
             }
-            BeatMap map = Workspace.Combine(Workspaces);
+            DifficultyV2 map = Workspace.Combine(Workspaces);
             map.Prune();
             if (ScuffedWallsContainer.ScuffedConfig.IsAutoSimplifyPointDefinitionsEnabled)
             {

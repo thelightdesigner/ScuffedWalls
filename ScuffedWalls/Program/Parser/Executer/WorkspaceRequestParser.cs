@@ -27,7 +27,7 @@ namespace ScuffedWalls
             GlobalVariables = new TreeList<AssignableInlineVariable>(AssignableInlineVariable.Exposer);
             foreach (var param in _request.Parameters) param.Variables.Register(GlobalVariables);
 
-            Workspace workspace = new Workspace(BeatMap.Empty, _request.Name);
+            Workspace workspace = new Workspace(DifficultyV2.Empty, _request.Name);
 
             _variableRequestEnumerator = _request.VariableRequests.GetEnumerator();
             _functionRequestEnumerator = _request.FunctionRequests.GetEnumerator();

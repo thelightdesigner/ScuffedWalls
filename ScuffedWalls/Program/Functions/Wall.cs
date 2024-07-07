@@ -9,7 +9,7 @@ namespace ScuffedWalls.Functions
         bool isNjs;
         protected override void Init()
         {
-            parsedthing = UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            parsedthing = UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle());
             isNjs = parsedthing != null && parsedthing._customData != null && parsedthing._customData["_noteJumpStartBeatOffset"] != null;
         }
         protected override void Update()
@@ -48,13 +48,13 @@ namespace ScuffedWalls.Functions
                 return ScuffedWallsContainer.BPMAdjuster.GetDefiniteDurationBeats(p.ToFloat());
             });
 
-            BeatMap.Obstacle wall = new BeatMap.Obstacle()
+            DifficultyV2.Obstacle wall = new DifficultyV2.Obstacle()
             {
                 _time = Time,
                 _duration = duration,
                 _lineIndex = GetParam("lineindex", 0, p => int.Parse(p)),
                 _width = GetParam("width", 0, p => int.Parse(p)),
-                _type = (BeatMap.Obstacle.Type)GetParam("type", 0, p => int.Parse(p))
+                _type = (DifficultyV2.Obstacle.Type)GetParam("type", 0, p => int.Parse(p))
             };
             
             wall._customData ??= new TreeDictionary();
@@ -63,9 +63,9 @@ namespace ScuffedWalls.Functions
             wall._customData["_fake"] = true;
             wall._customData["_interactable"] = false;
 
-            BeatMap.Obstacle append = (BeatMap.Obstacle)UnderlyingParameters.CustomDataParse(new BeatMap.Obstacle());
+            DifficultyV2.Obstacle append = (DifficultyV2.Obstacle)UnderlyingParameters.CustomDataParse(new DifficultyV2.Obstacle());
 
-            BeatMap.Append(wall, append, BeatMap.AppendPriority.High);
+            DifficultyV2.Append(wall, append, DifficultyV2.AppendPriority.High);
 
             InstanceWorkspace.Walls.Add(wall);
 

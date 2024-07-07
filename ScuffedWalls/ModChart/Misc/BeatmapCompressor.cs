@@ -9,7 +9,7 @@ namespace ModChart
 {
     static class BeatmapCompressor
     {
-        public static void SimplifyAllPointDefinitions(BeatMap Map)
+        public static void SimplifyAllPointDefinitions(DifficultyV2 Map)
         {
 
             //simplify custom event point definitions
