@@ -1,7 +1,6 @@
 # ScuffedWalls (Deprecated)
 ```
-ScuffedWalls is no longer under active developement. The quality of code being unworkable and the need from the beat saber community 
-dying down makes this program officially deprecated. It is currently in a working state (just barely) and is still usable for wallmaps / notemaps.
+ScuffedWalls is no longer under active developement. It is currently in a working state and is still usable for wallmaps / notemaps.
 
 I do not ever plan to remove ScuffedWalls from github. It is still special to me and to many others even if its a little scuffed.
 - thelightdesigner (KyleT)
