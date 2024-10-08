@@ -1,13 +1,4 @@
-# ScuffedWalls (Deprecated)
-```
-ScuffedWalls is no longer under active developement. It is currently in a working state and is still usable for wallmaps / notemaps.
-
-I do not ever plan to remove ScuffedWalls from github. It is still special to me and to many others even if its a little scuffed.
-- thelightdesigner (KyleT)
-
-Changes are still welcome via pull requests and direct messages.
-```
-
+# ScuffedWalls
 
 A command line tool designed as an alternative to scripting Noodle Extensions maps.
 
