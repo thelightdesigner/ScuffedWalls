@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,7 +12,7 @@ namespace ModChart
         [JsonIgnore]
         public string Json => JsonSerializer.Serialize(this, jsonOptions);
 
-        
+
 
 
         [JsonIgnore]
@@ -555,6 +553,65 @@ namespace ModChart
         public SDictionary CustomData { get; private set; } = new();
 
 
+        public const string
+            coordinates = "coordinates",
+            worldRotation = "worldRotation",
+            uninteractable = "uninteractable",
+            localRotation = "localRotation",
+            noteJumpMovementSpeed = "noteJumpMovementSpeed",
+            noteJumpStartBeatOffset = "noteJumpStartBeatOffset",
+            spawnEffect = "spawnEffect",
+            flip = "flip",
+            disableNoteGravity = "disableNoteGravity",
+            disableNoteLook = "disableNoteLook",
+            size = "size",
+            lightID = "lightID",
+            color = "color",
+            easing = "easing",
+            lerpType = "lerpType",
+            lockRotation = "lockRotation",
+            rotation = "rotation",
+            nameFilter = "nameFilter",
+            step = "step",
+            prop = "prop",
+            speed = "speed",
+            direction = "direction",
+            time = "b",
+            type = "t",
+            data = "d";
+
+        public static Dictionary<string, Type[]> LegalHecks => new() {
+            [coordinates] = new Type[] { typeof (float[]) },
+            [worldRotation] = new Type[] { typeof(float[]) },
+            [uninteractable] = new Type[] { typeof(bool) },
+            [localRotation] = new Type[] { typeof(float[]) },
+            [noteJumpMovementSpeed] = new Type[] { typeof(float) },
+            [noteJumpStartBeatOffset] = new Type[] { typeof(float) },
+            [spawnEffect] = new Type[] { typeof(bool) },
+            [flip] = new Type[] { typeof(bool) },
+            [disableNoteGravity] = new Type[] { typeof(bool) },
+            [disableNoteLook] = new Type[] { typeof(bool) },
+            [size] = new Type[] { typeof(float) },
+            [lightID] = new Type[] { typeof(int) },
+            [color] = new Type[] { typeof(float[]) },
+            [easing] = new Type[] { typeof(string) },
+            [lerpType] = new Type[] { typeof(string) },
+            [lockRotation] = new Type[] { typeof(bool) },
+            [rotation] = new Type[] { typeof(float[]) },
+            [nameFilter] = new Type[] { typeof(string) },
+            [step] = new Type[] { typeof(int) },
+            [prop] = new Type[] { typeof(int) },
+            [speed] = new Type[] { typeof(float) },
+            [direction] = new Type[] { typeof(int) },
+            [time] = new Type[] { typeof(float) },
+            [type] = new Type[] { typeof(int) },
+            [data] = new Type[] { typeof(string) }
+        };
+
+
+
+
+
 
         /*  public string Json
           {
@@ -588,5 +645,5 @@ namespace ModChart
         }
     }
 
-    
+
 }

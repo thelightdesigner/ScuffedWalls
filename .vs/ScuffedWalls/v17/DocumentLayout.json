@@ -1,13 +1,45 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\",
+  "WorkspaceRootPath": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|e:\\userdata\\kyle\\documents\\github\\scuffedwalls\\scuffedwalls\\program\\parser\\customdataparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\customdataparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\customdataparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\scuffedwalls\\program\\parser\\parameter\\stringfunc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\modchart\\misc\\difficulty\\difficultyv3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\modchart\\misc\\difficulty\\difficultyv3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\modchart\\misc\\difficulty\\difficultyv2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\modchart\\misc\\difficulty\\difficultyv2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\modchart\\misc\\sdictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\modchart\\misc\\sdictionary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\parameter\\stringcomputationexcecuter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\parameter\\stringcomputationexcecuter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\stringparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\stringparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\parameter\\paramtypes\\parameter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\parameter\\paramtypes\\parameter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\scuffedfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\scuffedfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|c:\\users\\stypl\\source\\repos\\scuffedwalls\\scuffedwalls\\program\\parser\\parameter\\stringfunc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5412EC27-B5C4-40D8-9B30-8007A96A73B2}|ScuffedWalls.csproj|solutionrelative:scuffedwalls\\program\\parser\\parameter\\stringfunc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -18,36 +50,134 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Main.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Main.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Main.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Main.cs*",
+              "RelativeToolTip": "ScuffedWalls\\Program\\Main.cs*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACEAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-01T19:18:20.382Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SDictionary.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\SDictionary.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\ModChart\\Misc\\SDictionary.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\SDictionary.cs",
+              "RelativeToolTip": "ScuffedWalls\\ModChart\\Misc\\SDictionary.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAgwF0AAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:57:02.6Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DifficultyV2.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV2.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV2.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV2.cs",
+              "RelativeToolTip": "ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:56:29.243Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DifficultyV3.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV3.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV3.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV3.cs",
+              "RelativeToolTip": "ScuffedWalls\\ModChart\\Misc\\Difficulty\\DifficultyV3.cs",
+              "ViewState": "AgIAAFwBAAAAAAAAAAAgwE4CAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:56:26.632Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "StringParser.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\StringParser.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\StringParser.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\StringParser.cs",
+              "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\StringParser.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAvwBAAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:51:41.805Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "StringComputationExcecuter.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringComputationExcecuter.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\Parameter\\StringComputationExcecuter.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringComputationExcecuter.cs",
+              "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\Parameter\\StringComputationExcecuter.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:39:29.177Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "CustomDataParser.cs",
-              "DocumentMoniker": "E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
               "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
-              "ToolTip": "E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
               "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\CustomDataParser.cs",
-              "ViewState": "AQIAAA4AAAAAAAAAAAA0wBwAAAA/AAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-07T14:44:36.192Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
+              "Title": "ScuffedFunction.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\ScuffedFunction.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\ScuffedFunction.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\ScuffedFunction.cs",
+              "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\ScuffedFunction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:39:21.988Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Parameter.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\ParamTypes\\Parameter.cs",
+              "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\Parameter\\ParamTypes\\Parameter.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\ParamTypes\\Parameter.cs",
+              "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\Parameter\\ParamTypes\\Parameter.cs",
+              "ViewState": "AgIAAF4AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T03:38:44.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "StringFunc.cs",
-              "DocumentMoniker": "E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
+              "DocumentMoniker": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
               "RelativeDocumentMoniker": "ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
-              "ToolTip": "E:\\UserData\\kyle\\Documents\\GitHub\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
+              "ToolTip": "C:\\Users\\stypl\\source\\repos\\ScuffedWalls\\ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
               "RelativeToolTip": "ScuffedWalls\\Program\\Parser\\Parameter\\StringFunc.cs",
               "ViewState": "AQIAAJsAAAAAAAAAAAAQwKcAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-07T14:51:17.024Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }

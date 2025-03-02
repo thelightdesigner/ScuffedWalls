@@ -91,15 +91,15 @@ namespace ModChart
         [Flags]
         public enum MergeType
         {
-            Objects,
-            Arrays,
-            Dictionaries
+            Objects = 1,
+            Arrays = 2,
+            Dictionaries = 4
         }
         [Flags]
         public enum MergeBindingFlags
         {
-            Exists,
-            HasValue
+            Exists = 1,
+            HasValue = 2
         }
         public SDictionary at(string Key) => (SDictionary)base[Key];
         public T at<T>(string Key) => (T)base[Key];
